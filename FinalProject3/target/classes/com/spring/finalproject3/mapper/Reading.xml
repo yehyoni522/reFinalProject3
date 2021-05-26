@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Reading">
+
+	<select id="readingRoomView" resultType="com.spring.finalproject3.yehyeon.model.RroomNumVO">
+		select rno, rname, rcode, rtotalseat
+		from tbl_RroomNum
+	</select>
+	
+	<select id="timeView" resultType="com.spring.finalproject3.yehyeon.model.TimeVO">
+		select tno, tname
+		from tbl_time	
+	</select>
+
+
+
+</mapper>
