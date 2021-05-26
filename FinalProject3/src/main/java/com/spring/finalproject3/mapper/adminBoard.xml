@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="board">
+
+	<!-- // === 페이징 처리를 안한 검색어가 있는 전체 글목록 보여주기 === -->
+	<select id="boardListSearch" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.AdminBoardVO">
+	   select seq, fk_userid, subject  
+	        , readcount, to_char(regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+	        , commentCount, thumb
+	   from tbl_board
+	   where status = 1
+	   <if test='searchType != "" and searchWord != "" '>
+	      and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+	   </if>
+	   order by seq desc
+	</select>
+   
+	<!-- === #111. 검색어 입력시 자동글 완성하기 6 ===  -->
+	<select id="wordSearchShow" parameterType="HashMap" resultType="String">
+	   select ${searchType}
+	   from tbl_board
+	   where status = 1
+	   and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+	   order by seq desc
+	</select>
+   
+   
+</mapper>
