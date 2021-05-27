@@ -5,9 +5,6 @@
 %>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
 <style>
 div.loginView{
 	text-align:center;
@@ -222,14 +219,17 @@ input.findinput{
 		    <form name="loginFrm">
 			    <h3 style="text-align: center;"></h3>
 			    <div class="form-group">
+			        <i class="fa fa-user"></i>
 					<input type="text" id="loginUserid" class="form-control" placeholder="Username" name="userid" maxlength="20">
 					<br>
-			    	<input type="password" id="loginPwd"  class="form-control" placeholder="●●●●" name="pwd" maxlength="20">
+			    	<i class="fa fa-lock"></i>
+			    	 <input type="password" id="loginPwd"  class="form-control" placeholder="●●●●" name="pwd" maxlength="20">
 			    	
 			    	
 				</div>
 				<input type="checkbox" id="saveid" name="saveid"/><label style="font-weight: normal;" for="saveid">&nbsp;아이디저장</label>
-				<span style ="margin-left:240px;"><a style="cursor: pointer;" href="javascript:window.open('<%= ctxPath%>/idFind.sam', '아이디찾기','left=350px , top=300px,width=500px, height=500px')">아이디 찾기</a>/<a>&nbsp;비밀번호찾기</a></span>
+				<span style ="margin-left:240px;"><a style="cursor: pointer;" href="javascript:window.open('<%= ctxPath%>/idFind.sam', '아이디찾기','left=430px , top=100px, width=400px, height=500px')">아이디 찾기</a>
+				/<a style="cursor: pointer;" href="javascript:window.open('<%= ctxPath%>/pwdFind.sam', '비밀번호 찾기','left=430px , top=100px, width=400px, height=500px')">&nbsp;비밀번호찾기</a></span>
 				<br>	
 			    <button type="button" id="btnSubmit" class="loginSubmit">로그인</button>
 				

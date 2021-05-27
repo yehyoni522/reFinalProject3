@@ -9,5 +9,8 @@ import com.spring.finalproject3.joseungjin.model.PersonVO;
 public interface InterMemberService {
 
 	PersonVO getLoginStudent(Map<String, String> paraMap);
+	
+	//아이디 찾기
+	PersonVO idFind(Map<String, String> paraMap);
 
 }

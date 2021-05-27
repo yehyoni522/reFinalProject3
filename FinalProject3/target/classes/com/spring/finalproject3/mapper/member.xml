@@ -10,4 +10,10 @@
 		where perno =#{userid} and pwd=#{pwd}
 	</select>
 
+	<select id="idFind" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
+		select perno
+		from tbl_person
+		where name =#{name} and email=#{email}
+	</select>
+	
 </mapper>

@@ -98,8 +98,8 @@
 				$("input#email").focus();
 				return;  // goLogin() 함수 종료
 			}
-		var frm = document.idFindFrm;
-		frm.action = "<%= ctxPath%>/idFindEnd.sam";
+		var frm = document.pwdFindFrm;
+		frm.action = "<%= ctxPath%>/pwdFindEnd.sam";
 		frm.method = "post";
 		frm.submit();
 		
@@ -109,12 +109,14 @@
 
 </script>
 
-<form name="idFindFrm">
+<form name="pwdFindFrm">
 
-	<h1 align="center" style="margin-top: 100px;"> 아이디 찾기</h1>
+	<h1 align="center" style="margin-top: 100px;"> 비밀번호 찾기</h1>
 	<c:if test="${check != 0}">
+
+
 	   <div id="div_name" align="center" style="margin-top: 50px;">
-	     	 성명:<input style="margin-left:17px;" type="text" name="name" id="name" size="15" placeholder="홍길동" autocomplete="off" required />
+	     	  	 아이디:<input style="margin-left:9px;" type="text" name="userid" id="userid" size="15" placeholder="학번/교번" autocomplete="off" required />
 	   </div>
    
 	   <div id="div_email" align="center">
@@ -122,7 +124,7 @@
 	   </div>
 	   
 	   <div id="div_btnFind" align="center">
-	   		<button type="button" class="btn btn-success" id="btnFind">찾기</button>
+	   		<button type="button" class="btn btn-success" id="btnFind">인증하기</button>
 	   </div>
 	    <div id="div_btnFind" align="center" style="display:inline-block; background: gary;">
 	   		<button id="btnEnd" type="button"  onClick='window.close()'>닫기</button>

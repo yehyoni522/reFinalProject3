@@ -109,5 +109,46 @@ public class joseungjin_controller {
 		
 		return mav;
 	}
+	//=== 아이디 찾기 실행===//
+	@RequestMapping(value="/idFindEnd.sam",method=RequestMethod.POST)
+	public ModelAndView idFindEnd(ModelAndView mav, HttpServletRequest request) {
+		
+		String name = request.getParameter("name");
+		String email = request.getParameter("email");
+		
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("name", name);
+		paraMap.put("email", email);
+		
+		PersonVO idFind = service.idFind(paraMap);
+		
+		if(idFind == null) { //존재하지 않는 경우
+			mav.addObject("check", 1);
+			mav.setViewName("member/idFind");
+	
+		}
+		
+		else { // 존재하는 경우
+			
+			mav.addObject("check", 0);
+			mav.addObject("perno",idFind.getPerno());
+			// session(세션)에 로그인 되어진 사용자 정보인 loginuser 을 키이름을 "loginuser" 으로 저장시켜두는 것이다.
+			mav.setViewName("member/idFind");
+					
+		}
+	
+		return mav;
+	}
+	//=== 비밀번호 찾기 페이지 요청===//
+		@RequestMapping(value="/pwdFind.sam")
+		public ModelAndView pwdFind(ModelAndView mav, HttpServletRequest request) {
+			
+			mav.setViewName("member/pwdFind");
+			// /WEB-INF/views/tiles2/login/loginform.jsp 파일을 생성한다.
+			
+			return mav;
+		}
+	
+	
 	
 }

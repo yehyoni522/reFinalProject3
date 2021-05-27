@@ -26,6 +26,13 @@ public class MemberService implements InterMemberService {
 		return loginuser;
 	}
 
+	//아이디 찾기
+	@Override
+	public PersonVO idFind(Map<String, String> paraMap) {
+		PersonVO idFind = dao.idFind(paraMap);
+		return idFind;
+	}
+
 
 
 }
