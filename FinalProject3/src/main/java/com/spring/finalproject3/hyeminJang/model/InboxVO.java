@@ -14,14 +14,17 @@ public class InboxVO {
 	
 	private String fk_name; // 발신자이름
 	
+	public InboxVO() {};
 	
 	public InboxVO(int inboxSeq, int fk_perno, int receiver, String subject, String reDate, int readState) {
+
 		this.inboxSeq = inboxSeq;
 		this.fk_perno = fk_perno;
 		this.receiver = receiver;
 		this.subject = subject;
 		this.reDate = reDate;
 		this.readState = readState;
+
 	}
 	
 	public int getInboxSeq() {

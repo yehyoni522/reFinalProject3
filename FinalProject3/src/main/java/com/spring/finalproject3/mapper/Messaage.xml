@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Message">
+
+   <!--  총 게시물 건수(totalCount) 구하기  -->
+   <select id="getTotalCount" parameterType="HashMap" resultType="int" >
+   		select count(*)
+   		from tbl_inbox
+		<if test='searchWord != "" '>
+         and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+      	</if>
+   		order by inboxSeq desc
+   </select>
+   
+	<!-- 페이징 처리를 한 검색어가 있는 전체 글목록 보여주기  -->
+   <select id="inboxListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.hyeminJang.model.InboxVO">
+   	select inboxSeq, fk_perno, receiver, subject, reDate,  readState, p.name as fk_name
+	from  tbl_person P join 
+	(
+	    select  inboxSeq, fk_perno, receiver, subject, reDate,  readState 
+		from (
+			select row_number() over (order by inboxSeq desc) as rno, 
+			            inboxSeq, fk_perno, receiver, subject, 
+			            to_char(reDate, 'yyyy-mm-dd PM HH:MI:SS') as reDate, readState
+			from tbl_inbox
+		)V
+		where rno between to_number(#{startRno}) and to_number(#{endRno})
+	)I
+	on P.perno = I.fk_perno
+	where receiver = to_number(#{userid}) 
+	order by inboxSeq desc
+   </select>
+	
+	<!-- 쪽지 1개 글 보기  -->
+   <select id="getInView" parameterType="int" resultType="com.spring.finalproject3.hyeminJang.model.InboxVO">
+		select inboxSeq, fk_perno, receiver, subject, reDate, readState, p.name as fk_name
+		from  tbl_person P join 
+		(
+		    select  inboxSeq, fk_perno, receiver, subject, 
+		             to_char(reDate, 'yyyy-mm-dd PM HH:MI:SS') as reDate, readState
+		    from tbl_inbox
+		    where inboxSeq = #{inboxSeq}
+		)I
+		on P.perno = I.fk_perno
+   </select>
+   
+   <update id="updateReadState" parameterType="int">
+   		update tbl_inbox set readState = 1
+		where inboxSeq = #{inboxSeq}
+   </update>
+
+
+
+</mapper>

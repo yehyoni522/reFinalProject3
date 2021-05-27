@@ -186,13 +186,13 @@ button.re:hover{
 	});
 
 	function goWrite(){
-		location.href="<%= ctxPath%>/write.sam";
+		location.href="<%= ctxPath%>/message/write.sam";
 	}
 	function goInbox(){
-		location.href="<%= ctxPath%>/inbox.sam";
+		location.href="<%= ctxPath%>/message/inbox.sam";
 	}
 	function goOutbox(){
-		location.href="<%= ctxPath%>/outbox.sam";
+		location.href="<%= ctxPath%>/message/outbox.sam";
 	}
 </script>
 
