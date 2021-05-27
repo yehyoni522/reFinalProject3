@@ -16,5 +16,10 @@ public interface InterMessageService {
 	// 쪽지 글 조회
 	InboxVO getInView(int inboxSeq);
 
+	// 안읽은 글의 갯수 세기
+	int getNonReadCount(int userid);
+
+	
+
 
 }

@@ -57,6 +57,14 @@ public class MessageDAO implements InterMessageDAO {
 				
 		return n;
 	}
+
+
+	// 안읽은 메세지갯수세기
+	@Override
+	public int getNonReadCount(int userid) {
+		int n = sqlsession.selectOne("Message.getNonReadCount", userid);
+		return n;
+	}
 	
 
 

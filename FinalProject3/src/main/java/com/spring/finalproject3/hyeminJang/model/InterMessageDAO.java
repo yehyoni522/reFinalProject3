@@ -14,7 +14,11 @@ public interface InterMessageDAO {
 	// 쪽지1개 조회만을 해주는 것이다.
 	InboxVO getInView(int inboxSeq);
 
+	// 읽음표시 업데이트하기
 	int updateReadState(int inboxSeq);
+
+	// 안읽은 메세지갯수세기
+	int getNonReadCount(int userid);
 	
 
 }

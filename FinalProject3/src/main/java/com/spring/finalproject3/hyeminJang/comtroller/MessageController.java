@@ -27,9 +27,18 @@ public class MessageController {
 		
 		List<InboxVO> inboxList = null;
 		
+		
+		
 		/*
 		HttpSession session = request.getSession();
 		personVO loginuser = (MemberVO) session.getAttribute("loginuser");*/
+		
+		// 안읽은 글의 갯수 세기
+		int userid = 20201234;
+		int nonReadCount = service.getNonReadCount(userid);// 로그인한 사람의 id값이 들어가야함
+		
+		mav.addObject("nonReadCount", nonReadCount);
+
 		
 		// == 페이징 처리를 한 검색어가 있는 전체 글목록 보여주기 == //
 
@@ -64,6 +73,8 @@ public class MessageController {
 
 		// 총 게시물 건수(totalCount)
 		totalCount = service.getTotalCount(paraMap);
+		
+		mav.addObject("totalCount", totalCount);
 		
 		totalPage = (int) Math.ceil( (double)totalCount/sizePerPage ); 
 		
@@ -152,6 +163,16 @@ public class MessageController {
 	@RequestMapping(value="/message/inView.sam")
 	public ModelAndView inView(HttpServletRequest request, ModelAndView mav) {
 		
+		/*
+		HttpSession session = request.getSession();
+		personVO loginuser = (MemberVO) session.getAttribute("loginuser");*/
+		
+		// 안읽은 글의 갯수 세기
+		int userid = 20201234;
+		int nonReadCount = service.getNonReadCount(userid);// 로그인한 사람의 id값이 들어가야함
+		
+		mav.addObject("nonReadCount", nonReadCount);
+		
 		// 조회하고자 하는 글번호 받아오기
 		String str_inboxSeq = request.getParameter("inboxSeq");
 		
@@ -177,6 +198,16 @@ public class MessageController {
 	// 쪽지 쓰기
 	@RequestMapping(value="/message/write.sam")
 	public ModelAndView write(ModelAndView mav) {
+		
+		/*
+		HttpSession session = request.getSession();
+		personVO loginuser = (MemberVO) session.getAttribute("loginuser");*/
+		
+		// 안읽은 글의 갯수 세기
+		int userid = 20201234;
+		int nonReadCount = service.getNonReadCount(userid);// 로그인한 사람의 id값이 들어가야함
+		
+		mav.addObject("nonReadCount", nonReadCount);
 		
 		mav.setViewName("message/write.tiles2");
 		// /WEB-INF/views/tiles2/message/write.jsp 파일을 생성한다.

@@ -213,7 +213,7 @@ button.re:hover{
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">2</div></div>
+			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
 			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
 		</div>
 	</div>	
@@ -226,7 +226,7 @@ button.re:hover{
 		 	
 
 	<c:if test="${not empty requestScope.inboxvo}">
-		<div>보낸사람 <span>${requestScope.inboxvo.fk_name}</span></div>
+		<div>보낸사람 <span>${requestScope.inboxvo.inboxName}</span></div>
 	 	<div>받은시간 <span>${requestScope.inboxvo.reDate}</span></div>
 	 	<hr>
 	 	<div>${requestScope.inboxvo.subject}</div>

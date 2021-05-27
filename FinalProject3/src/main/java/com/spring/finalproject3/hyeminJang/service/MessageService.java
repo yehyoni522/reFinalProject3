@@ -46,5 +46,15 @@ public class MessageService implements InterMessageService {
 		return inboxvo;
 	}
 
+	// 안읽은 글의 갯수 세기
+	@Override
+	public int getNonReadCount(int userid) {
+		
+		int n = dao.getNonReadCount(userid);
+		
+		return  n;
+	}
+
+
 
 }

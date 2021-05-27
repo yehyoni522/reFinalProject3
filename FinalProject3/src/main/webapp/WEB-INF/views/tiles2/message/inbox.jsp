@@ -258,7 +258,7 @@ button.re:hover{
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">2</div></div>
+			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
 			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
 		</div>
 	</div>	
@@ -271,11 +271,11 @@ button.re:hover{
 
 	<div style="margin-left: 30px; display: inline-block; float: right;">
 	
-	<a style="font-size:10px;">안읽은쪽지삭제</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">5</span>/<span>500</span>
+	<a style="font-size:10px;">안읽은쪽지삭제</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>500</span>
 	
 	<form name="searchFrm">
 		<select id="searchType" name="searchType">
-			<option value="name">이름</option>
+			<option value="inboxName">이름</option>
 			<option value="subject">내용</option>
 		</select>
 		<span class='green_window'>
@@ -302,7 +302,7 @@ button.re:hover{
     <tbody>
       <tr>
         <td><input type="checkbox" /></td>
-        <td>${inboxvo.fk_name}</td>
+        <td>${inboxvo.inboxName}</td>
         <td><span class="subject" onclick="goView(${inboxvo.inboxSeq})">${inboxvo.subject}</span></td>
         <td>${inboxvo.reDate}</td>
         <c:if test="${inboxvo.readState == 0}">
