@@ -13,4 +13,9 @@ public interface InterAdminBoardService {
 	// 검색어 입력시 자동글 완성하기
 	List<String> wordSearchShow(Map<String, String> paraMap);
 
+	// 검색어 없는 전체 글 목록 보여주기
+	List<AdminBoardVO> boardListNoSearch();
+
+	List<AdminBoardVO> boardListSearch();
+
 }

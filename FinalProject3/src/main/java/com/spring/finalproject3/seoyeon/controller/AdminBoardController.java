@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,15 +25,14 @@ import com.spring.finalproject3.seoyeon.service.InterAdminBoardService;
 @Controller
 public class AdminBoardController {
 	
+	@Autowired 
 	private InterAdminBoardService service;
 	
 	// ============= ***** 관리자 게시판 페이지 ***** ============= //
 		@RequestMapping(value="/admin/boardlist.sam")
 		public ModelAndView admin_boardList(ModelAndView mav, HttpServletRequest request) {
 			
-			List<AdminBoardVO> boardList = null;
-
-			// == 페이징 처리를 안한 검색어가 있는 전체 글목록 보여주기 == //
+			
 	       String searchType = request.getParameter("searchType");
 	       String searchWord = request.getParameter("searchWord");
 	       
@@ -49,7 +49,7 @@ public class AdminBoardController {
 	       paraMap.put("searchType",searchType);
 	       paraMap.put("searchWord",searchWord);
 	       
-	       boardList = service.boardListSearch(paraMap);
+	       List<AdminBoardVO> boardList = service.boardListSearch(paraMap);
 		       
 	    	
 	    	HttpSession session = request.getSession();
@@ -68,7 +68,7 @@ public class AdminBoardController {
 		
 	//	=== 검색어 입력 시 자동글 완성하기 ===
 		@ResponseBody
-	 	@RequestMapping(value="/wordSearchShow.action", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	 	@RequestMapping(value="/wordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	 	public String wordSearchShow(HttpServletRequest request) {
 	 		String searchType = request.getParameter("searchType");
 	 		String searchWord = request.getParameter("searchWord");
@@ -99,6 +99,10 @@ public class AdminBoardController {
 		@RequestMapping(value="/admin/commentList.sam")
 		public ModelAndView admin_commentList(ModelAndView mav, HttpServletRequest request) {
 	
+			List<AdminBoardVO> boardList = null;
+			 boardList = service.boardListNoSearch();
+			 mav.addObject("boardList", boardList);
+			 
 	    	mav.setViewName("admin/adminComment.tiles1");
 	    	
 	    	return mav;

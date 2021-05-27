@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.spring.finalproject3.seoyeon.model.AdminBoardVO;
 import com.spring.finalproject3.seoyeon.model.InterAdminBoardDAO;
 
-
+@Component
+@Service
 public class AdminBoardService implements InterAdminBoardService {
 
 	@Autowired
@@ -25,6 +28,18 @@ public class AdminBoardService implements InterAdminBoardService {
 	public List<String> wordSearchShow(Map<String, String> paraMap) {
 		List<String> wordList = dao.wordSearchShow(paraMap);
 		return wordList;
+	}
+
+	@Override
+	public List<AdminBoardVO> boardListNoSearch() {
+		List<AdminBoardVO> boardList = dao.boardListNoSearch();
+		return boardList;
+	}
+
+	@Override
+	public List<AdminBoardVO> boardListSearch() {
+		List<AdminBoardVO> boardList = dao.boardListSearch();
+		return boardList;
 	}
 
 }
