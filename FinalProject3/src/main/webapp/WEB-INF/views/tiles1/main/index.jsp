@@ -111,6 +111,12 @@ function closeNav() {
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="transform: scaleX(-1);" src="<%= ctxPath%>/resources/images/close.png" style="width:100%;"></a>
   <div id="loginInfo">
   	<c:if test="${empty sessionScope.loginuser}"><a href="<%=ctxPath%>/login.sam">로그인을 해주세요</a></c:if>
+  		<c:if test="${sessionScope.loginuser.identity == 0}">
+			<a>${sessionScope.loginuser.name} 학생</a>
+	</c:if>
+		<c:if test="${sessionScope.loginuser.identity == 1}">
+			<a>${sessionScope.loginuser.name} 교수</a>
+	</c:if>
   </div>
   <a href="#">내 수업 목록</a>
   <a href="#">공지사항</a>
@@ -131,13 +137,17 @@ function closeNav() {
 
 <div id="logincheck"  >
 	<c:if test="${empty sessionScope.loginuser}">
-	<span style="font-size: 20pt; font-weight: bold;">${sessionScope.loginuser.userid}로그인을 해주세요.</span>
+	<span style="display:inline-block; padding:250px 0px 0px 150px;  font-size: 20pt; font-weight: bold;">${sessionScope.loginuser.userid}로그인을 해주세요.</span>
 	</c:if>
+
 	
-	<c:if test="${not empty sessionScope.loginuser}">
-	<span style="font-size: 20pt; font-weight: bold;">내 강의</span>
+	<c:if test="${sessionScope.loginuser.identity == 0}">
+		
+		<span style="font-size: 20pt; font-weight: bold;">내 강의</span>
 	</c:if>
-	
+	<c:if test="${sessionScope.loginuser.identity == 1}">
+			<span style="font-size: 20pt; font-weight: bold;">${sessionScope.loginuser.name} 교수님 강의 목록</span>
+	</c:if>
 </div>
 
 <div id="mainBoard" align="center">
