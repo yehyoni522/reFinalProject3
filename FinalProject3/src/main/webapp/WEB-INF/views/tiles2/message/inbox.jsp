@@ -215,6 +215,10 @@ button.re:hover{
     	  $("input#searchWord").val("${requestScope.paraMap.searchWord}");
        }
 	  
+	  
+		 
+	  
+	  
 	});
 	
 	 function goSearch(){

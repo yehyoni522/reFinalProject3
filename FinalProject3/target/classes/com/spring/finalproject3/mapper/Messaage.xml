@@ -24,6 +24,7 @@
 			            inboxSeq, fk_perno, receiver, subject, 
 			            to_char(reDate, 'yyyy-mm-dd PM HH:MI:SS') as reDate, readState
 			from tbl_inbox
+			where lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
 		)V
 		where rno between to_number(#{startRno}) and to_number(#{endRno})
 	)I
