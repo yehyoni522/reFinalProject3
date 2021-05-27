@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="board">
+
+	<!-- 페이징 처리를 안한 검색어가 없는 전체 글목록 보여주기 
+	 <select id="boardListNoSearch" parameterType="String" resultType="com.spring.finalproject.yeonha..BoardVO">
+    	select seq, subject, good, fk_hakbun, readCount, commentCount  
+			   , to_char(regDate, 'yyyy/mm/dd') as regDate
+		from tbl_board
+		where status = 1 and categoryno = 1
+		order by seq desc
+    </select>
+    -->
+    
+    <!-- 글쓰기  -->
+    <insert id="add" parameterType="com.spring.finalproject3.yeonha.BoardVO">
+		insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount)
+		values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default);
+	</insert>
+    
+    
+    
+</mapper>
