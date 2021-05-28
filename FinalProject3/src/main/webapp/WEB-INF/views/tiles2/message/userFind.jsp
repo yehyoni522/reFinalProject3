@@ -54,19 +54,26 @@ textarea {
 </style>
 
 <script type="text/javascript">
+
+
 	$(document).ready(function(){
 		
-		
+
 	});
+	
+	function output(){
+		/* var sName = parent.document.all["receiver"].value;
+		document.getElementById("text").value = sName; */
+	}
 	
 	// === 학번/교수번호 찾기 === //
 	function goSearch() {
+		$("div#error").hide();
 		
 		var input_text = $("input.input_text").val().trim();
 		if(input_text == "") {
-			
 			$("div#error").html("학번/교수번호를 입력하세요!!");
-		
+			$("div#error").show();
 			return; // 종료
 		}
 		
@@ -96,7 +103,8 @@ textarea {
 <form name="idFindFrm" style="margin-top: 20px;">
    <div id="div_name" align="center">
       <span class='green_window'>
-			<input type='text' class='input_text' />
+			<input type='text' class='input_text' id="text" value="${requestScope.receiver}"/>
+			
 		</span>
 			<button type='submit' class='sch_smit' onclick="goSearch()">검색</button>
    </div>

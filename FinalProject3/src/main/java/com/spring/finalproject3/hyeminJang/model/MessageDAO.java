@@ -1,5 +1,6 @@
 package com.spring.finalproject3.hyeminJang.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +64,27 @@ public class MessageDAO implements InterMessageDAO {
 	@Override
 	public int getNonReadCount(int userid) {
 		int n = sqlsession.selectOne("Message.getNonReadCount", userid);
+		return n;
+	}
+
+
+	// inbox에서 체크박스에서 선택된 쪽지  삭제하기 
+	@Override
+	public int inDel(ArrayList<Integer> deleteArray) {
+		int n = 0;
+		 for(int i=0; i<deleteArray.size();i++){
+		        int deleteSeq = deleteArray.get(i);
+		        n = sqlsession.delete("Message.inDel", deleteSeq);
+		    }
+		
+		return n;
+	}
+
+
+	 // 세부읽기에서 한개만 쪽지 삭제하기
+	@Override
+	public int inDelOne(int parseInt) {
+		int n = sqlsession.delete("Message.inDel", parseInt);
 		return n;
 	}
 	

@@ -1,5 +1,6 @@
 package com.spring.finalproject3.hyeminJang.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,12 @@ public interface InterMessageDAO {
 
 	// 안읽은 메세지갯수세기
 	int getNonReadCount(int userid);
+
+	// inbox에서 체크박스에서 선택된 쪽지  삭제하기 
+	int inDel(ArrayList<Integer> deleteArray);
+
+	 // 세부읽기에서 한개만 쪽지 삭제하기
+	int inDelOne(int parseInt);
 	
 
 }

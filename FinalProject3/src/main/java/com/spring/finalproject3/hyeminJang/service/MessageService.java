@@ -1,5 +1,6 @@
 package com.spring.finalproject3.hyeminJang.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,24 @@ public class MessageService implements InterMessageService {
 		int n = dao.getNonReadCount(userid);
 		
 		return  n;
+	}
+
+
+	// inbox에서 체크박스에서 선택된 쪽지  삭제하기 
+	@Override
+	public int inDel(ArrayList<Integer> deleteArray) {
+		int n = dao.inDel(deleteArray);
+		
+		return n;
+	}
+
+	 // 세부읽기에서 한개만 쪽지 삭제하기
+	@Override
+	public int inDelOne(int parseInt) {
+		
+		int n = dao.inDelOne(parseInt);
+		
+		return n;
 	}
 
 
