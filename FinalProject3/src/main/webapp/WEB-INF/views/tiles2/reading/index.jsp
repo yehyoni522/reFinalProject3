@@ -22,22 +22,64 @@
 </style>
 <script type="text/javascript">
 
+	var rname = "제1열람실";
+	var tno = 1;
 	$(function() {
 		
 		var cnt = 0;
 		var html = "";
-		$("td.seat").click(function() {
-			if(cnt == 0) {
-				html = '<img src="<%= ctxPath%>/resources/images/selectedseat.png"  style="width:23px; height:23px; cursor:pointer;">';
-				$(this).html(html);
-				cnt++;
-			} else {
-				alert("예약은 한 좌석만 가능합니다.");
-				cnt = 0;
-			}
+		$(document).on('click','td.seat',function(){
 			
-		})
-	});
+			//console.log("gg" + $(this).find("input").val() );
+			// 너 이자리 예약할거야? 제?열람실 좌석번호 시간대 인데?
+		});
+		
+		$(document).on('click','a.nav-link',function(){
+			rname = $(this).text();
+		});
+		
+		$("select.timeselect").bind("change", function(){
+			tno = $(this).val();
+			goTimeSelectView(rname, tno)
+		});
+	}); // end of function() {} ------------------------
+	
+	
+	function goTimeSelectView(rname, tno) {
+		// ajax 들어갈 자리
+		// select 값과 탭이름을 가지고 가서 좌석을 조회해 와야함
+		html = "";
+		var count = 0;
+		$.ajax({
+			url:"<%=ctxPath%>/reading/selectViewSeat.sam",
+			type:"get",
+			data:{"rname":rname, "tno":tno},
+			dataType:"json",
+		   	success:function(json) {
+		   		$.each(json, function(index, item){
+		   			count++;
+		   			if(count == 1) {
+		   				html += "<tr>";
+		   			}
+		   			
+		   			if(item.dscheck == '1') {
+		   				html += '<td class="seat"><img src="<%= ctxPath%>/resources/images/selectedseat.png" style="width:23px; height:23px;"><input type="hidden"  value="item.dsno"/></td>';
+		   			} else {
+		   				html += '<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png" id="abc" style="width:23px; height:23px; cursor:pointer;"><input type="hidden"  value='+item.dsno+'></td>'
+		   			}
+		   			
+		   			if(count == 5) {
+		   				html += "</tr>";
+		   				count = 0;
+		   			}
+		   			
+		   		});
+		   		$("table#tableseat").html(html);
+		   	}, error: function(request, status, error){
+			      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+		});
+	}
 
 </script>
 
@@ -47,9 +89,9 @@
 	
 	
 	<ul class="nav nav-tabs" style="padding-left:235px;">
-	  <c:forEach var="list" items="${requestScope.RroomList}">
+	  <c:forEach var="list" items="${requestScope.rRoomList}">
          <li class="nav-item">
-			<a class="nav-link" data-toggle="tab" href="#${list.rcode}">${list.rname}</a>
+         	<a class="nav-link" data-toggle="tab" href="#${list.rcode}">${list.rname}</a>
 		</li>
       </c:forEach>
   </ul>
@@ -58,57 +100,14 @@
 		<div class="tab-pane active" id="home">
 			<div class="form-group" style="width:150px;">
 			  <label for="sel1">시간별 좌석보기</label>
-			  <select class="form-control" id="sel1">
-			    <option>00:00 ~ 02:00</option>
-			    <option>02:00 ~ 04:00</option>
-			    <option>04:00 ~ 06:00</option>
-			    <option>06:00 ~ 08:00</option>
-			    <option>08:00 ~ 10:00</option>
-			    <option>10:00 ~ 12:00</option>
-			    <option>12:00 ~ 14:00</option>
-			    <option>14:00 ~ 16:00</option>
-			    <option>16:00 ~ 18:00</option>
-			    <option>18:00 ~ 20:00</option>
-			    <option>20:00 ~ 22:00</option>
-			    <option>22:00 ~ 24:00</option>
+			  <select class="form-control timeselect" id="sel1">
+			  	<c:forEach var="tvo" items="${requestScope.timeList}">
+			  		<option value="${tvo.tno}" >${tvo.tname}</option>
+		        </c:forEach>
 			  </select>
 			</div>
-			<table>
-				<tr>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-				</tr>
-				<tr>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-				</tr>
-				<tr>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-				</tr>
-				<tr>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-					<td class="seat"><img src="<%= ctxPath%>/resources/images/seat.png"  style="width:23px; height:23px; cursor:pointer;"></td>
-				</tr>
+			<table id = "tableseat"> <%-- 좌석이미지가 들어 갈 부분 --%>
 			</table>
-		</div>
-		<div class="tab-pane" id="ver2">
-			<span>테스트2</span>
-		</div>
-		<div class="tab-pane" id="ver3">
-			<span>테스트3</span>
 		</div>
 		
 	</div>
@@ -128,8 +127,8 @@
 	## 매월말 해당 달의 보증금 현황에 대한 보고서 도서관 1층 공지사항란에 부착.
 	</textarea>
 	<br><br><br>
-	<input type="radio">이용약관에 동의합니다.<br>
-	<input type="radio">쾌적한 도서관 이용에 동참할 것을 동의합니다.<br><br>
+	<input type="checkbox" id="chk1"><label for="chk1">이용약관에 동의합니다.</label><br>
+	<input type="checkbox" id="chk2"><label for="chk2">쾌적한 도서관 이용에 동참할 것을 동의합니다.</label><br><br>
 	
 	<button type="button" class="btn btn-default btn-lg">결제하기</button>
 	</div>
