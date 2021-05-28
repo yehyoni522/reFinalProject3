@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +24,6 @@ import com.spring.finalproject3.seoyeon.service.InterAdminBoardService;
 @Controller
 public class AdminBoardController {
 	
-	@Autowired 
 	private InterAdminBoardService service;
 	
 	// ============= ***** 관리자 게시판 페이지 ***** ============= //
@@ -32,12 +31,12 @@ public class AdminBoardController {
 		public ModelAndView admin_boardList(ModelAndView mav, HttpServletRequest request) {
 			
 			List<AdminBoardVO> boardList = null;
-			
+
+			// == 페이징 처리를 안한 검색어가 있는 전체 글목록 보여주기 == //
 	       String searchType = request.getParameter("searchType");
 	       String searchWord = request.getParameter("searchWord");
-	       String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 	       
-	       if(searchType ==null||(!"total".equals(searchType)&&!"subject".equals(searchType)&&!"name".equals(searchType))&&!"content".equals(searchType)) {
+	       if(searchType ==null||(!"subject".equals(searchType)&&!"name".equals(searchType))) {
 	          searchType = "";
 	       }
 	       
@@ -50,112 +49,26 @@ public class AdminBoardController {
 	       paraMap.put("searchType",searchType);
 	       paraMap.put("searchWord",searchWord);
 	       
-	       //페이징 처리를 안한 검색어가 있는 전체 글목록 보여주기
-	 /*		boardList = service.boardListSearch(paraMap);	       	    	
+	       boardList = service.boardListSearch(paraMap);
+		       
+	    	
+	    	HttpSession session = request.getSession();
+	    	session.setAttribute("readCountPermission", "yes");
+	    	
+	    	mav.addObject("boardList", boardList);
+	    	mav.setViewName("admin/adminBoard.tiles1");
 	    	
 	    	// 아래는 검색대상 컬럼과 검색어를 유지시키기 위한 것임.
 	        if(!"".equals(searchType) && !"".equals(searchWord)) {
 	           mav.addObject("paraMap",paraMap);
 	        }
-	   */    
-	       String page = request.getParameter("page");
-	       if(page == null ||!("5".equals(page) || "15".equals(page) || "30".equals(page)) ) { 
-	    	   page = "5";
-			}
-	       
-	       int sizePerPage=Integer.parseInt(page);
-	       System.out.println(sizePerPage);
-	       
-	       int totalCount = 0;         // 총 게시물 건수
-	    // int sizePerPage = 5;        // 한 페이지당 보여줄 게시물 건수
-	       int currentShowPageNo = 0;  // 현재 보여주는 페이지 번호로서, 초기치로는 1페이지로 설정함.
-	       int totalPage = 0;          // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
-	       
-	       int startRno = 0;           // 시작 행번호
-	       int endRno = 0;             // 끝 행번호 
-	       
-	       // 총 게시물 건수(totalCount)
-	       totalCount = service.getTotalCount(paraMap); 
-	       
-	       totalPage = (int) Math.ceil( (double)totalCount/sizePerPage );
-	       
-	       if(str_currentShowPageNo == null) {
-		   		// 게시판에 보여지는 초기화면 
-		   		currentShowPageNo = 1;
-	   		}
-	   		else {
-		   		try {
-			   		currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
-			   		if(currentShowPageNo < 1 || currentShowPageNo > totalPage) {
-			   		currentShowPageNo = 1;
-			   		}
-			   		
-		   		} catch (NumberFormatException e) {
-		   			currentShowPageNo = 1;
-		   		}
-	   		}
-	       
-	       	startRno = ((currentShowPageNo - 1 ) * sizePerPage) + 1;
-			endRno = startRno + sizePerPage - 1;
-			
-			paraMap.put("startRno", String.valueOf(startRno));
-			paraMap.put("endRno", String.valueOf(endRno));
-			
-			boardList = service.boardListSearchWithPaging(paraMap);
-			// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
-			
-			// 아래는 검색대상 컬럼과 검색어를 유지시키기 위한 것임.
-			if(!"".equals(searchType) && !"".equals(searchWord)) {
-				mav.addObject("paraMap", paraMap);
-			}
-	       
-			// === #121. 페이지바 만들기 === //
-			int blockSize = 3;
-			int loop = 1;   
-			int pageNo = ((currentShowPageNo - 1)/blockSize) * blockSize + 1;
-			
-			String pageBar = "<ul style='list-style: none;'>";
-			String url = "";
-			
-			// === [맨처음][이전] 만들기 === 
-			if(pageNo != 1) {
-			pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo=1'>[맨처음]</a></li>";
-			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo-1)+"'>[이전]</a></li>";
-			}
-			
-			while( !(loop > blockSize || pageNo > totalPage) ) {
-			
-				if(pageNo == currentShowPageNo) {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
-				}
-				else {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
-				}
-				
-				loop++;
-				pageNo++;
-			}// end of while------------------------
-			
-			
-			// === [다음][마지막] 만들기 === 
-			if(pageNo <= totalPage) {
-				pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>[다음]</a></li>";
-				pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+totalPage+"'>[마지막]</a></li>";
-			}
-			
-			pageBar += "</ul>";
-			
-			mav.addObject("pageBar",pageBar);	    	
-	    	
-	    	mav.addObject("boardList", boardList);
-	    	mav.setViewName("admin/adminBoard.tiles1");	    		    	
 	        
 	    	return mav;
 		}
 		
 	//	=== 검색어 입력 시 자동글 완성하기 ===
 		@ResponseBody
-	 	@RequestMapping(value="/admin/wordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	 	@RequestMapping(value="/wordSearchShow.action", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	 	public String wordSearchShow(HttpServletRequest request) {
 	 		String searchType = request.getParameter("searchType");
 	 		String searchWord = request.getParameter("searchWord");
@@ -182,16 +95,10 @@ public class AdminBoardController {
 	 		// "[{"word":"글쓰기 첫번쨰 연습입니다"},{"word":"글쓰기 두번째 연습입니다"}]"
 	 	}
 		
-		
-		
 	// ============= ***** 관리자 댓글 페이지 ***** ============= //
 		@RequestMapping(value="/admin/commentList.sam")
 		public ModelAndView admin_commentList(ModelAndView mav, HttpServletRequest request) {
 	
-			List<AdminBoardVO> boardList = null;
-			 boardList = service.boardListNoSearch();
-			 mav.addObject("boardList", boardList);
-			 
 	    	mav.setViewName("admin/adminComment.tiles1");
 	    	
 	    	return mav;

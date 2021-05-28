@@ -175,11 +175,6 @@ button.re:hover{
 	background: #27AF61;
 }
 
- .subjectStyle {font-weight: bold;
-                   text-decoration:underline;
-                   cursor: pointer;} 
-
-
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -193,57 +188,19 @@ button.re:hover{
 		$("div#outbox").bind("click", function(){
 			goOutbox();
 		});
-		
-		$("span.subject").bind("mouseover", function(event){
-			var $target = $(event.target);
-			$target.addClass("subjectStyle");
-		});
-		
-		$("span.subject").bind("mouseout", function(event){
-			var $target = $(event.target);
-			$target.removeClass("subjectStyle");
-		});
-		
-		$("input#searchWord").bind("keydown", function(event){
-			if(event.keyCode == 13){
-				goSearch();
-			}
-		});
-		
-	  if( ${not empty requestScope.paraMap}){
-    	  $("select#searchType").val("${requestScope.paraMap.searchType}");
-    	  $("input#searchWord").val("${requestScope.paraMap.searchWord}");
-       }
-	  
-	  
-		 
-	  
-	  
 	});
-	
-	 function goSearch(){
-	      
-	      var frm = document.searchFrm;
-	      frm.method = "get";
-	      frm.action = "<%=ctxPath%>/message/inbox.sam";
-	      frm.submit();
-	      
-	}// end of function goSearch()----------------------------------
 
 	function goWrite(){
-		location.href="<%= ctxPath%>/message/write.sam";
+		location.href="<%= ctxPath%>/write.sam";
 	}
 	function goInbox(){
-		location.href="<%= ctxPath%>/message/inbox.sam";
+		location.href="<%= ctxPath%>/inbox.sam";
 	}
 	function goOutbox(){
-		location.href="<%= ctxPath%>/message/outbox.sam";
+		location.href="<%= ctxPath%>/outbox.sam";
 	}
-	function goView(inboxSeq){
-		location.href="<%= ctxPath%>/message/inView.sam?inboxSeq="+inboxSeq;	
-	}
-	function goInDel(inboxSeq){
-		location.href="<%= ctxPath%>/message/inDel.sam?inboxSeq="+inboxSeq;	
+	function goView(seq){
+		location.href="<%= ctxPath%>/inView.sam?inboxSeq="+inboxSeq;	
 	}
 </script>
 
@@ -258,7 +215,7 @@ button.re:hover{
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
+			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">2</div></div>
 			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
 		</div>
 	</div>	
@@ -266,24 +223,20 @@ button.re:hover{
 
 <div class="msgContents" style="width: 70%; display:inline-block ; ">
 
-		<button class="del" type="button" onclick="goInDel()">삭제</button>
+		<button class="del" type="button" onclick="javascript:location.href='<%= ctxPath%>/del.action?seq=${requestScope.boardvo.seq}'">삭제</button>
 		 <button class="re" >답장</button>
 
 	<div style="margin-left: 30px; display: inline-block; float: right;">
 	
-	<a style="font-size:10px;">안읽은쪽지삭제</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>500</span>
-	
-	<form name="searchFrm">
-		<select id="searchType" name="searchType">
-			<option value="inboxName">이름</option>
-			<option value="subject">내용</option>
+	<a style="font-size:10px;">안읽은쪽지삭제</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">5</span>/<span>500</span>
+		<select id="msgSearch" name="msgSearch">
+			<option value="name">이름</option>
+			<option value="contents">내용</option>
 		</select>
 		<span class='green_window'>
-			<input type='text'  name="searchWord" id="searchWord"  class='input_text' />
+			<input type='text' class='input_text' />
 		</span>
 			<button type='submit' class='sch_smit' onclick="goSearch();">검색</button>
-	</form>
-	
 	</div>
 
   <table class="table table-hover">
@@ -302,8 +255,8 @@ button.re:hover{
     <tbody>
       <tr>
         <td><input type="checkbox" /></td>
-        <td>${inboxvo.inboxName}</td>
-        <td><span class="subject" onclick="goView(${inboxvo.inboxSeq})">${inboxvo.subject}</span></td>
+        <td>${inboxvo.fk_name}</td>
+        <td><span onclick="goView(${inboxvo.inboxSeq})">${inboxvo.subject}</span></td>
         <td>${inboxvo.reDate}</td>
         <c:if test="${inboxvo.readState == 0}">
         	<td style="color:red; font-weight: bold;">new</td>
@@ -318,10 +271,6 @@ button.re:hover{
     </c:forEach>
     
   </table>
-  
-  <div align="center" style="width: 70%; margin: 20px auto;">
-     	${requestScope.pageBar}
-   </div>
 
 </div>
 
