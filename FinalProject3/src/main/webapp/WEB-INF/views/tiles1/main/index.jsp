@@ -119,9 +119,9 @@ function closeNav() {
 	</c:if>
   </div>
   <a href="#">내 수업 목록</a>
-  <a href="#">공지사항</a>
-  <a href="#">Q&A</a>
-  <a href="#">게시판</a>
+  <a href="<%=ctxPath%>/board/list.sam?categoryno=4">공지사항</a>
+  <a href="<%=ctxPath%>/board/list.sam?categoryno=5">Q&A</a>
+  <a href="<%=ctxPath%>/board/list.sam?categoryno=1">게시판</a>
   <a href="#">열람실좌석예약</a>
   
 </div>
