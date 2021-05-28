@@ -15,7 +15,7 @@ public class BoardVO {
     private String regDate;      // 글쓴시간
     private String status;       // 글삭제여부   1:사용가능한 글,  0:삭제된글
     private String commentCount; // 댓글수 
-    
+    private String namecheck;     // 익명선택여부( 0: 익명아님, 1:익명)
     
     private String previousseq;      // 이전글번호
     private String previoussubject;  // 이전글제목
@@ -23,10 +23,11 @@ public class BoardVO {
     private String nextsubject;      // 다음글제목   
     
    
-    
+    public BoardVO(){}   
+	
 	public BoardVO(String seq, String fk_perno, String subject, String content, String files, String categoryno,
-			String good, String readCount, String regDate, String status, String commentCount, String previousseq,
-			String previoussubject, String nextseq, String nextsubject) {
+			String good, String readCount, String regDate, String status, String commentCount, String namecheck,
+			String previousseq, String previoussubject, String nextseq, String nextsubject) {
 		super();
 		this.seq = seq;
 		this.fk_perno = fk_perno;
@@ -39,11 +40,21 @@ public class BoardVO {
 		this.regDate = regDate;
 		this.status = status;
 		this.commentCount = commentCount;
+		this.namecheck = namecheck;
 		this.previousseq = previousseq;
 		this.previoussubject = previoussubject;
 		this.nextseq = nextseq;
 		this.nextsubject = nextsubject;
 	}
+	
+	public String getNamecheck() {
+		return namecheck;
+	}
+
+	public void setNamecheck(String namecheck) {
+		this.namecheck = namecheck;
+	}
+
 	public String getSeq() {
 		return seq;
 	}
