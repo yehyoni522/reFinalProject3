@@ -13,8 +13,8 @@
     #table th, #table td {padding: 5px;}       
 	table{
 		width:100%;
-		border-top: solid 1px gray;
-		border-bottom: solid 1px gray;
+	
+		border-bottom: solid 1.5px #b3b3b3;;
 	}
 	
 	th{
@@ -51,6 +51,7 @@
 	}
 	
 	.search{
+		width:320px;
 		border:0.5px solid #a6a6a6;
 	 	padding:5px;
 	 	border-radius: 5px;
@@ -112,6 +113,9 @@
 	          }
 	    });
 		
+		
+		
+		
 		<%-- === #107. 검색어 입력시 자동글 완성하기 2 === --%>
 	       $("div#displayList").hide();
 	       
@@ -120,13 +124,13 @@
 	          var wordLength = $(this).val().trim().length;
 	          // 검색어의 길이를 알아온다.
 	          
-	          if(wordLength == 0) {
+	          if(wordLength == 0 ) {
 	             $("div#displayList").hide();
 	             // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안 나오도록 해야 한다. 
 	          }
 	          else {
 	             $.ajax({
-	                url:"<%= ctxPath%>/wordSearchShow.sam",
+	                url:"<%= ctxPath%>/admin/wordSearchShow.sam",
 	                type:"get",
 	                data:{"searchType":$("select#searchType").val()
 	                    ,"searchWord":$("input#searchWord").val()},
@@ -167,6 +171,7 @@
 	          }
 	          
 	       });
+
 	       <%-- 끝 === 검색어 입력시 자동글 완성하기  === --%>
 	       
 	       <%-- === 검색어 입력시 자동글 완성하기  === --%> 
@@ -203,6 +208,7 @@
 
    function allCheck(obj) {
        $("[name=checkOne]").prop("checked",$(obj).prop("checked")); 
+		
    }// 모두 체크하기
 
    function oneCheck(a){
@@ -240,7 +246,7 @@ function goSearch(){
 	   
 	   var frm = document.searchFrm;
 	   frm.method = "get";
-	   frm.action = "<%=ctxPath%>/list.action";
+	   frm.action = "<%=ctxPath%>/admin/boardlist.sam";
 	   frm.submit();
 	   
 }// end of function goSearch()------------------------------------
@@ -248,12 +254,13 @@ function goSearch(){
    
 </script>   
 
-<div style="padding-left: 3%;">
+<div style="padding-left: 3%;padding-right: 3%;">
    <h2 style="margin-bottom: 30px;">| 게시글 관리</h2>
-   <div style="text-align:right; vertical-align:middle; margin:5px; margin-bottom:30px; ">
+   <div style="text-align:right; vertical-align:middle; margin:5px;  ">
 	   <%-- === #101. 글검색 폼 추가하기 : 글제목, 글쓴이로 검색을 하도록 한다. === --%>
 		<form name="searchFrm" style="margin-top: 20px;">
-	      <select name="searchType" id="searchType"  class="select">	   
+	      <select name="searchType" id="searchType"  class="select">	
+	        <!--  <option value="total">제목+내용</option> -->
 	         <option value="subject">제목</option>
 	         <option value="content">내용</option>
 	         <option value="name">글쓴이</option>
@@ -261,25 +268,29 @@ function goSearch(){
 	      <input type="text" name="searchWord" class="search" id="searchWord" size="15" autocomplete="off" /> 
 	      <button type="button" onclick="goSearch()" class=" btn-board">검색</button>
 	   </form>
-	   <%-- === 검색어 입력시 자동글 완성하기  === --%>
-		<div id="displayList" style="border:solid 1px gray; border-top:0px; width:320px; height:100px; margin-left:70px; overflow:auto;padding-top:5px;">	
+	   <div style="height:70px; " >
+		   <%-- === 검색어 입력시 자동글 완성하기  === --%>
+			<div id="displayList" style="border:solid 1px gray; border-top:0px; width:320px; height:70px; margin-right:118px; 
+					overflow:auto; float:right; padding:5px; text-align: left;  border-radius: 5px;  box-shadow: 0.5px 0.5px 0.5px 0.5px gray;">	
+			</div>
 		</div>
    </div>
    
-	
-   <table id="table" style="width:100%;">
-   	  <tr style="border-top: solid 1.5px #b3b3b3; border-bottom: none;">
+ 
+   <table id="table" style="width:100%; ">
+   	  <tr style="border-top: none; border-bottom: none;">
    		<td colspan="3" style="text-align: left; font-size: 13pt; font-weight: bolder;">
    			게시글 <span style="color:#53c68c;">글갯수</span></td>
    		<td colspan="5" style="text-align: right;">
 	      	<label for="page"></label>
 		    <select name="page" id="page" style="width:100px; margin-right:5px;" class="select">
-		      <option selected="selected">15개씩</option>
-		      <option>30개씩</option>
+		      <option value="5">5개씩</option>
+		      <option value="15">15개씩</option>
+		      <option value="30">30개씩</option>
 		    </select>
 		</td>
    	  </tr>
-      <tr>
+      <tr style="border-top:solid 1.5px #b3b3b3;">
          <td style="text-align: center;">
          	<input type="checkbox"  name="checkAll" />
 		 </td>
@@ -351,9 +362,11 @@ function goSearch(){
          </tr>
       </c:forEach>
    </table>   
-   
-	
-   
+
+       <%-- === #122. 페이지바 보여주기 --%>
+	<div align="center" style="width: 70%; border:solid 0px gray; margin:20px auto;">
+		${requestScope.pageBar}
+	</div>
    
    
    
