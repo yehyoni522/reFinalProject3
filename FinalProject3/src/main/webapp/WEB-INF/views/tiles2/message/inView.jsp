@@ -191,17 +191,15 @@ button.re:hover{
 	});
 
 	function goWrite(){
-		location.href="<%= ctxPath%>/write.sam";
+		location.href="<%= ctxPath%>/message/write.sam";
 	}
 	function goInbox(){
-		location.href="<%= ctxPath%>/inbox.sam";
+		location.href="<%= ctxPath%>/message/inbox.sam";
 	}
 	function goOutbox(){
-		location.href="<%= ctxPath%>/outbox.sam";
+		location.href="<%= ctxPath%>/message/outbox.sam";
 	}
-	function goView(seq){
-		location.href="<%= ctxPath%>/view.sam?inboxSeq="+inboxSeq;	
-	}
+
 </script>
 
 <body>
@@ -215,7 +213,7 @@ button.re:hover{
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">2</div></div>
+			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
 			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
 		</div>
 	</div>	
@@ -223,22 +221,15 @@ button.re:hover{
 
 <div class="msgContents" style="width: 70%; display:inline-block ; ">
 
-		<button class="del" type="button" onclick="javascript:location.href='<%= ctxPath%>/inDel.sam?inboxSeq=${requestScope.inboxvo.inboxSeq}'">삭제</button>
+		<button class="del" type="button" onclick="javascript:location.href='<%= ctxPath%>/message/inDel.sam?inboxSeq=${requestScope.inboxvo.inboxSeq}'">삭제</button>
 		 <button class="re">답장</button>
-		 	<div>보낸사람 <span>${requestScope.inboxvo.fk_name}</span></div>
-		 	<div>받은시간 <span>${requestScope.inboxvo.reDate}</span></div>
-		 	<hr>
-		 	<div>내용</div>
+		 	
 
 	<c:if test="${not empty requestScope.inboxvo}">
-		
-		
-		
-		<br>
-		
-		<div style="margin-bottom: 1%;">이전글제목&nbsp;&nbsp;<span class="move" onclick="javascript:location.href='view.action?seq=${requestScope.boardvo.previousseq}'">${requestScope.boardvo.previoussubject}</span></div>
-		<div style="margin-bottom: 1%;">다음글제목&nbsp;&nbsp;<span class="move" onclick="javascript:location.href='view.action?seq=${requestScope.boardvo.nextseq}'">${requestScope.boardvo.nextsubject}</span></div>
-
+		<div>보낸사람 <span>${requestScope.inboxvo.inboxName}</span></div>
+	 	<div>받은시간 <span>${requestScope.inboxvo.reDate}</span></div>
+	 	<hr>
+	 	<div>${requestScope.inboxvo.subject}</div>
 	</c:if>
 	
 	<c:if test="${empty requestScope.inboxvo}">
