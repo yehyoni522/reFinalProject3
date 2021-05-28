@@ -16,4 +16,8 @@ public interface InterAdminBoardDAO {
 
 	List<AdminBoardVO> boardListSearch();
 
+	int getTotalCount(Map<String, String> paraMap);
+
+	List<AdminBoardVO> boardListSearchWithPaging(Map<String, String> paraMap);
+
 }
