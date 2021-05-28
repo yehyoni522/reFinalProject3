@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 import org.mybatis.spring.SqlSessionTemplate;import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import com.spring.finalproject3.joseungjin.model.PersonVO;
+
 //=== #32. DAO 선언 ===
 @Component
 @Repository
@@ -86,6 +88,20 @@ public class MessageDAO implements InterMessageDAO {
 	public int inDelOne(int parseInt) {
 		int n = sqlsession.delete("Message.inDel", parseInt);
 		return n;
+	}
+
+	// 사람번호검색
+	@Override
+	public PersonVO searchPerson(int parseInt) {
+		PersonVO perno = sqlsession.selectOne("Message.searchPerson", parseInt);
+		return perno;
+	}
+
+	// 학과 이름 가져오기
+	@Override
+	public String getNameMaj(int majseq) {
+		String str = sqlsession.selectOne("Message.getNameMaj", majseq);
+		return str;
 	}
 	
 

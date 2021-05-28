@@ -60,6 +60,18 @@
    		delete tbl_inbox
    		where inboxSeq = #{deleteSeq}
    </delete>
+   
+   <select id="searchPerson" parameterType="int" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
+   		select perno, name, fk_majseq, identity, pwd
+   		from tbl_person
+   		where perno = #{parseInt} 
+   </select>
+   
+   <select id="getNameMaj" parameterType="int" resultType="String">
+   		select content
+   		from tbl_major
+   		where majseq = #{majseq} 
+   </select>
 
 
 

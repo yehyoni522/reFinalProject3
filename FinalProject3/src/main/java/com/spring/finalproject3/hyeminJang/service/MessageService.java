@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.InterMessageDAO;
+import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 //=== #31. Service 선언 === 
 //트랜잭션 처리를 담당하는곳 , 업무를 처리하는 곳, 비지니스(Business)단
@@ -72,6 +73,20 @@ public class MessageService implements InterMessageService {
 		int n = dao.inDelOne(parseInt);
 		
 		return n;
+	}
+
+	// 사람번호검색
+	@Override
+	public PersonVO searchPerson(int parseInt) {
+		PersonVO pervo = dao.searchPerson(parseInt);
+		return pervo;
+	}
+
+	// 학과 이름 가져오기
+	@Override
+	public String getNameMaj(int majseq) {
+		String str = dao.getNameMaj(majseq);
+		return str;
 	}
 
 

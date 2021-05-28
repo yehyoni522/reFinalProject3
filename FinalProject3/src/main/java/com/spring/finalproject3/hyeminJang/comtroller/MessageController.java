@@ -252,7 +252,7 @@ public class MessageController {
 		    
 		    int n = service.inDel(deleteArray); 
 		    
-		    System.out.println(n);
+		    
 		
 		   JSONObject jsonObj = new JSONObject(); // {}
 		   jsonObj.put("n", n);
@@ -277,12 +277,43 @@ public class MessageController {
 			return mav;
 		}
 	  
-
-	   @RequestMapping(value="/message/goNonRead.sam")
-		public ModelAndView goNonRead(HttpServletRequest request,ModelAndView mav) {
-			
-		   return mav;
-		}
+	  // 사람번호검색
+	  @ResponseBody
+	  @RequestMapping(value="/message/searchPerson.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	  public String searchPerson(HttpServletRequest request) {
+		  
+		  String perno = request.getParameter("perno");
+		  
+		  PersonVO pervo = service.searchPerson(Integer.parseInt(perno));
+		  
+		  JSONObject jsonObj = new JSONObject(); // {}
+		  
+		  if(pervo != null) {
+			 
+			  
+			 int majseq =  pervo.getFk_majseq();
+			 String nameMaj = service.getNameMaj(majseq);
+			 
+			   jsonObj.put("name", pervo.getName());
+			   jsonObj.put("perno", pervo.getPerno());
+			   if(pervo.getIdentity() == 0) {
+				   jsonObj.put("identity", "학생");
+			   }
+			   else if(pervo.getIdentity() == 1) {
+				   jsonObj.put("identity", "교수");
+			   }
+			   else {
+				   jsonObj.put("identity", "");
+			   }
+			   
+			   
+			   jsonObj.put("nameMaj", nameMaj);
+		  }
+		  
+		
+		   return jsonObj.toString(); 
+	
+	}
 	  
 	
 }

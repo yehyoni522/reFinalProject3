@@ -57,14 +57,12 @@ textarea {
 
 
 	$(document).ready(function(){
+		$("input.input_text").val("${requestScope.receiver}");
+		goSearch();
 		
-
+		
 	});
-	
-	function output(){
-		/* var sName = parent.document.all["receiver"].value;
-		document.getElementById("text").value = sName; */
-	}
+
 	
 	// === 학번/교수번호 찾기 === //
 	function goSearch() {
@@ -77,21 +75,40 @@ textarea {
 			return; // 종료
 		}
 		
-		<%-- var form_data = $("form[name=addWriteFrm]").serialize();
+		var input =  $("input[name=text]").val();
 		
+		// 사람 번호 검색
 		$.ajax({
-			url:"<%= ctxPath%>/addComment.action",
-			data:form_data,
+			url:"<%= ctxPath%>/message/searchPerson.sam",
+			data:{"perno": input},
 			type:"post",
 			dataType:"json",
-			success:function(json){ // 정상이라면 n값은 1 오류발생시 n값은 0
+			success:function(json){ /* // 정상이라면 n값은 1 오류발생시 n값은 0 */
 				
+				var html = "";
 				
+				if(json.name != null) {
+					
+						html += "<tr>";
+						html += "<td><input type='checkbox'</td>";
+						html += "<td>"+ json.identity +"</td>";
+						html += "<td>"+ json.nameMaj +"</td>";
+						html += "<td>"+ json.name +"</td>";
+						html += "</tr>";
+					
+				}
+				else {
+					html += "<tr>";
+					html += "<td colspan='4''>정확한 주소를 입력해주세요</td>";
+					html += "</tr>";
+				}
+				
+				$("tbody#commentDisplay").html(html);
 			},
 			error: function(request, status, error){
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		 	}
-		}); --%>
+		}); 
 		
 	}// end of function goAddWrite(){}--------------------------
 
@@ -103,7 +120,7 @@ textarea {
 <form name="idFindFrm" style="margin-top: 20px;">
    <div id="div_name" align="center">
       <span class='green_window'>
-			<input type='text' class='input_text' id="text" value="${requestScope.receiver}"/>
+			<input type='text' name="text" class='input_text'/>
 			
 		</span>
 			<button type='submit' class='sch_smit' onclick="goSearch()">검색</button>
@@ -111,11 +128,14 @@ textarea {
    <div id="error"></div>
 </form>
 
-<table id="table2" style="margin-top: 2%; margin-bottom: 3%;">
+	<table>
       <thead>
-      <tr>
-        
-      </tr>
+     <tr>
+		    <th style="text-align: center;">선택</th>
+			<th style="text-align: center;">구분</th>
+			<th style="text-align: center;">학과</th>
+			<th style="text-align: center;">이름</th>
+		</tr>
       </thead>
       <tbody id="commentDisplay"></tbody>
    </table>

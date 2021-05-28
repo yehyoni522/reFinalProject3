@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.spring.finalproject3.joseungjin.model.PersonVO;
+
 public interface InterMessageDAO {
 
 	// 총 게시물 건수(totalCount)
@@ -26,6 +28,12 @@ public interface InterMessageDAO {
 
 	 // 세부읽기에서 한개만 쪽지 삭제하기
 	int inDelOne(int parseInt);
+
+	// 사람번호검색
+	PersonVO searchPerson(int parseInt);
+
+	// 학과 이름 가져오기
+	String getNameMaj(int majseq);
 	
 
 }
