@@ -6,7 +6,7 @@
 <!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
 <mapper namespace="board">
 
-	<!-- 페이징 처리를 안한 검색어가 없는 전체 글목록 보여주기 -->
+	<!-- 페이징 처리를 안한 검색어가 없는 전체 글목록 보여주기 
 	 <select id="boardListNoSearch" parameterType="String" resultType="com.spring.finalproject3.yeonha.BoardVO">
     	select B.seq, B.subject, B.good, B.readCount, B.regDate, P.name
 		from
@@ -18,15 +18,42 @@
 		)B
 		join tbl_person P
 		on P.perno = B.fk_perno
-    </select>
-    
+    </select>    -->
     
     <!-- 글쓰기  -->
     <insert id="add" parameterType="com.spring.finalproject3.yeonha.BoardVO">
 		insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck)
 		values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}) 	
 	</insert>
-    
+	
+	<!-- === #116. 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === -->
+   	<select id="getTotalCount" parameterType="HashMap" resultType="int">
+   		select count(*)
+   		from tbl_board
+   		where status = 1 and categoryno = #{categoryno}
+   		<if test='searchWord != ""'>
+   			and lower(${searchType}) like '%'||lower(#{searchWord}) || '%'	
+   		</if>
+   	</select>
+   	
+    <!-- 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한것) -->
+   	<select id="boardListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha.BoardVO">  		
+   		select B.seq as seq, B.subject as subject, B.good as good, B.readCount as readCount, B.regDate as regDate, P.name as name
+   				, B.commentCount as commentCount, B.namecheck as namecheck
+		from
+		(
+		    select row_number() over(order by seq desc) as rno, seq, subject, good, readCount, commentCount, fk_perno  
+					   , to_char(regDate, 'yyyy/mm/dd') as regDate, categoryno, namecheck
+		    from tbl_board
+		    where status = 1 and categoryno = #{categoryno}
+		    <if test='searchWord != ""'>
+		    and lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
+		    </if>
+		)B
+		join tbl_person P
+		on P.perno = B.fk_perno		
+		where rno between #{startRno} and #{endRno}
+   	</select>
     
     
 </mapper>

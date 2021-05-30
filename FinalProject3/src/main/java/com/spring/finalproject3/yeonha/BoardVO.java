@@ -22,8 +22,17 @@ public class BoardVO {
     private String nextseq;          // 다음글번호
     private String nextsubject;      // 다음글제목   
     
-   
-    public BoardVO(){}   
+    private String name; // sql 문에서 가져온 tbl_person의 이름
+    
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public BoardVO(){}   
 	
 	public BoardVO(String seq, String fk_perno, String subject, String content, String files, String categoryno,
 			String good, String readCount, String regDate, String status, String commentCount, String namecheck,
