@@ -86,26 +86,7 @@
 			var $target=$(event.target);
 			$target.removeClass("subjectStyle");			
 		});
-<%--
-		// 이동버튼 클릭했을 때
-		$(document).on("click","[name=move]", function(){
-			var boardNo=$("select#selectBoard").val();
-			alert(boardNo);
-			var boardname="";
-			
-			if(boardNo==1) {
-				boardname="자유게시판";
-			}
-			if(boardNo==2) {
-				boardname="중고거래";
-			}
-			if(boardNo==3) {
-				boardname="동아리/공모전";
-			}
-			alert(boardname);
-		//	alert("선택하신 글을 "+boardname+"(으)로 이동시키겠습니까?");
-		});
-	--%>	
+
 		// 삭제버튼 클릭했을 때
 		$(document).on("click","[name=delete]", function(){					
 			alert("선택하신 글을 삭제하시겠습니까?");
@@ -118,9 +99,6 @@
 	    });
 		
 	
-		
-		
-		
 		<%-- === #107. 검색어 입력시 자동글 완성하기 2 === --%>
 	       $("div#displayList").hide();
 	       
@@ -135,7 +113,7 @@
 	          }
 	          else {
 	             $.ajax({
-	                url:"<%= ctxPath%>/admin/wordSearchShow.sam",
+	                url:"<%= ctxPath%>/admin/commentWordSearchShow.sam",
 	                type:"get",
 	                data:{"searchType":$("select#searchType").val()
 	                    ,"searchWord":$("input#searchWord").val()
@@ -254,7 +232,7 @@
 		   
 		   var frm = document.searchFrm;
 		   frm.method = "get";
-		   frm.action = "<%=ctxPath%>/admin/boardlist.sam";
+		   frm.action = "<%=ctxPath%>/admin/commentList.sam";
 		   frm.submit();
 		   
 	}// end of function goSearch()------------------------------------
@@ -263,7 +241,7 @@
 	function goPage(){
 		var frm = document.selectPage;
 		   frm.method = "get";
-		   frm.action = "<%=ctxPath%>/admin/boardlist.sam";
+		   frm.action = "<%=ctxPath%>/admin/commentList.sam";
 		   frm.submit();
 	}
 	<%--
@@ -276,55 +254,35 @@
 	} 
 	   --%>
 	   
-	function goMove(){
+	function goDelete(){
 		
 		var checkCnt = $("input:checkbox[name=checkOne]:checked").length;
 	    
 		if(checkCnt < 1) {
-	    	alert("이동시킬 게시글을 선택하세요.");
+	    	alert("삭제시킬 댓글을 선택하세요.");
 	    	return; 
 	    }	
 		
-		var categoryno=$("select#selectBoard").val();
-		var categoryname="";
-		
-		if(categoryno==0){				
-			alert("게시판을 선택해주세요");
-			return;
-		}
-		if(categoryno==1) {
-			categoryname="자유게시판";
-		}
-		if(categoryno==2) {
-			categoryname="중고거래";
-		}
-		if(categoryno==3) {
-			categoryname="동아리/공모전";
-		}
-		
-		var bool = confirm("선택하신 글을 "+categoryname+"(으)로 이동시키겠습니까?");
-		
-		var allCnt = $("input:checkbox[name=checkOne]").length;
-		var boardSeqArr = new Array();
-		
-		for(var i=0; i<allCnt; i++) {
+		var bool = confirm("선택하신 댓글을 삭제 하시겠습니까?");
+		var comseqArr = new Array();
+
+		for(var i=0; i<checkCnt; i++) {
 			
 			if( $("input:checkbox[name=checkOne]").eq(i).is(":checked") ) {
-				boardSeqArr.push( $("input:checkbox[name=checkOne]").eq(i).val());
+				comseqArr.push( $("input:checkbox[name=checkOne]").eq(i).val());
 			}
 		}
-		console.log(boardSeqArr);
-	
+		console.log(comseqArr);
+
 		if(bool){
 			$.ajax({
-				url:"<%= ctxPath%>/admin/boardMove.sam",
+				url:"<%= ctxPath%>/admin/commentDelete.sam",
 				type: "post",
-				data: {"boardSeqArr" : boardSeqArr
-					, "categoryno":categoryno},					  
+				data: {"comseqArr" : comseqArr},					  
 				dataType: "json",
 				success:function(json){
 						if(json.n==1){
-							location.href="<%=ctxPath%>/admin/boardlist.sam";
+							location.href="<%=ctxPath%>/admin/commentList.sam";
 						}
 				},
 				 error: function(request, status, error){
@@ -343,7 +301,7 @@
 </script>   
 
 <div style="padding-left: 3%;padding-right: 3%;">
-   <h2 style="margin-bottom: 30px;">| 게시글 관리</h2>
+   <h2 style="margin-bottom: 30px;">| 댓글 관리</h2>
    <div style="text-align:right; vertical-align:middle; margin:5px;  ">
 	   <%-- === #101. 글검색 폼 추가하기 : 글제목, 글쓴이로 검색을 하도록 한다. === --%>
 		<form name="searchFrm" style="margin-top: 20px;">
@@ -354,9 +312,7 @@
 			      <option value="3">동아리/공모전</option>
 			</select>
 	      <select name="searchType" id="searchType"  class="select">	
-	        <!--  <option value="total">제목+내용</option> -->
-	         <option value="subject">제목</option>
-	         <option value="content">내용</option>
+	         <option value="content">댓글 내용</option>
 	         <option value="name">글쓴이</option>
 	      </select>
 	      <input type="text" name="searchWord" class="search" id="searchWord" size="15" autocomplete="off" /> 
@@ -392,29 +348,12 @@
 		 </td>
 		 <td></td>
          <td style="text-align: center;">
- <!--        <form name="viewBoard">
-			    <select name="selectBoard" id="selectBoard" class="select" onChange="goBoard()">
-			      <option selected="selected">게시판 전체</option>
-			      <option value="1">자유게시판</option>
-			      <option value="2">중고거래</option>
-			      <option value="3">동아리/공모전</option>
-			    </select>
-		 </form>
-		  --> 
+
          </td>
          
          <td colspan="5" style="text-align:right; vertical-align: middle;">
-         	<form name="moveCategory">
-         	<span style="font-weight: bold; font-size: 13pt;">선택한 글</span>
-			    <select name="selectBoard" id="selectBoard" class="select">
-			      <option selected="selected" value="0">게시판 선택</option>
-			      <option value="1">자유게시판</option>			     
-			      <option value="2">중고거래</option>
-			      <option value="3">동아리/공모전</option>
-			    </select>
-			<input type="button" value="이동" class=" btn-board" name="move" onclick="goMove()"/>
+			<span style="font-weight: bold; font-size: 13pt;">선택한 글</span>
 			<input type="button" value="삭제" class=" btn-board" name="delete" onclick="goDelete()"/>
-			</form>
 		</td>
 				
       </tr>
@@ -422,44 +361,36 @@
       	 <th style="width: 3%;  text-align: center;"></th>
       	 <th style="width: 5%;  text-align: center;">No.</th>
          <th style="width: 10%;  text-align: center;">게시판 명</th>
-         <th style="width: 35%;  text-align: center;">제목</th>
-         <th style="width: 15%;">글쓴이</th>
-         <th style="width: 20%;  text-align: center;">작성일</th>
-         <th style="width: 5%;  text-align: center;">추천수</th>
-         <th style="width: 5%;  text-align: center;">조회수</th>
+         <th style="width: 27%;  text-align: left;">게시글 제목</th>
+         <th style="width: 30%;  text-align: left;">댓글 내용</th>
+         <th style="width: 10%;">글쓴이</th>
+         <th style="width: 15%;  text-align: center;">작성일</th>
       
       </tr>
       
-      <c:forEach var="boardvo" items="${requestScope.boardList}" varStatus="status"> 
+      <c:forEach var="commentvo" items="${requestScope.commentList}" varStatus="status"> 
          <tr class="list">  	
          	<td style="text-align: center;">
-         		<input type="checkbox" name="checkOne" value="${boardvo.seq}" />
+         		<input type="checkbox" name="checkOne" value="${commentvo.comseq}" />
 		 	</td>
-         	<td align="center">${boardvo.seq}</td>
+         	<td align="center">${commentvo.comseq}</td>
              <td align="center">
-             	<c:if test="${boardvo.categoryno==1}">
+             	<c:if test="${commentvo.categoryno==1}">
              		자유게시판
              	</c:if>
-             	<c:if test="${boardvo.categoryno==2}">
+             	<c:if test="${commentvo.categoryno==2}">
              		중고거래
              	</c:if>
-             	<c:if test="${boardvo.categoryno==3}">
+             	<c:if test="${commentvo.categoryno==3}">
              		동아리 / 공모전
              	</c:if>
              </td>
              <td align="left">
-	             <%-- === 댓글쓰기가 있는 게시판 === --%>
-	             <c:if test="${boardvo.commentCount>0}">
-	             	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span class="comment">${boardvo.commentCount}</span></span> 
-	           	</c:if>
-	           	<c:if test="${boardvo.commentCount==0}">
-             	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
-             	</c:if>
+             	<span class="subject" onclick="goView('${commentvo.fk_seq}')">${commentvo.subject}</span>
              </td>
-            <td>${boardvo.name}</td>
-            <td align="center">${boardvo.regDate}</td>
-            <td align="center">${boardvo.good}</td>
-             <td align="center">${boardvo.readCount}</td>
+             <td>${commentvo.content}</td>             
+            <td>${commentvo.name}</td>
+            <td align="center">${commentvo.reregDate}</td>
              
          </tr>
       </c:forEach>
