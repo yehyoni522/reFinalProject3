@@ -178,7 +178,11 @@ button.re:hover{
  .subjectStyle {font-weight: bold;
                    text-decoration:underline;
                    cursor: pointer;} 
-
+.readstate{
+	font-weight: bold;
+    color: red;
+   
+}
 
 </style>
 
@@ -187,6 +191,8 @@ button.re:hover{
 <script type="text/javascript">
 
 	$(document).ready(function(){
+		
+		
 		$("div#inbox").bind("click", function(){
 			goInbox();
 		});
@@ -210,16 +216,87 @@ button.re:hover{
 			}
 		});
 		
+		
 	  if( ${not empty requestScope.paraMap}){
     	  $("select#searchType").val("${requestScope.paraMap.searchType}");
     	  $("input#searchWord").val("${requestScope.paraMap.searchWord}");
        }
 	  
-	  
-		 
+	 
+		//== 체크박스 전체선택/전체해제 == 시작 //
+		$("input:checkbox[name=checkall]").click(function(){
+			var bool = $(this).prop("checked");
+			// 체크되어있으면 true, 해제되어있으면 false
+			
+			$("input:checkbox[name=check]").prop("checked", bool);
+
+		});
+
+		// == 상품의 체크박스 클릭시 == //
+		$("input:checkbox[name=check]").click(function(){
+			var bool = $(this).prop("checked");
+			
+			if (bool) { // 현재 상품의 체크박스에 체크했을 때
+				var bFlag = false;
+				
+				$("input:checkbox[name=check]").each(function(index, item){ // 다른 모든 상품의 체크박스 상태 확인
+					var bChecked = $(item).prop("checked");
+					if (!bChecked) {	// 체크표시가 안되어있는 상품일 경우 반복문 종료
+						bFlag = true;
+						return false;
+					}
+				});
+				
+				if(!bFlag) {	// 모든 체크박스가 체크되어있을 경우
+					$("input:checkbox[name=checkall]").prop("checked", true);	
+					
+				}
+			}
+			else {	// 현재 상품의 체크박스에 체크 해제했을 때
+				$("input:checkbox[name=checkall]").prop("checked", false);
+				
+			}
+			
+		});
+		//== 체크박스 전체선택/전체해제 == 끝// 
 	  
 	  
 	});
+	
+	// === 장바구니에서 특정 제품을 비우기 === //  
+	function goInDel() {
+		
+		var cnt = $("input[name='check']:checked").length;
+        var seqArr = new Array();
+        $("input[name='check']:checked").each(function() {
+        	seqArr.push($(this).val());
+        });
+        if(cnt == 0){
+            alert("삭제하실 쪽지를 선택하세요.");
+        }
+        else{
+        	     	
+        	$.ajax({
+                type: "post",
+                url: "<%=ctxPath%>/message/goInDel.sam",
+                data: {seqArr: seqArr},
+                dataType:"json",
+                success: function(json){
+                    if(json.n != 1) {
+                        alert("삭제 오류");
+                    }
+                    else{
+                        alert("선택한 쪽지의 삭제를  성공했습니다.");
+                        javascript:history.go(0);
+                    }
+                },
+                error: function(request, status, error){
+    				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+    		 	}
+        	});
+        }
+		
+	}// end of function goInDel()---------------------------
 	
 	 function goSearch(){
 	      
@@ -229,6 +306,20 @@ button.re:hover{
 	      frm.submit();
 	      
 	}// end of function goSearch()----------------------------------
+	
+	function goNonRead(){
+		
+		var frm = document.readState;
+	      frm.method = "get";
+	      frm.action = "<%=ctxPath%>/message/inbox.sam";
+	      frm.submit();
+	      
+	      var x = document.getElementById("readstate");
+			x.style.fontWeight = "bold";
+		    x.style.color = "red"; 
+    	
+		
+	}// end of function gatheringNonRead()----------------------------------
 
 	function goWrite(){
 		location.href="<%= ctxPath%>/message/write.sam";
@@ -242,9 +333,7 @@ button.re:hover{
 	function goView(inboxSeq){
 		location.href="<%= ctxPath%>/message/inView.sam?inboxSeq="+inboxSeq;	
 	}
-	function goInDel(inboxSeq){
-		location.href="<%= ctxPath%>/message/inDel.sam?inboxSeq="+inboxSeq;	
-	}
+
 </script>
 
 <body>
@@ -269,12 +358,14 @@ button.re:hover{
 		<button class="del" type="button" onclick="goInDel()">삭제</button>
 		 <button class="re" >답장</button>
 
-	<div style="margin-left: 30px; display: inline-block; float: right;">
-	
-	<a style="font-size:10px;">안읽은쪽지삭제</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>500</span>
+	<div style="margin-left: 100px; display: inline-block; float: right;">
+	<form name="readState">
+		<input type='hidden'  name="readState" value="0" />
+	</form>
+	<a id="readstate" style="font-size:13px;  cursor: pointer;" onclick="goNonRead()">안읽은쪽지보기</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>500</span>
 	
 	<form name="searchFrm">
-		<select id="searchType" name="searchType">
+		<select id="searchType" name="searchType" ">
 			<option value="inboxName">이름</option>
 			<option value="subject">내용</option>
 		</select>
@@ -301,7 +392,7 @@ button.re:hover{
     
     <tbody>
       <tr>
-        <td><input type="checkbox" /></td>
+        <td><input type="checkbox" name="check" value="${inboxvo.inboxSeq}"/></td>
         <td>${inboxvo.inboxName}</td>
         <td><span class="subject" onclick="goView(${inboxvo.inboxSeq})">${inboxvo.subject}</span></td>
         <td>${inboxvo.reDate}</td>
