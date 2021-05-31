@@ -306,7 +306,6 @@ public class MessageController {
 				   jsonObj.put("identity", "");
 			   }
 			   
-			   
 			   jsonObj.put("nameMaj", nameMaj);
 		  }
 		  

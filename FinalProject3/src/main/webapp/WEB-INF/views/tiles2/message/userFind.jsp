@@ -51,6 +51,39 @@ textarea {
 	border: 3px solid #2ECC71;
 }
 
+table.type03 {
+  font-size: 13px;
+  border-collapse: collapse;
+  text-align: center;
+  line-height: 1.3;
+  border-top: 1px solid #ccc;
+  border-left: 3px solid #369;
+  margin : 20px 10px;
+}
+table.type03 th {
+  width: 147px;
+  padding: 7px;
+  font-weight: bold;
+  vertical-align: top;
+  color: #153d73;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+
+}
+table.type03 td {
+  width: 349px;
+  padding: 7px;
+  vertical-align: top;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.input_newColor {
+    background-color : #ffff99;
+}
+
+
+
 </style>
 
 <script type="text/javascript">
@@ -60,7 +93,24 @@ textarea {
 		$("input.input_text").val("${requestScope.receiver}");
 		goSearch();
 		
+		$("input:checkbox[name=checked]").each(function(index, item){ 
+			
+			var bChecked = $(item).prop("checked");
+			
+			if (bChecked) {	// 체크표시가 안되어있는 상품일 경우 반복문 종료
+				$(item).addClass("input_newColor");
+				console.log("체크");
+			}
+			else{
+				$(item).removeClass("input_newColor");
+				console.log("체크품");
+			}
+		});
 		
+		$("input:checkbox[name=checked]").click(function(){
+			$(item).addClass("input_newColor");
+		});
+
 	});
 
 	
@@ -90,7 +140,7 @@ textarea {
 				if(json.name != null) {
 					
 						html += "<tr>";
-						html += "<td><input type='checkbox'</td>";
+						html += "<td style='text-align: center;'><input name='checked' type='checkbox' value='"+json.perno+"'></td>";
 						html += "<td>"+ json.identity +"</td>";
 						html += "<td>"+ json.nameMaj +"</td>";
 						html += "<td>"+ json.name +"</td>";
@@ -128,10 +178,10 @@ textarea {
    <div id="error"></div>
 </form>
 
-	<table>
+	<table class="type03">
       <thead>
      <tr>
-		    <th style="text-align: center;">선택</th>
+		    <th style="text-align: center; width: 10%;">선택</th>
 			<th style="text-align: center;">구분</th>
 			<th style="text-align: center;">학과</th>
 			<th style="text-align: center;">이름</th>
@@ -139,6 +189,9 @@ textarea {
       </thead>
       <tbody id="commentDisplay"></tbody>
    </table>
+   
+   
+   
 
 </body>
 </html>
