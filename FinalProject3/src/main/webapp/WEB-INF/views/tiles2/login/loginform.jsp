@@ -234,7 +234,7 @@ input.findinput{
 			    <button type="button" id="btnSubmit" class="loginSubmit">로그인</button>
 				
 			</form>
-			<a style="cursor: pointer;" href="javascript:window.open('<%= ctxPath%>/pwdFind.sam', '비밀번호 찾기','left=430px , top=100px, width=400px, height=500px')">&nbsp;등록하기</a></span>
+			<span style ="margin-left:430px;"><a style="cursor: pointer;" href="javascript:window.open('<%= ctxPath%>/personRegister.sam','등록하기','left=430px , top=100px, width=400px, height=500px')">&nbsp;등록하기</a></span>
 		</div>
 	</div>
 </div>

@@ -16,4 +16,27 @@
 		where name =#{name} and email=#{email}
 	</select>
 	
+	<select id="pwdFind1" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
+		select perno
+		from tbl_person
+		where perno =#{userid} and email=#{email}
+	</select>
+	
+	<select id="pwdFind" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
+		select perno
+		from tbl_person
+		where perno =#{userid} and email=#{email}
+	</select>
+	
+	<update id="pwdUpdate" parameterType="HashMap">
+		 update tbl_person set pwd = #{pwd}
+ 		where perno = #{userid}
+	</update>
+	
+	<select id="personRegister" parameterType="HashMap" resultType="boolean">
+		select perno
+		from tbl_person
+		where perno =#{userid} and name=#{name} and email=#{email} 
+	</select>
+	
 </mapper>

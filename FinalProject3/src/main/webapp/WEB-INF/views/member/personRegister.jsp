@@ -87,9 +87,9 @@
 
 	$(document).ready(function(){
 		
-		var check = "${isUserExist}";
+		var check = "${check}";
 		
-		if(check == null){
+		if(check == 1){
 			alert("입력하신 정보는 존재하지 않습니다.");
 			return;
 		}
@@ -99,12 +99,19 @@
 	$("button#btnFind").click(function(){
 		// 성명 및 e메일에 대한 유효성 검사(정규표현식)는 생략하겠습니다.
 		 	var userid = $("input#userid").val().trim();
+		 	var name = $("input#name").val().trim();
 			var email = $("input#email").val().trim();
 			
 			if(userid == "") {
 				alert("아이디를 입력하세요!!");
 				$("input#userid").val("");
 				$("input#userid").focus();
+				return;  // goLogin() 함수 종료
+			}
+			if(name== "") {
+				alert("성명을 입력하세요!!");
+				$("input#name").val("");
+				$("input#name").focus();
 				return;  // goLogin() 함수 종료
 			}
 			
@@ -115,8 +122,8 @@
 				return;  // goLogin() 함수 종료
 			}
 		var frm = document.pwdFindFrm;
-		frm.action = "<%= ctxPath%>/pwdFindgo.sam";
-		frm.method = "POST";
+		frm.action = "<%= ctxPath%>/personRegisterGo.sam";
+		frm.method = "post";
 		frm.submit();
 		
 	});
@@ -186,13 +193,19 @@
 </script>
 
 <form name="pwdFindFrm">
-	<h1 align="center" style="margin-top: 100px;"> 비밀번호 찾기</h1>
+
+	<h1 align="center" style="margin-top: 40px;"> 회원등록</h1>
 	<c:if test="${check != 0 && in !=1}">
 	   <div id="div_name" align="center" style="margin-top: 50px;">
 	   
-	     	  	 아이디:<input style="margin-left:9px;" type="text" name="userid" id="userid" size="15" placeholder="학번/교번" autocomplete="off" required />
+	     	  	 아이디:<input style="margin-left:6px;" type="text" name="userid" id="userid" size="15" placeholder="학번/교번" autocomplete="off" required />
 	   </div>
-   
+   		
+   		<div id="div_name" align="center">
+	   
+	     	  	 이름:<input style="margin-left:18px;" type="text" name="name" id="name" size="15" placeholder="성명" autocomplete="off" required />
+	   </div>
+   	
 	   <div id="div_email" align="center">
 	      Email:<input style="margin-left:10px;"type="text" name="email" id="email" size="15" placeholder="abc@def.com" autocomplete="off" required />
 	   </div>
@@ -204,11 +217,12 @@
 	   		<button id="btnEnd" type="button"  onClick='window.close()'>닫기</button>
 	   </div>
    </c:if>
+
    <c:if test="${check == 0}">
-   	   <c:if test="${requestScope.isUserExist == false}">  
+   	   <c:if test="${requestScope.isUserExist2 == false}">  
    	   	  <span style="color: red;">사용자 정보가 없습니다.</span>
    	   </c:if>
-   	  <c:if test="${requestScope.isUserExist == true && requestScope.sendMailSuccess == true}">  
+   	  <c:if test="${requestScope.isUserExist2 == true && requestScope.sendMailSuccess == true}">  
    	   <br> 
    	   	  <span style="margin-left: 50px; font-weight:bold; font-size: 13pt;">입력하신 Email로 인증코드가 발송되었습니다.</span><br>
    	   	  <br>
@@ -223,7 +237,7 @@
 	   </div>
    	   </c:if>
    	   
-   	   <c:if test="${requestScope.isUserExist == true && requestScope.sendMailSuccess == false}">  
+   	   <c:if test="${requestScope.isUserExist2 == true && requestScope.sendMailSuccess == false}">  
    	   	  <span style="color: red;">메일발송이 실패했습니다.</span>
    	   </c:if>
    	      
@@ -235,7 +249,7 @@
 <c:if test="${in == 1}">
 <form name="pwdUpdateEndFrm">
 
-	<h2 align="center" style="height:50px;">암호 변경</h2>
+	<h2 align="center" style="height:50px;">회원암호 등록</h2>
 	 		<div class="idSearchForm">
 	 		
 				<div id="div_name" align="center" >
