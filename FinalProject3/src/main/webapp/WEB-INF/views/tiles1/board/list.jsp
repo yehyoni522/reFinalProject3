@@ -171,7 +171,7 @@
 </c:if>  
 
 
-<div style="padding-left: 10%;">
+<div style="padding-left: 10%; padding-right:10%;">
 	<h2 style="margin-bottom: 30px;">
 		<c:if test="${categoryno == 1}">자유게시판</c:if>
  		<c:if test="${categoryno == 2}">중고거래</c:if>

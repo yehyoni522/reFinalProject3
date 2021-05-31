@@ -80,13 +80,13 @@
 	<select id="getView" parameterType="String" resultType="com.spring.finalproject3.yeonha.BoardVO">
 		select previousseq, previoussubject
 		     , seq, fk_perno, subject, name, content, readcount, B.regDate
-		     , nextseq , nextsubject
+		     , nextseq , nextsubject, commentCount
 		from 
 		(
 		    select lag(seq,1) over(order by seq desc) AS previousseq
 		         , lag(subject,1) over(order by seq desc) AS previoussubject
 		         
-		         , seq, fk_perno, subject, content, readcount
+		         , seq, fk_perno, subject, content, readcount, commentCount
 		         , to_char(regDate, 'yyyy/mm/dd') as regDate
 		         
 		         , lead(seq,1) over(order by seq desc) AS nextseq

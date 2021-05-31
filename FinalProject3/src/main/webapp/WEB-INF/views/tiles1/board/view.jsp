@@ -11,28 +11,58 @@
 %>
 
 <style type="text/css">
-	table, th, td, input, textarea {border: solid gray 1px;}
-	
-	#table, #table2 {border-collapse: collapse;
-	 		         width: 1024px;
-	 		        }
-	#table th, #table td{padding: 5px;}
-	#table th{width: 120px; background-color: #DDDDDD;}
-	#table td{width: 880px;}
-	.long {width: 470px;}
-	.short {width: 120px;}
-	
-	.move {cursor: pointer; color:navy;}
-	.moveColor {color: #660029; font-weight: bold;}
-	
-	a {text-decoration: none !important;}
-	
-	td.comment {text-align: center;}
+table, th, td, input, textarea {border: solid gray 1px;}
+
+#table, #table2 {border-collapse: collapse;
+ 		         width: 1024px;
+ 		        }
+#table th, #table td{padding: 5px;}
+#table th{width: 120px; background-color: #DDDDDD;}
+#table td{width: 880px;}
+.long {width: 470px;}
+.short {width: 120px;}
+
+.move {cursor: pointer; color:navy;}
+.moveColor {color: #660029; font-weight: bold;}
+
+a {text-decoration: none !important;}
+
+td.comment {text-align: center; border}
+.boarda{
+	color:black;
+} 
+.styhr{
+	border: 0;
+	height: 2px;
+	background-color: #ccc;
+	margin: 5px 0 5px 0;
+}	
+#contentfooter{
+	position: relative;
+	left: 90%;
+}
+#contnentsubj{
+	margin: 10px;
+	font-size: 12pt;
+}
+#contentinfo{
+	margin: 10px;
+}
+#boardcontent{
+	width:80%; 
+	height: 100px; 
+	border: 0px solid blue; 
+	padding: 2px; 
+	margin: 15px 5px 5px 10px;
+}
+#boardcommet{
+	margint: 10px;
+}
 </style>
 
 <script type="text/javascript">
 
-	<%-- $(document).ready(function(){
+	$(document).ready(function(){
 		
 	//	goReadComment();  // 페이징처리 안한 댓글 읽어오기
 		goViewComment(1); // 페이징처리 한 댓글 읽어오기 
@@ -231,7 +261,7 @@
 		
 	}// end of function makeCommentPageBar(currentShowPageNo) {}-----------------
 	
-	--%>
+
 	
 	
 </script>
@@ -246,45 +276,75 @@
 	</div>	
 <hr>
 </c:if> 
-<div style="padding-left: 10%;">
-	<h1>글내용보기</h1>
 
-	${requestScope.boardvo.name}
+<div style="padding-left: 10%; padding-right:10%;">
+	<h2 style="margin-bottom: 30px;">
+		<c:if test="${categoryno == 1}">자유게시판</c:if>
+		<c:if test="${categoryno == 2}">중고거래</c:if>
+		<c:if test="${categoryno == 3}">동아리&공모전 모집</c:if> 
+		<c:if test="${categoryno == 4}">공지사항</c:if> 
+		<c:if test="${categoryno == 5}">Q&A</c:if> 
+	</h2>
+	<hr class="styhr">
 	<c:if test="${not empty requestScope.boardvo}">
-		<table id="table">
-			<tr>
-				<th>글번호</th>
-				<td>${requestScope.boardvo.seq}</td>
-			</tr>
-			<tr>
-				<th>성명</th>
-				<td>${requestScope.boardvo.name}</td>
-			</tr>
-			<tr>
-				<th>제목</th>
-				<td>${requestScope.boardvo.subject}</td>
-			</tr>
-			<tr>
-				<th>내용</th>
-				<td>
-				    <p style="word-break: break-all;">${requestScope.boardvo.content}</p>
-				</td>
-			</tr>
-			<tr>
-				<th>조회수</th>
-				<td>${requestScope.boardvo.readCount}</td>
-			</tr>
-			<tr>
-				<th>날짜</th>
-				<td>${requestScope.boardvo.regDate}</td>
-			</tr>
-		</table>
-		
+		<div id="viewcontent">
+			<div id="contnentsubj">
+				${requestScope.boardvo.subject}
+			</div>
+			<hr class="styhr">
+			<div id="contentinfo">			
+				${requestScope.boardvo.name} &nbsp; ${requestScope.boardvo.regDate}
+			</div>
+			<br>
+			<div id="boardcontent" >
+				<p style="word-break: break-all;">${requestScope.boardvo.content}</p>
+			</div>	
+			<div id="contentfooter">
+				<img src="<%=ctxPath%>/resources/images/good.PNG" style="width:45px; height:43px;">${requestScope.boardvo.readCount}
+				<img src="<%=ctxPath%>/resources/images/comment.PNG" style="width:44px; height:38px;">${requestScope.boardvo.commentCount}
+			</div>	
+			<hr class="styhr">
+		</div>		
 		<br>
 		
-		<div style="margin-bottom: 1%;">이전글제목&nbsp;&nbsp;<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}'">${requestScope.boardvo.previoussubject}</span></div>
+		<div id="boardcommet">	
+			<%-- 댓글쓰기 폼 추가--%> 
+			<c:if test="${categoryno != 4}">
+			    <c:if test="${not empty sessionScope.loginuser}">
+					<form name="addWriteFrm" style="margin-top: 20px;">
+						      <input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" />
+						성명 : <input type="text" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />  
+						&nbsp;&nbsp;
+						댓글내용 : <input id="commentContent" type="text" name="content" class="long" /> 
+						
+						댓글에 달리는 원게시물 글번호(즉, 댓글의 부모글 글번호)
+						<input type="hidden" name="parentSeq" value="${requestScope.boardvo.seq}" /> 
+						
+						<button id="btnComment" type="button" onclick="goAddWrite()">확인</button> 
+						<button type="reset">취소</button> 
+					</form>
+			    </c:if>		   
+			    		    
+			    <!-- 댓글 내용 보여주기 -->
+				<table id="table2" >
+					<thead>
+					<tr>
+					    <th style="width: 10%; text-align: center;">번호</th>
+						<th style="width: 60%; text-align: center;">내용</th>
+						<th style="width: 10%; text-align: center;">작성자</th>
+						<th style="text-align: center;">작성일자</th>
+					</tr>
+					</thead>
+					<tbody id="commentDisplay"></tbody>
+				</table>
+			</c:if> 
+		</div>	
+   		<!-- 댓글 페이지바-->
+    	<div id="pageBar" style="border:solid 0px gray; width: 90%; margin: 10px auto; text-align: center;"></div> 
+	 
+	 	<div style="margin-bottom: 1%;">이전글제목&nbsp;&nbsp;<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}'">${requestScope.boardvo.previoussubject}</span></div>
 		<div style="margin-bottom: 1%;">다음글제목&nbsp;&nbsp;<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}'">${requestScope.boardvo.nextsubject}</span></div>
-
+		
 	</c:if>
 	
 	<c:if test="${empty requestScope.boardvo}">
@@ -298,43 +358,7 @@
 	<button type="button" onclick="javascript:location.href='<%= ctxPath%>/board/del.sam?seq=${requestScope.boardvo.seq}'">삭제</button>
 
 
-  <%--   <%-- === #83. 댓글쓰기 폼 추가 === 
-    <c:if test="${not empty sessionScope.loginuser}">
-    	<h3 style="margin-top: 50px;">댓글쓰기 및 보기</h3>
-		<form name="addWriteFrm" style="margin-top: 20px;">
-			      <input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" />
-			성명 : <input type="text" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />  
-			&nbsp;&nbsp;
-			댓글내용 : <input id="commentContent" type="text" name="content" class="long" /> 
-			
-			댓글에 달리는 원게시물 글번호(즉, 댓글의 부모글 글번호)
-			<input type="hidden" name="parentSeq" value="${requestScope.boardvo.seq}" /> 
-			
-			<button id="btnComment" type="button" onclick="goAddWrite()">확인</button> 
-			<button type="reset">취소</button> 
-		</form>
-    </c:if>
-    
-    <c:if test="${empty sessionScope.loginuser}">
-    	<h3 style="margin-top: 50px;">댓글보기</h3>
-    </c:if>	
-    
-    <!-- ===== #94. 댓글 내용 보여주기 ===== -->
-	<table id="table2" style="margin-top: 2%; margin-bottom: 3%;">
-		<thead>
-		<tr>
-		    <th style="width: 10%; text-align: center;">번호</th>
-			<th style="width: 60%; text-align: center;">내용</th>
-			<th style="width: 10%; text-align: center;">작성자</th>
-			<th style="text-align: center;">작성일자</th>
-		</tr>
-		</thead>
-		<tbody id="commentDisplay"></tbody>
-	</table>
-
-    ==== #136. 댓글 페이지바 ====
-    <div id="pageBar" style="border:solid 0px gray; width: 90%; margin: 10px auto; text-align: center;"></div> 
-      --%>
+ 	
 </div>
 
 
