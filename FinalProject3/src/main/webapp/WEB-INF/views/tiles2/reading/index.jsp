@@ -178,6 +178,13 @@
 		   		html += "위 좌석으로 예약하시겠습니까?";
 		   		html += "</span>"; 
 		   		$("div.modal-body").html(html);
+		   		
+		   		var jsontname = json.tname;
+		   		var tname = jsontname.replace(/\s/gi, "");
+		   		html = "<input type='hidden' id='rname' value="+json.rname+">";
+		   		html += "<input type='text' id='tname' value="+tname+">";
+		   		html += "<input type='hidden' id='dsname' value="+json.dsname+">";
+		   		$("form#seatinfo").html(html);
 		   	}, error: function(request, status, error){
 			      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			}
@@ -199,23 +206,37 @@
 	
 	function goCoinUpdate() {
 		$("#myModal").modal('hide');
-		console.log("호로로롤ㄹㄹㄹㄹㄹ");
-		console.log(dsno);
-		console.log(${sessionScope.loginuser.perno});
-		console.log(tno);
-		console.log(rname);
 		$.ajax({
 			url:"<%=ctxPath%>/reading/updateSeatInfo.sam",
 			type:"post",
 			data:{"fk_dsno":dsno, "fk_perno":"${sessionScope.loginuser.perno}", "fk_tno":tno},
 			dataType:"json",
 		   	success:function(json) {
-		   		if(json.n == 1) {
+		   		if(json.m == 1) {
 		   			alert("예약이 완료되었습니다.");
+		   			sendEmail(dsno);
 		   		} else {
 		   			alert("예약이 실패되었습니다.");
 		   		}
+		   		location.reload();
 		   	}, error: function(request, status, error){
+			      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+		});
+	}
+	
+	function sendEmail(dsno) {
+		
+		$.ajax({
+			url:"<%= ctxPath%>/reading/sendEmail.sam",
+			type:"POST",
+			data:{"rname":$("input#rname").val(), "tname":$("input#tname").val(), "dsname":$("input#dsname").val(), "email":"${sessionScope.loginuser.email}"},
+			dataType:"json",
+			success:function(json) {
+				if(json.sendMailSuccess == 1) {
+					alert("메일 전송 실패. 자세한 사항은 관리자에게 문의하세요.");
+				}
+			}, error: function(request, status, error){
 			      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			}
 		});
@@ -295,8 +316,10 @@
 	</div>
 
 	<div id="md">
-	
 	</div>
       
-      
+    <div>
+    	<form  id="seatinfo" name="seatinfo">
+    	</form>
+    </div>
 </div>
