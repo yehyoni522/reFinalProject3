@@ -1,6 +1,7 @@
 package com.spring.finalproject3.yeonha;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -14,20 +15,26 @@ public class BoardDAO implements InterBoardDAO {
 
 	@Resource 
 	private SqlSessionTemplate sqlsession; 
-	
-	
-	@Override
-	public List<BoardVO> boardListNoSearch(String categoryno) {		
-		List<BoardVO> boardList = sqlsession.selectList("board.boardListNoSerch", categoryno);
-		return boardList;
-	}
-
 
 	// 게시판 글쓰기완료, 게시글 등록 ( 파일첨부X)
 	@Override
 	public int add(BoardVO boardvo) {
 		int n = sqlsession.insert("board.add", boardvo);
 		return n;
+	}
+
+	// 총 게시물 건수(totalCount) 구하기
+	@Override
+	public int getTotalCount(Map<String, String> paraMap) {
+		int n = sqlsession.selectOne("board.getTotalCount", paraMap);
+		return n;
+	}
+
+	// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한것)
+	@Override
+	public List<BoardVO> boardListSearchWithPaging(Map<String, String> paraMap) {
+		List<BoardVO> boardList = sqlsession.selectList("board.boardListSearchWithPaging", paraMap);
+		return boardList;
 	}
 
 

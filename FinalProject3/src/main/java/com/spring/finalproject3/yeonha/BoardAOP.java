@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.spring.finalproject3.common.MyUtil;
-import com.spring.finalproject3.yeonha.InterBoardService;
 
 
 //=== #53. 공통관심사 클래스(Aspect 클래스)생성하기 === //
@@ -68,8 +67,8 @@ public class BoardAOP {
 		HttpSession session = request.getSession();
 		
 		if(session.getAttribute("loginuser") == null) {
-			String message = "먼저 로그인 하세요~~~";
-	        String loc = request.getContextPath()+"/login.action";
+			String message = "로그인이 필요합니다.";
+	        String loc = request.getContextPath()+"/login.sam";
 	         
 	        request.setAttribute("message", message);
 	        request.setAttribute("loc", loc);
@@ -95,7 +94,7 @@ public class BoardAOP {
 	}
 	
 	
-	
+
 	
 	
 	
