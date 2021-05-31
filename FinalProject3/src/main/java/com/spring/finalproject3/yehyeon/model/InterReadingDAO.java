@@ -11,4 +11,10 @@ public interface InterReadingDAO {
 
 	List<DetailSeatInfoVO> selectViewSeat(Map<String, String> paraMap); // 열람실, 시간 마다의 좌석의 정보를 불러온다.
 
+	DetailSeatInfoVO searchSeatInfo(String dsno); // 선택한 좌석의 정보를 검색해온다.
+
+	int updateDscheck(String dsno); // 결제 완료 후 예약여부를 0에서 1로 update 한다.
+
+	int insertBooklist(BookListVO bookvo); //결제 완료 후 예약내역 테이블에 정보를 insert 한다.
+
 }

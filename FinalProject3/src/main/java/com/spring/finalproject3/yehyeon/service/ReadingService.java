@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.spring.finalproject3.yehyeon.model.BookListVO;
 import com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO;
 import com.spring.finalproject3.yehyeon.model.InterReadingDAO;
 import com.spring.finalproject3.yehyeon.model.RroomNumVO;
@@ -47,6 +48,35 @@ public class ReadingService implements InterReadingService {
 		List<DetailSeatInfoVO> detailList = dao.selectViewSeat(paraMap);
 		
 		return detailList;
+	}
+
+
+	
+	@Override
+	public DetailSeatInfoVO searchSeatInfo(String dsno) {
+		
+		DetailSeatInfoVO detailvo = dao.searchSeatInfo(dsno);
+		
+		return detailvo;
+	}
+
+
+
+	@Override
+	public int updateDscheck(String dsno) {
+		
+		int n = dao.updateDscheck(dsno);
+		
+		return n;
+	}
+
+
+
+	@Override
+	public int insertBooklist(BookListVO bookvo) {
+		
+		int m = dao.insertBooklist(bookvo);
+		return m;
 	}
 
 }
