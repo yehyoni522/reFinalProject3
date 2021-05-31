@@ -20,4 +20,7 @@ public interface InterAdminBoardDAO {
 
 	List<AdminBoardVO> boardListSearchWithPaging(Map<String, String> paraMap);
 
+	// 선택한 글 게시판 이동시키기
+	int boardMove(Map<String, String> paraMap);
+
 }

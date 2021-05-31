@@ -33,6 +33,7 @@ public class AdminBoardController {
 			
 			List<AdminBoardVO> boardList = null;
 			
+			// 검색어 입력
 	       String searchType = request.getParameter("searchType");
 	       String searchWord = request.getParameter("searchWord");
 	       String str_currentShowPageNo = request.getParameter("currentShowPageNo");
@@ -49,22 +50,27 @@ public class AdminBoardController {
 	       
 	       paraMap.put("searchType",searchType);
 	       paraMap.put("searchWord",searchWord);
+	   
+	       // 게시판 선택
+	       String viewBoard = request.getParameter("viewBoard");
+
 	       
-	       //페이징 처리를 안한 검색어가 있는 전체 글목록 보여주기
-	 /*		boardList = service.boardListSearch(paraMap);	       	    	
-	    	
-	    	// 아래는 검색대상 컬럼과 검색어를 유지시키기 위한 것임.
-	        if(!"".equals(searchType) && !"".equals(searchWord)) {
-	           mav.addObject("paraMap",paraMap);
-	        }
-	   */    
+	       if(viewBoard == null||!("1".equals(viewBoard) || "2".equals(viewBoard) || "3".equals(viewBoard)) ) { 
+	    	   viewBoard = "";
+			}
+	       
+	       paraMap.put("viewBoard",viewBoard);
+	       
+	       
+	       // 보고자 하는 페이지 선택
 	       String page = request.getParameter("page");
+
 	       if(page == null ||!("5".equals(page) || "15".equals(page) || "30".equals(page)) ) { 
 	    	   page = "5";
 			}
 	       
 	       int sizePerPage=Integer.parseInt(page);
-	       System.out.println(sizePerPage);
+
 	       
 	       int totalCount = 0;         // 총 게시물 건수
 	    // int sizePerPage = 5;        // 한 페이지당 보여줄 게시물 건수
@@ -119,8 +125,9 @@ public class AdminBoardController {
 			
 			// === [맨처음][이전] 만들기 === 
 			if(pageNo != 1) {
-			pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo=1'>[맨처음]</a></li>";
-			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo-1)+"'>[이전]</a></li>";
+			pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?viewBoard="+viewBoard+"&page="+page+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo=1'>[맨처음]</a></li>";
+					
+			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?viewBoard="+viewBoard+"&page="+page+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo-1)+"'>[이전]</a></li>";
 			}
 			
 			while( !(loop > blockSize || pageNo > totalPage) ) {
@@ -129,7 +136,7 @@ public class AdminBoardController {
 				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
 				}
 				else {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
+				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='"+url+"?viewBoard="+viewBoard+"&page="+page+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
 				}
 				
 				loop++;
@@ -139,14 +146,14 @@ public class AdminBoardController {
 			
 			// === [다음][마지막] 만들기 === 
 			if(pageNo <= totalPage) {
-				pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>[다음]</a></li>";
-				pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+totalPage+"'>[마지막]</a></li>";
+				pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?viewBoard="+viewBoard+"&page="+page+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>[다음]</a></li>";
+				pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?viewBoard="+viewBoard+"&page="+page+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+totalPage+"'>[마지막]</a></li>";
 			}
 			
 			pageBar += "</ul>";
 			
 			mav.addObject("pageBar",pageBar);	    	
-	    	
+	    	mav.addObject("totalCount",totalCount);
 	    	mav.addObject("boardList", boardList);
 	    	mav.setViewName("admin/adminBoard.tiles1");	    		    	
 	        
@@ -159,10 +166,18 @@ public class AdminBoardController {
 	 	public String wordSearchShow(HttpServletRequest request) {
 	 		String searchType = request.getParameter("searchType");
 	 		String searchWord = request.getParameter("searchWord");
+	 		String viewBoard = request.getParameter("viewBoard");
+
+		       
+		       if(viewBoard == null||!("1".equals(viewBoard) || "2".equals(viewBoard) || "3".equals(viewBoard)) ) { 
+		    	   viewBoard = "";
+				}
+		       
 	 		
 	 		Map<String,String> paraMap = new HashMap<String, String>();
 	 		paraMap.put("searchType", searchType);
 	 		paraMap.put("searchWord", searchWord);
+	 		paraMap.put("viewBoard",viewBoard);
 	 		
 	 		List<String> wordList = service.wordSearchShow(paraMap);
 	 		
@@ -181,6 +196,31 @@ public class AdminBoardController {
 	 		// "[]" 또는
 	 		// "[{"word":"글쓰기 첫번쨰 연습입니다"},{"word":"글쓰기 두번째 연습입니다"}]"
 	 	}
+		
+		
+//		=== 게시글 이동하기 ===
+		@ResponseBody
+	 	@RequestMapping(value="/admin/boardMove.sam", method = {RequestMethod.POST})
+		public String admin_boardMove(HttpServletRequest request) {
+			
+			String[] boardSeqArr = request.getParameterValues("boardSeqArr");
+			String categoryno = request.getParameter("categoryno");
+
+			int n=0;
+			
+			for(String seq : boardSeqArr) {
+				Map<String,String> paraMap = new HashMap<String, String>();
+		 		paraMap.put("categoryno", categoryno);
+		 		paraMap.put("seq", seq);
+				n = service.boardMove(paraMap);
+			}
+			
+			JSONObject jsonObj = new JSONObject();
+			jsonObj.put("n", n);
+			
+			return jsonObj.toString();			
+		}
+		 
 		
 		
 		

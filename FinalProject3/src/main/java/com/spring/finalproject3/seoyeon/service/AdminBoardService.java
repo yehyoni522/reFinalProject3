@@ -56,4 +56,11 @@ public class AdminBoardService implements InterAdminBoardService {
 		return boardList;
 	}
 
+	// 선택한 글 게시판 이동시키기
+	@Override
+	public int boardMove(Map<String, String> paraMap) {
+		int n =dao.boardMove(paraMap);
+		return n;
+	}
+
 }
