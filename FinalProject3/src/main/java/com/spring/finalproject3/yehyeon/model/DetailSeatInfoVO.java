@@ -8,7 +8,26 @@ public class DetailSeatInfoVO {
 	private int fk_rno;
 	private int fk_tno;
 	
+	private RroomNumVO roomvo;
+	private TimeVO timevo;
 	
+	
+	public RroomNumVO getRoomvo() {
+		return roomvo;
+	}
+
+	public void setRoomvo(RroomNumVO roomvo) {
+		this.roomvo = roomvo;
+	}
+
+	public TimeVO getTimevo() {
+		return timevo;
+	}
+
+	public void setTimevo(TimeVO timevo) {
+		this.timevo = timevo;
+	}
+
 	public int getDsno() {
 		return dsno;
 	}

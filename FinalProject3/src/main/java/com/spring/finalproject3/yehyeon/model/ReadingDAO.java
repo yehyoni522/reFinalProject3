@@ -37,4 +37,27 @@ public class ReadingDAO implements InterReadingDAO {
 		return detailList;
 	}
 
+	@Override
+	public DetailSeatInfoVO searchSeatInfo(String dsno) {
+		
+		DetailSeatInfoVO detailvo = sqlsession.selectOne("Reading.searchSeatInfo", dsno);
+		
+		return detailvo;
+	}
+
+	@Override
+	public int updateDscheck(String dsno) {
+		
+		int n = sqlsession.update("Reading.updateDscheck", dsno);
+		
+		return n;
+	}
+
+	@Override
+	public int insertBooklist(BookListVO bookvo) {
+		
+		int m = sqlsession.insert("Reading.insertBooklist", bookvo);
+		return m;
+	}
+
 }
