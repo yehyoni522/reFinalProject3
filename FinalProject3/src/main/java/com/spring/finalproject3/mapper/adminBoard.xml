@@ -93,7 +93,7 @@
 	
 	
 	<!--  === tbl_board 테이블에 categoryno를 변경(update) === -->
-	<update id="updateCommentCount" parameterType="HashMap">
+	<update id="boardMove" parameterType="HashMap">
 		update tbl_board set categoryno = #{categoryno}
 		where seq = #{seq}
 	</update>
@@ -106,7 +106,7 @@
 		select comseq, categoryno, subject, content, name, reregdate 
 		from
 		(
-			select row_number() over(order by fk_seq desc) as rno,
+			select row_number() over(order by comseq desc) as rno,
 			        comseq, categoryno, subject, C.content, name, reregdate 
 					from tbl_person P join tbl_comment C
 					on C.fk_perno=P.perno
@@ -189,7 +189,14 @@
    	<!--  댓글 삭제하기 사실은 status를 0으로 변경 -->
 	<update id="commentDelete">
 		update tbl_comment set status = 0
-		where comseq = ${comseq}
+		where comseq = ${value}
+	</update>
+	
+	
+	<!--  게시글 삭제하기 사실은 status를 0으로 변경 -->
+	<update id="boardDelete">
+		update tbl_board set status = 0
+		where seq = ${value}
 	</update>
 	
 </mapper>

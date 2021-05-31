@@ -81,6 +81,13 @@ public class AdminBoardService implements InterAdminBoardService {
 		return n;
 	}
 
+//	=== 게시글 삭제하기 ===
+	@Override
+	public int boardDelete(String seq) {
+		int n = dao.boardDelete(seq);
+		return n;
+	}
+
 	
 	
 }
