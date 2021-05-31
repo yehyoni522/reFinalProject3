@@ -44,12 +44,12 @@
 	</select>
 	
 	<update id="updateDscheck" parameterType="String">
-		update tbl_detailsetinfo set dscheck = 1
+		update tbl_detailseatinfo set dscheck = 1
 		where dsno = #{dsno}
 	</update>
 	
 	<insert id="insertBooklist" parameterType="com.spring.finalproject3.yehyeon.model.BookListVO">
-		insert into spring_test(bno, bDate, fk_dsno, fk_perno, fk_tno)
+		insert into tbl_booklist(bno, bDate, fk_dsno, fk_perno, fk_tno)
 		values (seq_tbl_booklist.nextval, default, #{fk_dsno}, #{fk_perno}, #{fk_tno})
 	</insert>
 
