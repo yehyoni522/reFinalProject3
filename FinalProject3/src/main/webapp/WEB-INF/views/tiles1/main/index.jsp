@@ -122,7 +122,7 @@ function closeNav() {
   <a href="<%=ctxPath%>/board/list.sam?categoryno=4">공지사항</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=5">Q&A</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=1">게시판</a>
-  <a href="#">열람실좌석예약</a>
+  <a href="<%=ctxPath %>/reading/index.sam">열람실좌석예약</a>
   
 </div>
 

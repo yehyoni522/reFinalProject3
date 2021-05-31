@@ -1,9 +1,11 @@
 package com.spring.finalproject3.hyeminJang.comtroller;
 
+<<<<<<< HEAD
+=======
 import java.util.ArrayList;
 import java.util.HashMap;
+>>>>>>> refs/heads/main
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.service.InterMessageService;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
@@ -28,21 +29,19 @@ public class MessageController {
 	private InterMessageService service;
 	
 	// 받은 쪽지함 (리스트) 보기 
-	@RequestMapping(value="/message/inbox.sam")
+	@RequestMapping(value="/inbox.sam")
 	public ModelAndView inbox(ModelAndView mav, HttpServletRequest request) {
-		
-		List<InboxVO> inboxList = null;
-		
-		
-		
 		/*
+		List<InboxVO> boardList = null;
+		
 		HttpSession session = request.getSession();
-		personVO loginuser = (MemberVO) session.getAttribute("loginuser");*/
+		personVO loginuser = (MemberVO) session.getAttribute("loginuser");
 		
-		// 안읽은 글의 갯수 세기
-		int userid = 20201234;
-		int nonReadCount = service.getNonReadCount(userid);// 로그인한 사람의 id값이 들어가야함
+		// == 페이징 처리를 안한 검색어가 없는 전체 글목록 보여주기 == //
+		inboxList = service.inboxListNoSearch(perno);
 		
+<<<<<<< HEAD
+=======
 		mav.addObject("nonReadCount", nonReadCount);
 
 		// 안읽은 글만 보이기
@@ -96,74 +95,10 @@ public class MessageController {
 		else {
 			try {
 				currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
+>>>>>>> refs/heads/main
 				
-				if(currentShowPageNo < 1 || currentShowPageNo > totalPage) {
-					currentShowPageNo = 1;
-				}
-	
-			} catch (NumberFormatException e) {
-				currentShowPageNo = 1;
-			}
-		}
-
-		startRno = ((currentShowPageNo - 1 ) * sizePerPage) + 1;
-		endRno = startRno + sizePerPage - 1;
-
-		paraMap.put("startRno", String.valueOf(startRno));
-		paraMap.put("endRno", String.valueOf(endRno));
-
-		inboxList = service.inboxListSearchWithPaging(paraMap);
-		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
-
-		// 아래는 검색대상 컬럼과 검색어를 유지시키기 위한 것임.
-		if(!"".equals(searchType) && !"".equals(searchWord)) {
-			mav.addObject("paraMap", paraMap);
-		}
-
-
-		// === #121. 페이지바 만들기 === //
-		//   int blockSize = 10;
-		int blockSize = 10;
-		int loop = 1;
-		
-
-		int pageNo = ((currentShowPageNo - 1)/blockSize) * blockSize + 1;
-		
-		String pageBar = "<ul style='list-style: none;'>";
-		String url = "list.action";
-
-		// === [맨처음][이전] 만들기 === 
-		if(pageNo != 1) {
-			pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo=1'>[맨처음]</a></li>";
-			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo-1)+"'>[이전]</a></li>";
-		}
-
-		while( !(loop > blockSize || pageNo > totalPage) ) {
-
-			if(pageNo == currentShowPageNo) {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
-			}
-			else {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
-			}
-
-			loop++;
-			pageNo++;
-			
-		}// end of while------------------------
-
-
-		// === [다음][마지막] 만들기 === 
-		if(pageNo <= totalPage) {
-			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>[다음]</a></li>";
-			pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+totalPage+"'>[마지막]</a></li>";
-		}
-
-		pageBar += "</ul>";
-
-		mav.addObject("pageBar",pageBar);
-		
 		mav.addObject("inboxList", inboxList);	
+		*/	
 		mav.setViewName("message/inbox.tiles2");
 		// /WEB-INF/views/tiles2/message/inbox.jsp 파일을 생성한다.
 		
@@ -171,6 +106,10 @@ public class MessageController {
 	}
 	
 	// 받은 쪽지 보기
+<<<<<<< HEAD
+	@RequestMapping(value="/inView.sam")
+	public ModelAndView inView(ModelAndView mav) {
+=======
 	@RequestMapping(value="/message/inView.sam")
 	public ModelAndView inView(HttpServletRequest request, ModelAndView mav) {
 		
@@ -201,6 +140,7 @@ public class MessageController {
 		} catch(NumberFormatException e) {
 			
 		}
+>>>>>>> refs/heads/main
 		
 		mav.setViewName("message/inView.tiles2");
 		// /WEB-INF/views/tiles2/message/write.jsp 파일을 생성한다.
@@ -209,18 +149,13 @@ public class MessageController {
 	}
 	
 	// 쪽지 쓰기
+<<<<<<< HEAD
+	@RequestMapping(value="/write.sam")
+	public ModelAndView write(ModelAndView mav) {
+=======
 	@RequestMapping(value="/message/write.sam")
 	public ModelAndView write(HttpServletRequest request,ModelAndView mav) {
-		
-		/*
-		HttpSession session = request.getSession();
-		personVO loginuser = (MemberVO) session.getAttribute("loginuser");*/
-		
-		// 안읽은 글의 갯수 세기
-		int userid = 20201234;
-		int nonReadCount = service.getNonReadCount(userid);// 로그인한 사람의 id값이 들어가야함
-		
-		mav.addObject("nonReadCount", nonReadCount);
+>>>>>>> refs/heads/main
 		
 		mav.setViewName("message/write.tiles2");
 		// /WEB-INF/views/tiles2/message/write.jsp 파일을 생성한다.
@@ -230,19 +165,33 @@ public class MessageController {
 	
 
 	  // 아이디 찾아보기
+<<<<<<< HEAD
+	  @RequestMapping(value="/userFind.sam") 
+	  public String userFind() {
+	 
+=======
 	  @RequestMapping(value="/message/userFind.sam") 
 	  public String userFind(HttpServletRequest request) {
 		  String receiver = request.getParameter("receiver");
 		  
 		  request.setAttribute("receiver", receiver);
+>>>>>>> refs/heads/main
 		  return "tiles2/message/userFind";
 		  
 	 }
 	  
+<<<<<<< HEAD
+	  // inbox 쪽지 한개 삭제하기 
+	  @RequestMapping(value="/inDel.sam") 
+	  public String inDel() {
+	 
+		  return "tiles2/message/userFind";
+=======
 	  // inbox에서 체크박스에서 선택된 쪽지  삭제하기 
 	  @ResponseBody
 	  @RequestMapping(value="/message/goInDel.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	  public String inDel(@RequestParam(value="seqArr[]") List<Integer> deleteList, HttpServletRequest request) {
+>>>>>>> refs/heads/main
 		  
 		  ArrayList<Integer> deleteArray = new ArrayList<Integer>();
 		    for(int i=0;i<deleteList.size();i++){

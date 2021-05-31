@@ -6,12 +6,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
-
-@Component
-@Repository
 public class AdminBoardDAO implements InterAdminBoardDAO {
 
 	@Resource
@@ -20,7 +15,7 @@ public class AdminBoardDAO implements InterAdminBoardDAO {
 	// === 페이징 처리를 안한 검색어가 있는 전체 글목록 보여주기 === //
 	@Override
 	public List<AdminBoardVO> boardListSearch(Map<String, String> paraMap) {
-		List<AdminBoardVO> boardList = sqlsession.selectList("adminBoard.boardListSearch",paraMap);
+		List<AdminBoardVO> boardList = sqlsession.selectList("adminBoard.boardListNoSearch");
 		return boardList;
 	}
 
@@ -31,6 +26,8 @@ public class AdminBoardDAO implements InterAdminBoardDAO {
 		return wordList;
 	}
 
+<<<<<<< HEAD
+=======
 	@Override
 	public List<AdminBoardVO> boardListNoSearch() {
 		List<AdminBoardVO> boardList = sqlsession.selectList("adminBoard.boardListNoSearch");
@@ -65,4 +62,5 @@ public class AdminBoardDAO implements InterAdminBoardDAO {
 		return n;
 	}
 
+>>>>>>> refs/heads/main
 }

@@ -4,27 +4,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-<mapper namespace="adminBoard">
+<mapper namespace="board">
 
 	<!-- // === 페이징 처리를 안한 검색어가 있는 전체 글목록 보여주기 === -->
 	<select id="boardListSearch" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.AdminBoardVO">
-	   	select B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
-		from tbl_board B join tbl_person P
-		on B.fk_perno=P.perno
-		where status=1
-	   <if test='searchType != "" and searchWord != "" and searchType != "total"'>
+	   select seq, fk_userid, subject  
+	        , readcount, to_char(regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+	        , commentCount, thumb
+	   from tbl_board
+	   where status = 1
+	   <if test='searchType != "" and searchWord != "" '>
 	      and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
-	   </if>
-	   <if test='searchWord != "" and searchType == "total"'>
-	      and (lower(subject) like '%'|| lower(#{searchWord}) ||'%'
-	      	or lower(content) like '%'|| lower(#{searchWord}) ||'%'
-	      	)
 	   </if>
 	   order by seq desc
 	</select>
    
 	<!-- === #111. 검색어 입력시 자동글 완성하기 6 ===  -->
 	<select id="wordSearchShow" parameterType="HashMap" resultType="String">
+<<<<<<< HEAD
+	   select ${searchType}
+	   from tbl_board
+	   where status = 1
+	   and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+	   order by seq desc
+=======
 		   select ${searchType}
 		   from tbl_board B join tbl_person P
 		   on B.fk_perno=P.perno
@@ -34,9 +37,12 @@
         	and categoryno = ${viewBoard}
            </if>
 		   order by seq desc
+>>>>>>> refs/heads/main
 	</select>
    
    
+<<<<<<< HEAD
+=======
    <select id="boardListNoSearch" resultType="com.spring.finalproject3.seoyeon.model.AdminBoardVO">
    		select B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
 		from tbl_board B join tbl_person P
@@ -92,4 +98,5 @@
 	
 	
    
+>>>>>>> refs/heads/main
 </mapper>

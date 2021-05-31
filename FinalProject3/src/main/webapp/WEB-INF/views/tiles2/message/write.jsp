@@ -189,13 +189,13 @@ button.re:hover{
 	});
 
 	function goWrite(){
-		location.href="<%= ctxPath%>/message/write.sam";
+		location.href="<%= ctxPath%>/write.sam";
 	}
 	function goInbox(){
-		location.href="<%= ctxPath%>/message/inbox.sam";
+		location.href="<%= ctxPath%>/inbox.sam";
 	}
 	function goOutbox(){
-		location.href="<%= ctxPath%>/message/outbox.sam";
+		location.href="<%= ctxPath%>/outbox.sam";
 	}
 	
 	function goSearch() {
@@ -221,7 +221,7 @@ button.re:hover{
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
+			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">2</div></div>
 			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
 		</div>
 	</div>	

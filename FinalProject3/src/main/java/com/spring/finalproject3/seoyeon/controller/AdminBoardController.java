@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +24,6 @@ import com.spring.finalproject3.seoyeon.service.InterAdminBoardService;
 @Controller
 public class AdminBoardController {
 	
-	@Autowired 
 	private InterAdminBoardService service;
 	
 	// ============= ***** 관리자 게시판 페이지 ***** ============= //
@@ -32,13 +31,17 @@ public class AdminBoardController {
 		public ModelAndView admin_boardList(ModelAndView mav, HttpServletRequest request) {
 			
 			List<AdminBoardVO> boardList = null;
+<<<<<<< HEAD
+
+			// == 페이징 처리를 안한 검색어가 있는 전체 글목록 보여주기 == //
+=======
 			
 			// 검색어 입력
+>>>>>>> refs/heads/main
 	       String searchType = request.getParameter("searchType");
 	       String searchWord = request.getParameter("searchWord");
-	       String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 	       
-	       if(searchType ==null||(!"total".equals(searchType)&&!"subject".equals(searchType)&&!"name".equals(searchType))&&!"content".equals(searchType)) {
+	       if(searchType ==null||(!"subject".equals(searchType)&&!"name".equals(searchType))) {
 	          searchType = "";
 	       }
 	       
@@ -55,6 +58,21 @@ public class AdminBoardController {
 	       String viewBoard = request.getParameter("viewBoard");
 
 	       
+<<<<<<< HEAD
+	       boardList = service.boardListSearch(paraMap);
+		       
+	    	
+	    	HttpSession session = request.getSession();
+	    	session.setAttribute("readCountPermission", "yes");
+	    	
+	    	mav.addObject("boardList", boardList);
+	    	mav.setViewName("admin/adminBoard.tiles1");
+	    	
+	    	// 아래는 검색대상 컬럼과 검색어를 유지시키기 위한 것임.
+	        if(!"".equals(searchType) && !"".equals(searchWord)) {
+	           mav.addObject("paraMap",paraMap);
+	        }
+=======
 	       if(viewBoard == null||!("1".equals(viewBoard) || "2".equals(viewBoard) || "3".equals(viewBoard)) ) { 
 	    	   viewBoard = "";
 			}
@@ -156,13 +174,14 @@ public class AdminBoardController {
 	    	mav.addObject("totalCount",totalCount);
 	    	mav.addObject("boardList", boardList);
 	    	mav.setViewName("admin/adminBoard.tiles1");	    		    	
+>>>>>>> refs/heads/main
 	        
 	    	return mav;
 		}
 		
 	//	=== 검색어 입력 시 자동글 완성하기 ===
 		@ResponseBody
-	 	@RequestMapping(value="/admin/wordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	 	@RequestMapping(value="/wordSearchShow.action", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	 	public String wordSearchShow(HttpServletRequest request) {
 	 		String searchType = request.getParameter("searchType");
 	 		String searchWord = request.getParameter("searchWord");
@@ -197,6 +216,8 @@ public class AdminBoardController {
 	 		// "[{"word":"글쓰기 첫번쨰 연습입니다"},{"word":"글쓰기 두번째 연습입니다"}]"
 	 	}
 		
+<<<<<<< HEAD
+=======
 		
 //		=== 게시글 이동하기 ===
 		@ResponseBody
@@ -224,14 +245,11 @@ public class AdminBoardController {
 		
 		
 		
+>>>>>>> refs/heads/main
 	// ============= ***** 관리자 댓글 페이지 ***** ============= //
 		@RequestMapping(value="/admin/commentList.sam")
 		public ModelAndView admin_commentList(ModelAndView mav, HttpServletRequest request) {
 	
-			List<AdminBoardVO> boardList = null;
-			 boardList = service.boardListNoSearch();
-			 mav.addObject("boardList", boardList);
-			 
 	    	mav.setViewName("admin/adminComment.tiles1");
 	    	
 	    	return mav;

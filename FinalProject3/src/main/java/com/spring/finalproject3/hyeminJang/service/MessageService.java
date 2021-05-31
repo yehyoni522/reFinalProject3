@@ -1,22 +1,30 @@
 package com.spring.finalproject3.hyeminJang.service;
 
+<<<<<<< HEAD
+=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> refs/heads/main
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+<<<<<<< HEAD
+=======
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.InterMessageDAO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
+>>>>>>> refs/heads/main
 //=== #31. Service 선언 === 
 //트랜잭션 처리를 담당하는곳 , 업무를 처리하는 곳, 비지니스(Business)단
 @Component
 @Service
 public class MessageService implements InterMessageService {
+<<<<<<< HEAD
+=======
 	
 	@Autowired
 	private InterMessageDAO dao; 
@@ -90,5 +98,6 @@ public class MessageService implements InterMessageService {
 	}
 
 
+>>>>>>> refs/heads/main
 
 }
