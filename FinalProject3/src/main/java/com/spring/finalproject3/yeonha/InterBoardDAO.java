@@ -17,6 +17,12 @@ public interface InterBoardDAO {
 	// 검색어 입력시 자동글 완성하기
 	List<String> wordSearchShow(Map<String, String> paraMap);
 
+	// 글1개 조회하기 
+	BoardVO getView(String seq);
+
+	// 글조회수 1증가 하기
+	void setAddReadCount(String seq);
+
 
 	
 }

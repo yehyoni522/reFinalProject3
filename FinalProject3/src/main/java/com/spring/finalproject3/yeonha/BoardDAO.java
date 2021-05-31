@@ -9,6 +9,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+
 @Component
 @Repository
 public class BoardDAO implements InterBoardDAO {
@@ -42,6 +43,19 @@ public class BoardDAO implements InterBoardDAO {
 	public List<String> wordSearchShow(Map<String, String> paraMap) {
 		List<String> wordList = sqlsession.selectList("board.wordSearchShow", paraMap);
 		return wordList;
+	}
+
+	// 글1개 조회하기
+	@Override
+	public BoardVO getView(String seq) {
+		BoardVO boardvo = sqlsession.selectOne("board.getView", seq);
+		return boardvo;
+	}
+
+	// 글조회수 1증가 하기
+	@Override
+	public void setAddReadCount(String seq) {
+		sqlsession.update("board.setAddReadCount", seq);		
 	}
 
 

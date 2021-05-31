@@ -193,7 +193,7 @@ public class BoardController {
 		return mav;
 	}
 	
-	// 검색어 입력시 자동글 완성하기
+	// 검색어 입력시 자동글 완성하기(글쓴이검색 아직 안됨 board.xml 오류나는거 수정하기)
 	@ResponseBody
 	@RequestMapping(value="/board/wordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public String wordSearchShow(HttpServletRequest request) {
@@ -225,7 +225,56 @@ public class BoardController {
 		return jsonArr.toString(); 
 	}
 	
-	
+	// 글 한개를 보여주는 페이지 요청  
+	@RequestMapping(value="/board/view.sam")
+	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
+		
+		String seq = request.getParameter("seq");
+		
+		String gobackURL = request.getParameter("gobackURL");
+		mav.addObject("gobackURL", gobackURL);
+		
+		String categoryno = request.getParameter("categoryno");
+		// System.out.println(categoryno);
+		mav.addObject("categoryno", categoryno);
+		
+		try {
+			Integer.parseInt(seq);
+			
+			String login_userid = null;
+			
+			HttpSession session = request.getSession();
+			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+			
+			if(loginuser != null) {
+				login_userid = loginuser.getPerno();				
+			}
+			
+			
+			BoardVO boardvo = null;
+			
+			if("yes".equals(session.getAttribute("readCountPermission"))) {
+				
+				boardvo = service.getView(seq, login_userid);
+				
+				session.removeAttribute("readCountPermission");
+			}
+			else {
+				
+				boardvo = service.getViewWithNoAddCount(seq);
+				
+			}
+			
+			mav.addObject("boardvo", boardvo);
+			
+	    }catch(NumberFormatException e) {
+	    	
+	    }	
+		
+		mav.setViewName("board/view.tiles1");
+		
+		return mav;
+	}
 	
 	
 	

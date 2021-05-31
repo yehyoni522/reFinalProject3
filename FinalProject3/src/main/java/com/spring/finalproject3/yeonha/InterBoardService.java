@@ -18,6 +18,12 @@ public interface InterBoardService {
 	// 검색어 입력시 자동글 완성하기
 	List<String> wordSearchShow(Map<String, String> paraMap);
 
+	// 글1개를 보여주는 페이지 요청
+	BoardVO getView(String seq, String login_userid);
+
+	// 글조회수 증가는 없고 단순히 글1개 조회만을 해주는 것이다.
+	BoardVO getViewWithNoAddCount(String seq);
+
 
 
 

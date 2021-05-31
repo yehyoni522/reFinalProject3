@@ -32,7 +32,7 @@
 
 <script type="text/javascript">
 
-	$(document).ready(function(){
+	<%-- $(document).ready(function(){
 		
 	//	goReadComment();  // 페이징처리 안한 댓글 읽어오기
 		goViewComment(1); // 페이징처리 한 댓글 읽어오기 
@@ -171,7 +171,7 @@
 	// ==== 댓글내용 페이지바  Ajax로 만들기 ==== // 
 	function makeCommentPageBar(currentShowPageNo) {
 	
-		<%-- 원글에 대한 댓글의 totalPage 수를 알아오려고 한다. --%> 
+		원글에 대한 댓글의 totalPage 수를 알아오려고 한다. 
 		$.ajax({
 			url:"<%= ctxPath%>/board/getCommentTotalPage.sam",
 			data:{"parentSeq":"${requestScope.boardvo.seq}",
@@ -227,18 +227,29 @@
 			error: function(request, status, error){
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		 	}
-		});
+		}); 
 		
 	}// end of function makeCommentPageBar(currentShowPageNo) {}-----------------
 	
-	
+	--%>
 	
 	
 </script>
-
+<c:if test="${categoryno == 1 || categoryno == 2 || categoryno == 3}"> 	
+<hr>
+	<div id="boardmenu" style="padding-left: 25%;">
+		<ul>
+			<li style='display:inline-block; font-size: 20pt;'><a class="boarda" href="<%=ctxPath%>/board/list.sam?categoryno=1">자유게시판</a><span style="border-right: 2px black solid; margin: 0 80px 0 80px;"></span></li>
+			<li style='display:inline-block; font-size: 20pt;'><a class="boarda" href="<%=ctxPath%>/board/list.sam?categoryno=2">중고거래</a><span style="border-right: 2px black solid; margin: 0 80px 0 80px;"></span></li>	
+			<li style='display:inline-block; font-size: 20pt;'><a class="boarda" href="<%=ctxPath%>/board/list.sam?categoryno=3">동아리&공모전 모집</a></li>	
+		</ul>	
+	</div>	
+<hr>
+</c:if> 
 <div style="padding-left: 10%;">
 	<h1>글내용보기</h1>
 
+	${requestScope.boardvo.name}
 	<c:if test="${not empty requestScope.boardvo}">
 		<table id="table">
 			<tr>
@@ -287,7 +298,7 @@
 	<button type="button" onclick="javascript:location.href='<%= ctxPath%>/board/del.sam?seq=${requestScope.boardvo.seq}'">삭제</button>
 
 
-    <%-- === #83. 댓글쓰기 폼 추가 === --%>
+  <%--   <%-- === #83. 댓글쓰기 폼 추가 === 
     <c:if test="${not empty sessionScope.loginuser}">
     	<h3 style="margin-top: 50px;">댓글쓰기 및 보기</h3>
 		<form name="addWriteFrm" style="margin-top: 20px;">
@@ -296,7 +307,7 @@
 			&nbsp;&nbsp;
 			댓글내용 : <input id="commentContent" type="text" name="content" class="long" /> 
 			
-			<%-- 댓글에 달리는 원게시물 글번호(즉, 댓글의 부모글 글번호) --%>
+			댓글에 달리는 원게시물 글번호(즉, 댓글의 부모글 글번호)
 			<input type="hidden" name="parentSeq" value="${requestScope.boardvo.seq}" /> 
 			
 			<button id="btnComment" type="button" onclick="goAddWrite()">확인</button> 
@@ -321,9 +332,9 @@
 		<tbody id="commentDisplay"></tbody>
 	</table>
 
-    <%-- ==== #136. 댓글 페이지바 ==== --%>
+    ==== #136. 댓글 페이지바 ====
     <div id="pageBar" style="border:solid 0px gray; width: 90%; margin: 10px auto; text-align: center;"></div> 
-     
+      --%>
 </div>
 
 

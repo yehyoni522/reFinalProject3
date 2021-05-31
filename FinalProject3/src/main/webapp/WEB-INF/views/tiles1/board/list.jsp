@@ -136,8 +136,9 @@
 	function goView(seq) {
 		
 		var frm = document.goViewFrm;
+		frm.seq.value=seq;
 		frm.method="get";
-		frm.action="<%= ctxPath%>/baord/view.sam";
+		frm.action="<%= ctxPath%>/board/view.sam";
 		frm.submit();
 	    
 	}// end of function goView(seq) {}-----------------------
@@ -198,13 +199,12 @@
 		   <tr>	
 		   	   <td align="center">${boardvo.seq}</td>
 		   	   <td align="center">
-		   	   	 
-		   	   	 <c:if test="${boardvo.commentCount > 0}">
+		   	   	<c:if test="${boardvo.commentCount > 0}">
 		   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> 
 		   	   	 </c:if>
 		   	   	 <c:if test="${boardvo.commentCount == 0}">
 		   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
-	   	  		 </c:if>
+	   	  		 </c:if> 
 		   	   </td>
 		   	   <td align="center">${boardvo.good}</td>
 		   	   <c:if test="${boardvo.namecheck == 0}">
@@ -247,4 +247,5 @@
 <form name="goViewFrm">
 	<input type="hidden" name="seq" />
 	<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
+	<input type="hidden" name="categoryno" value="${categoryno}">
 </form>
