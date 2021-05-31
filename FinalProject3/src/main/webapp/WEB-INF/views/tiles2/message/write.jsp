@@ -199,9 +199,7 @@ button.re:hover{
 	}
 	
 	function goSearch() {
-		
-		sessionStorage.setItem('receiver',  $("input[name=receiver]").val());
-		
+	
 	    var lo_form = document.writeFrm;
 	    lo_form.target = "idFindiframe";
 	    lo_form.action = "<%=ctxPath%>/message/userFind.sam";

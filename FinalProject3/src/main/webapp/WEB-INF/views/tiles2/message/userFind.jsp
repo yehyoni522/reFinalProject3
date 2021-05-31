@@ -82,6 +82,19 @@ table.type03 td {
     background-color : #ffff99;
 }
 
+.sch_smit_1 {
+	width: 60px; height: 30px;
+	margin-top: 5px; border: 0;
+	vertical-align: top;
+	background: #205890;
+	color: white;
+	border-radius: 20px;
+	cursor: pointer;
+	font-size: 12px;
+}
+.sch_smit_1:hover {
+	background: #173F67;
+}
 
 
 </style>
@@ -96,6 +109,8 @@ table.type03 td {
 		$("input:checkbox[name=checked]").each(function(index, item){ 
 			
 			var bChecked = $(item).prop("checked");
+			
+			console.log("dd"+bChecked);
 			
 			if (bChecked) {	// 체크표시가 안되어있는 상품일 경우 반복문 종료
 				$(item).addClass("input_newColor");
@@ -140,7 +155,8 @@ table.type03 td {
 				if(json.name != null) {
 					
 						html += "<tr>";
-						html += "<td style='text-align: center;'><input name='checked' type='checkbox' value='"+json.perno+"'></td>";
+						html += "<td><input style='font-size:10px;' type='button' value='추가'></td>";
+						html += "<td>"+ json.perno +"</td>";
 						html += "<td>"+ json.identity +"</td>";
 						html += "<td>"+ json.nameMaj +"</td>";
 						html += "<td>"+ json.name +"</td>";
@@ -149,7 +165,7 @@ table.type03 td {
 				}
 				else {
 					html += "<tr>";
-					html += "<td colspan='4''>정확한 주소를 입력해주세요</td>";
+					html += "<td colspan='5''>\'"+input+"\'에 대한 정보가 없습니다. 정확한 주소를 입력해주세요</td>";
 					html += "</tr>";
 				}
 				
@@ -173,15 +189,16 @@ table.type03 td {
 			<input type='text' name="text" class='input_text'/>
 			
 		</span>
-			<button type='submit' class='sch_smit' onclick="goSearch()">검색</button>
+			<button type='button' class='sch_smit' onclick="goSearch()">검색</button>
    </div>
-   <div id="error"></div>
+   
 </form>
 
 	<table class="type03">
       <thead>
      <tr>
 		    <th style="text-align: center; width: 10%;">선택</th>
+		    <th style="text-align: center;">학번/교번</th>
 			<th style="text-align: center;">구분</th>
 			<th style="text-align: center;">학과</th>
 			<th style="text-align: center;">이름</th>
@@ -189,7 +206,12 @@ table.type03 td {
       </thead>
       <tbody id="commentDisplay"></tbody>
    </table>
+   <div id="error" align="center" style="color: red;"></div>
    
+   <div id="receiverID" style="boder: solid 1px gray;"></div>
+   
+   <div align="center"> <button type='submit' class='sch_smit_1' onclick="">선택하기</button></div>
+  
    
    
 
