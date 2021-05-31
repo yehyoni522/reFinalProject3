@@ -1,17 +1,12 @@
 package com.spring.finalproject3.hyeminJang.model;
 
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
->>>>>>> refs/heads/main
 
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 public interface InterMessageDAO {
-<<<<<<< HEAD
-=======
 
 	// 총 게시물 건수(totalCount)
 	int getTotalCount(Map<String, String> paraMap);
@@ -39,7 +34,6 @@ public interface InterMessageDAO {
 
 	// 학과 이름 가져오기
 	String getNameMaj(int majseq);
->>>>>>> refs/heads/main
 	
 
 }

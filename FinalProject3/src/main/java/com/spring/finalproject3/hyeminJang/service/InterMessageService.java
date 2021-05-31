@@ -1,7 +1,5 @@
 package com.spring.finalproject3.hyeminJang.service;
 
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +7,8 @@ import java.util.Map;
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
->>>>>>> refs/heads/main
 public interface InterMessageService {
 
-<<<<<<< HEAD
-=======
 	// 총게시물건수
 	int getTotalCount(Map<String, String> paraMap);
 
@@ -43,5 +38,4 @@ public interface InterMessageService {
 	
 
 
->>>>>>> refs/heads/main
 }
