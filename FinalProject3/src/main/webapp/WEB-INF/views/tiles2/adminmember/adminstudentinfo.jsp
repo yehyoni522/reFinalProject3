@@ -101,7 +101,7 @@ th {
 	<div id="admincontent">
 	
 		<div class="backadminstudent">
-			<span>학생 관리 목록 돌아가기</span>
+			<button type="button" onclick="javascript:location.href='${requestScope.gobackURL}'">학생 관리 목록 돌아가기</button>
 		</div>
 		
 		<h4> 학생 상세 정보 </h4>
@@ -111,11 +111,11 @@ th {
 					<tr>
 						<td rowspan="3"></td>
 						<td>학번</td>
-						<td></td>
+						<td>${requestScope.personvo.perno}</td>
 						<td>성명</td>
-						<td></td>
+						<td>${requestScope.personvo.name}</td>
 						<td>생년월일</td>
-						<td></td>
+						<td>${requestScope.personvo.birthday}</td>
 					</tr>
 					<tr>
 						<td>소속 및 학년</td>
@@ -125,11 +125,11 @@ th {
 					</tr>
 					<tr>
 						<td>연락처</td>
-						<td></td>
+						<td>${requestScope.personvo.mobile}</td>
 						<td>이메일</td>
-						<td></td>
+						<td>${requestScope.personvo.email}</td>
 						<td>주소</td>
-						<td></td>
+						<td>${requestScope.personvo.address}</td>
 					</tr>
 				</tbody>
 			</table>

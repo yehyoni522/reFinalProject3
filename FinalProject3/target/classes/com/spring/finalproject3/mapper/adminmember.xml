@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="adminmember">
+
+	<resultMap type="HashMap" id="adminsudentMap">
+		<result property="FK_MAJSEQ" column="fk_majseq" javaType="int" />
+		<result property="PERNO" column="perno" javaType="int" />
+		<result property="NAME" column="name" javaType="String" />
+		<result property="BIRTHDAY" column="birthday" javaType="String" />
+		<result property="MOBILE" column="mobile" javaType="String" />
+		<result property="EMAIL" column="email" javaType="String" />
+		<result property="CONTENT" column="content" javaType="String" />
+	</resultMap>
+	
+	<!-- 관리자페이지 회원관리 학생목록보기 -->
+	<select id="getAdminStudent" parameterType="HashMap" resultMap="adminsudentMap">
+		select fk_majseq, perno, name, mobile, email, content , rno, birthday
+		from        
+		(        
+		    select fk_majseq, perno, name, mobile, email, content , birthday,
+		           row_number() over(order by perno desc) as rno     
+		    from tbl_person p join tbl_major m
+		    on p.fk_majseq = m.MAJSEQ
+		    where idle = 0 and identity = 0
+		    <if test='searchWord != ""'>
+		    and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+		    </if>
+		)v
+		where rno between #{startRno} and #{endRno}
+	</select>
+	
+	<!-- === 총 학생 수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === -->
+   	<select id="getTotalCount" parameterType="HashMap" resultType="int">
+   		select count(*)
+		from tbl_person p join tbl_major m
+		on p.fk_majseq = m.MAJSEQ
+		where idle = 0 and identity = 0
+   		<if test='searchWord != ""'>
+   			and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+   		</if>
+   	</select>
+   	
+   	<select id="getStudentView" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.PersonVO">
+   		select perno, name, birthday, mobile, email, address
+		from tbl_person
+		where idle = 0 and identity = 0 and perno = #{PERNO}
+   	</select>
+
+	<!-- === 총 학생 수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === -->
+   	<select id="getProfessorTotalCount" parameterType="HashMap" resultType="int">
+   		select count(*)
+		from tbl_person p join tbl_major m
+		on p.fk_majseq = m.MAJSEQ
+		where idle = 0 and identity = 1
+   		<if test='searchWord != ""'>
+   			and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+   		</if>
+   	</select>
+   	
+   	<!-- 관리자페이지 회원관리 교수목록보기 -->
+	<select id="getAdminProfessor" parameterType="HashMap" resultMap="adminsudentMap">
+		select fk_majseq, perno, name, mobile, email, content , rno, birthday
+		from        
+		(        
+		    select fk_majseq, perno, name, mobile, email, content , birthday,
+		           row_number() over(order by perno desc) as rno     
+		    from tbl_person p join tbl_major m
+		    on p.fk_majseq = m.MAJSEQ
+		    where idle = 0 and identity = 1
+		    <if test='searchWord != ""'>
+		    and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+		    </if>
+		)v
+		where rno between #{startRno} and #{endRno}
+	</select>
+	
+	
+
+
+
+</mapper>

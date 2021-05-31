@@ -97,11 +97,69 @@ tr {
 </style>
 
 <script>
+
 	$(function(){
 		
+		$("input#searchWord").bind("keydown", function(event){
+			if(event.keyCode == 13){
+				// 엔터를 했을 경우
+				goSearch();
+			}
+		}); // 검색 엔터를 했을 경우
 		
 		
-	});
+		var checkbox_student = document.getElementsByName("PERNO");
+		
+		for(var i=0; i<checkbox_student.length; i++){
+			
+			checkbox_student[i].addEventListener('click', function(){
+				var bool = this.checked;
+				
+				if(!bool){
+					allCheckStudent.checked = false;
+				}
+				else {
+					
+					var bFlag = false;
+					for(var j=0; j<checkbox_student.length; j++){
+						
+						if(!checkbox_student[j].checked) {
+							// 체크박스가 체크가 되어진 경우이라면 
+							bFlag = true;
+							break;
+						}
+					} // end of for
+					
+					if(!bFlag){
+						// 모든 하위체크박스에 체크가 되어진 경우
+						allCheckStudent.checked = true; // allCheck 는 전체선택/전체해제에 해당하는 체크박스이다.
+					}
+					
+				}
+				
+			});
+			
+		} // end of for // 체크박스 전체선택/해체	
+		
+		
+	}); // end of $(function(){})
+	
+	function goSearch(){
+		
+		var frm = document.searchFrm;
+		
+		frm.method = "get";
+		frm.action = "<%=ctxPath%>/admin/blacklist.sam";
+		frm.submit();	
+		
+	} // end of function goSearch(){}
+	
+	function allCheckStart() {
+		
+		var bool = $("input#allCheckStudent").is(":checked");
+		$("input.CheckStudent").prop("checked",bool);
+		
+	}// end of function allCheckStart()-------------------
 
 </script>
 
@@ -140,14 +198,16 @@ tr {
 		</div>
 		
 		<div class="admintitlesearch">
-			<select style="width: 100px;">
-				<option>이름</option>
-				<option>아이디</option>
-				<option>이메일</option>
-			</select>
-			<input type="text" id="searchWord" name="searchWord"/>    
-     		<input type="text" style="display: none;"/>
-     		<button type="button" onclick="goSearch();">검색</button>  
+			<form name="searchFrm">
+				<select name="searchType" style="width: 100px;">
+					<option value="name">이름</option>
+					<option value="content">학과</option>
+					<option value="email">이메일</option>
+				</select>
+				<input type="text" id="searchWord" name="searchWord"/>    
+	     		<input type="text" style="display: none;"/>
+	     		<button type="button" onclick="goSearch();">검색</button>
+     		</form> 
 		</div>
 		
 		<div style="clear: both;">
@@ -172,35 +232,37 @@ tr {
 			<table>
 				<thead>
 					<tr style="font-weight: bold;">
-						<th class="admthtd"><input type="checkbox"/></th>
+						<th class="admthtd"><input type="checkbox" id="allCheckStudent" onClick="allCheckStart();"><label for="allCheckStudent"></label></th>  
 						<th class="thall" style="margin-right: 70px; width: 30px;">No</th>
-						<th class="admthtdall thall">단과대학</th>
+						<th class="admthtdall thall">학과코드</th>
 						<th class="admthtdall thall">학과</th>
-						<th class="admthtdall thall">교수번호</th>
+						<th class="admthtdall thall">학번</th>
 						<th class="admthtdall thall">성함</th>
-						<th class="admthtdall thall">아이디</th>
 						<th class="admthtdall thall">휴대전화</th>
 						<th class="admthtdall thall">이메일</th>
 					</tr>
 				</thead>
 				
 				<tbody>
-					<c:forEach begin="0" step="1" end="15"  >			
-						<tr>
-							<td class="admthtd"><input type="checkbox"/></td>
-							<td style="margin-right: 70px; width: 30px;">d</td>
-							<td class="admthtdall">단과대학</td>
-							<td class="admthtdall">d</td>
-							<td class="admthtdall">d</td>
-							<td class="admthtdall">d</td>
-							<td class="admthtdall">d</td>
-							<td class="admthtdall">d</td>
-							<td class="admthtdall">d</td>
+					<c:forEach var="personMap" items="${requestScope.personList}" varStatus="status">			
+						<form name="studentinfoFrm">
+						<tr>		
+							<td><input type="checkbox" class="CheckStudent student" name="PERNO" id="CheckStudent${status.index}" value="${personMap.PERNO}"><label for="CheckStudent${status.index}"></label></td>
+							<td style="margin-right: 70px; width: 30px;">${status.count}</td>
+							<td class="admthtdall goinfo">${personMap.FK_MAJSEQ}</td>
+							<td class="admthtdall goinfo">${personMap.CONTENT}</td>
+							<td class="admthtdall goinfo" onclick="goView('${personMap.PERNO}')">${personMap.PERNO}</td>
+							<td class="admthtdall goinfo">${personMap.NAME}</td>
+							<td class="admthtdall goinfo">${personMap.MOBILE}</td>
+							<td class="admthtdall goinfo">${personMap.EMAIL}</td>						
 						</tr>
+						</form>
 					</c:forEach>
 				</tbody>
 			</table>
-			<div align="center" style="margin-top: 10px;">페이지 이동 링크</div>
+			<div align="center" style="width: 70%; border: 0px gray solid; margin: 20px auto;">
+		   		${requestScope.pageBar}
+		   	</div>
 		</div>
 						
 	</div>

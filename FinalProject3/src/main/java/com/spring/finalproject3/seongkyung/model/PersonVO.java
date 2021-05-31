@@ -15,6 +15,8 @@ public class PersonVO {
 	private int idle;		// 휴면유무(0 : 활동중  / 1 : 휴면중) 
 	private int identity;	// 정체성(0:학생, 1:교수, 2:관리자)
 	
+	private MajorVO majorvo;
+	
 	public PersonVO() {}
 	
 	public PersonVO(int perno, int fk_majseq, String name, String gender, String birthday, String address, String email,
@@ -128,6 +130,14 @@ public class PersonVO {
 
 	public void setIdentity(int identity) {
 		this.identity = identity;
+	}
+
+	public MajorVO getMajorvo() {
+		return majorvo;
+	}
+
+	public void setMajorvo(MajorVO majorvo) {
+		this.majorvo = majorvo;
 	}
 	
 	
