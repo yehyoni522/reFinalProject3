@@ -4,8 +4,8 @@
 <mapper namespace="adminmember">
 
 	<resultMap type="HashMap" id="adminsudentMap">
-		<result property="FK_MAJSEQ" column="fk_majseq" javaType="int" />
-		<result property="PERNO" column="perno" javaType="int" />
+		<result property="FK_MAJSEQ" column="fk_majseq" javaType="String" />
+		<result property="PERNO" column="perno" javaType="String" />
 		<result property="NAME" column="name" javaType="String" />
 		<result property="BIRTHDAY" column="birthday" javaType="String" />
 		<result property="MOBILE" column="mobile" javaType="String" />
