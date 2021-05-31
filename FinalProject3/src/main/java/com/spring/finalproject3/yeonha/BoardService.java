@@ -33,6 +33,13 @@ public class BoardService implements InterBoardService {
 		return boardList;
 	}
 
+	// 검색어 입력시 자동글 완성하기
+	@Override
+	public List<String> wordSearchShow(Map<String, String> paraMap) {
+		List<String> wordList = dao.wordSearchShow(paraMap);
+		return wordList;
+	}
+
 
 
 }

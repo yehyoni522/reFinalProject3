@@ -8,10 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.common.MyUtil;
@@ -70,11 +73,11 @@ public class BoardController {
 		List<BoardVO> boardList = null;
 		
 		HttpSession session = request.getSession();
-		session.setAttribute("readCountPermission", "yes");
+		session.setAttribute("readCountPermission", "yes");		
 		
 		// 카테고리번호(1:자유,2:중고,3:모집,4:전체공지,5:Q&A)	
 		String categoryno = request.getParameter("categoryno");		
-		mav.addObject("categoryno", categoryno);
+		mav.addObject("categoryno", categoryno); // jsp에서 카테고리 번호 호출하기 위함
 		
 		String searchType = request.getParameter("searchType"); 
 		String searchWord = request.getParameter("searchWord");
@@ -190,7 +193,37 @@ public class BoardController {
 		return mav;
 	}
 	
-	
+	// 검색어 입력시 자동글 완성하기
+	@ResponseBody
+	@RequestMapping(value="/board/wordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String wordSearchShow(HttpServletRequest request) {
+		
+		String searchType = request.getParameter("searchType");
+		String searchWord = request.getParameter("searchWord");
+		String categoryno = request.getParameter("categoryno");	
+		
+		// System.out.println(categoryno);
+		
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);
+		paraMap.put("categoryno", categoryno);
+		
+		List<String> wordList = service.wordSearchShow(paraMap);
+		
+		JSONArray jsonArr = new JSONArray(); // []
+		
+		if(wordList != null) {
+			for(String word : wordList) {
+				JSONObject jsonObj = new JSONObject(); // {}
+				jsonObj.put("word", word); 
+				
+				jsonArr.put(jsonObj);
+			}
+		}
+		
+		return jsonArr.toString(); 
+	}
 	
 	
 	

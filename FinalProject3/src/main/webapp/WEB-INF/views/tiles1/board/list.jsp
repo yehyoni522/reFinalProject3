@@ -78,10 +78,11 @@
          	}
          	else {
             	$.ajax({
-               		url:"<%= ctxPath%>/wordSearchShow.action",
+               		url:"<%= ctxPath%>/board/wordSearchShow.sam",
            		 	type:"get",
                		data:{"searchType":$("select#searchType").val()
-                   		 ,"searchWord":$("input#searchWord").val()},
+                   		 ,"searchWord":$("input#searchWord").val()
+                   		 ,"categoryno":$("input#catnoSearch").val()},
                		dataType:"json",
                		success:function(json){ 
                   		if(json.length > 0) {
@@ -128,13 +129,13 @@
   		location.href="<%=ctxPath%>/board/add.sam";
 	});
 	
+
 	});// end of $(document).ready(function(){})------------------
 	
 	
 	function goView(seq) {
 		
 		var frm = document.goViewFrm;
-		frm.seq.value=seq;
 		frm.method="get";
 		frm.action="<%= ctxPath%>/baord/view.sam";
 		frm.submit();
@@ -150,20 +151,24 @@
 		
 	} // end of function goSearch(){}
 	
+
+	
 	
 </script>
 	
-<div id="boardmenu" style="padding-left: 25%;">
-	<c:if test="${categoryno == 1 || categoryno == 2 || categoryno == 3}"> 	
-	<hr>
+
+<c:if test="${categoryno == 1 || categoryno == 2 || categoryno == 3}"> 	
+<hr>
+	<div id="boardmenu" style="padding-left: 25%;">
 		<ul>
 			<li style='display:inline-block; font-size: 20pt;'><a class="boarda" href="<%=ctxPath%>/board/list.sam?categoryno=1">자유게시판</a><span style="border-right: 2px black solid; margin: 0 80px 0 80px;"></span></li>
 			<li style='display:inline-block; font-size: 20pt;'><a class="boarda" href="<%=ctxPath%>/board/list.sam?categoryno=2">중고거래</a><span style="border-right: 2px black solid; margin: 0 80px 0 80px;"></span></li>	
 			<li style='display:inline-block; font-size: 20pt;'><a class="boarda" href="<%=ctxPath%>/board/list.sam?categoryno=3">동아리&공모전 모집</a></li>	
 		</ul>	
-	<hr>
-	</c:if>  
-</div>
+	</div>	
+<hr>
+</c:if>  
+
 
 <div style="padding-left: 10%;">
 	<h2 style="margin-bottom: 30px;">
@@ -173,10 +178,12 @@
  		<c:if test="${categoryno == 4}">공지사항</c:if> 
  		<c:if test="${categoryno == 5}">Q&A</c:if> 
  	</h2>
-	<select id="newhit">
-		<option>최신순</option>
-		<option>인기순</option>
-	</select>
+ 	<form name="newhitFrm">
+		<select id="newhit">
+			<option value="1">최신순</option>
+			<option value="2">인기순</option>
+		</select>
+	</form>
 	<table id="table">
 		<tr>
 			<th style="width: 80px;  text-align: center;">번호</th>
@@ -215,6 +222,7 @@
 	<%-- 검색창(글쓴이,글제목) --%>
 	<div id="bottomop"> 
 	<form name="searchFrm" style="margin-top: 20px;">
+		<input type="hidden" name="categoryno" id="catnoSearch" value="${categoryno}"/>
    		<select name="searchType" id="searchType" style="height: 26px;">
       		<option value="subject">글제목</option>
        		<option value="name">글쓴이</option>
