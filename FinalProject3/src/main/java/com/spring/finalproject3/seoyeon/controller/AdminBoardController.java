@@ -406,13 +406,10 @@ public class AdminBoardController {
 				String[] comseqArr = request.getParameterValues("comseqArr");
 
 				int n=0;
-			/*	
+	
 				for(String comseq : comseqArr) {
 					n = service.commentDelete(comseq);
 				}
-				*/
-				String comseq = request.getParameterValues("comseqArr")[0];
-				n = service.commentDelete(comseq);
 				
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("n", n);
