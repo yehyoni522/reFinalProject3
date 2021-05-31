@@ -31,27 +31,14 @@ public class AdminBoardDAO implements InterAdminBoardDAO {
 		return wordList;
 	}
 
-	@Override
-	public List<AdminBoardVO> boardListNoSearch() {
-		List<AdminBoardVO> boardList = sqlsession.selectList("adminBoard.boardListNoSearch");
-		return boardList;
-
-	}
-
-	@Override
-	public List<AdminBoardVO> boardListSearch() {
-		List<AdminBoardVO> boardList = sqlsession.selectList("adminBoard.boardListSearch");
-		return boardList;
-	}
-
-	// === #116. 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === //
+	// === 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === //
 	@Override
 	public int getTotalCount(Map<String, String> paraMap) {
 		int n = sqlsession.selectOne("adminBoard.getTotalCount", paraMap);
 		return n;
 	}
 
-	// === #119. 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === //
+	// === 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === //
 	@Override
 	public List<AdminBoardVO> boardListSearchWithPaging(Map<String, String> paraMap) {
 		List<AdminBoardVO> boardList = sqlsession.selectList("adminBoard.boardListSearchWithPaging", paraMap);
@@ -62,6 +49,34 @@ public class AdminBoardDAO implements InterAdminBoardDAO {
 	@Override
 	public int boardMove(Map<String, String> paraMap) {
 		int n = sqlsession.update("adminBoard.boardMove", paraMap);
+		return n;
+	}
+	
+	// === 페이징 처리한 댓글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === //
+	@Override
+	public List<AdminCommentVO> commentListSearchWithPaging(Map<String, String> paraMap) {
+		List<AdminCommentVO> commentList = sqlsession.selectList("adminBoard.commentListSearchWithPaging", paraMap);
+		return commentList;
+	}
+
+	// 총 댓글 건수 구하기
+	@Override
+	public int getTotalComment(Map<String, String> paraMap) {
+		int n = sqlsession.selectOne("adminBoard.getTotalComment", paraMap);
+		return n;
+	}
+
+	// 댓글 검색어 입력시 자동글 완성하기
+	@Override
+	public List<String> commentWordSearchShow(Map<String, String> paraMap) {
+		List<String> commentWordList = sqlsession.selectList("adminBoard.commentWordSearchShow", paraMap);
+		return commentWordList;
+	}
+
+	// 댓글 삭제하기
+	@Override
+	public int commentDelete(String comseq) {
+		int n = sqlsession.update("adminBoard.commentDelete",comseq); 		
 		return n;
 	}
 

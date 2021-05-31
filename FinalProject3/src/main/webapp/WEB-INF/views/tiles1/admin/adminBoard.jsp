@@ -441,7 +441,7 @@
              		자유게시판
              	</c:if>
              	<c:if test="${boardvo.categoryno==2}">
-             		중고게시판
+             		중고거래
              	</c:if>
              	<c:if test="${boardvo.categoryno==3}">
              		동아리 / 공모전
