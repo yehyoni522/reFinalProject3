@@ -11,4 +11,19 @@ public interface InterAdminBoardDAO {
 	// 검색어 입력시 자동글 완성하기
 	List<String> wordSearchShow(Map<String, String> paraMap);
 
+<<<<<<< HEAD
+=======
+	// 검색어 없는 전체 글목록 보여주기
+	List<AdminBoardVO> boardListNoSearch();
+
+	List<AdminBoardVO> boardListSearch();
+
+	int getTotalCount(Map<String, String> paraMap);
+
+	List<AdminBoardVO> boardListSearchWithPaging(Map<String, String> paraMap);
+
+	// 선택한 글 게시판 이동시키기
+	int boardMove(Map<String, String> paraMap);
+
+>>>>>>> refs/heads/main
 }

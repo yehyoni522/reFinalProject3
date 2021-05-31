@@ -199,9 +199,19 @@ button.re:hover{
 	function goOutbox(){
 		location.href="<%= ctxPath%>/outbox.sam";
 	}
+<<<<<<< HEAD
 	function goView(seq){
 		location.href="<%= ctxPath%>/view.sam?inboxSeq="+inboxSeq;	
 	}
+=======
+	function inDelOne(inboxSeq){
+		 var bool = confirm("해당 쪽지를 삭제하시겠습니까?");
+		 if(bool){
+			 location.href="<%= ctxPath%>/message/inDelOne.sam?inboxSeq="+inboxSeq;
+		 }
+	}
+
+>>>>>>> refs/heads/main
 </script>
 
 <body>
@@ -223,7 +233,11 @@ button.re:hover{
 
 <div class="msgContents" style="width: 70%; display:inline-block ; ">
 
+<<<<<<< HEAD
 		<button class="del" type="button" onclick="javascript:location.href='<%= ctxPath%>/inDel.sam?inboxSeq=${requestScope.inboxvo.inboxSeq}'">삭제</button>
+=======
+		<button class="del" type="button" onclick="inDelOne(${requestScope.inboxvo.inboxSeq})">삭제</button>
+>>>>>>> refs/heads/main
 		 <button class="re">답장</button>
 		 	<div>보낸사람 <span>${requestScope.inboxvo.fk_name}</span></div>
 		 	<div>받은시간 <span>${requestScope.inboxvo.reDate}</span></div>

@@ -12,6 +12,14 @@
 		select tno, tname
 		from tbl_time	
 	</select>
+	
+	<select id="selectViewSeat" parameterType="HashMap" resultType="com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO">
+		select dsno, dsname, dscheck, fk_rno, fk_tno
+		from tbl_detailseatinfo join tbl_RroomNum
+		on fk_rno = rno
+		where fk_tno = #{tno} and rname=#{rname}
+		order by dsno
+	</select>
 
 
 

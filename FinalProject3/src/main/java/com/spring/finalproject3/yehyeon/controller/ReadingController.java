@@ -1,15 +1,20 @@
 package com.spring.finalproject3.yehyeon.controller;
 
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO;
 import com.spring.finalproject3.yehyeon.model.RroomNumVO;
 import com.spring.finalproject3.yehyeon.model.TimeVO;
 import com.spring.finalproject3.yehyeon.service.InterReadingService;
@@ -42,6 +47,43 @@ public class ReadingController {
 		mav.setViewName("reading/index.tiles2");
 		
 		return mav;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/reading/selectViewSeat.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String selectViewSeat(HttpServletRequest request) {
+		
+		String tno = request.getParameter("tno");
+		String rname = request.getParameter("rname");
+		
+		//System.out.println("확인 ~~ tno : " + tno);
+		//System.out.println("확인 ~~ rname : " + rname);
+		
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("tno", tno);
+		paraMap.put("rname", rname);
+
+		
+		List<DetailSeatInfoVO> detailList = service.selectViewSeat(paraMap);
+		
+		JSONArray jsonArr = new JSONArray(); // []
+		
+		if(detailList != null) {
+			for(DetailSeatInfoVO dvo : detailList) {
+				
+				JSONObject jsonObj = new JSONObject(); // {}
+				
+				jsonObj.put("dsno", dvo.getDsno());
+				jsonObj.put("dsname", dvo.getDsname());
+				jsonObj.put("dscheck", dvo.getDscheck());
+				jsonObj.put("fk_rno", dvo.getFk_rno());
+				jsonObj.put("fk_tno", dvo.getFk_tno());
+				
+				jsonArr.put(jsonObj);
+			}
+		}
+		
+		return jsonArr.toString(); 
 	}
 	
 }

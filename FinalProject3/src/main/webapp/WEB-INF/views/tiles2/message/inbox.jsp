@@ -175,6 +175,18 @@ button.re:hover{
 	background: #27AF61;
 }
 
+<<<<<<< HEAD
+=======
+ .subjectStyle {font-weight: bold;
+                   text-decoration:underline;
+                   cursor: pointer;} 
+.readstate{
+	font-weight: bold;
+    color: red;
+   
+}
+
+>>>>>>> refs/heads/main
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -182,13 +194,141 @@ button.re:hover{
 <script type="text/javascript">
 
 	$(document).ready(function(){
+		
+		
 		$("div#inbox").bind("click", function(){
 			goInbox();
 		});
 		$("div#outbox").bind("click", function(){
 			goOutbox();
 		});
+<<<<<<< HEAD
+=======
+		
+		$("span.subject").bind("mouseover", function(event){
+			var $target = $(event.target);
+			$target.addClass("subjectStyle");
+		});
+		
+		$("span.subject").bind("mouseout", function(event){
+			var $target = $(event.target);
+			$target.removeClass("subjectStyle");
+		});
+		
+		$("input#searchWord").bind("keydown", function(event){
+			if(event.keyCode == 13){
+				goSearch();
+			}
+		});
+		
+		
+	  if( ${not empty requestScope.paraMap}){
+    	  $("select#searchType").val("${requestScope.paraMap.searchType}");
+    	  $("input#searchWord").val("${requestScope.paraMap.searchWord}");
+       }
+	  
+	 
+		//== 체크박스 전체선택/전체해제 == 시작 //
+		$("input:checkbox[name=checkall]").click(function(){
+			var bool = $(this).prop("checked");
+			// 체크되어있으면 true, 해제되어있으면 false
+			
+			$("input:checkbox[name=check]").prop("checked", bool);
+
+		});
+
+		// == 상품의 체크박스 클릭시 == //
+		$("input:checkbox[name=check]").click(function(){
+			var bool = $(this).prop("checked");
+			
+			if (bool) { // 현재 상품의 체크박스에 체크했을 때
+				var bFlag = false;
+				
+				$("input:checkbox[name=check]").each(function(index, item){ // 다른 모든 상품의 체크박스 상태 확인
+					var bChecked = $(item).prop("checked");
+					if (!bChecked) {	// 체크표시가 안되어있는 상품일 경우 반복문 종료
+						bFlag = true;
+						return false;
+					}
+				});
+				
+				if(!bFlag) {	// 모든 체크박스가 체크되어있을 경우
+					$("input:checkbox[name=checkall]").prop("checked", true);	
+					
+				}
+			}
+			else {	// 현재 상품의 체크박스에 체크 해제했을 때
+				$("input:checkbox[name=checkall]").prop("checked", false);
+				
+			}
+			
+		});
+		//== 체크박스 전체선택/전체해제 == 끝// 
+	  
+	  
+>>>>>>> refs/heads/main
 	});
+<<<<<<< HEAD
+=======
+	
+	// === 장바구니에서 특정 제품을 비우기 === //  
+	function goInDel() {
+		
+		var cnt = $("input[name='check']:checked").length;
+        var seqArr = new Array();
+        $("input[name='check']:checked").each(function() {
+        	seqArr.push($(this).val());
+        });
+        if(cnt == 0){
+            alert("삭제하실 쪽지를 선택하세요.");
+        }
+        else{
+        	     	
+        	$.ajax({
+                type: "post",
+                url: "<%=ctxPath%>/message/goInDel.sam",
+                data: {seqArr: seqArr},
+                dataType:"json",
+                success: function(json){
+                    if(json.n != 1) {
+                        alert("삭제 오류");
+                    }
+                    else{
+                        alert("선택한 쪽지의 삭제를  성공했습니다.");
+                        javascript:history.go(0);
+                    }
+                },
+                error: function(request, status, error){
+    				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+    		 	}
+        	});
+        }
+		
+	}// end of function goInDel()---------------------------
+	
+	 function goSearch(){
+	      
+	      var frm = document.searchFrm;
+	      frm.method = "get";
+	      frm.action = "<%=ctxPath%>/message/inbox.sam";
+	      frm.submit();
+	      
+	}// end of function goSearch()----------------------------------
+	
+	function goNonRead(){
+		
+		var frm = document.readState;
+	      frm.method = "get";
+	      frm.action = "<%=ctxPath%>/message/inbox.sam";
+	      frm.submit();
+	      
+	      var x = document.getElementById("readstate");
+			x.style.fontWeight = "bold";
+		    x.style.color = "red"; 
+    	
+		
+	}// end of function gatheringNonRead()----------------------------------
+>>>>>>> refs/heads/main
 
 	function goWrite(){
 		location.href="<%= ctxPath%>/write.sam";
@@ -199,9 +339,16 @@ button.re:hover{
 	function goOutbox(){
 		location.href="<%= ctxPath%>/outbox.sam";
 	}
+<<<<<<< HEAD
 	function goView(seq){
 		location.href="<%= ctxPath%>/inView.sam?inboxSeq="+inboxSeq;	
 	}
+=======
+	function goView(inboxSeq){
+		location.href="<%= ctxPath%>/message/inView.sam?inboxSeq="+inboxSeq;	
+	}
+
+>>>>>>> refs/heads/main
 </script>
 
 <body>
@@ -226,12 +373,25 @@ button.re:hover{
 		<button class="del" type="button" onclick="javascript:location.href='<%= ctxPath%>/del.action?seq=${requestScope.boardvo.seq}'">삭제</button>
 		 <button class="re" >답장</button>
 
+<<<<<<< HEAD
 	<div style="margin-left: 30px; display: inline-block; float: right;">
 	
 	<a style="font-size:10px;">안읽은쪽지삭제</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">5</span>/<span>500</span>
 		<select id="msgSearch" name="msgSearch">
 			<option value="name">이름</option>
 			<option value="contents">내용</option>
+=======
+	<div style="margin-left: 100px; display: inline-block; float: right;">
+	<form name="readState">
+		<input type='hidden'  name="readState" value="0" />
+	</form>
+	<a id="readstate" style="font-size:13px;  cursor: pointer;" onclick="goNonRead()">안읽은쪽지보기</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>500</span>
+	
+	<form name="searchFrm">
+		<select id="searchType" name="searchType" ">
+			<option value="inboxName">이름</option>
+			<option value="subject">내용</option>
+>>>>>>> refs/heads/main
 		</select>
 		<span class='green_window'>
 			<input type='text' class='input_text' />
@@ -254,9 +414,15 @@ button.re:hover{
     
     <tbody>
       <tr>
+<<<<<<< HEAD
         <td><input type="checkbox" /></td>
         <td>${inboxvo.fk_name}</td>
         <td><span onclick="goView(${inboxvo.inboxSeq})">${inboxvo.subject}</span></td>
+=======
+        <td><input type="checkbox" name="check" value="${inboxvo.inboxSeq}"/></td>
+        <td>${inboxvo.inboxName}</td>
+        <td><span class="subject" onclick="goView(${inboxvo.inboxSeq})">${inboxvo.subject}</span></td>
+>>>>>>> refs/heads/main
         <td>${inboxvo.reDate}</td>
         <c:if test="${inboxvo.readState == 0}">
         	<td style="color:red; font-weight: bold;">new</td>

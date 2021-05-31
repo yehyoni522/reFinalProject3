@@ -1,16 +1,26 @@
 package com.spring.finalproject3.hyeminJang.comtroller;
 
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+import java.util.HashMap;
+>>>>>>> refs/heads/main
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.hyeminJang.service.InterMessageService;
+import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 @Controller
 public class MessageController {
@@ -30,6 +40,62 @@ public class MessageController {
 		// == 페이징 처리를 안한 검색어가 없는 전체 글목록 보여주기 == //
 		inboxList = service.inboxListNoSearch(perno);
 		
+<<<<<<< HEAD
+=======
+		mav.addObject("nonReadCount", nonReadCount);
+
+		// 안읽은 글만 보이기
+		String readState = request.getParameter("readState"); 
+		if(readState == null) {
+			readState = "";
+		}
+		
+		// == 페이징 처리를 한 검색어가 있는 전체 글목록 보여주기 == //
+		String searchType = request.getParameter("searchType"); 
+		String searchWord = request.getParameter("searchWord");
+		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
+		
+		if(searchType == null || (!"subject".equals(searchType) && !"name".equals(searchType)) ) {
+		searchType = "";
+		}
+		
+		if(searchWord == null || "".equals(searchWord) || searchWord.trim().isEmpty()) {
+		searchWord = "";
+		}
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);
+		paraMap.put("userid", String.valueOf(1004));
+		paraMap.put("readState", readState);
+		
+		// 먼저 총 게시물 건수(totalCount)를 구해와야 한다.
+		// 총 게시물 건수(totalCount)는 검색조건이 있을때와 없을때로 나뉘어진다.
+		int totalCount = 0;         // 총 게시물 건수
+		//   int sizePerPage = 10;       // 한 페이지당 보여줄 게시물 건수
+		int sizePerPage = 10;        // 한 페이지당 보여줄 게시물 건수
+		int currentShowPageNo = 0;  // 현재 보여주는 페이지 번호로서, 초기치로는 1페이지로 설정함.
+		int totalPage = 0;          // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)  
+		
+		int startRno = 0;           // 시작 행번호
+		int endRno = 0;             // 끝 행번호 
+		
+
+		// 총 게시물 건수(totalCount)
+		totalCount = service.getTotalCount(paraMap);
+		
+		mav.addObject("totalCount", totalCount);
+		
+		totalPage = (int) Math.ceil( (double)totalCount/sizePerPage ); 
+		
+		if(str_currentShowPageNo == null) {
+			// 게시판에 보여지는 초기화면 
+			currentShowPageNo = 1;
+		}
+		else {
+			try {
+				currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
+>>>>>>> refs/heads/main
 				
 		mav.addObject("inboxList", inboxList);	
 		*/	
@@ -40,8 +106,41 @@ public class MessageController {
 	}
 	
 	// 받은 쪽지 보기
+<<<<<<< HEAD
 	@RequestMapping(value="/inView.sam")
 	public ModelAndView inView(ModelAndView mav) {
+=======
+	@RequestMapping(value="/message/inView.sam")
+	public ModelAndView inView(HttpServletRequest request, ModelAndView mav) {
+		
+		/*
+		HttpSession session = request.getSession();
+		personVO loginuser = (MemberVO) session.getAttribute("loginuser");*/
+		
+		
+		
+		// 조회하고자 하는 글번호 받아오기
+		String str_inboxSeq = request.getParameter("inboxSeq");
+		
+		try {
+			int inboxSeq = Integer.parseInt(str_inboxSeq);
+			
+			InboxVO inboxvo = null;
+			
+			inboxvo = service.getInView(inboxSeq);
+			
+			mav.addObject("inboxvo", inboxvo);
+			
+			// 안읽은 글의 갯수 세기
+			int userid = 20201234;
+			int nonReadCount = service.getNonReadCount(userid);// 로그인한 사람의 id값이 들어가야함
+			
+			mav.addObject("nonReadCount", nonReadCount);
+		
+		} catch(NumberFormatException e) {
+			
+		}
+>>>>>>> refs/heads/main
 		
 		mav.setViewName("message/inView.tiles2");
 		// /WEB-INF/views/tiles2/message/write.jsp 파일을 생성한다.
@@ -50,8 +149,13 @@ public class MessageController {
 	}
 	
 	// 쪽지 쓰기
+<<<<<<< HEAD
 	@RequestMapping(value="/write.sam")
 	public ModelAndView write(ModelAndView mav) {
+=======
+	@RequestMapping(value="/message/write.sam")
+	public ModelAndView write(HttpServletRequest request,ModelAndView mav) {
+>>>>>>> refs/heads/main
 		
 		mav.setViewName("message/write.tiles2");
 		// /WEB-INF/views/tiles2/message/write.jsp 파일을 생성한다.
@@ -61,21 +165,103 @@ public class MessageController {
 	
 
 	  // 아이디 찾아보기
+<<<<<<< HEAD
 	  @RequestMapping(value="/userFind.sam") 
 	  public String userFind() {
 	 
+=======
+	  @RequestMapping(value="/message/userFind.sam") 
+	  public String userFind(HttpServletRequest request) {
+		  String receiver = request.getParameter("receiver");
+		  
+		  request.setAttribute("receiver", receiver);
+>>>>>>> refs/heads/main
 		  return "tiles2/message/userFind";
 		  
 	 }
 	  
+<<<<<<< HEAD
 	  // inbox 쪽지 한개 삭제하기 
 	  @RequestMapping(value="/inDel.sam") 
 	  public String inDel() {
 	 
 		  return "tiles2/message/userFind";
+=======
+	  // inbox에서 체크박스에서 선택된 쪽지  삭제하기 
+	  @ResponseBody
+	  @RequestMapping(value="/message/goInDel.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	  public String inDel(@RequestParam(value="seqArr[]") List<Integer> deleteList, HttpServletRequest request) {
+>>>>>>> refs/heads/main
 		  
-	 }
+		  ArrayList<Integer> deleteArray = new ArrayList<Integer>();
+		    for(int i=0;i<deleteList.size();i++){
+		        deleteArray.add(deleteList.get(i));
+		    }
+		  
+		    
+		    int n = service.inDel(deleteArray); 
+		    
+		    
+		
+		   JSONObject jsonObj = new JSONObject(); // {}
+		   jsonObj.put("n", n);
+		
+		   return jsonObj.toString(); 
+	
+	}
 	  
+	  // 세부읽기에서 한개만 쪽지 삭제하기
+	  @RequestMapping(value="/message/inDelOne.sam")
+		public ModelAndView inDelOne(HttpServletRequest request,ModelAndView mav) {
+			
+		  	String inboxSeq = request.getParameter("inboxSeq");
 
-	 
+			int n = service.inDelOne(Integer.parseInt(inboxSeq));
+			
+			if (n==1) {
+				mav.setViewName("redirect:/message/inbox.sam");
+			}
+			
+			
+			return mav;
+		}
+	  
+	  // 사람번호검색
+	  @ResponseBody
+	  @RequestMapping(value="/message/searchPerson.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	  public String searchPerson(HttpServletRequest request) {
+		  
+		  String perno = request.getParameter("perno");
+		  
+		  PersonVO pervo = service.searchPerson(Integer.parseInt(perno));
+		  
+		  JSONObject jsonObj = new JSONObject(); // {}
+		  
+		  if(pervo != null) {
+			 
+			  
+			 int majseq =  pervo.getFk_majseq();
+			 String nameMaj = service.getNameMaj(majseq);
+			 
+			   jsonObj.put("name", pervo.getName());
+			   jsonObj.put("perno", pervo.getPerno());
+			   if(pervo.getIdentity() == 0) {
+				   jsonObj.put("identity", "학생");
+			   }
+			   else if(pervo.getIdentity() == 1) {
+				   jsonObj.put("identity", "교수");
+			   }
+			   else {
+				   jsonObj.put("identity", "");
+			   }
+			   
+			   jsonObj.put("nameMaj", nameMaj);
+		  }
+		  
+		
+		   return jsonObj.toString(); 
+	
+	}
+	  
+	
 }
