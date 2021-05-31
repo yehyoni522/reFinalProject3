@@ -33,7 +33,10 @@ public interface InterAdminBoardService {
 	List<String> commentWordSearchShow(Map<String, String> paraMap);
 
 	// 댓글 삭제하기
-	int commentDelete(String comseq); 
+	int commentDelete(String comseq);
+
+//	=== 게시글 삭제하기 ===
+	int boardDelete(String seq); 
 	
 	
 }
