@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.finalproject3.yehyeon.model.BookListVO;
 import com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO;
 import com.spring.finalproject3.yehyeon.model.RroomNumVO;
 import com.spring.finalproject3.yehyeon.model.TimeVO;
@@ -84,6 +85,54 @@ public class ReadingController {
 		}
 		
 		return jsonArr.toString(); 
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/reading/searchSeatInfo.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String searchSeatInfo(HttpServletRequest request) {
+		
+		String dsno = request.getParameter("dsno");
+		
+		DetailSeatInfoVO detailvo = service.searchSeatInfo(dsno);
+				
+		JSONObject jsonObj = new JSONObject(); // {}
+		
+		jsonObj.put("dsno", detailvo.getDsno());
+		jsonObj.put("dsname", detailvo.getDsname());
+		jsonObj.put("rname", detailvo.getRoomvo().getRname());
+		jsonObj.put("tname", detailvo.getTimevo().getTname());
+		
+		
+		return jsonObj.toString(); 
+	}
+	
+	@RequestMapping(value="/reading/coinPurchaseEnd.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public ModelAndView coinPurchaseEnd(HttpServletRequest request, ModelAndView mav) {
+		
+		String dsno = request.getParameter("dsno");
+		System.out.println("dsno : " + dsno);
+		mav.addObject(dsno);
+		mav.setViewName("paymentGateway");
+		return mav;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/reading/updateSeatInfo.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String updateSeatInfo(HttpServletRequest request, BookListVO bookvo) {
+		
+		String dsno = request.getParameter("fk_dsno");
+		
+		int n = service.updateDscheck(dsno);
+		
+		if(n == 1) {
+			// insert 해주기 위해선 fk_dsno, fk_perno, fk_tno 를 알아야한다.
+			int m = service.insertBooklist(bookvo);
+		}
+		
+		
+		
+		
+		return ""; 
 	}
 	
 }
