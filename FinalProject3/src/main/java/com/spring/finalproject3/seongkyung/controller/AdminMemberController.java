@@ -421,4 +421,13 @@ public class AdminMemberController {
 	}
 	
 	
+	@RequestMapping(value="/lesson/test.sam")
+	public ModelAndView lesson_test(ModelAndView mav, HttpServletRequest request) {
+		
+		
+		mav.setViewName("lessonadmin/lessontest.tiles2");
+		
+		return mav;
+	}
+	
 }
