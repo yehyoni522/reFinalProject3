@@ -30,9 +30,9 @@ public class PersonDAO implements InterPersonDAO {
 	}
 	//비밀번호찾기정보확인
 	@Override
-	public boolean isUserExist(Map<String, String> paraMap) {
-		boolean  isUserExist= sqlsession.selectOne("member.pwdFind", paraMap);
-		return isUserExist;
+	public int isUserExist(Map<String, String> paraMap) {
+		int  n= sqlsession.selectOne("member.isUserExist", paraMap);
+		return n;
 	}
 	//비밀번호 변경
 	@Override
@@ -43,13 +43,13 @@ public class PersonDAO implements InterPersonDAO {
 	//비밀번호 조회
 	@Override
 	public PersonVO pwdFind(Map<String, String> paraMap) {
-		PersonVO  pwdFind= sqlsession.selectOne("member.pwdFind1", paraMap);
+		PersonVO  pwdFind= sqlsession.selectOne("member.pwdFind", paraMap);
 		return pwdFind;
 	}
 	//회원등록 정보 확인
 	@Override
-	public boolean isUserExist2(Map<String, String> paraMap) {
-		boolean  isUserExist2= sqlsession.selectOne("member.personRegister", paraMap);
+	public int isUserExist2(Map<String, String> paraMap) {
+		int  isUserExist2= sqlsession.selectOne("member.personRegister", paraMap);
 		return isUserExist2;
 	}
 

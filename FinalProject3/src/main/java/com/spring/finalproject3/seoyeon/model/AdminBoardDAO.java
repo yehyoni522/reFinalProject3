@@ -80,4 +80,11 @@ public class AdminBoardDAO implements InterAdminBoardDAO {
 		return n;
 	}
 
+//	=== 게시글 삭제하기 ===
+	@Override
+	public int boardDelete(String seq) {
+		int n = sqlsession.update("adminBoard.boardDelete",seq); 		
+		return n;
+	}
+
 }

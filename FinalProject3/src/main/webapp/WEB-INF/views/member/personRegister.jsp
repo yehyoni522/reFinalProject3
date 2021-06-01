@@ -89,7 +89,7 @@
 		
 		var check = "${check}";
 		
-		if(check == 1){
+		if(check != 0){
 			alert("입력하신 정보는 존재하지 않습니다.");
 			return;
 		}
@@ -219,10 +219,8 @@
    </c:if>
 
    <c:if test="${check == 0}">
-   	   <c:if test="${requestScope.isUserExist2 == false}">  
-   	   	  <span style="color: red;">사용자 정보가 없습니다.</span>
-   	   </c:if>
-   	  <c:if test="${requestScope.isUserExist2 == true && requestScope.sendMailSuccess == true}">  
+
+   	  <c:if test="${n==1 && requestScope.sendMailSuccess == true}">  
    	   <br> 
    	   	  <span style="margin-left: 50px; font-weight:bold; font-size: 13pt;">입력하신 Email로 인증코드가 발송되었습니다.</span><br>
    	   	  <br>
@@ -237,7 +235,7 @@
 	   </div>
    	   </c:if>
    	   
-   	   <c:if test="${requestScope.isUserExist2 == true && requestScope.sendMailSuccess == false}">  
+   	   <c:if test="${n==1&& requestScope.sendMailSuccess == false}">  
    	   	  <span style="color: red;">메일발송이 실패했습니다.</span>
    	   </c:if>
    	      

@@ -73,7 +73,7 @@ public class AdminBoardController {
 			}
 	       
 	       int sizePerPage=Integer.parseInt(page);
-
+	       request.setAttribute("page", page);
 	       
 	       int totalCount = 0;         // 총 게시물 건수
 	    // int sizePerPage = 5;        // 한 페이지당 보여줄 게시물 건수
@@ -201,17 +201,17 @@ public class AdminBoardController {
 	 	}
 		
 		
-//		=== 게시글 이동하기 ===
+//		=== 게시판 이동하기 ===
 		@ResponseBody
 	 	@RequestMapping(value="/admin/boardMove.sam", method = {RequestMethod.POST})
 		public String admin_boardMove(HttpServletRequest request) {
 			
-			String[] boardSeqArr = request.getParameterValues("boardSeqArr");
+			String[] seqArr = request.getParameterValues("seqArr");
 			String categoryno = request.getParameter("categoryno");
 
 			int n=0;
 			
-			for(String seq : boardSeqArr) {
+			for(String seq : seqArr) {
 				Map<String,String> paraMap = new HashMap<String, String>();
 		 		paraMap.put("categoryno", categoryno);
 		 		paraMap.put("seq", seq);
@@ -224,7 +224,24 @@ public class AdminBoardController {
 			return jsonObj.toString();			
 		}
 		 
-		
+//		=== 게시글 삭제하기 ===
+		@ResponseBody
+	 	@RequestMapping(value="/admin/boardDelete.sam", method = {RequestMethod.POST})
+		public String admin_boardDelete(HttpServletRequest request) throws ServletException, IOException{
+			
+			String[] seqArr = request.getParameterValues("seqArr");
+			
+			int n=0;
+			
+			for(String seq : seqArr) {
+				n = service.boardDelete(seq);
+			}
+			
+			JSONObject jsonObj = new JSONObject();
+			jsonObj.put("n", n);
+			
+			return jsonObj.toString();			
+		}
 		
 		
 	// ============= ***** 관리자 댓글 페이지 ***** ============= //
@@ -261,7 +278,7 @@ public class AdminBoardController {
 	       paraMap.put("viewBoard",viewBoard);
 	       
 	       
-	       // 보고자 하는 페이지 선택
+	       // 보고자 하는 페이지 당 댓글 수 선택
 	       String page = request.getParameter("page");
 
 	       if(page == null ||!("5".equals(page) || "15".equals(page) || "30".equals(page)) ) { 
@@ -269,7 +286,7 @@ public class AdminBoardController {
 			}
 	       
 	       int sizePerPage=Integer.parseInt(page);
-
+	       request.setAttribute("page", page);
 	       
 	       int totalCount = 0;         // 총 게시물 건수
 	    // int sizePerPage = 5;        // 한 페이지당 보여줄 게시물 건수
@@ -401,12 +418,12 @@ public class AdminBoardController {
 //			=== 댓글 삭제하기 ===
 			@ResponseBody
 		 	@RequestMapping(value="/admin/commentDelete.sam", method = {RequestMethod.POST})
-			public String admin_commentDelete(HttpServletRequest request) throws ServletException, IOException{
+			public String admin_commentDelete(HttpServletRequest request) {
 				
 				String[] comseqArr = request.getParameterValues("comseqArr");
-
+				
 				int n=0;
-	
+				
 				for(String comseq : comseqArr) {
 					n = service.commentDelete(comseq);
 				}

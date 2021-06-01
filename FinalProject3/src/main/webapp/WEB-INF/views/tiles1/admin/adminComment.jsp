@@ -76,6 +76,10 @@
 <script type="text/javascript">
 
    $(document).ready(function(){
+	   
+
+ 	  	$("select#page").val("${requestScope.page}");
+
 
 		$("span.subject").bind("mouseover",function(event){
 			var $target=$(event.target);
@@ -87,11 +91,6 @@
 			$target.removeClass("subjectStyle");			
 		});
 
-		// 삭제버튼 클릭했을 때
-		$(document).on("click","[name=delete]", function(){					
-			alert("선택하신 글을 삭제하시겠습니까?");
-		});
-		
 		$("input#searchWord").bind("keydown", function(event){
 	          if(event.keyCode == 13){
 	             goSearch();
@@ -166,11 +165,19 @@
 	       });
 	        	       
 	       //검색시 검색조건 및 검색어 값 유지시키기
-	       if( ${not empty requestScope.paraMap} ){    	   
+	       if( ${not empty requestScope.paraMap} ){   
+	    	   if(${requestScope.paraMap.viewBoard eq ""}){
+	    		   $("select#viewBoard").val("게시판 전체");
+	    		   $("select#searchType").val("${requestScope.paraMap.searchType}");
+	          		$("input#searchWord").val("${requestScope.paraMap.searchWord}");	  
+	    	   }
+	    	   else{
 		    		$("select#viewBoard").val("${requestScope.paraMap.viewBoard}");
 					$("select#searchType").val("${requestScope.paraMap.searchType}");
-	          		$("input#searchWord").val("${requestScope.paraMap.searchWord}");	    	   
+	          		$("input#searchWord").val("${requestScope.paraMap.searchWord}");	   
+	    	   }
 	       }
+
 
 	       
 	    // 전체 선택   
@@ -186,6 +193,24 @@
 		    });
 		});
 	       
+	    
+	    
+		 $("[name=checkOne]").change(function(){
+			 var comseqArr = new Array();
+		        if($("[name=checkOne]").is(":checked")){
+		        	var checkCnt = $("input:checkbox[name=checkOne]:checked").length;
+		        	var page=${requestScope.page};
+		        	for(var i=0; i<page; i++) {
+		        		if( $("input:checkbox[name=checkOne]").eq(i).is(":checked") ) {
+							comseqArr.push( $("input:checkbox[name=checkOne]").eq(i).val());
+		        		}
+					}
+		            alert($(this).val()+"까지 "+checkCnt+"개 선택됨");
+					console.log(comseqArr);
+		        }else{
+		        	alert($("input:checkbox[name=checkOne]:checked").val()+"선택해제됨");
+		        }
+		    });
    });// end of $(document).ready(function(){}---------------------------------------
 
 		   
@@ -263,38 +288,40 @@
 	    	return; 
 	    }	
 		
-		var bool = confirm("선택하신 댓글을 삭제 하시겠습니까?");
-		var comseqArr = new Array();
-
-		for(var i=0; i<checkCnt; i++) {
-			
-			if( $("input:checkbox[name=checkOne]").eq(i).is(":checked") ) {
-				comseqArr.push( $("input:checkbox[name=checkOne]").eq(i).val());
+		else{
+			var bool = confirm("선택하신 댓글을 삭제 하시겠습니까?");
+			var comseqArr = new Array();
+	
+        	var page=${requestScope.page};
+        	
+        	for(var i=0; i<page; i++) {
+        		if( $("input:checkbox[name=checkOne]").eq(i).is(":checked") ) {
+					comseqArr.push( $("input:checkbox[name=checkOne]").eq(i).val());
+        		}
+			}
+	
+			if(bool){
+				$.ajax({
+					url:"<%= ctxPath%>/admin/commentDelete.sam",
+					type: "post",
+					data: {"comseqArr" : comseqArr},					  
+					dataType: "json",
+					traditional : true,
+					success:function(json){
+							if(json.n==1){
+								location.href="javascript:history.go(0);";
+							}
+					},
+					 error: function(request, status, error){
+				            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+				     }  
+				});
+				
+			}
+			else{
+				return;
 			}
 		}
-		console.log(comseqArr);
-
-		if(bool){
-			$.ajax({
-				url:"<%= ctxPath%>/admin/commentDelete.sam",
-				type: "post",
-				data: {"comseqArr" : comseqArr},					  
-				dataType: "json",
-				success:function(json){
-						if(json.n==1){
-							location.href="<%=ctxPath%>/admin/commentList.sam";
-						}
-				},
-				 error: function(request, status, error){
-			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			     }  
-			});
-			
-		}
-		else{
-			return;
-		}
-
 	}	  
 	   
 	   
@@ -306,7 +333,7 @@
 	   <%-- === #101. 글검색 폼 추가하기 : 글제목, 글쓴이로 검색을 하도록 한다. === --%>
 		<form name="searchFrm" style="margin-top: 20px;">
 			<select name="viewBoard" id="viewBoard" class="select" onChange="goBoard()">
-			      <option value="0">게시판 전체</option>
+			      <option >게시판 전체</option>
 			      <option value="1">자유게시판</option>
 			      <option value="2">중고거래</option>
 			      <option value="3">동아리/공모전</option>
@@ -330,11 +357,11 @@
    <table id="table" style="width:100%; ">
    	  <tr style="border-top: none; border-bottom: none;">
    		<td colspan="3" style="text-align: left; font-size: 13pt; font-weight: bolder;">
-   			게시글 <span style="color:#53c68c;">${requestScope.totalCount}</span></td>
+   			댓글 <span style="color:#53c68c;">${requestScope.totalCount}</span></td>
    		<td colspan="5" style="text-align: right;">
 	      	<form name="selectPage">
 		    <select name="page" id="page" style="width:100px; margin-right:5px;" class="select" onChange="goPage()">
-		      <option>게시글 수</option>
+		      <option>댓글 수</option>
 		      <option value="5">5개씩</option>
 		      <option value="15">15개씩</option>
 		      <option value="30">30개씩</option>
@@ -388,7 +415,7 @@
              <td align="left">
              	<span class="subject" onclick="goView('${commentvo.fk_seq}')">${commentvo.subject}</span>
              </td>
-             <td>${commentvo.content}</td>             
+             <td>${commentvo.content}</td>       
             <td>${commentvo.name}</td>
             <td align="center">${commentvo.reregDate}</td>
              
