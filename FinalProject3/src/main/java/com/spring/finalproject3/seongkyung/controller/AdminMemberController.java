@@ -410,4 +410,15 @@ public class AdminMemberController {
 		
 	}
 	
+	
+	@RequestMapping(value="/lesson/attendance.sam")
+	public ModelAndView lesson_attendance(ModelAndView mav, HttpServletRequest request) {
+		
+		
+		mav.setViewName("lessonadmin/lessonattendance.tiles2");
+		
+		return mav;
+	}
+	
+	
 }
