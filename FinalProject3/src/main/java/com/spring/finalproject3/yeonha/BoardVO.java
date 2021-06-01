@@ -22,9 +22,20 @@ public class BoardVO {
     private String nextseq;          // 다음글번호
     private String nextsubject;      // 다음글제목   
     
+   
     private String name; // sql 문에서 가져온 tbl_person의 이름
+    private String newhit; // 최신순,인기순 sleect
     
-    public String getName() {
+    
+    public String getNewhit() {
+		return newhit;
+	}
+
+	public void setNewhit(String newhit) {
+		this.newhit = newhit;
+	}
+
+	public String getName() {
 		return name;
 	}
 
