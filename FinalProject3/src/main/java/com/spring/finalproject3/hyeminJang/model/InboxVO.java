@@ -10,26 +10,20 @@ public class InboxVO {
 	private String subject; // 내용 1000자 한계
 	private String reDate;  // 받은날짜 
 	private int readState;  // 읽음표시 읽으면 0 -> 나중에 업데이트로 1로바꾸어줌
-	private String inboxName; // 발신자이름
 	
-	public InboxVO() {};
 	
-
+	private String fk_name; // 발신자이름
 	
-	public InboxVO(int inboxSeq, int fk_perno, int receiver, String subject, String reDate, int readState,
-			String inboxName) {
-		
+	
+	public InboxVO(int inboxSeq, int fk_perno, int receiver, String subject, String reDate, int readState) {
 		this.inboxSeq = inboxSeq;
 		this.fk_perno = fk_perno;
 		this.receiver = receiver;
 		this.subject = subject;
 		this.reDate = reDate;
 		this.readState = readState;
-		this.inboxName = inboxName;
 	}
-
-
-
+	
 	public int getInboxSeq() {
 		return inboxSeq;
 	}
@@ -67,19 +61,13 @@ public class InboxVO {
 		this.readState = readState;
 	}
 
-
-
-	public String getInboxName() {
-		return inboxName;
+	public String getFk_name() {
+		return fk_name;
 	}
 
-
-
-	public void setInboxName(String inboxName) {
-		this.inboxName = inboxName;
+	public void setFk_name(String fk_name) {
+		this.fk_name = fk_name;
 	}
-
-
 	
 	
 	

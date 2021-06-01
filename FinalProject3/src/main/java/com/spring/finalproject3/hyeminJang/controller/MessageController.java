@@ -1,4 +1,4 @@
-package com.spring.finalproject3.hyeminJang.comtroller;
+package com.spring.finalproject3.hyeminJang.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -203,7 +203,7 @@ public class MessageController {
 		}
 		
 		mav.setViewName("message/inView.tiles2");
-		// /WEB-INF/views/tiles2/message/write.jsp 파일을 생성한다.
+		
 		
 		return mav;
 	}
@@ -303,7 +303,7 @@ public class MessageController {
 				   jsonObj.put("identity", "교수");
 			   }
 			   else {
-				   jsonObj.put("identity", "");
+				   jsonObj.put("identity", "관리자");
 			   }
 			   
 			   jsonObj.put("nameMaj", nameMaj);

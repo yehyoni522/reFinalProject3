@@ -76,6 +76,8 @@
 <script type="text/javascript">
 
    $(document).ready(function(){
+	   
+	  	$("select#page").val("${requestScope.page}");
 
 		$("span.subject").bind("mouseover",function(event){
 			var $target=$(event.target);
@@ -106,11 +108,7 @@
 		//	alert("선택하신 글을 "+boardname+"(으)로 이동시키겠습니까?");
 		});
 	--%>	
-		// 삭제버튼 클릭했을 때
-		$(document).on("click","[name=delete]", function(){					
-			alert("선택하신 글을 삭제하시겠습니까?");
-		});
-		
+
 		$("input#searchWord").bind("keydown", function(event){
 	          if(event.keyCode == 13){
 	             goSearch();
@@ -188,11 +186,18 @@
 	       });
 	        	       
 	       //검색시 검색조건 및 검색어 값 유지시키기
-	       if( ${not empty requestScope.paraMap} ){    	   
+	       if( ${not empty requestScope.paraMap} ){
+	    	   if(${requestScope.paraMap.viewBoard eq ""}){
+	    		   $("select#viewBoard").val("게시판 전체");
+	    		   $("select#searchType").val("${requestScope.paraMap.searchType}");
+	          		$("input#searchWord").val("${requestScope.paraMap.searchWord}");	  
+	    	   }
+	    	   else{
 		    		$("select#viewBoard").val("${requestScope.paraMap.viewBoard}");
 					$("select#searchType").val("${requestScope.paraMap.searchType}");
-	          		$("input#searchWord").val("${requestScope.paraMap.searchWord}");	    	   
-	       }
+	          		$("input#searchWord").val("${requestScope.paraMap.searchWord}");	   
+	    	   }
+	    	}
 
 	       
 	    // 전체 선택   
@@ -284,60 +289,106 @@
 	    	alert("이동시킬 게시글을 선택하세요.");
 	    	return; 
 	    }	
-		
-		var categoryno=$("select#selectBoard").val();
-		var categoryname="";
-		
-		if(categoryno==0){				
-			alert("게시판을 선택해주세요");
-			return;
-		}
-		if(categoryno==1) {
-			categoryname="자유게시판";
-		}
-		if(categoryno==2) {
-			categoryname="중고거래";
-		}
-		if(categoryno==3) {
-			categoryname="동아리/공모전";
-		}
-		
-		var bool = confirm("선택하신 글을 "+categoryname+"(으)로 이동시키겠습니까?");
-		
-		var allCnt = $("input:checkbox[name=checkOne]").length;
-		var boardSeqArr = new Array();
-		
-		for(var i=0; i<allCnt; i++) {
+		else{
+			var categoryno=$("select#selectBoard").val();
+			var categoryname="";
 			
-			if( $("input:checkbox[name=checkOne]").eq(i).is(":checked") ) {
-				boardSeqArr.push( $("input:checkbox[name=checkOne]").eq(i).val());
+			if(categoryno==0){				
+				alert("게시판을 선택해주세요");
+				return;
+			}
+			if(categoryno==1) {
+				categoryname="자유게시판";
+			}
+			if(categoryno==2) {
+				categoryname="중고거래";
+			}
+			if(categoryno==3) {
+				categoryname="동아리/공모전";
+			}
+			var allCnt = $("input:checkbox[name=checkOne]").length;
+
+			var bool = confirm("선택하신 글을 "+categoryname+"(으)로 이동시키겠습니까?");
+			
+			var seqArr = new Array();
+			
+			var page=${requestScope.page};
+        	for(var i=0; i<page; i++) {
+        		if( $("input:checkbox[name=checkOne]").eq(i).is(":checked") ) {
+        			seqArr.push( $("input:checkbox[name=checkOne]").eq(i).val());
+        		}
+			}
+		
+			if(bool){
+				$.ajax({
+					url:"<%= ctxPath%>/admin/boardMove.sam",
+					type: "post",
+					data: {"seqArr" : seqArr
+						, "categoryno":categoryno},					  
+					dataType: "json",
+					traditional : true,
+					success:function(json){
+							if(json.n==1){
+								location.href="javascript:history.go(0);";
+							}
+					},
+					 error: function(request, status, error){
+				            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+				     }  
+				});
+				
+			}
+			else{
+				return;
 			}
 		}
-		console.log(boardSeqArr);
+	}
 	
-		if(bool){
-			$.ajax({
-				url:"<%= ctxPath%>/admin/boardMove.sam",
-				type: "post",
-				data: {"boardSeqArr" : boardSeqArr
-					, "categoryno":categoryno},					  
-				dataType: "json",
-				success:function(json){
-						if(json.n==1){
-							location.href="<%=ctxPath%>/admin/boardlist.sam";
-						}
-				},
-				 error: function(request, status, error){
-			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			     }  
-			});
-			
-		}
+	
+	
+	function goDelete(){
+		
+		var checkCnt = $("input:checkbox[name=checkOne]:checked").length;
+	    
+		if(checkCnt < 1) {
+	    	alert("삭제시킬 글을 선택하세요.");
+	    }	
 		else{
-			return;
-		}
+			var bool = confirm("선택하신 글을 삭제 하시겠습니까?");
+			var seqArr = new Array();
 
+			var page=${requestScope.page};
+        	for(var i=0; i<page; i++) {
+        		if( $("input:checkbox[name=checkOne]").eq(i).is(":checked") ) {
+        			seqArr.push( $("input:checkbox[name=checkOne]").eq(i).val());
+        		}
+			}
+
+			
+			if(bool){
+				$.ajax({
+					url:"<%= ctxPath%>/admin/boardDelete.sam",
+					type: "post",
+					data: {"seqArr" : seqArr},					  
+					dataType: "json",
+					traditional : true,
+					success:function(json){
+							if(json.n==1){
+								location.href="javascript:history.go(0);";
+							}
+					},
+					 error: function(request, status, error){
+				            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+				     }  
+				});
+				
+			}
+			else{
+				return;
+			}
+		}
 	}	  
+	   
 	   
 	   
 </script>   
@@ -348,7 +399,7 @@
 	   <%-- === #101. 글검색 폼 추가하기 : 글제목, 글쓴이로 검색을 하도록 한다. === --%>
 		<form name="searchFrm" style="margin-top: 20px;">
 			<select name="viewBoard" id="viewBoard" class="select" onChange="goBoard()">
-			      <option value="0">게시판 전체</option>
+			      <option>게시판 전체</option>
 			      <option value="1">자유게시판</option>
 			      <option value="2">중고거래</option>
 			      <option value="3">동아리/공모전</option>
@@ -441,7 +492,7 @@
              		자유게시판
              	</c:if>
              	<c:if test="${boardvo.categoryno==2}">
-             		중고게시판
+             		중고거래
              	</c:if>
              	<c:if test="${boardvo.categoryno==3}">
              		동아리 / 공모전

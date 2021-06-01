@@ -1,9 +1,6 @@
-package com.spring.finalproject3.yeonha;
+package com.spring.finalproject3.joseungjin.model;
 
-
-public class BoardVO {
-
-	
+public class Main_index_BoardVO {
 	private String seq;          // 글번호 
 	private String fk_perno;	 // 사람번호(학번,교수번호,관리자번호?)
     private String subject;      // 글제목
@@ -16,38 +13,20 @@ public class BoardVO {
     private String status;       // 글삭제여부   1:사용가능한 글,  0:삭제된글
     private String commentCount; // 댓글수 
     private String namecheck;     // 익명선택여부( 0: 익명아님, 1:익명)
+	
+    public Main_index_BoardVO() {}
     
-    private String previousseq;      // 이전글번호
-    private String previoussubject;  // 이전글제목
-    private String nextseq;          // 다음글번호
-    private String nextsubject;      // 다음글제목   
+    private String name; 
     
-   
-    private String name; // sql 문에서 가져온 tbl_person의 이름
-    private String newhit; // 최신순,인기순 sleect
-    
-    
-    public String getNewhit() {
-		return newhit;
-	}
-
-	public void setNewhit(String newhit) {
-		this.newhit = newhit;
-	}
-
-	public String getName() {
+    public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public BoardVO(){}   
-	
-	public BoardVO(String seq, String fk_perno, String subject, String content, String files, String categoryno,
-			String good, String readCount, String regDate, String status, String commentCount, String namecheck,
-			String previousseq, String previoussubject, String nextseq, String nextsubject) {
+    public Main_index_BoardVO(String seq, String fk_perno, String subject, String content, String files, String categoryno,
+			String good, String readCount, String regDate, String status, String commentCount, String namecheck) {
 		super();
 		this.seq = seq;
 		this.fk_perno = fk_perno;
@@ -61,21 +40,9 @@ public class BoardVO {
 		this.status = status;
 		this.commentCount = commentCount;
 		this.namecheck = namecheck;
-		this.previousseq = previousseq;
-		this.previoussubject = previoussubject;
-		this.nextseq = nextseq;
-		this.nextsubject = nextsubject;
 	}
-	
-	public String getNamecheck() {
-		return namecheck;
-	}
-
-	public void setNamecheck(String namecheck) {
-		this.namecheck = namecheck;
-	}
-
-	public String getSeq() {
+    
+    public String getSeq() {
 		return seq;
 	}
 	public void setSeq(String seq) {
@@ -141,33 +108,10 @@ public class BoardVO {
 	public void setCommentCount(String commentCount) {
 		this.commentCount = commentCount;
 	}
-	public String getPreviousseq() {
-		return previousseq;
+	public String getNamecheck() {
+		return namecheck;
 	}
-	public void setPreviousseq(String previousseq) {
-		this.previousseq = previousseq;
+	public void setNamecheck(String namecheck) {
+		this.namecheck = namecheck;
 	}
-	public String getPrevioussubject() {
-		return previoussubject;
-	}
-	public void setPrevioussubject(String previoussubject) {
-		this.previoussubject = previoussubject;
-	}
-	public String getNextseq() {
-		return nextseq;
-	}
-	public void setNextseq(String nextseq) {
-		this.nextseq = nextseq;
-	}
-	public String getNextsubject() {
-		return nextsubject;
-	}
-	public void setNextsubject(String nextsubject) {
-		this.nextsubject = nextsubject;
-	}
-    
-    
-
-   
-    
 }
