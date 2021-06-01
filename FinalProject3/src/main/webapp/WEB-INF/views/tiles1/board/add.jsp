@@ -95,7 +95,7 @@
 
 </script>
 
-<div style="padding-left: 10%;">
+<div style="padding-left: 10%; padding-right:10%;">
 	<h1>
  		<c:if test="${requestScope.categoryno == 1}">자유게시판</c:if>
  		<c:if test="${requestScope.categoryno == 2}">중고거래</c:if>

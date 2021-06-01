@@ -50,7 +50,7 @@ div.admintitlesearch {
 }
 
 div.admtitleoptions {
-	border-bottom: 2px solid #b0b0b5; 
+	border-bottom: 3px solid #b0b0b5; 
 	border-top: 3px solid #b0b0b5; 
 	height: 50px;	
 	padding: 10px 10px 0 10px;
@@ -63,7 +63,7 @@ div.admtitleoptions {
 
 .admsubtsp {
 	font-size: 12pt;
-	margin: 0 20px 0 280px;
+	margin: 0 20px 0 600px;
 	font-weight:bold;
 }
 
@@ -80,13 +80,11 @@ th {
 td {
 	padding-right: 15px;
 	margin-bottom: 50px;
-	border-top: 0px solid;
 }
 
 tr {
 	height: 27px;
 	border-bottom: 1px solid #b0b0b5;
-	border-top: 1px solid #b0b0b5;
 }
 
 .admthtd {
@@ -104,10 +102,6 @@ tr {
 .thall {
 	font-weight: bold;
 	font-size: 11pt;
-}
-
-.goinfo {
-	cursor: pointer;
 }
 
 </style>
@@ -154,22 +148,10 @@ tr {
 				
 			});
 			
-		} // end of for // 체크박스 전체선택/해체		
-		
-	}); // end of $(function(){})
-	
-	function goView(PERNO){
-		
-		var frm = document.studentinfoFrm;
-		
-		frm.PERNO.value = PERNO;
-		frm.method = "get";
-		frm.action = "<%=ctxPath%>/admin/studentinfo.sam?perno="+PERNO;
-		frm.submit();
+		} // end of for // 체크박스 전체선택/해체
 		
 		
-	} // end of goView(PERNO){})
-	
+	});
 	
 	function goSearch(){
 		
@@ -221,7 +203,7 @@ tr {
 	<div id="admincontent">
 	
 		<div class="admsubtitle">
-			<span >학생관리</span>
+			<span >교수진관리</span>
 		</div>
 		
 		<div class="admintitlesearch">
@@ -237,8 +219,15 @@ tr {
      		</form>  
 		</div>
 		
-		<div style="clear: both;"></div>
+		<div style="clear: both;">
+			<span style="font-weight: bold; font-size: 11pt;">교수진 총 인원 <span style="color: green; font-weight: bold; font-size: 11pt;">234</span></span>
+			<select style="display: inline-block; float: right; margin-right: 20px; height: 25px; margin-bottom: 10px;">
+					<option>15개씩</option>
+			</select>
+		</div>
 		
+		<div style="clear: both;"></div>
+			
 		<div class="admtitleoptions">
 			<div class="adminsbopt">
 				<select class="adminsearchoption">
@@ -247,13 +236,9 @@ tr {
 				<select class="adminsearchoption">
 					<option>학과</option>
 				</select>
-				<select class="adminsearchoption">
-					<option>학번</option>
-				</select>
 			</div>
-			<span class="admsubtsp">선택된 학생</span>
-			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">게시판 활동 중지</button>
-			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">열람실 이용 중지</button>
+	
+			<span class="admsubtsp">선택된 교수진</span>
 			<button style="background-color: #99ccff; border-radius: 10%; color: white;">이메일 보내기</button>
 			<button style="background-color: #99ccff; border-radius: 10%; color: white;">메세지 보내기</button>
 		</div>
@@ -266,7 +251,7 @@ tr {
 						<th class="thall" style="margin-right: 70px; width: 30px;">No</th>
 						<th class="admthtdall thall">학과코드</th>
 						<th class="admthtdall thall">학과</th>
-						<th class="admthtdall thall">학번</th>
+						<th class="admthtdall thall">교수번호</th>
 						<th class="admthtdall thall">성함</th>
 						<th class="admthtdall thall">휴대전화</th>
 						<th class="admthtdall thall">이메일</th>
@@ -284,24 +269,17 @@ tr {
 							<td class="admthtdall goinfo" onclick="goView('${personMap.PERNO}')">${personMap.PERNO}</td>
 							<td class="admthtdall goinfo">${personMap.NAME}</td>
 							<td class="admthtdall goinfo">${personMap.MOBILE}</td>
-							<td class="admthtdall goinfo">${personMap.EMAIL}</td>
-							<input type="hidden" name="PERNO" />
-							<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />							
+							<td class="admthtdall goinfo">${personMap.EMAIL}</td>						
 						</tr>
 						</form>
 					</c:forEach>
 				</tbody>
 			</table>
-		   	<div align="center" style="width: 70%; border: 0px gray solid; margin: 20px auto;">
+			<div align="center" style="width: 70%; border: 0px gray solid; margin: 20px auto;">
 		   		${requestScope.pageBar}
 		   	</div>
 		</div>
 						
 	</div>
-	
-	<form name="goViewFrm">
-		<input type="hidden" name="PERNO" />
-		<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
-	</form>
 
 </div>
