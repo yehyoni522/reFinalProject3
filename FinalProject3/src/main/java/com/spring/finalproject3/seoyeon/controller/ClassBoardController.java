@@ -199,7 +199,7 @@ public class ClassBoardController {
 		         
 		         assignmentBoardVO assignmentVO = null;
 		         
-	        	 assignmentVO = service.assignmentView(assgnno);
+	     //   	 assignmentVO = service.assignmentView(assgnno);
 	             // 글조회수 증가는 없고 단순히 글1개 조회만을 해주는 것이다.
 		       
 		         
