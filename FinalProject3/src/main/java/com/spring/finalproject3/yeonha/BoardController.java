@@ -34,7 +34,7 @@ public class BoardController {
 	@RequestMapping(value="/board/add.sam")
 	public ModelAndView requiredLogin_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 				
-		mav.setViewName("board/add.tiles1");		
+		mav.setViewName("board/add.tiles2");		
 		return mav;
 	}
 	
@@ -55,12 +55,10 @@ public class BoardController {
 		
 		if(n==1) {
 			mav.setViewName("redirect:/board/list.sam");
-		    //   list.sam 페이지로 redirect(페이지이동)해라는 말이다.
 		}
 		
 		else {
-			mav.setViewName("board/error/add_error.tiles1");
-			//   /WEB-INF/views/tiles1/board/error/add_error.jsp 파일을 생성한다.
+			mav.setViewName("board/error/add_error.tiles2");
 		}
 				
 		return mav;
@@ -192,7 +190,7 @@ public class BoardController {
 		/////////////////////////////////////////////////////////
 		
 		mav.addObject("boardList", boardList);
-		mav.setViewName("board/list.tiles1");
+		mav.setViewName("board/list.tiles2");
 		
 		return mav;
 	}
@@ -253,8 +251,7 @@ public class BoardController {
 			if(loginuser != null) {
 				login_userid = loginuser.getPerno();				
 			}
-			
-			
+						
 			BoardVO boardvo = null;
 			
 			if("yes".equals(session.getAttribute("readCountPermission"))) {
@@ -263,26 +260,23 @@ public class BoardController {
 				
 				session.removeAttribute("readCountPermission");
 			}
-			else {
-				
-				boardvo = service.getViewWithNoAddCount(seq);
-				
-			}
+			else {				
+				boardvo = service.getViewWithNoAddCount(seq);				
+			}			
 			
-			mav.addObject("boardvo", boardvo);
-			
-	    }catch(NumberFormatException e) {
+			mav.addObject("boardvo", boardvo);			
+	   
+		}catch(NumberFormatException e) {
 	    	
-	    }	
-		
-		mav.setViewName("board/view.tiles1");
+	    }			
+		mav.setViewName("board/view.tiles2");
 		
 		return mav;
 	}
 	
 	// 댓글쓰기(Ajax로 처리)  
 	@ResponseBody
-	@RequestMapping(value="/board/addComment.action", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	@RequestMapping(value="/board/addComment.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public String addComment(CommentVO commentvo) {
 		
 		int n = 0;
@@ -301,62 +295,49 @@ public class BoardController {
 	}
 	
 	
-	// === #90. 원게시물에 딸린 댓글들을 조회해오기(Ajax로 처리) === // 
+	// 원게시물에 딸린 댓글들을 조회해오기(Ajax로 처리) 
 	@ResponseBody
-	@RequestMapping(value="/readComment.action", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	@RequestMapping(value="/board//readComment.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public String readComment(HttpServletRequest request) {
 		
-		String parentSeq = request.getParameter("parentSeq");
+		String fk_seq = request.getParameter("fk_seq");
 		
-		List<CommentVO> commentList = service.getCommentList(parentSeq);
+		List<CommentVO> commentList = service.getCommentList(fk_seq);
 		
-		JSONArray jsonArr = new JSONArray(); // []
+		JSONArray jsonArr = new JSONArray(); 
 		
-		if(commentList != null) { // 댓글이 있을 때만 보여줌
+		if(commentList != null) {
 			for(CommentVO cmtvo : commentList) {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("content", cmtvo.getContent());
 				jsonObj.put("name", cmtvo.getName());
-				jsonObj.put("regDate", cmtvo.getRegDate());
+				jsonObj.put("regDate", cmtvo.getReregDate());
 				
 				jsonArr.put(jsonObj);
 			}
-		}
-		
+		}		
 		return jsonArr.toString();
-		// "[]" 또는
-		// "["content":"댓글내용", "name":"작성자명", "regDate":"작성날짜"}]
 	}	
 	
-	// === #128. 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) === //
+	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
 	@ResponseBody
-	@RequestMapping(value="/commentList.action", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	@RequestMapping(value="/board/commentList.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public String commentList(HttpServletRequest request) {
 		
-		String parentSeq = request.getParameter("parentSeq");
+		String fk_seq = request.getParameter("fk_seq");
 		String currentShowPageNo = request.getParameter("currentShowPageNo");
 		
 		if(currentShowPageNo == null) {
 			currentShowPageNo = "1";
 		}
 		
-		int sizePerPage = 5; // 한 페이지당 5개의 댓글을 보여줄 것임.
-		// **** 가져올 게시글의 범위를 구한다.(공식임!!!) **** 
-	    /*
-	         currentShowPageNo      startRno     endRno
-	        --------------------------------------------
-	             1 page        ===>    1           5
-	             2 page        ===>    6           10
-	             3 page        ===>    11          15
-	             4 page        ===>    16          20
-	             ......                ...         ...
-	     */
+		int sizePerPage = 3; 
 		
 		int startRno = (( Integer.parseInt(currentShowPageNo) - 1 ) * sizePerPage) + 1;
 	    int endRno = startRno + sizePerPage - 1;
 	    
 	    Map<String,String> paraMap = new HashMap<>();
-	    paraMap.put("parentSeq", parentSeq);
+	    paraMap.put("fk_seq", fk_seq);
 	    paraMap.put("startRno", String.valueOf(startRno));
 	    paraMap.put("endRno", String.valueOf(endRno));  
 		
@@ -364,45 +345,42 @@ public class BoardController {
 		
 		JSONArray jsonArr = new JSONArray(); // []
 		
-		if(commentList != null) { // 댓글이 있을 때만 보여줌
+		if(commentList != null) { 
 			for(CommentVO cmtvo : commentList) {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("content", cmtvo.getContent());
 				jsonObj.put("name", cmtvo.getName());
-				jsonObj.put("regDate", cmtvo.getRegDate());
+				jsonObj.put("regDate", cmtvo.getReregDate());
 				
 				jsonArr.put(jsonObj);
 			}
 		}		
 		
-		// System.out.println(jsonArr.toString());
 		return jsonArr.toString();
-		// "[]" 또는
-		// "["content":"댓글내용", "name":"작성자명", "regDate":"작성날짜"}]
+
 	}
 	
 	
-	// === #132. 원게시물에 딸린 댓글 totalPage 알아오기 (Ajax 로 처리) === //
+	// 원게시물에 딸린 댓글 totalPage 알아오기 (Ajax 로 처리)
 	@ResponseBody
-	@RequestMapping(value="/getCommentTotalPage.action", method= {RequestMethod.GET})
+	@RequestMapping(value="/board/getCommentTotalPage.sam", method= {RequestMethod.GET})
 	public String getCommentTotalPage(HttpServletRequest request) {
 	
-		String parentSeq = request.getParameter("parentSeq");
+		String fk_seq = request.getParameter("fk_seq");
 		String sizePerPage = request.getParameter("sizePerPage");
 		
 		Map<String,String> paraMap = new HashMap<>();
-		paraMap.put("parentSeq", parentSeq);
+		paraMap.put("fk_seq", fk_seq);
 		paraMap.put("sizePerPage", sizePerPage);
 		
 		// 원글 글번호(parentSeq)에 해당하는 댓글의 총 페이지수를 알아오기
 		int totalPage = service.getCommentTotalPage(paraMap);
 		
 		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("totalPage", totalPage); // {"totalPage":5}
+		jsonObj.put("totalPage", totalPage); 
 		
-		// System.out.println("~~~확인용"+jsonObj.toString());
 		
-		return jsonObj.toString(); // "{"totalPage":5}"
+		return jsonObj.toString();
 	}
 	
 	

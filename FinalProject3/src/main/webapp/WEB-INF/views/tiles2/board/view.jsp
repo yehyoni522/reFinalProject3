@@ -97,14 +97,13 @@ td.comment {text-align: center; border}
 			data:form_data,
 			type:"post",
 			dataType:"json",
-			success:function(json){ // 정상이라면  {"n":1, "name":"서영학"}  오류가 발생하면  {"n":0, "name":"서영학"}
+			success:function(json){ 
 			   var n = json.n;
 			   
 			   if(n == 0) {
 				   alert(json.name+"님의 포인트는 300점을 초과할 수 없으므로 댓글쓰기가 불가합니다.");
 			   }
 			   else {
-				// goReadComment();  // 페이징처리 안한 댓글 읽어오기
 				   goViewComment(1); // 페이징처리 한 댓글 읽어오기 
 			   }
 			   

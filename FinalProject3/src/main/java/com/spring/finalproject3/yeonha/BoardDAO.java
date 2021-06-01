@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 
+
+
+
 @Component
 @Repository
 public class BoardDAO implements InterBoardDAO {
@@ -70,6 +73,27 @@ public class BoardDAO implements InterBoardDAO {
 	public int updateCommentCount(String fk_seq) {
 		int n = sqlsession.update("board.updateCommentCount", fk_seq);
 		return n;
+	}
+
+	// 원게시물에 딸린 댓글들을 조회해오기
+	@Override
+	public List<CommentVO> getCommentList(String fk_seq) {
+		List<CommentVO> commentList = sqlsession.selectList("board.getCommentList", fk_seq);
+		return commentList;
+	}
+
+	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
+	@Override
+	public List<CommentVO> getCommentListPaging(Map<String, String> paraMap) {
+		List<CommentVO> commentList = sqlsession.selectList("board.getCommentListPaging", paraMap);
+		return commentList;
+	}
+
+	// 원글 글번호(parentSeq)에 해당하는 댓글의 총 페이지수를 알아오기
+	@Override
+	public int getCommentTotalPage(Map<String, String> paraMap) {
+		int totalPage = sqlsession.selectOne("board.getCommentTotalPage", paraMap);
+		return totalPage;
 	}
 
 
