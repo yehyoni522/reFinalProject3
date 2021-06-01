@@ -3,7 +3,6 @@ package com.spring.finalproject3.yehyeon.controller;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +28,14 @@ import com.spring.finalproject3.yehyeon.service.InterReadingService;
       여기서는 @Controller 를 사용하므로 @Component 기능이 이미 있으므로 @Component를 명기하지 않아도 BoardController 는 bean 으로 등록되어 스프링컨테이너가 자동적으로 관리해준다. 
 */
 @Controller
-public class ReadingController {
+public class YehyeonController {
 	
 	
 	@Autowired   // Type에 따라 알아서 Bean 을 주입해준다.
 	private InterReadingService service;
 	
+	
+	////////////////////////////열람실 예약 페이지 시작///////////////////////////////////
 	
 	@RequestMapping(value="/reading/index.sam")
 	public ModelAndView readingRoomView(ModelAndView mav) {
@@ -161,6 +162,17 @@ public class ReadingController {
 		jsonObj.put("sendMailSuccess", sendMailSuccess);
 		
 		return jsonObj.toString();
+	}
+	
+	
+	////////////////////////////열람실 예약 페이지 끝///////////////////////////////////
+	
+	@RequestMapping(value="/admin/readingRoomBook.sam")
+	public ModelAndView readingRoomBook(ModelAndView mav) {
+		
+		mav.setViewName("/admin/readingRoomBook.tiles1");
+		
+		return mav;
 	}
 	
 }
