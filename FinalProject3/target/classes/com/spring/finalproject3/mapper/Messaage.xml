@@ -22,6 +22,9 @@
 			            to_char(reDate, 'yyyy-mm-dd PM HH:MI:SS') as reDate, readState, inboxName
 			from tbl_inbox
 			where receiver = to_number(#{userid})
+			<if test='readState != "" '>
+			and readState = 0
+			</if>
 			<if test='searchWord != "" '>
 			and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
 			</if>
@@ -39,15 +42,35 @@
 		
    </select>
    
+   <!-- // 읽은것은 1로 변환해준다. -->
    <update id="updateReadState" parameterType="int">
    		update tbl_inbox set readState = 1
 		where inboxSeq = #{inboxSeq}
    </update>
    
+   <!-- // 안읽은 메세지갯수세기 -->
    <select id="getNonReadCount" parameterType="int" resultType="int">
    		select count(*)
    		from tbl_inbox
    		where readState = 0 and fk_perno = #{userid} 
+   </select>
+   
+   <!-- // inbox에서 체크박스에서 선택된 쪽지  삭제하기  -->
+   <delete id="inDel"  parameterType="int" >
+   		delete tbl_inbox
+   		where inboxSeq = #{deleteSeq}
+   </delete>
+   
+   <select id="searchPerson" parameterType="int" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
+   		select perno, name, fk_majseq, identity, pwd
+   		from tbl_person
+   		where perno = #{parseInt} 
+   </select>
+   
+   <select id="getNameMaj" parameterType="int" resultType="String">
+   		select content
+   		from tbl_major
+   		where majseq = #{majseq} 
    </select>
 
 

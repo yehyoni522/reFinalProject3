@@ -24,6 +24,6 @@ body{
 
 
 /* footer css */
-#myfooter		{background-color:#F5F5F5; height:200px; width:100%; padding: 50px 10px 0px 50px;}
+#myfooter		{background-color:#F5F5F5; height:200px; width:100%;margin-top:80px; padding: 50px 10px 0px 50px;}
 #footerSchoolName	{float: left; width: 50%; padding:10px;}
 #address 		{font-size:12pt; font-weight:bold; float: left; width: 47%; padding:10px; text-align: right;} 

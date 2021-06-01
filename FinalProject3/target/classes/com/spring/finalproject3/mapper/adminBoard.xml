@@ -30,6 +30,9 @@
 		   on B.fk_perno=P.perno
 		   where status = 1
 		   and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+		   <if test='viewBoard != "" '>
+        	and categoryno = ${viewBoard}
+           </if>
 		   order by seq desc
 	</select>
    
@@ -48,9 +51,12 @@
 		select count(*)
 		from tbl_board B join tbl_person P
 		on B.fk_perno=P.perno
-		where status = 1
+		where status = 1	
 		<if test='searchWord != "" '>
         	and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+        </if>
+        <if test='viewBoard != "" '>
+        	and categoryno = ${viewBoard}
         </if>
 	</select>
 	
@@ -69,8 +75,21 @@
 		    <if test='searchWord != "" '>
 		    and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
 		    </if>
+		    <if test='viewBoard != "" '>
+        	and categoryno = ${viewBoard}
+        	</if>
 		)V
 		where rno between #{startRno} and #{endRno}
 	</select>
+	
+	
+	<!--  === tbl_board 테이블에 categoryno를 변경(update) === -->
+	<update id="updateCommentCount" parameterType="HashMap">
+		update tbl_board set categoryno = #{categoryno}
+		where seq = #{seq}
+	</update>
+	
+	
+	
    
 </mapper>

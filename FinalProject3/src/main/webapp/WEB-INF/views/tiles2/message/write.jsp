@@ -183,17 +183,31 @@ button.re:hover{
 		$("div#outbox").bind("click", function(){
 			goOutbox();
 		});
+	
+		
+		
 	});
 
 	function goWrite(){
-		location.href="<%= ctxPath%>/message/write.sam";
+		location.href="<%= ctxPath%>/write.sam";
 	}
 	function goInbox(){
-		location.href="<%= ctxPath%>/message/inbox.sam";
+		location.href="<%= ctxPath%>/inbox.sam";
 	}
 	function goOutbox(){
-		location.href="<%= ctxPath%>/message/outbox.sam";
+		location.href="<%= ctxPath%>/outbox.sam";
 	}
+	
+	function goSearch() {
+		
+		sessionStorage.setItem('receiver',  $("input[name=receiver]").val());
+		
+	    var lo_form = document.writeFrm;
+	    lo_form.target = "idFindiframe";
+	    lo_form.action = "<%=ctxPath%>/message/userFind.sam";
+	    lo_form.submit();
+	 }
+	
 </script>
 
 <body>
@@ -207,7 +221,7 @@ button.re:hover{
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
+			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">2</div></div>
 			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
 		</div>
 	</div>	
@@ -216,11 +230,11 @@ button.re:hover{
 <div class="msgContents" style="width: 70%; display:inline-block ; margin-left:20px; ">
 
  	
-    	<form name="writeFrm" style="margin-top: 20px;">
+    	<form name="writeFrm" style="margin-top: 20px;" >
 			      <input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" />
 			<input id="forme" type="checkbox"><label for="forme" style="font-size:12px;">내게쓰기</label>&nbsp;&nbsp;
 			<span class='green_window'>
-			<input type='text' class='input_text' placeholder="받는사람" />
+			<input type='text' class='input_text' placeholder="받는사람" name="receiver"/>
 			</span>
 			<a style="cursor: pointer;" data-toggle="modal" data-target="#userfind" data-dismiss="modal"><button type='submit' class='sch_smit' onclick="goSearch();">찾기</button></a>
 			 
@@ -253,7 +267,7 @@ button.re:hover{
 	        
 	        <div class="modal-body" style="height: 250px; width: 100%;">        
 		          <div id="idFind" >
-		          	<iframe style="border: none; width: 100%; height: 230px; " src="<%=ctxPath%>/userFind.sam">
+		          	<iframe name="idFindiframe" style="border: none; width: 100%; height: 230px; " src="<%=ctxPath%>/message/userFind.sam">
 		          	</iframe>
 		          </div>	          
 	        </div>

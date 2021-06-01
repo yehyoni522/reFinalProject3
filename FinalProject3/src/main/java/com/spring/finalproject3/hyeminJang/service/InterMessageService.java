@@ -1,9 +1,11 @@
 package com.spring.finalproject3.hyeminJang.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
+import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 public interface InterMessageService {
 
@@ -18,6 +20,20 @@ public interface InterMessageService {
 
 	// 안읽은 글의 갯수 세기
 	int getNonReadCount(int userid);
+
+	// inbox에서 체크박스에서 선택된 쪽지  삭제하기 
+	int inDel(ArrayList<Integer> deleteArray);
+
+	// 세부읽기에서 한개만 쪽지 삭제하기
+	int inDelOne(int parseInt);
+
+	// 사람번호검색
+	PersonVO searchPerson(int parseInt);
+
+	// 학과이름 가져오기
+	String getNameMaj(int majseq);
+
+
 
 	
 
