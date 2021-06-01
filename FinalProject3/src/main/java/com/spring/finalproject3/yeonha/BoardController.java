@@ -182,6 +182,10 @@ public class BoardController {
 		String gobackURL = MyUtil.getCurrentURL(request);
 		// System.out.println("~~~goback확인용"+gobackURL);
 		
+		if(gobackURL != null) {
+			gobackURL = gobackURL.replaceAll("", "&");
+		}
+		
 		mav.addObject("gobackURL", gobackURL);
 		
 		// ==== 페이징 처리를 한 검색어가 있는 전체 글목록 보여주기 끝 ==== //
