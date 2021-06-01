@@ -93,8 +93,20 @@ public class joseungjin_controller {
 			// 메모리에 생성되어져 있는 session을 불러오는 것이다.
 			
 			session.setAttribute("loginuser", loginuser);
+			String goBackURL = (String) session.getAttribute("goBackURL");
+			// 예를 들면 goBackURL 은  shop/prodView.up?pnum=66 이거나
+			// 또는 null 이다.
+			
+			// 막바로 페이지 이동을 시킨다. 
+			if(goBackURL != null) {
+				mav.setViewName("redirect:/"+goBackURL);
+				session.removeAttribute("goBackURL"); // 세션에서 반드시 제거해주어야 한다.
+			}
+			else {
+				mav.setViewName("redirect:/index.sam");
+			}
 			// session(세션)에 로그인 되어진 사용자 정보인 loginuser 을 키이름을 "loginuser" 으로 저장시켜두는 것이다.
-			mav.setViewName("redirect:/index.sam");
+			
 					
 		}
 	
