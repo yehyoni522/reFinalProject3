@@ -222,6 +222,11 @@ public class MessageController {
 		
 		mav.addObject("nonReadCount", nonReadCount);
 		
+		String receiver_es = request.getParameter("receiver_es");
+		if(receiver_es !=null) {
+			mav.addObject("receiver_es", receiver_es);
+		}
+		
 		mav.setViewName("message/write.tiles2");
 		// /WEB-INF/views/tiles2/message/write.jsp 파일을 생성한다.
 		

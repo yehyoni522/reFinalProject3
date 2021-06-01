@@ -176,6 +176,8 @@ button.re:hover{
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 
+	
+
 	$(document).ready(function(){
 		$("div#inbox").bind("click", function(){
 			goInbox();
@@ -187,6 +189,11 @@ button.re:hover{
 		
 		
 	});
+	
+	
+	window.closeModal = function(){
+	    $('#idFindiframe').modal('hide');
+	};
 
 	function goWrite(){
 		location.href="<%= ctxPath%>/message/write.sam";
@@ -205,6 +212,12 @@ button.re:hover{
 	    lo_form.action = "<%=ctxPath%>/message/userFind.sam";
 	    lo_form.submit();
 	 }
+	
+	function sumitSendForm() {
+		 
+		 
+		 $("input.input_text").val("${requestScope.receiver_es}")
+	}
 	
 </script>
 
@@ -265,7 +278,7 @@ button.re:hover{
 	        
 	        <div class="modal-body" style="height: 250px; width: 100%;">        
 		          <div id="idFind" >
-		          	<iframe name="idFindiframe" style="border: none; width: 100%; height: 230px; " src="<%=ctxPath%>/message/userFind.sam">
+		          	<iframe name="idFindiframe" id="test" style="border: none; width: 100%; height: 230px; " src="<%=ctxPath%>/message/userFind.sam">
 		          	</iframe>
 		          </div>	          
 	        </div>

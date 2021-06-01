@@ -95,7 +95,23 @@ table.type03 td {
 .sch_smit_1:hover {
 	background: #173F67;
 }
-
+div#add{
+ border: solid 1px #ccc; width: 530px; height: 50px;
+ border-left: 3px solid #369;
+ font-size: 13px;
+ margin-bottom: 50px;
+ overflow: auto;
+}
+div.addBox{
+ margin-left:8pt;
+}
+input#delete{
+	width: 15px; 
+	height: 15px;
+	font-size: 10px;
+	padding-right: 0;
+	padding-left: 0;
+}
 
 </style>
 
@@ -106,25 +122,6 @@ table.type03 td {
 		$("input.input_text").val("${requestScope.receiver}");
 		goSearch();
 		
-		$("input:checkbox[name=checked]").each(function(index, item){ 
-			
-			var bChecked = $(item).prop("checked");
-			
-			console.log("dd"+bChecked);
-			
-			if (bChecked) {	// 체크표시가 안되어있는 상품일 경우 반복문 종료
-				$(item).addClass("input_newColor");
-				console.log("체크");
-			}
-			else{
-				$(item).removeClass("input_newColor");
-				console.log("체크품");
-			}
-		});
-		
-		$("input:checkbox[name=checked]").click(function(){
-			$(item).addClass("input_newColor");
-		});
 
 	});
 
@@ -154,8 +151,12 @@ table.type03 td {
 				
 				if(json.name != null) {
 					
+
+					 var text = '"'+json.name+'"';
+					 
+					 
 						html += "<tr>";
-						html += "<td><input style='font-size:10px;' type='button' value='추가'></td>";
+						html += "<td><input id='choice' onclick='add("+json.perno+","+text+")' style='font-size:10px;' type='button' value='추가'></td>";
 						html += "<td>"+ json.perno +"</td>";
 						html += "<td>"+ json.identity +"</td>";
 						html += "<td>"+ json.nameMaj +"</td>";
@@ -177,6 +178,45 @@ table.type03 td {
 		}); 
 		
 	}// end of function goAddWrite(){}--------------------------
+	
+	// 받는사람 박스에 출력하기
+	var str ="";
+	var perno_es ="";
+	function add(perno, name){
+		
+		str+="<tr id="+perno+">";
+		str+="<td>"+name+"&nbsp;</td>";
+		str+="<td>("+perno+")&nbsp;&nbsp;</td>";
+		str+="<td><input id='delete' type='button' onclick='del("+perno+")' value='X'/></td>";
+		str+="</tr>";
+		
+		perno_es += perno+",";
+		
+		
+		$("div#add").html(str);
+		$("input[name=receiver_es]").val(perno_es);
+		/* str+= name+ "("+ perno+")";
+		str+="<input id='delete' type='button' onclick='del("+perno+")' value='X'/>"
+		perno_es += perno+",";
+		str+=" ";
+		$("div#add").html(str); */
+	}
+	
+	// 삭제하기
+	function del(perno){
+		$("tr#"+perno+"").remove();
+		perno_es.replace(perno,"");
+	}
+	
+	function goSubmit(){
+		
+		var frmObj = document.sendform;
+		 frmObj.action = "<%=ctxPath%>/message/write.sam";
+		 frmObj.submit();
+		 
+		 parent.document.location.reload();
+		 window.close();
+	}
 
 </script>
 
@@ -187,10 +227,11 @@ table.type03 td {
    <div id="div_name" align="center">
       <span class='green_window'>
 			<input type='text' name="text" class='input_text'/>
-			
 		</span>
 			<button type='button' class='sch_smit' onclick="goSearch()">검색</button>
+			
    </div>
+   <div id="error" style="color: red;font-size: 12px; margin-top:5px; margin-left:180px;"></div>
    
 </form>
 
@@ -206,11 +247,16 @@ table.type03 td {
       </thead>
       <tbody id="commentDisplay"></tbody>
    </table>
-   <div id="error" align="center" style="color: red;"></div>
    
-   <div id="receiverID" style="boder: solid 1px gray;"></div>
+<form name="sendform">
+	<div class="addBox" id="receiverID" style="font-size: 13px; font-weight: bold; color: #205890;">받는사람</div>
+    <div class="addBox" id="add"> </div>
+    <input type="hidden" name="receiver_es" value=""/>
+</form>
+<div align="center"> <button type='submit' class='sch_smit_1' onclick="goSubmit()">선택하기</button></div>
    
-   <div align="center"> <button type='submit' class='sch_smit_1' onclick="">선택하기</button></div>
+   	
+  
   
    
    
