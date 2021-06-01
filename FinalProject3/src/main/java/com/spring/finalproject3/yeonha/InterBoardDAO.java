@@ -23,6 +23,12 @@ public interface InterBoardDAO {
 	// 글조회수 1증가 하기
 	void setAddReadCount(String seq);
 
+	// 댓글쓰기
+	int addComment(CommentVO commentvo);
+
+	// tbl_board 테이블에 commentCount 컬럼의 값을 1증가(update)
+	int updateCommentCount(String fk_seq);
+
 
 	
 }

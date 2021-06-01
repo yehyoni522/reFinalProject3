@@ -24,6 +24,9 @@ public interface InterBoardService {
 	// 글조회수 증가는 없고 단순히 글1개 조회만을 해주는 것이다.
 	BoardVO getViewWithNoAddCount(String seq);
 
+	// 댓글쓰기(Ajax로 처리) 
+	int addComment(CommentVO commentvo) throws Throwable;
+
 
 
 

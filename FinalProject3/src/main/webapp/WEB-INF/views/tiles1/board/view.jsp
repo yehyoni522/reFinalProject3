@@ -11,16 +11,20 @@
 %>
 
 <style type="text/css">
-table, th, td, input, textarea {border: solid gray 1px;}
+  
+#table, #table2 {
+	border-collapse: collapse;
+	border-top: 1px solid #ccc;
+    width: 1024px;
+}
 
-#table, #table2 {border-collapse: collapse;
- 		         width: 1024px;
- 		        }
-#table th, #table td{padding: 5px;}
-#table th{width: 120px; background-color: #DDDDDD;}
+#table th, #table td{
+	padding: 5px;
+	border-bottom: 1px solid #ccc;
+	
+}
 #table td{width: 880px;}
-.long {width: 470px;}
-.short {width: 120px;}
+
 
 .move {cursor: pointer; color:navy;}
 .moveColor {color: #660029; font-weight: bold;}
@@ -201,7 +205,7 @@ td.comment {text-align: center; border}
 	// ==== 댓글내용 페이지바  Ajax로 만들기 ==== // 
 	function makeCommentPageBar(currentShowPageNo) {
 	
-		원글에 대한 댓글의 totalPage 수를 알아오려고 한다. 
+		/* 원글에 대한 댓글의 totalPage 수를 알아오려고 한다.  */
 		$.ajax({
 			url:"<%= ctxPath%>/board/getCommentTotalPage.sam",
 			data:{"parentSeq":"${requestScope.boardvo.seq}",
@@ -312,7 +316,7 @@ td.comment {text-align: center; border}
 			<c:if test="${categoryno != 4}">
 			    <c:if test="${not empty sessionScope.loginuser}">
 					<form name="addWriteFrm" style="margin-top: 20px;">
-						      <input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" />
+						<input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" />
 						성명 : <input type="text" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />  
 						&nbsp;&nbsp;
 						댓글내용 : <input id="commentContent" type="text" name="content" class="long" /> 

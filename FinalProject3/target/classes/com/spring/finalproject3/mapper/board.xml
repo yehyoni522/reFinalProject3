@@ -105,5 +105,16 @@
 		where seq = #{seq}
 	</update>
 	
+	<!-- 댓글쓰기 -->
+	<insert id="addComment" parameterType="com.spring.finalproject3.yeonha.CommentVO">
+		insert into tbl_comment(comseq, fk_seq, fk_perno, content, reregDate, status)
+		values(commentSeq.nextval, #{fk_seq}, #{fk_perno}, #{content}, default, default)
+	</insert>
+	
+	<!-- tbl_board 테이블에 commentCount 컬럼의 값을 1증가(update) -->
+	<update id="updateCommentCount" parameterType="String">
+		update tbl_board set commentCount = commentCount + 1
+		where seq = #{fk_seq} 
+	</update>
     
 </mapper>

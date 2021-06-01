@@ -1,10 +1,14 @@
 package com.spring.finalproject3.yeonha;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 
 
@@ -63,6 +67,23 @@ public class BoardService implements InterBoardService {
 	public BoardVO getViewWithNoAddCount(String seq) {
 		BoardVO boardvo = dao.getView(seq); 
 		return boardvo;
+	}
+
+	// 댓글쓰기(Ajax로 처리) 
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
+	public int addComment(CommentVO commentvo) throws Throwable {
+		
+		int n=0, result=0;
+		
+		n = dao.addComment(commentvo); // 댓글쓰기(tbl_comment 테이블에 insert)
+		
+		if(n==1) {
+			result = dao.updateCommentCount(commentvo.getFk_seq()); // tbl_board 테이블에 commentCount 컬럼의 값을 1증가(update)      
+		}
+		
+		
+		return result;
 	}
 
 

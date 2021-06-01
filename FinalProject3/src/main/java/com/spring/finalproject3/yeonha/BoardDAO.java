@@ -58,6 +58,20 @@ public class BoardDAO implements InterBoardDAO {
 		sqlsession.update("board.setAddReadCount", seq);		
 	}
 
+	// 댓글쓰기
+	@Override
+	public int addComment(CommentVO commentvo) {
+		int n = sqlsession.insert("board.addComment", commentvo);
+		return n;
+	}
+
+	// tbl_board 테이블에 commentCount 컬럼의 값을 1증가(update)
+	@Override
+	public int updateCommentCount(String fk_seq) {
+		int n = sqlsession.update("board.updateCommentCount", fk_seq);
+		return n;
+	}
+
 
 
 
