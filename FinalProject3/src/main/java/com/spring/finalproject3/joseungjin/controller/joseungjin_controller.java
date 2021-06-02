@@ -1,6 +1,7 @@
 package com.spring.finalproject3.joseungjin.controller;
 
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -21,9 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.joseungjin.mail.GoogleMail;
-import com.spring.finalproject3.joseungjin.model.InterPersonDAO;
+import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
 import com.spring.finalproject3.joseungjin.model.Main_index_BoardVO;
-import com.spring.finalproject3.joseungjin.model.PersonDAO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 import com.spring.finalproject3.joseungjin.service.InterMemberService;
 
@@ -39,14 +39,21 @@ public class joseungjin_controller {
 	public ModelAndView main(ModelAndView mav,HttpServletRequest request) {
 		
 		List<Main_index_BoardVO> MainboardList = null;
-		
-		
+		List<MainSubjectVO> MainsubjectList = null;
 		
 		HttpSession session = request.getSession();
 		session.setAttribute("readCountPermission", "yes");
 		
+		if(session.getAttribute("loginuser") != null) {
+			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+			int userid = loginuser.getPerno();
+			MainsubjectList = service.Mainsubject(userid);
+		}
+		
 		MainboardList =service.MainboardView();
 		
+		
+		mav.addObject("MainsubjectList",MainsubjectList);
 		mav.addObject("MainboardList",MainboardList);
 		mav.setViewName("main/index.tiles1");
 		// /WEB-INF/views/tiles1/main/index.jsp 파일을 생성한다.

@@ -284,6 +284,7 @@ function closeNav() {
 		<c:if test="${sessionScope.loginuser.identity == 1}">
 			<a>${sessionScope.loginuser.name} 교수</a>
 	</c:if>
+	${id}
   </div>
   <a href="#">내 수업 목록</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=4">공지사항</a>
@@ -306,15 +307,29 @@ function closeNav() {
 	<c:if test="${empty sessionScope.loginuser}">
 	<span style="display:inline-block; padding:250px 0px 0px 150px;  font-size: 20pt; font-weight: bold;">${sessionScope.loginuser.userid}로그인을 해주세요.</span>
 	</c:if>
-
+	
 	
 	<c:if test="${sessionScope.loginuser.identity == 0}">
-		
-		<span style="font-size: 20pt; font-weight: bold;">내 강의</span>
+		<div style="font-size: 25pt; font-weight: bold; margin-top:50px; margin-bottom: 50px;">
+		내 강의
+		</div>
+		<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
+			<br>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}</span>
+		</c:forEach>
 	</c:if>
 	<c:if test="${sessionScope.loginuser.identity == 1}">
-			<span style="font-size: 20pt; font-weight: bold;">${sessionScope.loginuser.name} 교수님 강의 목록</span>
+			<div style="font-size: 25pt; font-weight: bold; margin-top:50px; margin-bottom: 50px;">
+				${sessionScope.loginuser.name} 교수님 강의 목록
+				</div>
+				<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
+			<br>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}</span>
+		</c:forEach>
 	</c:if>
+	
 </div>
 
 <div id="mainBoard" align="center">
