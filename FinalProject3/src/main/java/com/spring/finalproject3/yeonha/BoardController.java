@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.spring.board.model.BoardVO;
 import com.spring.finalproject3.common.MyUtil;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
@@ -400,9 +399,22 @@ public class BoardController {
 	@RequestMapping(value="/board/edit.sam")
 	public ModelAndView requiredLogin_edit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
       
-		// 글 수정해야 할 글번호 가져오기
 		String seq = request.getParameter("seq");
 	  
+		String searchType = request.getParameter("searchType");
+		// System.out.println("써치타입: "+searchType);
+		if(searchType == null) {
+			searchType = "";
+		}
+		mav.addObject(searchType);
+		
+		String searchWord = request.getParameter("searchWord");
+		// System.out.println("써치워드: "+searchWord);
+		if(searchWord == null) {
+			searchWord = "";
+		}
+		mav.addObject(searchWord);
+		 
 		// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
 		BoardVO boardvo = service.getViewNo(seq);
 	  
@@ -428,24 +440,31 @@ public class BoardController {
 	}
 	
 	
-	// === #72. 글수정 페이지 완료하기 === //
-	@RequestMapping(value="/editEnd.action", method= {RequestMethod.POST})
+	// 글수정 페이지 완료하기 
+	@RequestMapping(value="/board/editEnd.sam", method= {RequestMethod.POST})
 	public ModelAndView editEnd(ModelAndView mav, BoardVO boardvo, HttpServletRequest request) {   
 	   
+		String searchType = request.getParameter("searchType");
+		String searchWord = request.getParameter("searchWord");
+		
 		int n = service.edit(boardvo);
 	   
-	   if(n == 0) {
-          mav.addObject("message", "수정이 실패했습니다.");
-       }
-       else {
-          mav.addObject("message", "글수정 성공!!");      
-       }
-
-       mav.setViewName("msg");
+		if(n == 0) {
+			mav.addObject("message", "수정이 실패했습니다.");
+		}
+		else {
+			mav.addObject("message", "글수정 성공!!");      
+		}
+	  
+		mav.addObject("loc", request.getContextPath()+"/board/view.sam?seq="+boardvo.getSeq()+
+							"&categoryno="+boardvo.getCategoryno()+
+							"&searchType="+searchType+
+							"&searchWord="+searchWord);
+		mav.setViewName("msg");
        
-	   return mav;
-   }
-	
+		return mav;
+	}
+
 	// 게시글 삭제하기 /board/del.sam
 	
 	

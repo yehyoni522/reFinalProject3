@@ -182,5 +182,12 @@
 		on P.perno = B.fk_perno
 		where B.seq = #{seq}
 	</select>
+	
+	<!-- 1개글 수정하기 -->
+	<update id="edit" parameterType="com.spring.finalproject3.yeonha.BoardVO">
+		update tbl_board set subject = #{subject}
+		                   , content = #{content}
+		where seq = #{seq}
+	</update>
    	
 </mapper>
