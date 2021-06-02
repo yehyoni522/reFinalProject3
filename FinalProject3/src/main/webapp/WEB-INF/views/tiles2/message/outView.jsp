@@ -185,20 +185,11 @@ button.re:hover{
 	function goOutbox(){
 		location.href="<%= ctxPath%>/message/outbox.sam";
 	}
-	function inDelOne(inboxSeq){
+	function outDelOne(outboxSeq){
 		 var bool = confirm("해당 쪽지를 삭제하시겠습니까?");
 		 if(bool){
-			 location.href="<%= ctxPath%>/message/inDelOne.sam?inboxSeq="+inboxSeq;
+			 location.href="<%= ctxPath%>/message/outDelOne.sam?outboxSeq="+outboxSeq;
 		 }
-	}
-	function gorResponse(){
-		
-		
-		var frm = document.responseFrm;
-		frm.action = "<%=ctxPath%>/message/write.sam";
-		frm.method = "get";
-		frm.submit();
-		
 	}
 </script>
 
@@ -213,29 +204,25 @@ button.re:hover{
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
-			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
+			<div class="msgBox" id="inbox" style="  margin-top: 30px; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
+			<div class="msgBox" id="outbox" style="background-color: #2ECC71; padding-right: 100px;color: white;"  >보낸쪽지함</div>
 		</div>
 	</div>	
 </div>
 
 <div class="msgContents" style="width: 70%; display:inline-block ; ">
 
-		<button class="del" type="button" onclick="inDelOne(${requestScope.inboxvo.inboxSeq})">삭제</button>
-		 <button class="re" type="button" onclick="gorResponse()">답장</button>
-		 <form  name="responseFrm">
-		 	<input type="hidden" name="fk_userid" value="${requestScope.inboxvo.fk_perno}">
-			<input type="hidden" name="name" value="${requestScope.inboxvo.inboxName}">
-		 </form>	
+		<button class="del" type="button" onclick="outDelOne(${requestScope.outboxvo.outboxSeq})">삭제</button>
+		
 
-	<c:if test="${not empty requestScope.inboxvo}">
-		<div>보낸사람 <span>${requestScope.inboxvo.inboxName}</span></div>
-	 	<div>받은시간 <span>${requestScope.inboxvo.reDate}</span></div>
+	<c:if test="${not empty requestScope.outboxvo}">
+		<div>보낸사람 <span>${requestScope.outboxvo.outboxName}</span></div>
+	 	<div>받은시간 <span>${requestScope.outboxvo.senDate}</span></div>
 	 	<hr>
-	 	<div>${requestScope.inboxvo.subject}</div>
+	 	<div>${requestScope.outboxvo.subject}</div>
 	</c:if>
 	
-	<c:if test="${empty requestScope.inboxvo}">
+	<c:if test="${empty requestScope.outboxvo}">
 		<div style="padding: 50px 0; font-size: 16pt; color: red;">존재하지 않습니다</div>
 	</c:if>
 
