@@ -236,7 +236,7 @@
 
 <%-- 페이지 바 --%>
 <div style="text-align:center; width:70%; border:solid 0px grey; margin:20px auto; ">
-	${requestScope.pageBar}
+	${requestScope.pageBar}  
 </div>
 
 <form name="goViewFrm">
