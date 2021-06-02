@@ -122,7 +122,7 @@
 		select name, content, reregDate 
 		from
 		(
-			select comseq, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd hh24:mi:ss') AS reregDate 
+			select comseq, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate 
 			from tbl_comment
 			where status = 1 and fk_seq = #{fk_seq}
 			order by comseq desc
@@ -139,7 +139,7 @@
 		    select rno, name, content, reregDate 
 		    from
 		    (
-		        select row_number() over(order by comseq desc) as rno, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd hh24:mi:ss') AS reregDate 
+		        select row_number() over(order by comseq desc) as rno, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate 
 		        from tbl_comment
 		        where status = 1 and fk_seq = #{fk_seq}
 		        order by comseq desc

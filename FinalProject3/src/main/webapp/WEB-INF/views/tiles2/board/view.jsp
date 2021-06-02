@@ -123,11 +123,9 @@ td.comment {text-align: center; border}
 		
 		$.ajax({
 			url:"<%= ctxPath%>/board/readComment.sam",
-			data:{"parentSeq":"${requestScope.boardvo.seq}"},
+			data:{"fk_seq":"${requestScope.boardvo.seq}"},
 			dataType:"json",
 			success:function(json){ 
-				// []  또는 
-				// [{"content":"댓글내용물", "name":"작성자명", "regDate":"작성일자"},{},{}] 
 				
 				var html = "";
 				
@@ -163,22 +161,19 @@ td.comment {text-align: center; border}
 		
 		$.ajax({
 			url:"<%= ctxPath%>/board/commentList.sam",
-			data:{"parentSeq":"${requestScope.boardvo.seq}",
+			data:{"fk_seq":"${requestScope.boardvo.seq}",
 				  "currentShowPageNo":currentShowPageNo},
 			dataType:"json",
 			success:function(json){ 
-				// []  또는 
-				// [{"name":"이순신","regDate":"2021-05-28 10:41:52","content":"열네번째 댓글입니다."},{"name":"이순신","regDate":"2021-05-28 10:41:52","content":"열세번째 댓글입니다."},{"name":"이순신","regDate":"2021-05-28 10:41:52","content":"열두번째 댓글입니다."},{"name":"이순신","regDate":"2021-05-28 10:41:52","content":"열한번째 댓글입니다."},{"name":"이순신","regDate":"2021-05-28 10:41:52","content":"열번째 댓글입니다."}] 
 				
 				var html = "";
 				
 				if(json.length > 0) {
 					$.each(json, function(index, item){
 						html += "<tr>";
-						html += "<td class='comment'>"+(index+1)+"</td>";
-						html += "<td>"+ item.content +"</td>";
 						html += "<td class='comment'>"+ item.name +"</td>";
-						html += "<td class='comment'>"+ item.regDate +"</td>";
+						html += "<td>"+ item.content +"</td>";
+						html += "<td class='comment'>"+ item.reregDate +"</td>";
 						html += "</tr>";
 					});
 				}
@@ -207,7 +202,7 @@ td.comment {text-align: center; border}
 		/* 원글에 대한 댓글의 totalPage 수를 알아오려고 한다.  */
 		$.ajax({
 			url:"<%= ctxPath%>/board/getCommentTotalPage.sam",
-			data:{"parentSeq":"${requestScope.boardvo.seq}",
+			data:{"fk_seq":"${requestScope.boardvo.seq}",
 				  "sizePerPage":"5"},
 			type:"get",
 			dataType:"json",
@@ -225,10 +220,8 @@ td.comment {text-align: center; border}
 				    }
 				    
 					var pageNo = Math.floor((currentShowPageNo - 1)/blockSize) * blockSize + 1;								    
-				
-				// === [맨처음][이전] 만들기 === 
+						
 					if(pageNo != 1) {
-						pageBarHTML += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='javascript:goViewComment(\"1\")'>[맨처음]</a></li>";
 						pageBarHTML += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='javascript:goViewComment(\""+(pageNo-1)+"\")'>[이전]</a></li>";
 					}
 				
@@ -244,12 +237,9 @@ td.comment {text-align: center; border}
 						loop++;
 						pageNo++;
 					}// end of while------------------------
-				
-				
-				// === [다음][마지막] 만들기 === 
+								
 					if(pageNo <= totalPage) {
 						pageBarHTML += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='javascript:goViewComment(\""+pageNo+"\")'>[다음]</a></li>";
-						pageBarHTML += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='javascript:goViewComment(\""+totalPage+"\")'>[마지막]</a></li>";
 					}
 					
 					pageBarHTML += "</ul>";
@@ -321,7 +311,7 @@ td.comment {text-align: center; border}
 						댓글내용 : <input id="commentContent" type="text" name="content" class="long" /> 
 						
 						댓글에 달리는 원게시물 글번호(즉, 댓글의 부모글 글번호)
-						<input type="hidden" name="parentSeq" value="${requestScope.boardvo.seq}" /> 
+						<input type="hidden" name="fk_seq" value="${requestScope.boardvo.seq}" /> 
 						
 						<button id="btnComment" type="button" onclick="goAddWrite()">확인</button> 
 						<button type="reset">취소</button> 
@@ -332,9 +322,8 @@ td.comment {text-align: center; border}
 				<table id="table2" >
 					<thead>
 					<tr>
-					    <th style="width: 10%; text-align: center;">번호</th>
-						<th style="width: 60%; text-align: center;">내용</th>
 						<th style="width: 10%; text-align: center;">작성자</th>
+						<th style="width: 60%; text-align: center;">내용</th>
 						<th style="text-align: center;">작성일자</th>
 					</tr>
 					</thead>

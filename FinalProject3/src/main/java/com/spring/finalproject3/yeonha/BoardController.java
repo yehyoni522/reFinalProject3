@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.common.MyUtil;
+import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 
 
@@ -249,7 +250,7 @@ public class BoardController {
 			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
 			
 			if(loginuser != null) {
-				login_userid = loginuser.getPerno();				
+				login_userid = String.valueOf(loginuser.getPerno());				
 			}
 						
 			BoardVO boardvo = null;
