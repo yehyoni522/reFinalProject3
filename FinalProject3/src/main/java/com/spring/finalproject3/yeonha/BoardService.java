@@ -109,6 +109,13 @@ public class BoardService implements InterBoardService {
 		return totalPage;
 	}
 
+	// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
+	@Override
+	public BoardVO getViewNo(String seq) {
+		BoardVO boardvo = dao.getViewNo(seq);
+		return boardvo;
+	}
+
 
 
 }

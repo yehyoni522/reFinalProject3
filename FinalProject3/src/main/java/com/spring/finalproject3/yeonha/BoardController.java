@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.board.model.BoardVO;
 import com.spring.finalproject3.common.MyUtil;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
@@ -394,5 +395,62 @@ public class BoardController {
 		return jsonObj.toString();
 	}
 	
+	
+	// 글수정 페이지 요청
+	@RequestMapping(value="/board/edit.sam")
+	public ModelAndView requiredLogin_edit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+      
+		// 글 수정해야 할 글번호 가져오기
+		String seq = request.getParameter("seq");
+	  
+		// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
+		BoardVO boardvo = service.getViewNo(seq);
+	  
+		HttpSession session = request.getSession();
+		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+	  
+		String loginuserPerno = String.valueOf(loginuser.getPerno());
+		
+		if( !loginuserPerno.equals(boardvo.getFk_perno()) ) {
+			String message = "다른 사용자의 글은 수정이 불가합니다.";
+			String loc = "javascript:history.back()";
+	 
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+			mav.setViewName("msg");
+		}
+		else {
+			mav.addObject("boardvo", boardvo);
+			mav.setViewName("board/edit.tiles2");
+		}
+	      
+		return mav;
+	}
+	
+	
+	// === #72. 글수정 페이지 완료하기 === //
+	@RequestMapping(value="/editEnd.action", method= {RequestMethod.POST})
+	public ModelAndView editEnd(ModelAndView mav, BoardVO boardvo, HttpServletRequest request) {   
+	   
+		int n = service.edit(boardvo);
+	   
+	   if(n == 0) {
+          mav.addObject("message", "수정이 실패했습니다.");
+       }
+       else {
+          mav.addObject("message", "글수정 성공!!");      
+       }
+
+       mav.setViewName("msg");
+       
+	   return mav;
+   }
+	
+	// 게시글 삭제하기 /board/del.sam
+	
+	
+	// 댓글 수정하기 /board/commentedit.sam
+	
+	// 댓글 삭제하기 /board/commentdel.sam
 	
 }

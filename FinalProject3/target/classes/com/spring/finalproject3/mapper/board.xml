@@ -76,7 +76,7 @@
   		</if>   		 -->     	  	    	
 	</select>
 	
-	<!-- (댓글쓰기가 없는 게시판에서) 글 1개 보여주기 -->
+	<!-- 글 1개 보여주기 -->
 	<select id="getView" parameterType="String" resultType="com.spring.finalproject3.yeonha.BoardVO">
 		select previousseq, previoussubject
 		     , seq, fk_perno, subject, name, content, readcount, B.regDate
@@ -160,5 +160,27 @@
 		where status = 1 and fk_seq = #{fk_seq}
    	</select>
    	
+   	<!-- 글 1개 보여주기 -->
+	<select id="getViewNo" parameterType="String" resultType="com.spring.finalproject3.yeonha.BoardVO">
+		select previousseq, previoussubject
+		     , seq, fk_perno, subject, name, content, readcount, B.regDate
+		     , nextseq , nextsubject, commentCount
+		from 
+		(
+		    select lag(seq,1) over(order by seq desc) AS previousseq
+		         , lag(subject,1) over(order by seq desc) AS previoussubject
+		         
+		         , seq, fk_perno, subject, content, readcount, commentCount
+		         , to_char(regDate, 'yyyy-mm-dd') as regDate
+		         
+		         , lead(seq,1) over(order by seq desc) AS nextseq
+		         , lead(subject,1) over(order by seq desc) AS nextsubject
+		    from tbl_board
+		    where status = 1
+		)B
+		join tbl_person P
+		on P.perno = B.fk_perno
+		where B.seq = #{seq}
+	</select>
    	
 </mapper>

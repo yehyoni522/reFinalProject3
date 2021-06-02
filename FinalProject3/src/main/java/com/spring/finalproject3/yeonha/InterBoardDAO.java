@@ -38,6 +38,9 @@ public interface InterBoardDAO {
 	// 원글 글번호(parentSeq)에 해당하는 댓글의 총 페이지수를 알아오기
 	int getCommentTotalPage(Map<String, String> paraMap);
 
+	// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
+	BoardVO getViewNo(String seq);
+
 
 	
 }
