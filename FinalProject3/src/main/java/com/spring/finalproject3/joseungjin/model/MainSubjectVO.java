@@ -9,10 +9,11 @@ public class MainSubjectVO {
     private int semeter;	 // 개설학기
     private String day;		 // 수업요일
     
+    private String name; 	//교수명
     public MainSubjectVO() {}
     
     public MainSubjectVO(int subno, int fk_perno, int fk_colno, String subname, 
-    					int credit, int semeter,String day) {
+    					int credit, int semeter,String day,String name) {
 		super();
 		this.subno = subno;
 		this.fk_perno = fk_perno;
@@ -21,6 +22,7 @@ public class MainSubjectVO {
 		this.credit = credit;
 		this.semeter = semeter;
 		this.day = day;
+		this.name = name;
 	}
     
 	public int getSubno() {
@@ -65,4 +67,13 @@ public class MainSubjectVO {
 	public void setDay(String day) {
 		this.day = day;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 }
