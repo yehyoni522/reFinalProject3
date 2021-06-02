@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="classBoard">
+
+	<!-- === 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === -->
+	<select id="getTotalAssign" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_assgn 
+		where fk_subno=1000
+	</select>
+	
+	
+	<!-- === 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
+	<select id="assignListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
+		select assgnno, subject, deadline
+			from
+			(
+				select row_number() over(order by assgnno desc) as rno,
+	                    assgnno,subject,
+				        to_char(deadline, 'yyyy-mm-dd hh24:mi:ss') as deadline
+				from tbl_assgn 
+	            where fk_subno=1000
+			)V
+			where rno between #{startRno} and #{endRno}
+	</select>
+	
+
+	<!-- === 과제 게시판 글쓰기(파일첨부가 없는 글쓰기) === -->
+   <insert id="assignmentAdd" parameterType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
+		insert into tbl_assgn(assgnno, fk_perno,fk_subno,subject ,content, deadline)
+		values(assgnno_seq.nextval, 1004, 1000,#{subject}, #{content},#{deadline})
+   </insert>
+
+
+	<!-- === 어떤 과목인지 과목번호 알아오기  === -->
+	<select id="getSubjectname" parameterType="String" resultType="String">
+		select distinct subname
+		from tbl_assgn A join tbl_subject S
+		on fk_subno=subno
+		where fk_subno = 1000
+	</select>
+	
+	
+	<!-- === 해당 수업을 듣는 학생의 총 인원수 알아오기(교수 총 수강인원 나타낼때 필요) === -->
+	<select id="getTotalPerson" parameterType="String" resultType="String">
+		select count(*)-1
+		from tbl_person A join tbl_subject S
+		on perno=fk_perno
+		where subno = 1000
+	</select>
+
+
+
+
+</mapper>
