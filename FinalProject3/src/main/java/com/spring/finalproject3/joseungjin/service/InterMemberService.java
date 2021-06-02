@@ -7,6 +7,7 @@ import java.util.Map;
 import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
 import com.spring.finalproject3.joseungjin.model.Main_index_BoardVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
+import com.spring.finalproject3.joseungjin.model.ScheduleVO;
 
 public interface InterMemberService {
 
@@ -34,5 +35,7 @@ public interface InterMemberService {
 	List<Main_index_BoardVO> getboardistPaging(Map<String, String> paraMap);
 	//수강 중인 목록
 	List<MainSubjectVO> Mainsubject(int userid);
+	//일정추가하기
+	int scheduleAdd(ScheduleVO svo);
 
 }

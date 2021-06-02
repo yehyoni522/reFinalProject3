@@ -197,12 +197,7 @@ input.findinput{
 	    frm.method = "post";
 		frm.submit();
 		
-		function idFind(){
-			function openWin(){  
-			    window.open("http://www.naver.net", "네이버새창", "width=800, height=700, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
-			}  
-			
-		}
+
 	}// end of function goLogin()-----------------------------------------
 	
 
