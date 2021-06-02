@@ -1,6 +1,7 @@
 package com.spring.finalproject3.joseungjin.controller;
 
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -21,10 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.joseungjin.mail.GoogleMail;
-import com.spring.finalproject3.joseungjin.model.InterPersonDAO;
 import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
 import com.spring.finalproject3.joseungjin.model.Main_index_BoardVO;
-import com.spring.finalproject3.joseungjin.model.PersonDAO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 import com.spring.finalproject3.joseungjin.service.InterMemberService;
 
