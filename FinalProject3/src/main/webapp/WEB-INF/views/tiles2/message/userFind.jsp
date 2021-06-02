@@ -122,7 +122,6 @@ input#delete{
 		$("input.input_text").val("${requestScope.receiver}");
 		goSearch();
 		
-
 	});
 
 	
@@ -175,6 +174,7 @@ input#delete{
 			error: function(request, status, error){
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		 	}
+			
 		}); 
 		
 	}// end of function goAddWrite(){}--------------------------
@@ -182,6 +182,8 @@ input#delete{
 	// 받는사람 박스에 출력하기
 	var str ="";
 	var perno_es ="";
+	var name_es ="";
+	var withNames ="";
 	function add(perno, name){
 		
 		str+="<tr id="+perno+">";
@@ -191,31 +193,21 @@ input#delete{
 		str+="</tr>";
 		
 		perno_es += perno+",";
+		name_es += name+",";
+		withNames += name+"("+perno+")&nbsp;";		
 		
-		
-		$("div#add").html(str);
-		$("input[name=receiver_es]").val(perno_es);
-		/* str+= name+ "("+ perno+")";
-		str+="<input id='delete' type='button' onclick='del("+perno+")' value='X'/>"
-		perno_es += perno+",";
-		str+=" ";
-		$("div#add").html(str); */
+		$("div#add").html(str); //아래 출력
+		$("input[name=withNames]").val(withNames); // 이름과같이있는 문자열 출력(부모창에)
+		$("input[name=perno_es]").val(perno_es); // 나중에 보내기 위해 번호만 따로 모아둠
+		$("input[name=name_es]").val(name_es); // 나중에 보내기 위해 이름만 따로 모아둠
+
+		$("input.input_text").val(""); // 비워놓는다.
 	}
 	
 	// 삭제하기
 	function del(perno){
 		$("tr#"+perno+"").remove();
 		perno_es.replace(perno,"");
-	}
-	
-	function goSubmit(){
-		
-		var frmObj = document.sendform;
-		 frmObj.action = "<%=ctxPath%>/message/write.sam";
-		 frmObj.submit();
-		 
-		 parent.document.location.reload();
-		 window.close();
 	}
 
 </script>
@@ -248,12 +240,12 @@ input#delete{
       <tbody id="commentDisplay"></tbody>
    </table>
    
-<form name="sendform">
+
 	<div class="addBox" id="receiverID" style="font-size: 13px; font-weight: bold; color: #205890;">받는사람</div>
     <div class="addBox" id="add"> </div>
-    <input type="hidden" name="receiver_es" value=""/>
-</form>
-<div align="center"> <button type='submit' class='sch_smit_1' onclick="goSubmit()">선택하기</button></div>
+    <input type="hidden" name="withNames" id="someID"/>
+	<input type="hidden" name="perno_es" id="someID_2" />
+	<input type="hidden" name="name_es" id="someID_3" />
    
    	
   

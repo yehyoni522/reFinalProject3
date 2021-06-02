@@ -34,6 +34,12 @@ public interface InterMessageDAO {
 
 	// 학과 이름 가져오기
 	String getNameMaj(int majseq);
+
+	// inbox 에 insert (로그인한 사람이 발신자, 배열로 얻어온 사람들이 수신자)
+	int insertInbox(Map<String, String> paraMap);
+
+	// outbox 에 insert (로그인한 사람이 발신자)
+	int insertOutbox(Map<String, String> paraMap);
 	
 
 }

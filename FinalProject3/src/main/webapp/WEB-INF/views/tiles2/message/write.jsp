@@ -170,6 +170,14 @@ button.re:hover{
 .sch_smit:hover {
 	background: #27AF61;
 }
+div#add{
+	border: solid 1px gray;
+	 width: 408px; height: 40px;
+	 font-size: 13px;
+	 overflow: auto;
+	 margin: 0;
+	 color:gray;
+}
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -186,14 +194,20 @@ button.re:hover{
 			goOutbox();
 		});
 	
+		$('textarea.DOC_TEXT').keyup(function (e){
+		    var content = $(this).val();
+		    $('span#counter').html(content.length);    //글자수 실시간 카운팅
+
+		    if (content.length > 1000){
+		        alert("최대 1000자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 1000));
+		        $('span#counter').html(1000);
+		    }
+		});
 		
 		
 	});
 	
-	
-	window.closeModal = function(){
-	    $('#idFindiframe').modal('hide');
-	};
 
 	function goWrite(){
 		location.href="<%= ctxPath%>/message/write.sam";
@@ -214,11 +228,46 @@ button.re:hover{
 	 }
 	
 	function sumitSendForm() {
-		 
-		 
-		 $("input.input_text").val("${requestScope.receiver_es}")
+		
+		 var getval = $('#iframe').contents().find('#someID').val();
+		 var pernoval = $('#iframe').contents().find('#someID_2').val();
+		 var nameval = $('#iframe').contents().find('#someID_3').val();
+		  //alert(getval);
+		 $("div#add").html(getval);
+		 $("input.input_text").val("");
+		 $("input[name=receiver_es]").val(pernoval);
+		 $("input[name=name_es]").val(nameval);
 	}
 	
+	// 전송하기
+	function submit(frm) {
+		
+		alert("완료!");
+		
+		var addHtml = $("div#add").html();
+		
+		if(addHtml == null) {
+			alert("받는사람의 정보가 없습니다!");
+			return; // 종료
+		}
+		
+		var textarea = $("textarea.DOC_TEXT").val();
+		
+		if(textarea == null) {
+			alert("내용을 입력하셔야 합니다!");
+			return; // 종료
+		}
+
+		
+		frm.action = "<%=ctxPath%>/message/writeEnd.sam";
+		frm.method = "POST";
+		frm.submit();
+
+		
+	}// end of function submit()---------------------------------
+	
+	
+
 </script>
 
 <body>
@@ -242,20 +291,21 @@ button.re:hover{
 
  	
     	<form name="writeFrm" style="margin-top: 20px;" >
-			      <input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" />
 			<input id="forme" type="checkbox"><label for="forme" style="font-size:12px;">내게쓰기</label>&nbsp;&nbsp;
 			<span class='green_window'>
-			<input type='text' class='input_text' placeholder="받는사람" name="receiver"/>
+				<input type='text' class='input_text' placeholder="학번/교번을 입력하세요" name="receiver"/>
 			</span>
 			<a style="cursor: pointer;" data-toggle="modal" data-target="#userfind" data-dismiss="modal"><button type='submit' class='sch_smit' onclick="goSearch();">찾기</button></a>
-			 
-			<br><br>
-			<textarea rows="15" cols="50"></textarea>
-			
-			<input type="hidden" name="parentSeq" value="${requestScope.boardvo.seq}" /> 
+				<input type="hidden" name="receiver_es" />
+				<input type="hidden" name="name_es" />
+				<div class="addBox" id="receiverID" style="font-size: 13px; font-weight: bold; color: #205890;">받는사람</div>
+	    		<div class="addBox" id="add"> </div>
+			<br>
+				<div class="addBox" id="receiverID" style="font-size: 13px; font-weight: bold; color: #205890;">내용 <span style="color:#aaa;">(<span id="counter">0</span> / 1000자)</span></div>
+				<textarea rows="15" cols="50" style="margin: 0px; width: 408px; height: 215px;" class="DOC_TEXT" name="DOC_TEXT"></textarea>
 			<br>
 			<a>임시저장</a>
-			<button class="re" id="btnComment" type="button" onclick="goWrite()">전송</button> 
+			<button class="re" id="btnComment" type="button" onclick="submit();">전송</button> 
 			<button class="del" type="reset">취소</button> 
 		</form>
   
@@ -278,11 +328,12 @@ button.re:hover{
 	        
 	        <div class="modal-body" style="height: 250px; width: 100%;">        
 		          <div id="idFind" >
-		          	<iframe name="idFindiframe" id="test" style="border: none; width: 100%; height: 230px; " src="<%=ctxPath%>/message/userFind.sam">
+		          	<iframe name="idFindiframe" id="iframe" style="border: none; width: 100%; height: 230px; " src="<%=ctxPath%>/message/userFind.sam">
 		          	</iframe>
 		          </div>	          
 	        </div>
 	         <div class="modal-footer">
+	          	<button type="button" onclick="sumitSendForm()" class="btn btn-default myclose" data-dismiss="modal" style="margin-right: 180px;">선택하기</button>
 	          	<button type="button" class="btn btn-default myclose" data-dismiss="modal">close</button>
 	         </div>
         

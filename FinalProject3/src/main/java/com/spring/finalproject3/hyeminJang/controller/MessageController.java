@@ -222,17 +222,70 @@ public class MessageController {
 		
 		mav.addObject("nonReadCount", nonReadCount);
 		
-		String receiver_es = request.getParameter("receiver_es");
-		if(receiver_es !=null) {
-			mav.addObject("receiver_es", receiver_es);
-		}
-		
 		mav.setViewName("message/write.tiles2");
 		// /WEB-INF/views/tiles2/message/write.jsp 파일을 생성한다.
 		
 		return mav;
 	}
 	
+	// 쪽지 insert하기
+	@RequestMapping(value="/message/writeEnd.sam", method= {RequestMethod.POST})
+	public ModelAndView writeEnd(HttpServletRequest request,ModelAndView mav) {
+		
+		/*HttpSession session = request.getSession();
+		MemberVO loginuser = (MemberVO) session.getAttribute("loginuser");
+		
+		if(loginuser != null) {
+			login_userid = loginuser.getUserid();
+			// login_userid 는 로그인 되어진 사용자의 userid 이다.
+		}
+		*/
+		Map<String,String> paraMap = new HashMap<>();
+		int n =0;
+		
+		String name_es = request.getParameter("name_es"); // 이름들
+		String receiver_es = request.getParameter("receiver_es"); // 번호들
+		String text = request.getParameter("DOC_TEXT");
+		
+		String receiverArr[] = receiver_es.split(",");
+		String nameArr[] = name_es.split(",");
+		
+		for(int i =0; i<receiverArr.length; i++) {
+			String receiver = receiverArr[i];
+			String name = nameArr[i];
+			
+			paraMap.put("receiver", receiver);
+			paraMap.put("name", name);
+			paraMap.put("text", text);
+			paraMap.put("login_userid", "1004");// 현재 로그인된 아이디를 1004라고 가정한다.
+			
+			// 쪽지작성 insert
+			 n = service.writeEnd(paraMap); 
+			// n 이 1 이라면 정상적으로 insert
+			// n 이 0 이라면 insert안됌
+			
+		}
+		if(n == 1) {
+			// 성공
+			mav.setViewName("message/inbox.tiles2");
+			
+		}
+		else {
+			// 실패
+			String message = "쪽지 전송에 실패하였습니다.";
+			String loc = "javascript:history.back()";
+			
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+			
+			mav.setViewName("msg");
+			System.out.println("시퓨ㅐ");
+		}
+		
+		
+		
+		return mav;
+	}
 
 	  // 아이디 찾아보기
 	  @RequestMapping(value="/message/userFind.sam") 

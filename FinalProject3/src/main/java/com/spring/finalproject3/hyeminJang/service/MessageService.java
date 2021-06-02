@@ -89,6 +89,18 @@ public class MessageService implements InterMessageService {
 		return str;
 	}
 
+	// 쪽지작성 insert 
+	@Override
+	public int writeEnd(Map<String, String> paraMap) {
+		
+		int n = dao.insertInbox(paraMap); // inbox 에 insert (로그인한 사람이 발신자, 배열로 얻어온 사람들이 수신자)
+		
+		if(n ==1) {
+			n = dao.insertOutbox(paraMap); // outbox 에 insert (로그인한 사람이 발신자)
+		}
+		return n;
+	}
+
 
 
 }
