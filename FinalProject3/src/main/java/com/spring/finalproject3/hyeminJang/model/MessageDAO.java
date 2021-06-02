@@ -103,6 +103,20 @@ public class MessageDAO implements InterMessageDAO {
 		String str = sqlsession.selectOne("Message.getNameMaj", majseq);
 		return str;
 	}
+
+	// inbox 에 insert (로그인한 사람이 발신자, 배열로 얻어온 사람들이 수신자)
+	@Override
+	public int insertInbox(Map<String, String> paraMap) {
+		int n = sqlsession.insert("Message.insertInbox", paraMap);
+		return n;
+	}
+
+	// outbox 에 insert (로그인한 사람이 발신자)
+	@Override
+	public int insertOutbox(Map<String, String> paraMap) {
+		int n = sqlsession.insert("Message.insertOutbox", paraMap);
+		return n;
+	}
 	
 
 

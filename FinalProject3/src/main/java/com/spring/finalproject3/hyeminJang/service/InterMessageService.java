@@ -33,6 +33,9 @@ public interface InterMessageService {
 	// 학과이름 가져오기
 	String getNameMaj(int majseq);
 
+	// 쪽지작성 insert
+	int writeEnd(Map<String, String> paraMap);
+
 
 
 	
