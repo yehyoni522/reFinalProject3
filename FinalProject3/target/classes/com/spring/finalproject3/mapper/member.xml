@@ -62,6 +62,11 @@
 				where good>=10 and status = 1  
 				)V
 			where rno between #{startRno} and #{endRno}
-			
+	</select>
+	
+	<select id="Mainsubject" parameterType="int" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
+		select subno, fk_perno, fk_colno, subname, credit, semeter, day
+		from tbl_subject
+		where fk_perno = #{userid}
 	</select>
 </mapper>
