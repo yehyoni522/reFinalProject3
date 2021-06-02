@@ -6,42 +6,39 @@
 <% String ctxPath = request.getContextPath(); %>
 
 <style type="text/css">
-
-    #table {
-    	width: 90%;
-    
-    	border-collapse: collapse;
-    	border-top: 1px solid #e6e6e6;
-    }
-    #table th, #table td {
-    	padding: 5px;
-    	height: 50px; 
-    	border-bottom: 1px solid #e6e6e6;
-    }
-    #table th {background-color: #DDD;}
-     
-    .subjectStyle {
- 		font-weight: bold;
-       	color: navy;
-   		cursor: pointer;
-   	}
-	#newhit{
-		position: relative;
-		left: 85%;
-		margin-bottom: 5px;
-	}
-	#btnadd{
-		background-color: white;
-		border: solid #e6e6e6 1px;
-		position: relative;
-		left: 84%;
-		top: -27px;		
-		height: 26px;
-	}
-	.boarda{
-		color:black;
-	}          
-
+#table {
+	width: 90%;
+ 	border-collapse: collapse;
+ 	border-top: 1px solid #ccc;
+}
+#table th, #table td {
+	padding: 5px;
+ 	height: 50px; 
+ 	border-bottom: 1px solid #ccc;
+}
+#table th {background-color: #ccc;}
+  
+.subjectStyle {
+	font-weight: bold;
+   	color: navy;
+	cursor: pointer;
+}
+#newhit{
+	position: relative;
+	left: 84%;
+	margin-bottom: 5px;
+}
+#btnadd{
+	background-color: white;
+	border: solid #ccc 1px;
+	position: relative;
+	left: 83%;
+	top: -27px;		
+	height: 30px;
+}
+.boarda{
+	color:black;
+}          
 </style>
 
 <script type="text/javascript">
@@ -137,6 +134,8 @@
 		
 		var frm = document.goViewFrm;
 		frm.seq.value=seq;
+		frm.searchType.value = "${requestScope.paraMap.searchType}";
+	    frm.searchWord.value = "${requestScope.paraMap.searchWord}"; 
 		frm.method="get";
 		frm.action="<%= ctxPath%>/board/view.sam";
 		frm.submit();
@@ -248,4 +247,6 @@
 	<input type="hidden" name="seq" />
 	<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
 	<input type="hidden" name="categoryno" value="${categoryno}">
+	<input type="hidden" name="searchType" />
+    <input type="hidden" name="searchWord" />
 </form>

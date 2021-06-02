@@ -50,8 +50,8 @@ public class BoardDAO implements InterBoardDAO {
 
 	// 글1개 조회하기
 	@Override
-	public BoardVO getView(String seq) {
-		BoardVO boardvo = sqlsession.selectOne("board.getView", seq);
+	public BoardVO getView(Map<String, String> paraMap) {
+		BoardVO boardvo = sqlsession.selectOne("board.getView", paraMap);
 		return boardvo;
 	}
 

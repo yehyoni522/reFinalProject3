@@ -12,26 +12,17 @@
 
 <style type="text/css">
   
-#table, #table2 {
-	border-collapse: collapse;
-	border-top: 1px solid #ccc;
-    width: 1024px;
+#table2 {
+	/* border-collapse: collapse;	 */
+	width: 100%;
 }
-
-#table th, #table td{
-	padding: 5px;
+#table2 th, #table2 td, #table2{
 	border-bottom: 1px solid #ccc;
-	
 }
-#table td{width: 880px;}
-
-
-.move {cursor: pointer; color:navy;}
-.moveColor {color: #660029; font-weight: bold;}
+.move {cursor: pointer;}
+.moveColor {color: blue; font-weight: bold; }
 
 a {text-decoration: none !important;}
-
-td.comment {text-align: center; border}
 .boarda{
 	color:black;
 } 
@@ -43,7 +34,8 @@ td.comment {text-align: center; border}
 }	
 #contentfooter{
 	position: relative;
-	left: 90%;
+	left: 88%;
+	width: 180px;
 }
 #contnentsubj{
 	margin: 10px;
@@ -59,9 +51,31 @@ td.comment {text-align: center; border}
 	padding: 2px; 
 	margin: 15px 5px 5px 10px;
 }
-#boardcommet{
-	margint: 10px;
+#comname{
+	font-weight: bold;
 }
+#comdate{
+	font-size: 8pt;
+}
+#boardcomment{
+	margin-bottom: 10px;
+}
+#commentContent{
+	width: 80%;
+	height: 34px;	
+}
+#comwriteimg{
+	width:39px; 
+	height:38px; 
+	cursor:pointer;
+	position:relative;
+	top: -2.5px;	
+}
+.viewbtns{
+	background-color: white;
+	border: solid #ccc 1px;
+	height: 30px;
+}		
 </style>
 
 <script type="text/javascript">
@@ -98,14 +112,9 @@ td.comment {text-align: center; border}
 			type:"post",
 			dataType:"json",
 			success:function(json){ 
-			   var n = json.n;
+		   		var n = json.n;
 			   
-			   if(n == 0) {
-				   alert(json.name+"님의 포인트는 300점을 초과할 수 없으므로 댓글쓰기가 불가합니다.");
-			   }
-			   else {
-				   goViewComment(1); // 페이징처리 한 댓글 읽어오기 
-			   }
+				goViewComment(1); // 페이징처리 한 댓글 읽어오기 
 			   
 			   $("input#commentContent").val("");
 			   
@@ -132,16 +141,13 @@ td.comment {text-align: center; border}
 				if(json.length > 0) {
 					$.each(json, function(index, item){
 						html += "<tr>";
-						html += "<td class='comment'>"+(index+1)+"</td>";
-						html += "<td>"+ item.content +"</td>";
-						html += "<td class='comment'>"+ item.name +"</td>";
-						html += "<td class='comment'>"+ item.regDate +"</td>";
+						html += "<td><span id='comname'>&nbsp;"+ item.name+"</span><br><span id='comcont'>&nbsp;"+item.content+"</span><br><span id='comdate'>&nbsp;"+item.reregDate+"</span></td>";										
 						html += "</tr>";
 					});
 				}
 				else {
 					html += "<tr>";
-					html += "<td colspan='4' class='comment'>댓글이 업습니다</td>";
+					html += "<td style='text-align:center;'>댓글이 없습니다</td>";
 					html += "</tr>";
 				}
 				
@@ -171,15 +177,13 @@ td.comment {text-align: center; border}
 				if(json.length > 0) {
 					$.each(json, function(index, item){
 						html += "<tr>";
-						html += "<td class='comment'>"+ item.name +"</td>";
-						html += "<td>"+ item.content +"</td>";
-						html += "<td class='comment'>"+ item.reregDate +"</td>";
-						html += "</tr>";
+						html += "<td><span id='comname'>&nbsp;"+ item.name+"</span><br><span id='comcont'>&nbsp;"+item.content+"</span><br><span id='comdate'>&nbsp;"+item.reregDate+"</span></td>";	
+						html += "</tr>";									
 					});
 				}
 				else {
 					html += "<tr>";
-					html += "<td colspan='4' class='comment'>댓글이 업습니다</td>";
+					html += "<td style='text-align:center;'>댓글이 없습니다</td>";
 					html += "</tr>";
 				}
 				
@@ -212,7 +216,7 @@ td.comment {text-align: center; border}
 					
 					var totalPage = json.totalPage;					
 					var pageBarHTML = "<ul style='list-style: none;'>";					
-					var blockSize = 3;					
+					var blockSize = 5;					
 					var loop = 1;
 				    
 				    if(typeof currentShowPageNo == "string") {
@@ -257,7 +261,9 @@ td.comment {text-align: center; border}
 
 	
 	
-</script>
+</script>										
+						
+										
 <c:if test="${categoryno == 1 || categoryno == 2 || categoryno == 3}"> 	
 <hr>
 	<div id="boardmenu" style="padding-left: 25%;">
@@ -293,63 +299,64 @@ td.comment {text-align: center; border}
 				<p style="word-break: break-all;">${requestScope.boardvo.content}</p>
 			</div>	
 			<div id="contentfooter">
-				<img src="<%=ctxPath%>/resources/images/good.PNG" style="width:45px; height:43px;">${requestScope.boardvo.readCount}
-				<img src="<%=ctxPath%>/resources/images/comment.PNG" style="width:44px; height:38px;">${requestScope.boardvo.commentCount}
+				<img src="<%=ctxPath%>/resources/images/good.PNG" style="width:45px; height:43px;">
+					<span style="color:red; font-weight:bold;">${requestScope.boardvo.readCount}</span>
+				<img src="<%=ctxPath%>/resources/images/comment.PNG" style="width:44px; height:38px;">
+					<span style="color:blue; font-weight:bold;">${requestScope.boardvo.commentCount}</span>
 			</div>	
 			<hr class="styhr">
 		</div>		
 		<br>
 		
-		<div id="boardcommet">	
-			<%-- 댓글쓰기 폼 추가--%> 
-			<c:if test="${categoryno != 4}">
-			    <c:if test="${not empty sessionScope.loginuser}">
-					<form name="addWriteFrm" style="margin-top: 20px;">
-						<input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" />
-						성명 : <input type="text" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />  
-						&nbsp;&nbsp;
-						댓글내용 : <input id="commentContent" type="text" name="content" class="long" /> 
-						
-						댓글에 달리는 원게시물 글번호(즉, 댓글의 부모글 글번호)
-						<input type="hidden" name="fk_seq" value="${requestScope.boardvo.seq}" /> 
-						
-						<button id="btnComment" type="button" onclick="goAddWrite()">확인</button> 
-						<button type="reset">취소</button> 
-					</form>
-			    </c:if>		   
-			    		    
+		<div id="boardcomment">				
+			<!-- 공지사항 게시판에서는 댓글사용 안함 -->
+			<c:if test="${categoryno != 4}">			      			    		    
 			    <!-- 댓글 내용 보여주기 -->
 				<table id="table2" >
-					<thead>
-					<tr>
-						<th style="width: 10%; text-align: center;">작성자</th>
-						<th style="width: 60%; text-align: center;">내용</th>
-						<th style="text-align: center;">작성일자</th>
-					</tr>
-					</thead>
 					<tbody id="commentDisplay"></tbody>
 				</table>
+			
+				<!-- 댓글 페이지바-->
+    			<div id="pageBar" style="border:solid 0px gray; width: 90%; margin: 10px auto; text-align: center;"></div> 
+	 
+				<%-- 댓글쓰기 폼 추가--%> 
+				<c:if test="${not empty sessionScope.loginuser}">
+					<form name="addWriteFrm" style="margin-top: 20px;">
+						<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />  
+						<h3>댓글작성</h3>
+						<label>익명</label> <input type="checkbox" name="namecheck" id="namecheck" value="1"/><br>
+						<input id="commentContent" type="text" name="content" class="long" /> 						
+						<input type="hidden" name="fk_seq" value="${requestScope.boardvo.seq}" /> 
+						<img src="<%=ctxPath%>/resources/images/commentWrite.PNG" id= "comwriteimg" onclick="goAddWrite()">
+					</form>
+			    </c:if>		 
 			</c:if> 
 		</div>	
-   		<!-- 댓글 페이지바-->
-    	<div id="pageBar" style="border:solid 0px gray; width: 90%; margin: 10px auto; text-align: center;"></div> 
-	 
+   		
 	 	<c:set var="gobackURL2" value='${fn:replace(requestScope.gobackURL, "&", " ") }' />
-	 	
-	 	<div style="margin-bottom: 1%;">이전글제목&nbsp;&nbsp;<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span></div>
-		<div style="margin-bottom: 1%;">다음글제목&nbsp;&nbsp;<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span></div>
-		
+	 	<c:if test="${requestScope.boardvo.previoussubject ne null}">
+	 		<div style="margin-bottom: 1%;">
+	 			<span style="font-weight:bold;">이전글제목&nbsp;&nbsp;</span>
+	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
+	 		</div>
+	 	</c:if>
+	 	<c:if test="${requestScope.boardvo.nextsubject ne null}">	
+			<div style="margin-bottom: 1%;">
+				<span style="font-weight:bold;">다음글제목&nbsp;&nbsp;</span>
+				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
+			</div>
+		</c:if>
 	</c:if>
 	
 	<c:if test="${empty requestScope.boardvo}">
 		<div style="padding: 50px 0; font-size: 16pt; color: red;">존재하지 않습니다</div>
 	</c:if>
 	
-	<button type="button" onclick="javascript:location.href='<%= ctxPath%>/board/list.sam'">전체목록보기</button>
-	<button type="button" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
+	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/list.sam'">전체목록보기</button>
+	<button type="button" class="viewbtns" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
 	
-	<button type="button" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
-	<button type="button" onclick="javascript:location.href='<%= ctxPath%>/board/del.sam?seq=${requestScope.boardvo.seq}'">삭제</button>
+	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
+	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/del.sam?seq=${requestScope.boardvo.seq}'">삭제</button>
 
 
  	

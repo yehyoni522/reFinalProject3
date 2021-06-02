@@ -18,7 +18,7 @@ public interface InterBoardDAO {
 	List<String> wordSearchShow(Map<String, String> paraMap);
 
 	// 글1개 조회하기 
-	BoardVO getView(String seq);
+	BoardVO getView(Map<String, String> paraMap);
 
 	// 글조회수 1증가 하기
 	void setAddReadCount(String seq);

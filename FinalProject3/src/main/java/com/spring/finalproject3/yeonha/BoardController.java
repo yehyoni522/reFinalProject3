@@ -137,7 +137,7 @@ public class BoardController {
 		
 		
 		// === #121. 페이지바 만들기 === //
-		int blockSize = 3;
+		int blockSize = 5;
 		
 		int loop = 1;
 		
@@ -232,8 +232,18 @@ public class BoardController {
 	@RequestMapping(value="/board/view.sam")
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		
-		String seq = request.getParameter("seq");
-		
+		String seq = request.getParameter("seq");		
+	    String searchType = request.getParameter("searchType");
+	    String searchWord = request.getParameter("searchWord");
+	      
+	    Map<String,String> paraMap = new HashMap<>();
+	    paraMap.put("seq", seq);
+	    paraMap.put("searchType", searchType);
+	    paraMap.put("searchWord", searchWord);
+	      
+	    mav.addObject("searchType", searchType);
+	    mav.addObject("searchWord", searchWord);
+	    
 		String gobackURL = request.getParameter("gobackURL");
 		mav.addObject("gobackURL", gobackURL);
 		
@@ -257,12 +267,12 @@ public class BoardController {
 			
 			if("yes".equals(session.getAttribute("readCountPermission"))) {
 				
-				boardvo = service.getView(seq, login_userid);
+				boardvo = service.getView(paraMap, login_userid);
 				
 				session.removeAttribute("readCountPermission");
 			}
 			else {				
-				boardvo = service.getViewWithNoAddCount(seq);				
+				boardvo = service.getViewWithNoAddCount(paraMap);				
 			}			
 			
 			mav.addObject("boardvo", boardvo);			
@@ -298,7 +308,7 @@ public class BoardController {
 	
 	// 원게시물에 딸린 댓글들을 조회해오기(Ajax로 처리) 
 	@ResponseBody
-	@RequestMapping(value="/board//readComment.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	@RequestMapping(value="/board/readComment.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public String readComment(HttpServletRequest request) {
 		
 		String fk_seq = request.getParameter("fk_seq");
@@ -312,7 +322,7 @@ public class BoardController {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("content", cmtvo.getContent());
 				jsonObj.put("name", cmtvo.getName());
-				jsonObj.put("regDate", cmtvo.getReregDate());
+				jsonObj.put("reregDate", cmtvo.getReregDate());
 				
 				jsonArr.put(jsonObj);
 			}
@@ -332,7 +342,7 @@ public class BoardController {
 			currentShowPageNo = "1";
 		}
 		
-		int sizePerPage = 3; 
+		int sizePerPage = 5; 
 		
 		int startRno = (( Integer.parseInt(currentShowPageNo) - 1 ) * sizePerPage) + 1;
 	    int endRno = startRno + sizePerPage - 1;
@@ -351,7 +361,7 @@ public class BoardController {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("content", cmtvo.getContent());
 				jsonObj.put("name", cmtvo.getName());
-				jsonObj.put("regDate", cmtvo.getReregDate());
+				jsonObj.put("reregDate", cmtvo.getReregDate());
 				
 				jsonArr.put(jsonObj);
 			}

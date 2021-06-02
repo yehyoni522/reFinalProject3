@@ -50,15 +50,15 @@ public class BoardService implements InterBoardService {
 
 	// 글1개를 보여주는 페이지 요청
 	@Override
-	public BoardVO getView(String seq, String login_userid) {
-		BoardVO boardvo = dao.getView(seq); 
+	public BoardVO getView(Map<String, String> paraMap, String login_userid) {
+		BoardVO boardvo = dao.getView(paraMap); 
 		
 		if(login_userid != null &&
 		   boardvo != null &&
 		   !login_userid.equals(boardvo.getFk_perno()) ) {
 			
-		   dao.setAddReadCount(seq); 
-		   boardvo = dao.getView(seq);
+		   dao.setAddReadCount(boardvo.getSeq()); 
+		   boardvo = dao.getView(paraMap);
 		}
 		
 		return boardvo;
@@ -66,8 +66,8 @@ public class BoardService implements InterBoardService {
 
 	// 글조회수 증가는 없고 단순히 글1개 조회만을 해주는 것이다.
 	@Override
-	public BoardVO getViewWithNoAddCount(String seq) {
-		BoardVO boardvo = dao.getView(seq); 
+	public BoardVO getViewWithNoAddCount(Map<String, String> paraMap) {
+		BoardVO boardvo = dao.getView(paraMap); 
 		return boardvo;
 	}
 
