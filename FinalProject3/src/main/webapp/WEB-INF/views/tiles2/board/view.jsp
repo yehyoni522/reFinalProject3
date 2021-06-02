@@ -13,16 +13,17 @@
 <style type="text/css">
   
 #table2 {
-	/* border-collapse: collapse;	 */
 	width: 100%;
 }
-#table2 th, #table2 td, #table2{
+.putcomment{
 	border-bottom: 1px solid #ccc;
 }
 .move {cursor: pointer;}
 .moveColor {color: blue; font-weight: bold; }
-
-a {text-decoration: none !important;}
+a {
+	text-decoration: none !important;
+	color:black;
+}
 .boarda{
 	color:black;
 } 
@@ -75,7 +76,27 @@ a {text-decoration: none !important;}
 	background-color: white;
 	border: solid #ccc 1px;
 	height: 30px;
-}		
+}	
+#commentedit{
+	border: 0px #ccc solid;
+	font-size: 8pt;
+	cursor:pointer;
+	padding: 5px auto;
+	margin-left: 10px;
+}	
+#commentedit:hover{
+	color:blue;
+}
+#commentdel{
+	border: 0px #ccc solid;
+	font-size: 8pt;
+	cursor:pointer;
+	padding: 5px auto;
+	margin-left: 5px;
+}
+#commentdel:hover{
+	color:blue;
+}
 </style>
 
 <script type="text/javascript">
@@ -140,18 +161,15 @@ a {text-decoration: none !important;}
 				
 				if(json.length > 0) {
 					$.each(json, function(index, item){
-						html += "<tr>";
-						html += "<td><span id='comname'>&nbsp;"+ item.name+"</span><br><span id='comcont'>&nbsp;"+item.content+"</span><br><span id='comdate'>&nbsp;"+item.reregDate+"</span></td>";										
-						html += "</tr>";
+						html += "<div class='putcomment'><span id='comname'>&nbsp;"+ item.name+"</span><br><span id='comcont'>&nbsp;"+item.content+"</span><br><span id='comdate'>&nbsp;"+item.reregDate+"</span></div>";
+
 					});
 				}
 				else {
-					html += "<tr>";
 					html += "<td style='text-align:center;'>댓글이 없습니다</td>";
-					html += "</tr>";
 				}
 				
-				$("tbody#commentDisplay").html(html);
+				$("div#commentDisplay").html(html);
 				
 			},
 			error: function(request, status, error){
@@ -175,19 +193,20 @@ a {text-decoration: none !important;}
 				var html = "";
 				
 				if(json.length > 0) {
-					$.each(json, function(index, item){
-						html += "<tr>";
-						html += "<td><span id='comname'>&nbsp;"+ item.name+"</span><br><span id='comcont'>&nbsp;"+item.content+"</span><br><span id='comdate'>&nbsp;"+item.reregDate+"</span></td>";	
-						html += "</tr>";									
+					$.each(json, function(index, item){					
+						html += "<div class='putcomment'>";
+						html += "<div id='comname'>&nbsp;"+ item.name+"<span id='commentedit'><a href='<%=ctxPath%>/board/commentedit.sam'>수정</a></span>";
+						html += "<span id='commentdel'><a href='<%=ctxPath%>/board/commentdel.sam'>삭제</a></span></div>";
+						html += "<div>&nbsp;"+item.content+"</div>";
+						html += "<div id='comdate'>&nbsp;"+item.reregDate+"</div>";
+						html += "</div>";
 					});
 				}
 				else {
-					html += "<tr>";
-					html += "<td style='text-align:center;'>댓글이 없습니다</td>";
-					html += "</tr>";
+					html += "<div style='text-align:center;'>댓글이 없습니다</div>";
 				}
 				
-				$("tbody#commentDisplay").html(html);
+				$("div#commentDisplay").html(html);
 				
 				// 페이지바 함수 호출
 				makeCommentPageBar(currentShowPageNo);
@@ -312,9 +331,9 @@ a {text-decoration: none !important;}
 			<!-- 공지사항 게시판에서는 댓글사용 안함 -->
 			<c:if test="${categoryno != 4}">			      			    		    
 			    <!-- 댓글 내용 보여주기 -->
-				<table id="table2" >
-					<tbody id="commentDisplay"></tbody>
-				</table>
+				<div id="table2" >
+					<div id="commentDisplay"></div>
+				</div>
 			
 				<!-- 댓글 페이지바-->
     			<div id="pageBar" style="border:solid 0px gray; width: 90%; margin: 10px auto; text-align: center;"></div> 
@@ -357,8 +376,6 @@ a {text-decoration: none !important;}
 	
 	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
 	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/del.sam?seq=${requestScope.boardvo.seq}'">삭제</button>
-
-
  	
 </div>
 
