@@ -25,7 +25,14 @@
    
 	<!-- === #111. 검색어 입력시 자동글 완성하기 6 ===  -->
 	<select id="wordSearchShow" parameterType="HashMap" resultType="String">
-		   select ${searchType}
+		<choose>
+			<when test="searchType eq 'name'">
+	     		select distinct ${searchType}
+	     	</when>
+	     	<otherwise>
+	     		select ${searchType}
+	     	</otherwise>
+   	    </choose>
 		   from tbl_board B join tbl_person P
 		   on B.fk_perno=P.perno
 		   where status = 1
@@ -33,7 +40,9 @@
 		   <if test='viewBoard != "" '>
         	and categoryno = ${viewBoard}
            </if>
-		   order by seq desc
+		   <if test="searchType neq 'name'">
+	      		order by seq desc
+	      	</if>
 	</select>
    
    
@@ -60,7 +69,7 @@
         </if>
 	</select>
 	
-	<!-- === #120. 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
+	<!-- === 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
 	<select id="boardListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.AdminBoardVO">
 		select seq, categoryno, name, subject, good, readCount, commentCount, regDate
 		from
@@ -84,12 +93,110 @@
 	
 	
 	<!--  === tbl_board 테이블에 categoryno를 변경(update) === -->
-	<update id="updateCommentCount" parameterType="HashMap">
+	<update id="boardMove" parameterType="HashMap">
 		update tbl_board set categoryno = #{categoryno}
 		where seq = #{seq}
 	</update>
 	
-	
+
 	
    
+   	<!-- === 페이징 처리한 댓글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
+	<select id="commentListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.AdminCommentVO">
+		select comseq, categoryno, subject, content, name, reregdate 
+		from
+		(
+			select row_number() over(order by comseq desc) as rno,
+			        comseq, categoryno, subject, C.content, name, reregdate 
+					from tbl_person P join tbl_comment C
+					on C.fk_perno=P.perno
+					join tbl_board B
+					on C.fk_seq = B.seq
+		    where C.status = 1
+		    <if test='searchWord != "" '>
+		     	<choose>
+				   <when test='searchType eq "content"'>
+				   		and lower(C.${searchType}) like '%'||lower(#{searchWord})||'%'
+				   </when>
+				   <otherwise>
+				   		and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+				   </otherwise>
+			   	</choose>
+			 </if>
+		    <if test='viewBoard != "" '>
+        	and categoryno = ${viewBoard}
+        	</if>
+		)V
+		where rno between #{startRno} and #{endRno}
+	</select>
+	
+		<!-- === 댓글 총 갯수 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === -->
+	<select id="getTotalComment" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_person P join tbl_comment C
+		on C.fk_perno=P.perno
+		join tbl_board B
+		on C.fk_seq = B.seq
+		where C.status = 1	
+		<if test='searchWord != "" '>
+	     	<choose>
+			   <when test='searchType eq "content"'>
+			   		and lower(C.${searchType}) like '%'||lower(#{searchWord})||'%'
+			   </when>
+			   <otherwise>
+			   		and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+			   </otherwise>
+		   	</choose>
+		</if>
+        <if test='viewBoard != "" '>
+        	and categoryno = ${viewBoard}
+        </if>
+	</select>
+	
+	
+	<!-- === 댓글 검색어 입력시 자동글 완성하기  ===  -->
+	<select id="commentWordSearchShow" parameterType="HashMap" resultType="String">
+		   <choose>
+		   <when test='searchType eq "content"'>
+		   		select C.${searchType}
+		   </when>
+		   <otherwise>
+		   		select distinct ${searchType}
+		   </otherwise>
+		   </choose>
+			from tbl_person P join tbl_comment C   
+			on C.fk_perno=P.perno    
+			join tbl_board B    
+			on C.fk_seq = B.seq 
+		   where C.status = 1
+		   <choose>
+			   <when test='searchType eq "content"'>
+			   		and lower(C.${searchType}) 
+			   </when>
+			   <otherwise>
+			   		and lower(${searchType}) 
+			   </otherwise>
+		   </choose>
+		   like '%'|| lower(#{searchWord}) ||'%'
+		   <if test='viewBoard != "" '>
+        	and categoryno = ${viewBoard}
+           </if>
+		   <if test="searchType neq 'name'">
+	      		order by comseq desc
+	      	</if>
+	</select>
+   
+   	<!--  댓글 삭제하기 사실은 status를 0으로 변경 -->
+	<update id="commentDelete">
+		update tbl_comment set status = 0
+		where comseq = ${value}
+	</update>
+	
+	
+	<!--  게시글 삭제하기 사실은 status를 0으로 변경 -->
+	<update id="boardDelete">
+		update tbl_board set status = 0
+		where seq = ${value}
+	</update>
+	
 </mapper>

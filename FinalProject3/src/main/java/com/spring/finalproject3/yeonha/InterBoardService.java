@@ -19,10 +19,25 @@ public interface InterBoardService {
 	List<String> wordSearchShow(Map<String, String> paraMap);
 
 	// 글1개를 보여주는 페이지 요청
-	BoardVO getView(String seq, String login_userid);
+	BoardVO getView(Map<String, String> paraMap, String login_userid);
 
 	// 글조회수 증가는 없고 단순히 글1개 조회만을 해주는 것이다.
-	BoardVO getViewWithNoAddCount(String seq);
+	BoardVO getViewWithNoAddCount(Map<String, String> paraMap);
+
+	// 댓글쓰기(Ajax로 처리) 
+	int addComment(CommentVO commentvo) throws Throwable;
+
+	// 원게시물에 딸린 댓글들을 조회해오기
+	List<CommentVO> getCommentList(String fk_seq);
+
+	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
+	List<CommentVO> getCommentListPaging(Map<String, String> paraMap);
+
+	// 원글 글번호(parentSeq)에 해당하는 댓글의 총 페이지수를 알아오기
+	int getCommentTotalPage(Map<String, String> paraMap);
+
+	// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
+	BoardVO getViewNo(String seq);
 
 
 

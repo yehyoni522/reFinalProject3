@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.board.model.BoardVO;
 import com.spring.finalproject3.common.MyUtil;
+import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 
 
@@ -34,7 +36,7 @@ public class BoardController {
 	@RequestMapping(value="/board/add.sam")
 	public ModelAndView requiredLogin_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 				
-		mav.setViewName("board/add.tiles1");		
+		mav.setViewName("board/add.tiles2");		
 		return mav;
 	}
 	
@@ -55,12 +57,10 @@ public class BoardController {
 		
 		if(n==1) {
 			mav.setViewName("redirect:/board/list.sam");
-		    //   list.sam 페이지로 redirect(페이지이동)해라는 말이다.
 		}
 		
 		else {
-			mav.setViewName("board/error/add_error.tiles1");
-			//   /WEB-INF/views/tiles1/board/error/add_error.jsp 파일을 생성한다.
+			mav.setViewName("board/error/add_error.tiles2");
 		}
 				
 		return mav;
@@ -138,7 +138,7 @@ public class BoardController {
 		
 		
 		// === #121. 페이지바 만들기 === //
-		int blockSize = 3;
+		int blockSize = 5;
 		
 		int loop = 1;
 		
@@ -192,7 +192,7 @@ public class BoardController {
 		/////////////////////////////////////////////////////////
 		
 		mav.addObject("boardList", boardList);
-		mav.setViewName("board/list.tiles1");
+		mav.setViewName("board/list.tiles2");
 		
 		return mav;
 	}
@@ -233,8 +233,18 @@ public class BoardController {
 	@RequestMapping(value="/board/view.sam")
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		
-		String seq = request.getParameter("seq");
-		
+		String seq = request.getParameter("seq");		
+	    String searchType = request.getParameter("searchType");
+	    String searchWord = request.getParameter("searchWord");
+	      
+	    Map<String,String> paraMap = new HashMap<>();
+	    paraMap.put("seq", seq);
+	    paraMap.put("searchType", searchType);
+	    paraMap.put("searchWord", searchWord);
+	      
+	    mav.addObject("searchType", searchType);
+	    mav.addObject("searchWord", searchWord);
+	    
 		String gobackURL = request.getParameter("gobackURL");
 		mav.addObject("gobackURL", gobackURL);
 		
@@ -251,36 +261,196 @@ public class BoardController {
 			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
 			
 			if(loginuser != null) {
-				login_userid = loginuser.getPerno();				
+				login_userid = String.valueOf(loginuser.getPerno());				
 			}
-			
-			
+						
 			BoardVO boardvo = null;
 			
 			if("yes".equals(session.getAttribute("readCountPermission"))) {
 				
-				boardvo = service.getView(seq, login_userid);
+				boardvo = service.getView(paraMap, login_userid);
 				
 				session.removeAttribute("readCountPermission");
 			}
-			else {
-				
-				boardvo = service.getViewWithNoAddCount(seq);
-				
-			}
+			else {				
+				boardvo = service.getViewWithNoAddCount(paraMap);				
+			}			
 			
-			mav.addObject("boardvo", boardvo);
-			
-	    }catch(NumberFormatException e) {
+			mav.addObject("boardvo", boardvo);			
+	   
+		}catch(NumberFormatException e) {
 	    	
-	    }	
-		
-		mav.setViewName("board/view.tiles1");
+	    }			
+		mav.setViewName("board/view.tiles2");
 		
 		return mav;
 	}
 	
+	// 댓글쓰기(Ajax로 처리)  
+	@ResponseBody
+	@RequestMapping(value="/board/addComment.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String addComment(CommentVO commentvo) {
+		
+		int n = 0;
+		
+		try {
+			n = service.addComment(commentvo);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n); 
+		jsonObj.put("name", commentvo.getName()); 
+		
+		return jsonObj.toString();
+	}
 	
 	
+	// 원게시물에 딸린 댓글들을 조회해오기(Ajax로 처리) 
+	@ResponseBody
+	@RequestMapping(value="/board/readComment.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String readComment(HttpServletRequest request) {
+		
+		String fk_seq = request.getParameter("fk_seq");
+		
+		List<CommentVO> commentList = service.getCommentList(fk_seq);
+		
+		JSONArray jsonArr = new JSONArray(); 
+		
+		if(commentList != null) {
+			for(CommentVO cmtvo : commentList) {
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("content", cmtvo.getContent());
+				jsonObj.put("name", cmtvo.getName());
+				jsonObj.put("reregDate", cmtvo.getReregDate());
+				
+				jsonArr.put(jsonObj);
+			}
+		}		
+		return jsonArr.toString();
+	}	
+	
+	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
+	@ResponseBody
+	@RequestMapping(value="/board/commentList.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String commentList(HttpServletRequest request) {
+		
+		String fk_seq = request.getParameter("fk_seq");
+		String currentShowPageNo = request.getParameter("currentShowPageNo");
+		
+		if(currentShowPageNo == null) {
+			currentShowPageNo = "1";
+		}
+		
+		int sizePerPage = 5; 
+		
+		int startRno = (( Integer.parseInt(currentShowPageNo) - 1 ) * sizePerPage) + 1;
+	    int endRno = startRno + sizePerPage - 1;
+	    
+	    Map<String,String> paraMap = new HashMap<>();
+	    paraMap.put("fk_seq", fk_seq);
+	    paraMap.put("startRno", String.valueOf(startRno));
+	    paraMap.put("endRno", String.valueOf(endRno));  
+		
+		List<CommentVO> commentList = service.getCommentListPaging(paraMap);
+		
+		JSONArray jsonArr = new JSONArray(); // []
+		
+		if(commentList != null) { 
+			for(CommentVO cmtvo : commentList) {
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("content", cmtvo.getContent());
+				jsonObj.put("name", cmtvo.getName());
+				jsonObj.put("reregDate", cmtvo.getReregDate());
+				
+				jsonArr.put(jsonObj);
+			}
+		}		
+		
+		return jsonArr.toString();
+
+	}
+	
+	
+	// 원게시물에 딸린 댓글 totalPage 알아오기 (Ajax 로 처리)
+	@ResponseBody
+	@RequestMapping(value="/board/getCommentTotalPage.sam", method= {RequestMethod.GET})
+	public String getCommentTotalPage(HttpServletRequest request) {
+	
+		String fk_seq = request.getParameter("fk_seq");
+		String sizePerPage = request.getParameter("sizePerPage");
+		
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("fk_seq", fk_seq);
+		paraMap.put("sizePerPage", sizePerPage);
+		
+		// 원글 글번호(parentSeq)에 해당하는 댓글의 총 페이지수를 알아오기
+		int totalPage = service.getCommentTotalPage(paraMap);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("totalPage", totalPage); 
+		
+		
+		return jsonObj.toString();
+	}
+	
+	
+	// 글수정 페이지 요청
+	@RequestMapping(value="/board/edit.sam")
+	public ModelAndView requiredLogin_edit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+      
+		// 글 수정해야 할 글번호 가져오기
+		String seq = request.getParameter("seq");
+	  
+		// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
+		BoardVO boardvo = service.getViewNo(seq);
+	  
+		HttpSession session = request.getSession();
+		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+	  
+		String loginuserPerno = String.valueOf(loginuser.getPerno());
+		
+		if( !loginuserPerno.equals(boardvo.getFk_perno()) ) {
+			String message = "다른 사용자의 글은 수정이 불가합니다.";
+			String loc = "javascript:history.back()";
+	 
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+			mav.setViewName("msg");
+		}
+		else {
+			mav.addObject("boardvo", boardvo);
+			mav.setViewName("board/edit.tiles2");
+		}
+	      
+		return mav;
+	}
+	
+	
+	// === #72. 글수정 페이지 완료하기 === //
+	@RequestMapping(value="/editEnd.action", method= {RequestMethod.POST})
+	public ModelAndView editEnd(ModelAndView mav, BoardVO boardvo, HttpServletRequest request) {   
+	   
+		int n = service.edit(boardvo);
+	   
+	   if(n == 0) {
+          mav.addObject("message", "수정이 실패했습니다.");
+       }
+       else {
+          mav.addObject("message", "글수정 성공!!");      
+       }
+
+       mav.setViewName("msg");
+       
+	   return mav;
+   }
+	
+	// 게시글 삭제하기 /board/del.sam
+	
+	
+	// 댓글 수정하기 /board/commentedit.sam
+	
+	// 댓글 삭제하기 /board/commentdel.sam
 	
 }
