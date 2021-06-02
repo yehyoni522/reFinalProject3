@@ -12,7 +12,46 @@
 		select tno, tname
 		from tbl_time	
 	</select>
-
+	
+	<select id="selectViewSeat" parameterType="HashMap" resultType="com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO">
+		select dsno, dsname, dscheck, fk_rno, fk_tno
+		from tbl_detailseatinfo join tbl_RroomNum
+		on fk_rno = rno
+		where fk_tno = #{tno} and rname=#{rname}
+		order by dsno
+	</select>
+	
+	<resultMap type="com.spring.finalproject3.yehyeon.model.RroomNumVO" id="roomvo">
+	<result column="rname" property="rname"/>
+	</resultMap>
+	<resultMap type="com.spring.finalproject3.yehyeon.model.TimeVO" id="timevo">
+		<result column="tname" property="tname"/>
+	</resultMap>
+	<resultMap type="com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO" id="DetailSeatInfoVO">
+		<id column="dsno" property="dsno"/>
+		<result column="dsname" property="dsname"/>
+		<collection property="roomvo" resultMap="roomvo"/>
+		<collection property="timevo" resultMap="timevo"/>
+	</resultMap>
+	
+	<select id="searchSeatInfo" parameterType="String" resultMap="DetailSeatInfoVO">
+		select dsno, dsname, rname, tname
+		from tbl_detailseatinfo join tbl_RroomNum
+		on fk_rno = rno
+		join tbl_time
+		on fk_tno = tno
+		where dsno = #{dsno}
+	</select>
+	
+	<update id="updateDscheck" parameterType="String">
+		update tbl_detailseatinfo set dscheck = 1
+		where dsno = #{dsno}
+	</update>
+	
+	<insert id="insertBooklist" parameterType="com.spring.finalproject3.yehyeon.model.BookListVO">
+		insert into tbl_booklist(bno, bDate, fk_dsno, fk_perno, fk_tno)
+		values (seq_tbl_booklist.nextval, default, #{fk_dsno}, #{fk_perno}, #{fk_tno})
+	</insert>
 
 
 </mapper>

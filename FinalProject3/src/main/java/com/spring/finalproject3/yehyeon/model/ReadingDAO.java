@@ -1,6 +1,7 @@
 package com.spring.finalproject3.yehyeon.model;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -27,6 +28,36 @@ public class ReadingDAO implements InterReadingDAO {
 		
 		List<TimeVO> timeList = sqlsession.selectList("Reading.timeView");
 		return timeList;
+	}
+
+	@Override
+	public List<DetailSeatInfoVO> selectViewSeat(Map<String, String> paraMap) {
+		
+		List<DetailSeatInfoVO> detailList = sqlsession.selectList("Reading.selectViewSeat", paraMap);
+		return detailList;
+	}
+
+	@Override
+	public DetailSeatInfoVO searchSeatInfo(String dsno) {
+		
+		DetailSeatInfoVO detailvo = sqlsession.selectOne("Reading.searchSeatInfo", dsno);
+		
+		return detailvo;
+	}
+
+	@Override
+	public int updateDscheck(String dsno) {
+		
+		int n = sqlsession.update("Reading.updateDscheck", dsno);
+		
+		return n;
+	}
+
+	@Override
+	public int insertBooklist(BookListVO bookvo) {
+		
+		int m = sqlsession.insert("Reading.insertBooklist", bookvo);
+		return m;
 	}
 
 }
