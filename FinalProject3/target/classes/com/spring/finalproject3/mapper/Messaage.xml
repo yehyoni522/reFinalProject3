@@ -73,6 +73,15 @@
    		where majseq = #{majseq} 
    </select>
 
-
+	<insert id="insertInbox" parameterType="HashMap">
+		insert into tbl_inbox(inboxSeq, fk_perno, receiver, subject, reDate, readState, inboxName)
+		values(seq_tbl_inbox_inboxSeq.nextval,   #{login_userid},  #{receiver},  #{text},  default, default, #{name})
+	</insert>
+	
+	<insert id="insertOutbox" parameterType="HashMap">
+		insert into tbl_outbox(outboxSeq, fk_perno, sender, subject, senDate, readState, outboxName)
+		values(seq_tbl_outbox_outboxSeq.nextval,   #{receiver}, #{login_userid} ,  #{text},  default, default, #{name})
+	</insert>
+	
 
 </mapper>

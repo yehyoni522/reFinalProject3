@@ -10,15 +10,18 @@ public class OutboxVO {
 	private String subject; // 내용 1000자 한계
 	private String senDate;  // 보낸날짜 
 	private int readState;  // 읽음표시 읽으면 0 -> 나중에 업데이트로 1로바꾸어줌
+	private String outboxName; // 발신자 이름 가져오기
 	
-	
-	public OutboxVO(int outboxSeq, int fk_perno, int sender, String subject, String senDate, int readState) {
+	public OutboxVO(int outboxSeq, int fk_perno, int sender, String subject, String senDate, int readState,
+			String outboxName) {
+		
 		this.outboxSeq = outboxSeq;
 		this.fk_perno = fk_perno;
 		this.sender = sender;
 		this.subject = subject;
 		this.senDate = senDate;
 		this.readState = readState;
+		this.outboxName = outboxName;
 	}
 	
 	public int getOutboxSeq() {
@@ -56,6 +59,14 @@ public class OutboxVO {
 	}
 	public void setReadState(int readState) {
 		this.readState = readState;
+	}
+
+	public String getOutboxName() {
+		return outboxName;
+	}
+
+	public void setOutboxName(String outboxName) {
+		this.outboxName = outboxName;
 	}
 	
 	
