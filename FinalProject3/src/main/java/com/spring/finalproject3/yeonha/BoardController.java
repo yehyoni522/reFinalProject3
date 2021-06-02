@@ -34,7 +34,10 @@ public class BoardController {
 	// 게시판 글쓰기 폼
 	@RequestMapping(value="/board/add.sam")
 	public ModelAndView requiredLogin_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
-				
+		String categoryno = request.getParameter("categoryno");
+		System.out.println("글쓰기폼: "+categoryno);
+		mav.addObject("categoryno", categoryno); 
+		
 		mav.setViewName("board/add.tiles2");		
 		return mav;
 	}
@@ -130,13 +133,10 @@ public class BoardController {
 		boardList = service.boardListSearchWithPaging(paraMap);
 		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
 		
-		// 아래는 검색대상 컬럼과 검색어를 유지시키기 위한 것임.
 		if(!"".equals(searchType) && !"".equals(searchWord)) {
 			mav.addObject("paraMap", paraMap);
 		}
-		
-		
-		// === #121. 페이지바 만들기 === //
+				
 		int blockSize = 5;
 		
 		int loop = 1;
@@ -175,26 +175,20 @@ public class BoardController {
 		
 		mav.addObject("pageBar",pageBar);
 		
-		// === #123. 페이징 처리되어진 후 특정 글제목을 클릭하여 상세내용을 본 이후
-	    //           사용자가 목록보기 버튼을 클릭했을때 돌아갈 페이지를 알려주기 위해
-	    //           현재 페이지 주소를 뷰단으로 넘겨준다.
 		String gobackURL = MyUtil.getCurrentURL(request);
 		// System.out.println("~~~goback확인용"+gobackURL);
 		
-		if(gobackURL != null) {
-			gobackURL = gobackURL.replaceAll("", "&");
-		}
+		/*
+		 * if(gobackURL != null) { gobackURL = gobackURL.replaceAll("", "&"); }
+		 */
 		
-		mav.addObject("gobackURL", gobackURL);
-		
-		// ==== 페이징 처리를 한 검색어가 있는 전체 글목록 보여주기 끝 ==== //
-		/////////////////////////////////////////////////////////
-		
+		mav.addObject("gobackURL", gobackURL);				
 		mav.addObject("boardList", boardList);
 		mav.setViewName("board/list.tiles2");
 		
 		return mav;
 	}
+	
 	
 	// 검색어 입력시 자동글 완성하기(글쓴이검색 아직 안됨 board.xml 오류나는거 수정하기)
 	@ResponseBody
@@ -465,8 +459,62 @@ public class BoardController {
 		return mav;
 	}
 
-	// 게시글 삭제하기 /board/del.sam
 	
+	// === #76. 글삭제 페이지 요청 === //
+	@RequestMapping(value="/del.action")
+	public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+   
+		String seq = request.getParameter("seq");
+      
+		BoardVO boardvo = service.getViewNo(seq);
+		
+		String gobackURL = request.getParameter("gobackURL");
+		mav.addObject("gobackURL", gobackURL);
+      
+		HttpSession session = request.getSession();
+		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+      
+		String loginuserPerno = String.valueOf(loginuser.getPerno());
+		
+		if( !loginuserPerno.equals(boardvo.getFk_perno()) ) {
+			String message = "다른 사용자의 글은 삭제가 불가합니다.";
+			String loc = "javascript:history.back()";
+         
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+			mav.setViewName("msg");
+      	}
+      	else {
+         mav.addObject("seq", seq);
+         mav.setViewName("board/del.tiles2");
+      	}
+      
+		return mav;
+	}
+
+			
+	// === #77. 글삭제 페이지 완료하기 === // 
+	@RequestMapping(value="/delEnd.action", method= {RequestMethod.POST})
+	public ModelAndView delEnd(ModelAndView mav, HttpServletRequest request){
+		
+		
+		int seq = Integer.parseInt(request.getParameter("seq"));
+	    
+	    int n = service.del(seq); 
+		
+	    if(n == 0) {
+	         mav.addObject("message", "암호가 일치하지 않아 글 삭제가 불가합니다.");
+	         mav.addObject("loc", request.getContextPath()+"/board/list.sam");
+	    }     
+	    else {
+	         mav.addObject("message", "글삭제 성공!!");
+	         mav.addObject("loc", request.getContextPath()+"/board/list.sam?seq="+seq);
+	    }
+	    
+	    
+	    return mav;
+	}
+
 	
 	// 댓글 수정하기 /board/commentedit.sam
 	

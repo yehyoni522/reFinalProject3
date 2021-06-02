@@ -100,12 +100,11 @@
  		<c:if test="${requestScope.categoryno == 1}">자유게시판</c:if>
  		<c:if test="${requestScope.categoryno == 2}">중고거래</c:if>
  		<c:if test="${requestScope.categoryno == 2}">동아리&공모전 모집</c:if>
- 		${categoryno}
 	</h1>
 	<hr class="mainline" align="left" >
 	
 	<form name="addFrm"> 
- 		<input type="hidden" name="categoryno" value="1" />                   
+ 		<input type="hidden" name="categoryno" value="${categoryno}" />                   
 		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
 		<input type="hidden" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />
 		

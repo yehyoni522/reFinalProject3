@@ -121,10 +121,6 @@
 		$("input#searchWord").val("${requestScope.paraMap.searchWord}");
 	}
 	
-	// 글쓰기 버튼
-  	$("button#btnadd").click(function(){
-  		location.href="<%=ctxPath%>/board/add.sam";
-	});
 	
 
 	});// end of $(document).ready(function(){})------------------
@@ -230,7 +226,7 @@
    	 	<button type="button" onclick="goSearch()">검색</button>
 	</form>
 	
-	<button type="button" id="btnadd">게시글 등록</button>
+	<button type="button" id="btnadd" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${categoryno}'">게시글 등록</button>
 	
 	</div>
 	<%-- 검색어 입력시 자동글 완성하기 1--%>

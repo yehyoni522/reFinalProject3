@@ -277,9 +277,6 @@ a {
 		
 	}// end of function makeCommentPageBar(currentShowPageNo) {}-----------------
 	
-
-	
-	
 </script>										
 						
 										
@@ -304,6 +301,7 @@ a {
 		<c:if test="${categoryno == 5}">Q&A</c:if> 
 	</h2>
 	<hr class="styhr">
+	
 	<c:if test="${not empty requestScope.boardvo}">
 		<div id="viewcontent">
 			<div id="contnentsubj">
@@ -375,8 +373,8 @@ a {
 	<button type="button" class="viewbtns" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
 	
 	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
-	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/del.sam?seq=${requestScope.boardvo.seq}'">삭제</button>
- 	
+	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/del.sam?seq=${requestScope.boardvo.seq}&gobackURL=${requestScope.gobackURL}'">삭제</button>
+ 	<br><span>${requestScope.gobackURL}</span>
 </div>
 
 

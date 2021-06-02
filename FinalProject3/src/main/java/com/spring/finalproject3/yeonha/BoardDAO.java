@@ -110,6 +110,13 @@ public class BoardDAO implements InterBoardDAO {
 		return n;
 	}
 
+	// 게시글 삭제하기
+	@Override
+	public int del(int seqno) {
+		int n = sqlsession.delete("board.del", seqno);
+		return n;
+	}
+
 
 
 

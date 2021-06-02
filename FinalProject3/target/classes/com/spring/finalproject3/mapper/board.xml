@@ -183,11 +183,21 @@
 		where B.seq = #{seq}
 	</select>
 	
-	<!-- 1개글 수정하기 -->
+	<!-- 게시글 수정하기 -->
 	<update id="edit" parameterType="com.spring.finalproject3.yeonha.BoardVO">
 		update tbl_board set subject = #{subject}
 		                   , content = #{content}
 		where seq = #{seq}
 	</update>
    	
+   	<!-- 게시글 삭제하기 -->
+	<delete id="del" parameterType="int">
+		delete from tbl_board 
+		where seq = #{seqno}
+	</delete>	
+	
+	
+	
+	
+
 </mapper>

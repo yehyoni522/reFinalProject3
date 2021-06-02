@@ -44,6 +44,9 @@ public interface InterBoardDAO {
 	// 글수정 페이지 완료하기 
 	int edit(BoardVO boardvo);
 
+	// 게시글 삭제하기
+	int del(int seqno);
+
 
 	
 }
