@@ -300,30 +300,6 @@ public class BoardController {
 	}
 	
 	
-	// 원게시물에 딸린 댓글들을 조회해오기(Ajax로 처리) 
-	@ResponseBody
-	@RequestMapping(value="/board/readComment.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
-	public String readComment(HttpServletRequest request) {
-		
-		String fk_seq = request.getParameter("fk_seq");
-		
-		List<CommentVO> commentList = service.getCommentList(fk_seq);
-		
-		JSONArray jsonArr = new JSONArray(); 
-		
-		if(commentList != null) {
-			for(CommentVO cmtvo : commentList) {
-				JSONObject jsonObj = new JSONObject();
-				jsonObj.put("content", cmtvo.getContent());
-				jsonObj.put("name", cmtvo.getName());
-				jsonObj.put("reregDate", cmtvo.getReregDate());
-				
-				jsonArr.put(jsonObj);
-			}
-		}		
-		return jsonArr.toString();
-	}	
-	
 	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
 	@ResponseBody
 	@RequestMapping(value="/board/commentList.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
@@ -348,7 +324,7 @@ public class BoardController {
 		
 		List<CommentVO> commentList = service.getCommentListPaging(paraMap);
 		
-		JSONArray jsonArr = new JSONArray(); // []
+		JSONArray jsonArr = new JSONArray(); 
 		
 		if(commentList != null) { 
 			for(CommentVO cmtvo : commentList) {
@@ -356,6 +332,7 @@ public class BoardController {
 				jsonObj.put("content", cmtvo.getContent());
 				jsonObj.put("name", cmtvo.getName());
 				jsonObj.put("reregDate", cmtvo.getReregDate());
+				jsonObj.put("identity", cmtvo.getIdentity());
 				
 				jsonArr.put(jsonObj);
 			}

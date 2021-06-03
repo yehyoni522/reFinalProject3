@@ -17,6 +17,8 @@
 }
 .putcomment{
 	border-bottom: 1px solid #ccc;
+	margin-top: 5px;
+	margin-bottom: 2px;
 }
 .move {cursor: pointer;}
 .moveColor {color: blue; font-weight: bold; }
@@ -80,15 +82,25 @@ a {
 #commentdel, #commentedit{
 	margin-left: 5px;
 }
-.commentfunc{
+#commentfunc{
 	border: 0px #ccc solid;
 	font-size: 8pt;
 	cursor:pointer;
 	padding: 5px auto;
-	/* margin-left: 88%; */
+	margin-left: 80%;
 }
-.commentfunc:hover{
+#commentfunc:hover{
 	color:blue;
+}
+.logidentity{
+	border: 2px solid green;
+	padding: 2px ;
+	border-radius: 20%;
+	margin-left: 5px;
+	
+}
+#comcont{
+	margin: 2px;
 }
 </style>
 
@@ -96,7 +108,6 @@ a {
 
 	$(document).ready(function(){
 		
-	//	goReadComment();  // 페이징처리 안한 댓글 읽어오기
 		goViewComment(1); // 페이징처리 한 댓글 읽어오기 
 
 		
@@ -139,42 +150,9 @@ a {
 		 	}
 		});
 		
-	}// end of function goAddWrite(){}--------------------------
+	}// end of function goAddWrite(){}--------------------------	
 	
-	
-	// === 페이징처리 안한 댓글 읽어오기 === //
-	function goReadComment() {
-		
-		$.ajax({
-			url:"<%= ctxPath%>/board/readComment.sam",
-			data:{"fk_seq":"${requestScope.boardvo.seq}"},
-			dataType:"json",
-			success:function(json){ 
-				
-				var html = "";
-				
-				if(json.length > 0) {
-					$.each(json, function(index, item){
-						html += "<div class='putcomment'><span id='comname'>&nbsp;"+ item.name+"</span><br><span id='comcont'>&nbsp;"+item.content+"</span><br><span id='comdate'>&nbsp;"+item.reregDate+"</span></div>";
-
-					});
-				}
-				else {
-					html += "<td style='text-align:center;'>댓글이 없습니다</td>";
-				}
-				
-				$("div#commentDisplay").html(html);
-				
-			},
-			error: function(request, status, error){
-				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-		 	}
-		});
-		
-	}// end of function goReadComment() {}----------------------
-	
-	
-	// === #127. Ajax로 불러온 댓글내용을 페이징처리하기 === //
+	// Ajax로 불러온 댓글내용을 페이징처리하기
 	function goViewComment(currentShowPageNo) {
 		
 		$.ajax({
@@ -190,12 +168,18 @@ a {
 					$.each(json, function(index, item){					
 						html += "<div class='putcomment'>";
 						html += "<div id='comname'>&nbsp;"+ item.name;
+						
+					
+						
 						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
-						html += "<span class='commentfunc'><span id='commentreply' ><a href='<%=ctxPath%>/board/reply.sam'>답글</a></span>";
+						html += "<span id='commentfunc'>";
+						html += "<span id='commentreply' ><a href='<%=ctxPath%>/board/reply.sam'>답글</a></span>";
 						html += "<span id='commentedit'><a href='<%=ctxPath%>/board/commentedit.sam'>수정</a></span>";
-						html += "<span id='commentdel'><a href='<%=ctxPath%>/board/commentdel.sam'>삭제</a></span></span>";
-						html += "</c:if></div>";
-						html += "<div>&nbsp;"+item.content+"</div>";
+						html += "<span id='commentdel'><a href='<%=ctxPath%>/board/commentdel.sam'>삭제</a></span>";
+						html += "</span></c:if></div>";
+						
+						html += "<div >&nbsp;"+item.identity+"</div>";
+						html += "<div id='comcont'>&nbsp;"+item.content+"</div>";
 						html += "<div id='comdate'>&nbsp;"+item.reregDate+"</div>";
 						html += "</div>";
 					});
@@ -217,10 +201,9 @@ a {
 	}// end of function goViewComment(currentShowPageNo) {}----------------------	
 	
 	
-	// ==== 댓글내용 페이지바  Ajax로 만들기 ==== // 
+	// 댓글내용 페이지바  Ajax로 만들기
 	function makeCommentPageBar(currentShowPageNo) {
 	
-		/* 원글에 대한 댓글의 totalPage 수를 알아오려고 한다.  */
 		$.ajax({
 			url:"<%= ctxPath%>/board/getCommentTotalPage.sam",
 			data:{"fk_seq":"${requestScope.boardvo.seq}",
