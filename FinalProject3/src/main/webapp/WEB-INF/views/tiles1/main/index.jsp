@@ -295,8 +295,8 @@
 	        		  events: [ 
 		        		 	 { 
 		        			  title : '종강',
-		        			  start : "2021-06-02",
-		        			  end : "2021-06-04"
+		        			  start : "2021-06-02 11:00:00",
+		        			  end : "2021-06-04 11:00:00"
 		        			  },
 		        			  { 
 			        			  title : 'TEST2',
@@ -355,8 +355,10 @@ function click_add(){
 	<span style="text-align: right; cursor:pointer; margin:0px 0px 50px 30px;" onclick="openNav()"><img src="<%= ctxPath%>/resources/images/addmenu.png" style="width:100%;"></span>
 </div>
 <div>
-	<div id='calendar' style="position : relative;"> 
+	<div id='calendar' style="position : relative;">
+	<c:if test="${not empty sessionScope.loginuser}">
 		<button class = "add-button" type = "button" onclick="click_add();">추가</button> 
+		</c:if>
 	</div>
 </div>
 
