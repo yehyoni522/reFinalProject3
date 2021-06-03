@@ -77,24 +77,17 @@ a {
 	border: solid #ccc 1px;
 	height: 30px;
 }	
-#commentedit{
-	border: 0px #ccc solid;
-	font-size: 8pt;
-	cursor:pointer;
-	padding: 5px auto;
-	margin-left: 10px;
-}	
-#commentedit:hover{
-	color:blue;
-}
-#commentdel{
-	border: 0px #ccc solid;
-	font-size: 8pt;
-	cursor:pointer;
-	padding: 5px auto;
+#commentdel, #commentedit{
 	margin-left: 5px;
 }
-#commentdel:hover{
+.commentfunc{
+	border: 0px #ccc solid;
+	font-size: 8pt;
+	cursor:pointer;
+	padding: 5px auto;
+	/* margin-left: 88%; */
+}
+.commentfunc:hover{
 	color:blue;
 }
 </style>
@@ -196,8 +189,12 @@ a {
 				if(json.length > 0) {
 					$.each(json, function(index, item){					
 						html += "<div class='putcomment'>";
-						html += "<div id='comname'>&nbsp;"+ item.name+"<span id='commentedit'><a href='<%=ctxPath%>/board/commentedit.sam'>수정</a></span>";
-						html += "<span id='commentdel'><a href='<%=ctxPath%>/board/commentdel.sam'>삭제</a></span></div>";
+						html += "<div id='comname'>&nbsp;"+ item.name;
+						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
+						html += "<span class='commentfunc'><span id='commentreply' ><a href='<%=ctxPath%>/board/reply.sam'>답글</a></span>";
+						html += "<span id='commentedit'><a href='<%=ctxPath%>/board/commentedit.sam'>수정</a></span>";
+						html += "<span id='commentdel'><a href='<%=ctxPath%>/board/commentdel.sam'>삭제</a></span></span>";
+						html += "</c:if></div>";
 						html += "<div>&nbsp;"+item.content+"</div>";
 						html += "<div id='comdate'>&nbsp;"+item.reregDate+"</div>";
 						html += "</div>";
