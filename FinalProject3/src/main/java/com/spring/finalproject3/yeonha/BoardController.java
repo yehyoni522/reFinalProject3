@@ -459,13 +459,15 @@ public class BoardController {
 		return mav;
 	}
 
-	
-	// === #76. 글삭제 페이지 요청 === //
+	// 글 삭제하기
 	@RequestMapping(value="/board/del.sam")
 	public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
    
 		String seq = request.getParameter("seq");
-      
+		String categoryno = request.getParameter("categoryno");	
+		System.out.println(seq);
+		
+		
 		BoardVO boardvo = service.getViewNo(seq);
 		
 		String gobackURL = request.getParameter("gobackURL");
@@ -476,44 +478,40 @@ public class BoardController {
       
 		String loginuserPerno = String.valueOf(loginuser.getPerno());
 		
+		String loc = "javascript:history.back()";
+		
 		if( !loginuserPerno.equals(boardvo.getFk_perno()) ) {
 			String message = "다른 사용자의 글은 삭제가 불가합니다.";
-			String loc = "javascript:history.back()";
-         
+			       
 			mav.addObject("message", message);
 			mav.addObject("loc", loc);
 			mav.setViewName("msg");
       	}
       	else {
-         mav.addObject("seq", seq);
-         mav.setViewName("board/del.tiles2");
+    	    
+    	    int n = service.del(Integer.parseInt(request.getParameter("seq"))); 
+    	    
+    		System.out.println(n);
+    		
+    	    if(n == 0) {
+    	         mav.addObject("message", "글 삭제가 불가합니다.");
+    	         mav.addObject("loc", loc);
+    	         mav.setViewName("msg");
+    	    }     
+    	    else {
+    	         mav.addObject("message", "글삭제 성공!!");
+    	         mav.addObject("loc", request.getContextPath()+"/board/list.sam?categoryno="+categoryno);
+    	         mav.setViewName("msg");
+    	    }
+    	    
+    	    
+    	    return mav;
+      		
       	}
       
 		return mav;
 	}
-
-			
-	// === #77. 글삭제 페이지 완료하기 === // 
-	@RequestMapping(value="/board/delEnd.sam", method= {RequestMethod.POST})
-	public ModelAndView delEnd(ModelAndView mav, HttpServletRequest request){
-		
-		
-		int seq = Integer.parseInt(request.getParameter("seq"));
-	    
-	    int n = service.del(seq); 
-		
-	    if(n == 0) {
-	         mav.addObject("message", "암호가 일치하지 않아 글 삭제가 불가합니다.");
-	         mav.addObject("loc", request.getContextPath()+"/board/list.sam");
-	    }     
-	    else {
-	         mav.addObject("message", "글삭제 성공!!");
-	         mav.addObject("loc", request.getContextPath()+"/board/list.sam?seq="+seq);
-	    }
-	    
-	    
-	    return mav;
-	}
+	
 
 	
 	// 댓글 수정하기 /board/commentedit.sam

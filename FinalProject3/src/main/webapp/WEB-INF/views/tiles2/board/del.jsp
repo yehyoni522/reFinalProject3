@@ -31,17 +31,19 @@ function removeCheck() {
 	
  		var frm = document.delFrm;
 	   	frm.method = "POST";
-	   	frm.action = "<%= ctxPath%>/board/delEnd.sam";
+	   	frm.action = "<%= ctxPath%>/board/del.sam";
 	   	frm.submit();	
 	}else{   //취소	
+		
 	    return false;	
 	}
 
 }
 </script>
 
-<span>${requestScope.gobackURL}</span><br>
+<%-- <span>${requestScope.gobackURL}</span><br> --%>
 <form name="delFrm"> 
+	<input type="hidden" name="categoryno" value="${requestScope.categoryno}" />
     <input type="hidden" name="seq" value="${requestScope.seq}" />          
 </form>
  

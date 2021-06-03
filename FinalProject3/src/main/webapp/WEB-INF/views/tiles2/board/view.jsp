@@ -105,6 +105,7 @@ a {
 		
 	//	goReadComment();  // 페이징처리 안한 댓글 읽어오기
 		goViewComment(1); // 페이징처리 한 댓글 읽어오기 
+
 		
 		$("span.move").hover(function(){
 			                    $(this).addClass("moveColor");
@@ -277,6 +278,20 @@ a {
 		
 	}// end of function makeCommentPageBar(currentShowPageNo) {}-----------------
 	
+	function removeCheck() {
+
+		if (confirm("정말 삭제하시겠습니까??") == true){    //확인
+		
+	 		var frm = document.delFrm;
+		   	frm.method = "POST";
+		   	frm.action = "<%= ctxPath%>/board/del.sam";
+		   	frm.submit();	
+		}else{   //취소	
+			
+		    return false;	
+		}
+
+	}
 </script>										
 						
 										
@@ -354,13 +369,13 @@ a {
 	 	<c:if test="${requestScope.boardvo.previoussubject ne null}">
 	 		<div style="margin-bottom: 1%;">
 	 			<span style="font-weight:bold;">이전글제목&nbsp;&nbsp;</span>
-	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
+	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&categoryno=${boardvo.categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
 	 		</div>
 	 	</c:if>
 	 	<c:if test="${requestScope.boardvo.nextsubject ne null}">	
 			<div style="margin-bottom: 1%;">
 				<span style="font-weight:bold;">다음글제목&nbsp;&nbsp;</span>
-				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
+				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&categoryno=${boardvo.categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
 			</div>
 		</c:if>
 	</c:if>
@@ -373,11 +388,14 @@ a {
 	<button type="button" class="viewbtns" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
 	
 	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
-	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/del.sam?seq=${requestScope.boardvo.seq}&gobackURL=${requestScope.gobackURL}'">삭제</button>
- 	<br><span>${requestScope.gobackURL}</span>
+	<button type="button" class="viewbtns" onclick="removeCheck()">삭제</button>
+ 	<%-- <br><span>${requestScope.gobackURL}</span> --%>
 </div>
 
-
+<form name="delFrm"> 
+	<input type="hidden" name="categoryno" value="${requestScope.categoryno}" />
+    <input type="hidden" name="seq" value="${requestScope.boardvo.seq}" />          
+</form>
 
 
 
