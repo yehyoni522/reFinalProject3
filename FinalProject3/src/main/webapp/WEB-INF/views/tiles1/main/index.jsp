@@ -129,9 +129,7 @@
 	  border-radius: 3px; 
 	  width: 50px; 
 	  }
-	.fc-sun {color:#e31b23}
-	.fc-col-header-cell fc-day fc-day-sat {color:#007dc3}
-
+	
 
 </style>
 
@@ -144,7 +142,8 @@
 	
 		location.href ="<%= request.getContextPath()%>/baord/view.sam?seq="+seq+"&goBackURL=${requestScope.goBackURL}";
 		});// end of click
-		 
+
+	
 	});// end of $(document).ready(function(){})--------------
 	
 	// === #127. Ajax로 불러온 댓글내용을 페이징처리하기 === //
@@ -282,12 +281,7 @@
 		});
 		
 	}// end of function makeCommentPageBar(currentShowPageNo) {}-----------------
-	  function getEvent(){
-
-	}//end of events---
-	
 	   document.addEventListener('DOMContentLoaded', function() {
-		 
 	        var calendarEl = document.getElementById('calendar');
 	        var calendar = new FullCalendar.Calendar(calendarEl, {
 	        	headerToolbar: {
@@ -298,36 +292,24 @@
 	        	locale : "ko",
 	        	initialView: 'dayGridMonth',
 				dayMaxEvents: true,
-				editable : true,
-				events: 
-					function(info, successCallback, failureCallback) {
-					$.ajax({
-						url:"<%= ctxPath%>/scheduleView.sam",
-						data:{"perno":"${sessionScope.loginuser.perno}"},
-						dataType:"json",
-						success:function(json){
-							var events=[];
-						
-					      $.each(json, function(index, item){
-							  events.push({
-								  title:item.calsubject,
-								  start:item.startDate,
-								  end:item.endDate
-								});
-							 
-		                 });// end of $.each(json1, function(index, item){}) ------------
-		    					
-					      console.log(events);
-					      //$("#calendar").fullCalendar(events);
-					      successCallback(events); 
-						},
-						error: function(request, status, error){
-			                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-		           	}
-					})//end of ajax--------
-				
-				}
-	        	
+	        		  events: [ 
+		        		 	 { 
+		        			  title : '종강',
+		        			  start : "2021-06-02 11:00:00",
+		        			  end : "2021-06-04 11:00:00"
+		        			  },
+		        			  { 
+			        			  title : 'TEST2',
+			        			  start : "2021-06-02",
+			        			  end : "2021-06-04"
+			        			  },
+			        			  { 
+				        			  title : 'TEST3',
+				        			  start : "2021-06-02",
+				        			  end : "2021-06-04"
+				        			  }
+
+		        		]		 
 	        });
 	        calendar.render();
 	      });

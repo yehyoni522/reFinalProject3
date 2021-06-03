@@ -21,9 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.joseungjin.mail.GoogleMail;
 import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
@@ -483,32 +480,6 @@ public class joseungjin_Controller {
 				mav.setViewName("msg");
 				return mav;
 			}
-			
-			// === 일정가져오기 === // 
-			@ResponseBody
-			@RequestMapping(value="/scheduleView.sam",produces="text/plain;charset=UTF-8")
-			public String scheduleView(HttpServletRequest request) {
-				
-				String perno = request.getParameter("perno"); 
-				List<Map<String,String>>scheduleList = service.scheduleView(perno);
-				
-				
-				JsonArray jsonArr = new JsonArray();
-				for(Map<String,String>map:scheduleList) {
-					
-					JsonObject jsonObj = new JsonObject();
-					jsonObj.addProperty("calsubject",map.get("calsubject"));
-					jsonObj.addProperty("startDate",map.get("startDate"));
-					jsonObj.addProperty("endDate",map.get("endDate"));
-					jsonObj.addProperty("memo",map.get("memo"));
-					jsonArr.add(jsonObj);
-				}//end of for(Map<String,String>map:deptnamePercentageList){}-----
-				
-				
-				return jsonArr.toString();
-			
-			}
-	
 	
 	
 }
