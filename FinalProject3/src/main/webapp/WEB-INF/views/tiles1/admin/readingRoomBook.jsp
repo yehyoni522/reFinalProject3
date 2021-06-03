@@ -159,11 +159,8 @@ $(function() {
 	var bdate = $("td.today").attr('data-fdate');
 	//console.log(bdate); 오늘 날짜
 	//selectDateBookList(bdate);
-	bookListView(rno, tno);
+	bookListView(rno, tno, bdate);
 	
-	$("td#disabled").each(function() {
-		console.log("gmdl");
-	});
 
 	$(document).on('click','td.day',function(){
 		//console.log($(this).attr('data-fdate'));
@@ -187,12 +184,12 @@ $(function() {
 	
 	$("select#sel3").bind("change", function(){
 		rno = $(this).val();
-		bookListView(rno, tno);
+		bookListView(rno, tno, bdate);
 	});
 	
 	$("select#sel4").bind("change", function(){
 		tno = $(this).val();
-		bookListView(rno, tno);
+		bookListView(rno, tno, bdate);
 	});
 	
 	
@@ -221,7 +218,7 @@ function bookListView(rno, tno, bdate) {
 	   			}
 	   			
 	   			if(item.dscheck == '1') {
-	   				html += '<td class="seat" style="word-break:break-all;">'+item.dsname+item.perno+iten.name+'<input  type="hidden"  value="item.dsno"/></td>';
+	   				html += '<td class="seat" style="word-break:break-all;">'+item.dsname+item.perno+item.name+'<input  type="hidden"  value="item.dsno"/></td>';
 	   			} else {
 	   				html += '<td class="seat">'+item.dsname+'<input id="seat" type="hidden"  value='+item.dsno+'></td>'
 	   			}

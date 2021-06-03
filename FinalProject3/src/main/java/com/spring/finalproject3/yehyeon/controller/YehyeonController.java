@@ -170,7 +170,7 @@ public class YehyeonController {
 	
 	////////////////////////////관리자 전용 열람실 예약 내역 시작///////////////////////////////////
 	
-	@RequestMapping(value="/admin/readingRoomBook.sam", method= {RequestMethod.GET}, produces = "application/text; charset=utf8")
+	@RequestMapping(value="/admin/readingRoomBook.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public ModelAndView readingRoomBook(ModelAndView mav) {
 		
 		List<RroomNumVO> rRoomList = service.readingRoomView();
