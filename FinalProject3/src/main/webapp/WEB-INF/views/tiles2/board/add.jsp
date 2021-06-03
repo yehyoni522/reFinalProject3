@@ -105,7 +105,7 @@
 	
 	<form name="addFrm"> 
  		<input type="hidden" name="categoryno" value="${categoryno}" />                   
-		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
+		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}"/>
 		<input type="hidden" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />
 		
 		작성자 : ${sessionScope.loginuser.name}&nbsp;${sessionScope.loginuser.perno}

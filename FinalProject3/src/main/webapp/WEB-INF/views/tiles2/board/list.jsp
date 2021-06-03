@@ -174,6 +174,7 @@
  		<c:if test="${categoryno == 4}">공지사항</c:if> 
  		<c:if test="${categoryno == 5}">Q&A</c:if> 
  	</h2>
+
  	<form name="newhitFrm">
 		<select id="newhit">
 			<option value="1">최신순</option>
@@ -226,7 +227,10 @@
    	 	<button type="button" onclick="goSearch()">검색</button>
 	</form>
 	
-	<button type="button" id="btnadd" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${categoryno}'">게시글 등록</button>
+	<c:if test="${categoryno != 4 || (categoryno == 4 && sessionScope.loginuser.identity == 2)}">
+		<button type="button" id="btnadd" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${categoryno}'">게시글 등록</button>
+	</c:if>
+
 	
 	</div>
 	<%-- 검색어 입력시 자동글 완성하기 1--%>
