@@ -7,6 +7,11 @@
 
 <style type="text/css">
 
+.subjectStyle {
+	font-weight: bolder;
+	cursor: pointer;
+} 
+                   
 .headerName{
 	text-align:center;
 	font-weight: bolder;
@@ -61,26 +66,46 @@ div#btn-board{
 
 	$(document).ready(function(){
 		
+		$("span.subject").bind("mouseover",function(event){
+			var $target=$(event.target);
+			$target.addClass("subjectStyle");
+		});
 		
-	});
-	
-	
+		$("span.subject").bind("mouseout",function(event){
+			var $target=$(event.target);
+			$target.removeClass("subjectStyle");			
+		});
+		
+		$("span.subject").click(function(){		
+			var assgnno = $(this).parent().prev().text();
+			var frm = document.goViewFrm;
+			frm.assgnno.value = assgnno;
+			
+			frm.method = "get";
+	   	    frm.action = "<%= ctxPath%>/class/assignmentView.sam";
+	   	    frm.submit();
+		});
+		
+		
+	});// end of function goView(assgnno) {}-----------------------
+	   	
 	   
+	
 </script>   
 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
 
 <div class="container">
 
-
-	<h1 class="headerName">${requestScope.subject}</h1>
-	
 	<div class="headerCategoty">
 	<i class="fas fa-university "></i>
 	&nbsp;>&nbsp;과제게시판
 	</div>
 
-	<h3 class="headerName">과제게시판</h3>
+	<h1 class="headerName">${requestScope.subject}</h1>
 	<br>
+	<h3 style="text-align: left; font-weight: bold;">| 과제게시판</h3>
+	<br>
+
 	<table style="width:100%; border-top: 1.5px #b3b3b3 solid; border-bottom: 1.5px #b3b3b3 solid;">
 		<tr style="border-bottom: 1px #e6e6e6 solid;">
 			<th style="width: 10%;">No.</th>
@@ -94,28 +119,31 @@ div#btn-board{
 				</c:when>
 			
 				<%-- 교수일 경우 제출개수 컬럼  --%>
-				<c:when test="${sessionScope.loginuser.identity eq '1'}">
+				<c:when test="${(sessionScope.loginuser.identity eq '1')||(sessionScope.loginuser.identity eq '2')}">
 					<th style="width: 20%;">제출</th>
 				</c:when>
 			</c:choose>
 			
 			<th style="width: 20%;">마감일</th>			
 		</tr>
-			
+		
 		<c:forEach var="assgnVO" items="${requestScope.assignmentList}" varStatus="status"> 
 			<tr class="list">
 				<td>${assgnVO.assgnno}</td>
-				<td style="text-align:left; font-weight: bold;"><a>${assgnVO.subject}</a></td>				
+				<td style="text-align:left;">
+					<%-- <span class="subject" onclick="javascript:location.href='/class/assignmentView.sam?assgnno=${assgnVO.assgnno}'">${assgnVO.subject}</span> --%>
+					<span class="subject" onclick="goView('${assgnVo.assgnno}')">${assgnVO.subject}</span>
+				</td>				
 				
 				
 				<c:choose>
 					<%-- 학생일 경우 제출상태, 점수 컬럼 --%>
 					<c:when test="${sessionScope.loginuser.identity eq '0'}">					
-						<c:if test="${(assgnVO.status eq '0') || (assgnVO.status eq null)}"><td>X</td></c:if>
+						<c:if test="${assgnVO.status eq null}"><td>X</td></c:if>
 						<c:if test="${assgnVO.status eq '1'}"><td>O</td></c:if>		
 						
 						<c:choose>
-							<c:when test="${assgnVO.status eq null}">
+							<c:when test="${assgnVO.score eq null}">
 								<td>비공개</td>
 							</c:when>							
 							<c:otherwise>
@@ -125,8 +153,8 @@ div#btn-board{
 					</c:when>
 					
 					<%-- 교수일 경우 제출개수 컬럼 --%>
-					<c:when test="${sessionScope.loginuser.identity eq '1'}">
-						<td>${assgnVO.submitCount}</td>
+					<c:when test="${(sessionScope.loginuser.identity eq '1')||(sessionScope.loginuser.identity eq '2')}">					
+						<td>${assgnVO.submitCount}/${requestScope.totalPerson}</td>
 					</c:when>
 				</c:choose>
 			
@@ -144,15 +172,21 @@ div#btn-board{
 	
 	</table>
 	
-	<%-- <c:if test="${sessionScope.loginuser.identity eq '1'}"> --%>
+	<c:if test="${sessionScope.loginuser.identity eq '1'}">
 		<div id="btn-board">
 			<input type="button" value="글쓰기" class="btn-board" name="write" onclick="location.href='<%=ctxPath%>/class/assignmentAdd.sam'"/>
 		</div>
-	<%-- </c:if> --%>
+	</c:if> 
        <%-- === 페이지바 보여주기 --%>
 	<div align="center" style="width: 70%; border:solid 0px gray; margin:20px auto;">
 		${requestScope.pageBar}
 	</div>
+
+	<form name="goViewFrm">	
+		<input type="hidden" name="assgnno" />
+	</form>
+
+
 
 </div>
 
