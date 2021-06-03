@@ -461,7 +461,7 @@ public class BoardController {
 
 	
 	// === #76. 글삭제 페이지 요청 === //
-	@RequestMapping(value="/del.action")
+	@RequestMapping(value="/board/del.sam")
 	public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
    
 		String seq = request.getParameter("seq");
@@ -494,7 +494,7 @@ public class BoardController {
 
 			
 	// === #77. 글삭제 페이지 완료하기 === // 
-	@RequestMapping(value="/delEnd.action", method= {RequestMethod.POST})
+	@RequestMapping(value="/board/delEnd.sam", method= {RequestMethod.POST})
 	public ModelAndView delEnd(ModelAndView mav, HttpServletRequest request){
 		
 		
