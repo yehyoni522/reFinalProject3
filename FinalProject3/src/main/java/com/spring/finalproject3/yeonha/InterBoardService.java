@@ -39,6 +39,12 @@ public interface InterBoardService {
 	// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
 	BoardVO getViewNo(String seq);
 
+	// 글수정 페이지 완료하기 
+	int edit(BoardVO boardvo);
+
+	// 게시글 삭제하기 
+	int del(int seqno);
+
 
 
 

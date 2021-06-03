@@ -17,6 +17,8 @@
 }
 .putcomment{
 	border-bottom: 1px solid #ccc;
+	margin-top: 5px;
+	margin-bottom: 2px;
 }
 .move {cursor: pointer;}
 .moveColor {color: blue; font-weight: bold; }
@@ -77,25 +79,28 @@ a {
 	border: solid #ccc 1px;
 	height: 30px;
 }	
-#commentedit{
-	border: 0px #ccc solid;
-	font-size: 8pt;
-	cursor:pointer;
-	padding: 5px auto;
-	margin-left: 10px;
-}	
-#commentedit:hover{
-	color:blue;
-}
-#commentdel{
-	border: 0px #ccc solid;
-	font-size: 8pt;
-	cursor:pointer;
-	padding: 5px auto;
+#commentdel, #commentedit{
 	margin-left: 5px;
 }
-#commentdel:hover{
+#commentfunc{
+	border: 0px #ccc solid;
+	font-size: 8pt;
+	cursor:pointer;
+	padding: 5px auto;
+	margin-left: 80%;
+}
+#commentfunc:hover{
 	color:blue;
+}
+.logidentity{
+	border: 2px solid green;
+	padding: 2px ;
+	border-radius: 20%;
+	margin-left: 5px;
+	
+}
+#comcont{
+	margin: 2px;
 }
 </style>
 
@@ -103,8 +108,8 @@ a {
 
 	$(document).ready(function(){
 		
-	//	goReadComment();  // 페이징처리 안한 댓글 읽어오기
 		goViewComment(1); // 페이징처리 한 댓글 읽어오기 
+
 		
 		$("span.move").hover(function(){
 			                    $(this).addClass("moveColor");
@@ -145,42 +150,9 @@ a {
 		 	}
 		});
 		
-	}// end of function goAddWrite(){}--------------------------
+	}// end of function goAddWrite(){}--------------------------	
 	
-	
-	// === 페이징처리 안한 댓글 읽어오기 === //
-	function goReadComment() {
-		
-		$.ajax({
-			url:"<%= ctxPath%>/board/readComment.sam",
-			data:{"fk_seq":"${requestScope.boardvo.seq}"},
-			dataType:"json",
-			success:function(json){ 
-				
-				var html = "";
-				
-				if(json.length > 0) {
-					$.each(json, function(index, item){
-						html += "<div class='putcomment'><span id='comname'>&nbsp;"+ item.name+"</span><br><span id='comcont'>&nbsp;"+item.content+"</span><br><span id='comdate'>&nbsp;"+item.reregDate+"</span></div>";
-
-					});
-				}
-				else {
-					html += "<td style='text-align:center;'>댓글이 없습니다</td>";
-				}
-				
-				$("div#commentDisplay").html(html);
-				
-			},
-			error: function(request, status, error){
-				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-		 	}
-		});
-		
-	}// end of function goReadComment() {}----------------------
-	
-	
-	// === #127. Ajax로 불러온 댓글내용을 페이징처리하기 === //
+	// Ajax로 불러온 댓글내용을 페이징처리하기
 	function goViewComment(currentShowPageNo) {
 		
 		$.ajax({
@@ -195,9 +167,19 @@ a {
 				if(json.length > 0) {
 					$.each(json, function(index, item){					
 						html += "<div class='putcomment'>";
-						html += "<div id='comname'>&nbsp;"+ item.name+"<span id='commentedit'><a href='<%=ctxPath%>/board/commentedit.sam'>수정</a></span>";
-						html += "<span id='commentdel'><a href='<%=ctxPath%>/board/commentdel.sam'>삭제</a></span></div>";
-						html += "<div>&nbsp;"+item.content+"</div>";
+						html += "<div id='comname'>&nbsp;"+ item.name;
+						
+					
+						
+						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
+						html += "<span id='commentfunc'>";
+						html += "<span id='commentreply' ><a href='<%=ctxPath%>/board/reply.sam'>답글</a></span>";
+						html += "<span id='commentedit'><a href='<%=ctxPath%>/board/commentedit.sam'>수정</a></span>";
+						html += "<span id='commentdel'><a href='<%=ctxPath%>/board/commentdel.sam'>삭제</a></span>";
+						html += "</span></c:if></div>";
+						
+						html += "<div >&nbsp;"+item.identity+"</div>";
+						html += "<div id='comcont'>&nbsp;"+item.content+"</div>";
 						html += "<div id='comdate'>&nbsp;"+item.reregDate+"</div>";
 						html += "</div>";
 					});
@@ -219,10 +201,9 @@ a {
 	}// end of function goViewComment(currentShowPageNo) {}----------------------	
 	
 	
-	// ==== 댓글내용 페이지바  Ajax로 만들기 ==== // 
+	// 댓글내용 페이지바  Ajax로 만들기
 	function makeCommentPageBar(currentShowPageNo) {
 	
-		/* 원글에 대한 댓글의 totalPage 수를 알아오려고 한다.  */
 		$.ajax({
 			url:"<%= ctxPath%>/board/getCommentTotalPage.sam",
 			data:{"fk_seq":"${requestScope.boardvo.seq}",
@@ -277,9 +258,20 @@ a {
 		
 	}// end of function makeCommentPageBar(currentShowPageNo) {}-----------------
 	
+	function removeCheck() {
 
-	
-	
+		if (confirm("정말 삭제하시겠습니까??") == true){    //확인
+		
+	 		var frm = document.delFrm;
+		   	frm.method = "POST";
+		   	frm.action = "<%= ctxPath%>/board/del.sam";
+		   	frm.submit();	
+		}else{   //취소	
+			
+		    return false;	
+		}
+
+	}
 </script>										
 						
 										
@@ -304,6 +296,7 @@ a {
 		<c:if test="${categoryno == 5}">Q&A</c:if> 
 	</h2>
 	<hr class="styhr">
+	
 	<c:if test="${not empty requestScope.boardvo}">
 		<div id="viewcontent">
 			<div id="contnentsubj">
@@ -356,13 +349,13 @@ a {
 	 	<c:if test="${requestScope.boardvo.previoussubject ne null}">
 	 		<div style="margin-bottom: 1%;">
 	 			<span style="font-weight:bold;">이전글제목&nbsp;&nbsp;</span>
-	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
+	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&categoryno=${boardvo.categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
 	 		</div>
 	 	</c:if>
 	 	<c:if test="${requestScope.boardvo.nextsubject ne null}">	
 			<div style="margin-bottom: 1%;">
 				<span style="font-weight:bold;">다음글제목&nbsp;&nbsp;</span>
-				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
+				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&categoryno=${boardvo.categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
 			</div>
 		</c:if>
 	</c:if>
@@ -375,11 +368,14 @@ a {
 	<button type="button" class="viewbtns" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
 	
 	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
-	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/del.sam?seq=${requestScope.boardvo.seq}'">삭제</button>
- 	
+	<button type="button" class="viewbtns" onclick="removeCheck()">삭제</button>
+ 	<%-- <br><span>${requestScope.gobackURL}</span> --%>
 </div>
 
-
+<form name="delFrm"> 
+	<input type="hidden" name="categoryno" value="${requestScope.categoryno}" />
+    <input type="hidden" name="seq" value="${requestScope.boardvo.seq}" />          
+</form>
 
 
 

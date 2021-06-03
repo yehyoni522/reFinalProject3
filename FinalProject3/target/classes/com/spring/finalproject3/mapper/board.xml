@@ -120,26 +120,13 @@
 		where seq = #{fk_seq} 
 	</update>
     
-    <!-- 원게시물에 딸린 댓글들을 조회해오기 -->
-	<select id="getCommentList" parameterType="String" resultType="com.spring.finalproject3.yeonha.CommentVO">
-		select name, content, reregDate 
-		from
-		(
-			select comseq, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate 
-			from tbl_comment
-			where status = 1 and fk_seq = #{fk_seq}
-			order by comseq desc
-		)C
-		join tbl_person P
-		on P.perno = C.fk_perno
-	</select>
 	
 	<!-- 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) -->
    	<select id="getCommentListPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha.CommentVO">
-   		select name, content, reregDate
+   		select name, identity, content, reregDate
 		from
 		(
-		    select rno, name, content, reregDate 
+		    select rno, name, identity, content, reregDate 
 		    from
 		    (
 		        select row_number() over(order by comseq desc) as rno, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate 
@@ -182,5 +169,22 @@
 		on P.perno = B.fk_perno
 		where B.seq = #{seq}
 	</select>
+	
+	<!-- 게시글 수정하기 -->
+	<update id="edit" parameterType="com.spring.finalproject3.yeonha.BoardVO">
+		update tbl_board set subject = #{subject}
+		                   , content = #{content}
+		where seq = #{seq}
+	</update>
    	
+   	<!-- 게시글 삭제하기 -->
+	<delete id="del" parameterType="int">
+		delete from tbl_board 
+		where seq = #{seqno}
+	</delete>	
+	
+	
+	
+	
+
 </mapper>

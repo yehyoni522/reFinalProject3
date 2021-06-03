@@ -43,27 +43,26 @@
        <%-- === 스마트 에디터 구현 끝 === --%>
       
       // 쓰기버튼
-      $("button#btnWrite").click(function(){
+      $("button#btnUpdate").click(function(){
       
          <%-- === 스마트 에디터 구현 시작 === --%>
           
          <%-- === 스마트 에디터 구현 끝 === --%>
          
-          // 글제목 유효성 검사
-         var subjectVal = $("input#subject").val().trim();
-         if(subjectVal == "") {
-            alert("글제목을 입력하세요!!");
-            return;
-         }
+		// 글제목 유효성 검사
+      	var subjectVal = $("input#subject").val().trim();
+        if(subjectVal == "") {
+           	alert("글제목을 입력하세요!!");
+       		return;
+        }
          
-         // 글내용 유효성 검사(스마트에디터 사용 안 할시)
-         <%--
-         var contentVal = $("textarea#content").val().trim();
-         if(contentVal == "") {
-            alert("글내용을 입력하세요!!");
-            return;
-         }
-         --%>
+		// 글내용 유효성 검사(스마트에디터 사용 안 할시)
+   		var contentVal = $("textarea#content").val().trim();
+	   
+   		if(contentVal == "") {
+			alert("글내용을 입력하세요!!");
+			return;
+	   	}
          
          <%-- === 스마트에디터 구현 시작 === --%>
          // 스마트에디터 사용시 무의미하게 생기는 p태그 제거
@@ -83,11 +82,11 @@
         
        <%-- === 스마트에디터 구현 끝 === --%>         
          
-         // 폼(form) 을 전송(submit)
-         var frm = document.addFrm;
-         frm.method = "POST";
-         frm.action = "<%= ctxPath%>/board/addEnd.sam";
-         frm.submit();   
+		// 폼(form) 을 전송(submit)
+		var frm = document.editFrm;
+		frm.method = "POST";
+		frm.action = "<%= ctxPath%>/board/editEnd.sam";
+		frm.submit();
       });
            
    });// end of $(document).ready(function(){})----------------
@@ -104,10 +103,13 @@
 	</h1>
 	<hr class="mainline" align="left" >
 	
-	<form name="addFrm"> 
- 		<input type="hidden" name="categoryno" value="1" />                   
+	<form name="editFrm"> 
+ 		<input type="hidden" name="categoryno" value="1" /> 
+ 		<input type="hidden" name="seq" value="${requestScope.boardvo.seq}" />                  
 		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
 		<input type="hidden" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />
+		<input type="hidden" name="searchType" value="${requestScope.searchType}" />         
+		<input type="hidden" name="searchWord" value="${requestScope.searchWord}" />         
 		
 		작성자 : ${sessionScope.loginuser.name}&nbsp;${sessionScope.loginuser.perno}
 		<label>익명</label> <input type="checkbox" name="namecheck" id="namecheck" value="1"/>    
@@ -119,13 +121,13 @@
         <textarea rows="10" cols="100" name="content" id="content">${requestScope.boardvo.content}</textarea>       
            
      
-	<%-- === #150. 파일첨부 타입 추가하기 === --%>
    	<hr class="mainline" align="left" >   
     <div style="margin: 20px;">
-    	<button type="button" id="btnWrite">등록</button>
+    	<button type="button" id="btnUpdate">완료</button>
         <button type="button" onclick="javascript:history.back()">취소</button>
    	</div>
-         
+    
+   
 </form>
    
 </div>    
