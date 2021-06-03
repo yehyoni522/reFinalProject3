@@ -254,7 +254,7 @@ a:visited {
 	});
 	
 	// === 장바구니에서 특정 제품을 비우기 === //  
-	function goInDel() {
+	function goOutDel() {
 		
 		var cnt = $("input[name='check']:checked").length;
         var seqArr = new Array();
@@ -265,10 +265,10 @@ a:visited {
             alert("삭제하실 쪽지를 선택하세요.");
         }
         else{
-        	     	
+        	     
         	$.ajax({
                 type: "post",
-                url: "<%=ctxPath%>/message/goInDel.sam",
+                url: "<%=ctxPath%>/message/goOutDel.sam",
                 data: {seqArr: seqArr},
                 dataType:"json",
                 success: function(json){
@@ -286,7 +286,7 @@ a:visited {
         	});
         }
 		
-	}// end of function goInDel()---------------------------
+	}// end of function goOutDel()---------------------------
 	
 	 function goSearch(){
 	      
@@ -297,19 +297,6 @@ a:visited {
 	      
 	}// end of function goSearch()----------------------------------
 	
-	function goNonRead(){
-		
-		var frm = document.readState;
-	      frm.method = "get";
-	      frm.action = "<%=ctxPath%>/message/inbox.sam";
-	      frm.submit();
-	      
-	      var x = document.getElementById("readstate");
-			x.style.fontWeight = "bold";
-		    x.style.color = "red"; 
-    	
-		
-	}// end of function gatheringNonRead()----------------------------------
 	function goWrite(){
 		location.href="<%= ctxPath%>/message/write.sam";
 	}
@@ -319,28 +306,11 @@ a:visited {
 	function goOutbox(){
 		location.href="<%= ctxPath%>/message/outbox.sam";
 	}
-	function goView(inboxSeq){
-		location.href="<%= ctxPath%>/message/inView.sam?inboxSeq="+inboxSeq;	
+	function goView(outboxSeq){
+		location.href="<%= ctxPath%>/message/outView.sam?outboxSeq="+outboxSeq;	
 	}
 	function goreRead(){
 		location.href="<%= ctxPath%>/message/inbox.sam";
-	}
-	
-	function gorResponse(){
-
-		var cnt = $("input[name='check']:checked").length;
-        
-        if(cnt > 1){
-            alert("답장은 한개의 쪽지만 선택이 가능합니다!");
-            return;
-        }
-        else{
-        	 var name = $("input[name=name]").val();
-        	 var fk_userid = $("input[name=fk_userid]").val();
-        	location.href="<%= ctxPath%>/message/write.sam?fk_userid="+fk_userid+"&name="+name;
-        	
-        }
-		
 	}
 </script>
 
@@ -355,28 +325,21 @@ a:visited {
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
-			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
+			<div class="msgBox" id="inbox" style="  margin-top: 30px; padding-right: 55px;">받은쪽지함<div id="msgNew" >${requestScope.nonReadCount}</div></div>
+			<div class="msgBox" id="outbox" style="background-color: #2ECC71; color: white; padding-right: 100px;" >보낸쪽지함</div>
 		</div>
 	</div>	
 </div>
 
 <div class="msgContents" style="width: 70%; display:inline-block ; ">
 
-		<button class="del" type="button" onclick="goInDel()">삭제</button>
-		 <button class="re" onclick="gorResponse()">답장</button>
-		 
+		<button class="del" type="button" onclick="goOutDel()">삭제</button>
 
 	<div style="margin-left: 100px; display: inline-block; float: right;">
 	<form name="readState">
 		<input type='hidden'  name="readState" value="0" />
 	</form>
-	<c:if test="${not empty requestScope.nonReadCount}">
-		<a id="readstate" style="font-size:13px;  cursor: pointer;" onclick="goNonRead()">안읽은쪽지보기</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>${requestScope.totalCount}</span>
-	</c:if>
-	<c:if test="${empty requestScope.nonReadCount}">
-		<a id="readstate" style="font-size:13px;  cursor: pointer; background-color: red; color: white;" onclick="goreRead()">안읽은쪽지보기</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>${requestScope.totalCount}</span>
-	</c:if>
+	<span>보낸편지함 전체 : <span style="color: #2ECC71; font-weight: bold;">${requestScope.totalCount}</span> 개</span>
 	<form name="searchFrm">
 		<select id="searchType" name="searchType">
 			<option value="subject">내용</option>
@@ -393,54 +356,38 @@ a:visited {
     <thead>
       <tr>
         <th><input type="checkbox" id = "check" name="checkall"/><label for="check"></label></th>
-        <th>보낸사람</th>
+        <th>받은사람</th>
         <th>내용</th>
         <th>날짜</th>
-        <th>읽음표시</th>
       </tr>
     </thead>
     
-    <c:if test="${empty requestScope.inboxList}">
+    <c:if test="${empty requestScope.outboxList}">
     	<tbody>
 	      <tr id="tr_1" style="color: #055AC1;">
-	        <td colspan="5" style="text-align: center;">받은 쪽지가 존재하지 않습니다.</td>
+	        <td colspan="5" style="text-align: center;">보낸 쪽지가 존재하지 않습니다.</td>
 	      </tr>
 	    </tbody>
     </c:if>
     
-    <c:forEach var="inboxvo" items="${requestScope.inboxList}" varStatus="status">     
     
-    <c:if test="${inboxvo.readState == 0}">
+    <c:if test="${not empty requestScope.outboxList}">
+    
+    <c:forEach var="outboxvo" items="${requestScope.outboxList}" varStatus="status">     
+    
     <tbody>
-      <tr  id="tr_1" style="color: #055AC1;">
-        <td><input type="checkbox" name="check" value="${inboxvo.inboxSeq}"/></td>
-        <td onclick="goView(${inboxvo.inboxSeq}" >${inboxvo.inboxName}
-        <input type="hidden" name="name" value="${inboxvo.inboxName}" />
-        <input type="hidden" name="fk_userid" value="${inboxvo.fk_perno}" />
-        </td>
-        <td onclick="goView(${inboxvo.inboxSeq})"><span class="subject" >${inboxvo.subject}</span></td>
-        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.reDate}</td>
-        <td onclick="goView(${inboxvo.inboxSeq})" style="color:red; font-weight: bold;">new</td>
+      <tr id="tr_1" style="color: #055AC1;">
+        <td><input type="checkbox" name="check" value="${outboxvo.outboxSeq}"/></td>
+        <td  onclick="goView(${outboxvo.outboxSeq})">${outboxvo.outboxName}</td>
+        <td  onclick="goView(${outboxvo.outboxSeq})"><span class="subject" >${outboxvo.subject}</span></td>
+        <td  onclick="goView(${outboxvo.outboxSeq})">${outboxvo.senDate}</td>
       </tr>
     </tbody>
-    </c:if>
+     </c:forEach>
+     
+	</c:if>
     
-    <c:if test="${inboxvo.readState == 1}">
-    <tbody>
-      <tr  id="tr_1" style="color: gray;">
-        <td><input type="checkbox" name="check" value="${inboxvo.inboxSeq}"/></td>
-        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.inboxName}
-        <input type="hidden" name="name" value="${inboxvo.inboxName}" />
-        <input type="hidden" name="fk_userid" value="${inboxvo.fk_perno}" />
-        </td>
-        <td onclick="goView(${inboxvo.inboxSeq})"><span class="subject" >${inboxvo.subject}</span></td>
-        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.reDate}</td>
-        <td onclick="goView(${inboxvo.inboxSeq})">읽음</td>
-      </tr>
-    </tbody>
-    </c:if>
-    
-    </c:forEach>
+  
     
   </table>
   

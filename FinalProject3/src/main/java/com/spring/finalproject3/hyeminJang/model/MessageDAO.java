@@ -103,6 +103,67 @@ public class MessageDAO implements InterMessageDAO {
 		String str = sqlsession.selectOne("Message.getNameMaj", majseq);
 		return str;
 	}
+
+	// inbox 에 insert (로그인한 사람이 발신자, 배열로 얻어온 사람들이 수신자)
+	@Override
+	public int insertInbox(Map<String, String> paraMap) {
+		int n = sqlsession.insert("Message.insertInbox", paraMap);
+		return n;
+	}
+
+	// outbox 에 insert (로그인한 사람이 발신자)
+	@Override
+	public int insertOutbox(Map<String, String> paraMap) {
+		int n = sqlsession.insert("Message.insertOutbox", paraMap);
+		return n;
+	}
+
+
+	// outbox에서 체크박스에서 선택된 쪽지  삭제하기 
+	@Override
+	public int outDel(ArrayList<Integer> deleteArray) {
+		
+		int n = 0;
+		 for(int i=0; i<deleteArray.size();i++){
+		        int deleteSeq = deleteArray.get(i);
+		        n = sqlsession.delete("Message.outDel", deleteSeq);
+		    }
+		
+		return n;
+	}
+
+
+	// outbox 총게시물건수
+	@Override
+	public int getTotalCountout(Map<String, String> paraMap) {
+		int n = sqlsession.selectOne("Message.getTotalCountout", paraMap);
+		
+		return n;
+	}
+
+	// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것) <<outbox>>
+	@Override
+	public List<OutboxVO> outboxListSearchWithPaging(Map<String, String> paraMap) {
+		
+		List<OutboxVO> outboxlist = sqlsession.selectList("Message.outboxListSearchWithPaging", paraMap);
+		
+		return outboxlist;
+	}
+
+	// 쪽지 글 조회 <<outbox>>
+	@Override
+	public OutboxVO getOutView(int outboxSeq) {
+		OutboxVO outbox = sqlsession.selectOne("Message.getOutView", outboxSeq);
+		
+		return outbox;
+	}
+
+	 // 세부읽기에서 한개만 쪽지 삭제하기<<outbox>>
+	@Override
+	public int outDelOne(int parseInt) {
+		int n = sqlsession.delete("Message.outDel", parseInt);
+		return n;
+	}
 	
 
 

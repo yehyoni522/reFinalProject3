@@ -9,6 +9,9 @@
 
 <script src="<%= ctxPath%>/resources/js/jquery.min.js"></script>
 <script src="<%= ctxPath%>/resources/js/jquery.js-calendar.js"></script>
+<link href='<%= ctxPath%>/resources/fullcalendar/main.css' rel='stylesheet' />
+<script src='<%= ctxPath%>/resources/fullcalendar/main.js'></script>
+<script src='<%= ctxPath%>/resources/fullcalendar/ko.js'></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
 
@@ -61,6 +64,7 @@
 	  overflow-x: hidden;
 	  transition: 0.5s;
 	  padding-top: 60px;
+	  z-index:2;
 	}
 	
 	.sidenav a {
@@ -109,6 +113,24 @@
      	background-color:#F5F5F5; 
      	cursor: pointer;
      }
+ 
+	.fc-toolbar-chunk {
+	  display: flex; 
+	  padding-right: 50px;
+	}
+	
+	.add-button { position: absolute;
+	 top: 12px; 
+	right: 10px;
+	  background: #76828E; 
+	  border: 0; 
+	  color: white; 
+	  height: 35px; 
+	  border-radius: 3px; 
+	  width: 50px; 
+	  }
+	
+
 </style>
 
 
@@ -259,8 +281,39 @@
 		});
 		
 	}// end of function makeCommentPageBar(currentShowPageNo) {}-----------------
-	
+	   document.addEventListener('DOMContentLoaded', function() {
+	        var calendarEl = document.getElementById('calendar');
+	        var calendar = new FullCalendar.Calendar(calendarEl, {
+	        	headerToolbar: {
+	        		  start: "today",
+	        		  center: "prev title next",
+	        		  end: "",
+	        		},
+	        	locale : "ko",
+	        	initialView: 'dayGridMonth',
+				dayMaxEvents: true,
+	        		  events: [ 
+		        		 	 { 
+		        			  title : '종강',
+		        			  start : "2021-06-02 11:00:00",
+		        			  end : "2021-06-04 11:00:00"
+		        			  },
+		        			  { 
+			        			  title : 'TEST2',
+			        			  start : "2021-06-02",
+			        			  end : "2021-06-04"
+			        			  },
+			        			  { 
+				        			  title : 'TEST3',
+				        			  start : "2021-06-02",
+				        			  end : "2021-06-04"
+				        			  }
 
+		        		]		 
+	        });
+	        calendar.render();
+	      });
+  
 
 function openNav() {
   document.getElementById("mySidenav").style.width = "250px";
@@ -270,7 +323,12 @@ function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
 }
 
+function click_add(){
+	
+    window.open("<%= ctxPath%>/schedulePopup.sam", "스케줄입력", " left=430px , top=80px,width=400, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
 
+
+}
 
 </script>
    
@@ -296,25 +354,43 @@ function closeNav() {
 <div style="width: 40px; font-size: 20pt; font-weight: bold; cursor:pointer;">
 	<span style="text-align: right; cursor:pointer; margin:0px 0px 50px 30px;" onclick="openNav()"><img src="<%= ctxPath%>/resources/images/addmenu.png" style="width:100%;"></span>
 </div>
-
-<div id="calendar" align="center">
-
+<div>
+	<div id='calendar' style="position : relative;">
+	<c:if test="${not empty sessionScope.loginuser}">
+		<button class = "add-button" type = "button" onclick="click_add();">추가</button> 
+		</c:if>
+	</div>
 </div>
+
 
 
 <div id="logincheck"  >
 	<c:if test="${empty sessionScope.loginuser}">
 	<span style="display:inline-block; padding:250px 0px 0px 150px;  font-size: 20pt; font-weight: bold;">${sessionScope.loginuser.userid}로그인을 해주세요.</span>
 	</c:if>
-
+	
 	
 	<c:if test="${sessionScope.loginuser.identity == 0}">
-		
-		<span style="font-size: 20pt; font-weight: bold;">내 강의</span>
+		<div style="font-size: 25pt; font-weight: bold; margin-top:30px; margin-bottom: 50px;">
+		내 강의
+		</div>
+		<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
+			<br>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;&nbsp; ${subjectvo.name}교수님</span>
+		</c:forEach>
 	</c:if>
 	<c:if test="${sessionScope.loginuser.identity == 1}">
-			<span style="font-size: 20pt; font-weight: bold;">${sessionScope.loginuser.name} 교수님 강의 목록</span>
+			<div style="font-size: 25pt; font-weight: bold; margin-top:50px; margin-bottom: 50px;">
+				${sessionScope.loginuser.name} 교수님 강의 목록
+				</div>
+				<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
+			<br>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}</span>
+		</c:forEach>
 	</c:if>
+	
 </div>
 
 <div id="mainBoard" align="center">

@@ -1,11 +1,14 @@
 package com.spring.finalproject3.joseungjin.controller;
 
 import java.util.HashMap;
+
+
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections4.map.HashedMap;
@@ -18,18 +21,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-
 import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.joseungjin.mail.GoogleMail;
-import com.spring.finalproject3.joseungjin.model.InterPersonDAO;
+import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
 import com.spring.finalproject3.joseungjin.model.Main_index_BoardVO;
-import com.spring.finalproject3.joseungjin.model.PersonDAO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
+import com.spring.finalproject3.joseungjin.model.ScheduleDAO;
+import com.spring.finalproject3.joseungjin.model.ScheduleVO;
 import com.spring.finalproject3.joseungjin.service.InterMemberService;
 
 
 @Controller
-public class joseungjin_controller {
+public class joseungjin_Controller {
 	
 	@Autowired   // Type에 따라 알아서 Bean 을 주입해준다.
 	private InterMemberService service;
@@ -39,14 +42,21 @@ public class joseungjin_controller {
 	public ModelAndView main(ModelAndView mav,HttpServletRequest request) {
 		
 		List<Main_index_BoardVO> MainboardList = null;
-		
-		
+		List<MainSubjectVO> MainsubjectList = null;
 		
 		HttpSession session = request.getSession();
 		session.setAttribute("readCountPermission", "yes");
 		
+		if(session.getAttribute("loginuser") != null) {
+			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+			int userid = loginuser.getPerno();
+			MainsubjectList = service.Mainsubject(userid);
+		}
+		
 		MainboardList =service.MainboardView();
 		
+		
+		mav.addObject("MainsubjectList",MainsubjectList);
 		mav.addObject("MainboardList",MainboardList);
 		mav.setViewName("main/index.tiles1");
 		// /WEB-INF/views/tiles1/main/index.jsp 파일을 생성한다.
@@ -389,16 +399,6 @@ public class joseungjin_controller {
 				if(currentShowPageNo == null) {
 					currentShowPageNo = "1";
 				}
-				// **** 가져올 게시글의 범위를 구한다.(공식임!!!) **** 
-			      /*
-			           currentShowPageNo      startRno     endRno
-			          --------------------------------------------
-			               1 page        ===>    1           5
-			               2 page        ===>    6           10
-			               3 page        ===>    11          15
-			               4 page        ===>    16          20
-			               ......                ...         ...
-			       */
 				int sizePerPage = 4;// 한 페이지당 5개의 댓글을 보여줄 것임.
 				int startRno = (( Integer.parseInt(currentShowPageNo) - 1 ) * sizePerPage) + 1;
 			      int endRno = startRno + sizePerPage - 1; 
@@ -453,8 +453,33 @@ public class joseungjin_controller {
 				return jsonObj.toString();
 			}
 			
-		
-		
+			//일정 추가하기 페이지 요청
+			@RequestMapping(value="/schedulePopup.sam")
+			public ModelAndView requiredLogin_schedulePopup(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+				
+			mav.setViewName("calendar/schedulePopup");
+			
+			return mav;
+			}
+			
+			
+			// === 일정 추가 하기 === // 
+			@RequestMapping(value="/scheduleEnd.sam", method= {RequestMethod.POST})
+			public ModelAndView scheduleEnd(ModelAndView mav, ScheduleVO svo) {
+				int n = service.scheduleAdd(svo); 
+				
+				if(n==1) {
+					mav.addObject("message", "일정이 등록되었습니다.");
+				}
+				
+				else {
+					mav.setViewName("board/error/add_error.tiles1");
+					//   /WEB-INF/views/tiles1/board/error/add_error.jsp 파일을 생성한다.
+				}
+				
+				mav.setViewName("msg");
+				return mav;
+			}
 	
 	
 }

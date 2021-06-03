@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.spring.finalproject3.joseungjin.model.InterMain_index_BoardDAO;
 import com.spring.finalproject3.joseungjin.model.InterPersonDAO;
+import com.spring.finalproject3.joseungjin.model.InterScheduleDAO;
+import com.spring.finalproject3.joseungjin.model.InterSubjectDAO;
+import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
 import com.spring.finalproject3.joseungjin.model.Main_index_BoardVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
+import com.spring.finalproject3.joseungjin.model.ScheduleVO;
 
 
 @Component
@@ -22,6 +26,12 @@ public class MemberService implements InterMemberService {
 
 	@Autowired
 	private InterMain_index_BoardDAO bdao;
+	
+	@Autowired
+	private InterSubjectDAO sudao;
+	
+	@Autowired
+	private InterScheduleDAO scdao;
 	
 	@Override
 	public PersonVO getLoginStudent(Map<String, String> paraMap) {
@@ -78,6 +88,19 @@ public class MemberService implements InterMemberService {
 		List<Main_index_BoardVO> MainboardList = bdao.getboardistPaging(paraMap);
 		
 		return MainboardList;
+	}
+	
+	//수강 중인 과목 보이기
+	@Override
+	public List<MainSubjectVO> Mainsubject(int userid) {
+		List<MainSubjectVO> MainsubjectList =sudao.Mainsubject(userid);
+		return MainsubjectList;
+	}
+	//일정추가하기
+	@Override
+	public int scheduleAdd(ScheduleVO svo) {
+		int n = scdao.scheduleAdd(svo);
+		return n;
 	}
 
 
