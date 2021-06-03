@@ -167,12 +167,65 @@ public class YehyeonController {
 	
 	////////////////////////////열람실 예약 페이지 끝///////////////////////////////////
 	
-	@RequestMapping(value="/admin/readingRoomBook.sam")
+	
+	////////////////////////////관리자 전용 열람실 예약 내역 시작///////////////////////////////////
+	
+	@RequestMapping(value="/admin/readingRoomBook.sam", method= {RequestMethod.GET}, produces = "application/text; charset=utf8")
 	public ModelAndView readingRoomBook(ModelAndView mav) {
 		
-		mav.setViewName("/admin/readingRoomBook.tiles1");
+		List<RroomNumVO> rRoomList = service.readingRoomView();
 		
+		mav.addObject("rRoomList", rRoomList);
+		
+		List<TimeVO> timeList = service.timeView();
+		mav.addObject("timeList", timeList);
+		
+		mav.setViewName("/admin/readingRoomBook.tiles1");
 		return mav;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/admin/selectDateBookList.sam")
+	public String selectDateBookList(HttpServletRequest request) {
+		
+		/*
+		 * String tno = request.getParameter("tno"); String rno =
+		 * request.getParameter("rno"); String bdate = request.getParameter("bdate");
+		 * 
+		 * System.out.println("확인 ~~ tno : " + tno); System.out.println("확인 ~~ rno : " +
+		 * rno); System.out.println("확인 ~~ bdate : " + bdate);
+		 */
+		
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("tno", "1");
+		paraMap.put("rno", "1");
+		paraMap.put("bdate", "21.05.31");
+
+		
+		List<BookListVO> bookList = service.selectDateBookList(paraMap);
+		
+		JSONArray jsonArr = new JSONArray(); // []
+		
+		if(bookList != null) {
+			for(BookListVO bvo : bookList) {
+				//dsno, dsname, dscheck, perno, name
+				JSONObject jsonObj = new JSONObject(); // {}
+				
+				//bno, bdate, perno, fk_dsno, name
+				jsonObj.put("dsno", bvo.getDetailvo().getDsno());
+				jsonObj.put("dsname", bvo.getDetailvo().getDsname());
+				jsonObj.put("dscheck", bvo.getDetailvo().getDscheck());
+				jsonObj.put("perno", bvo.getPersonvo().getPerno());
+				jsonObj.put("name", bvo.getPersonvo().getName());
+				
+				jsonArr.put(jsonObj);
+			}
+		}
+		
+		return jsonArr.toString(); 
+	}
+	
+	
+	////////////////////////////관리자 전용 열람실 예약 내역 끝///////////////////////////////////	
 	
 }

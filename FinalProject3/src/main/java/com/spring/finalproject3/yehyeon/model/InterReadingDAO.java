@@ -17,4 +17,6 @@ public interface InterReadingDAO {
 
 	int insertBooklist(BookListVO bookvo); //결제 완료 후 예약내역 테이블에 정보를 insert 한다.
 
+	List<BookListVO> selectDateBookList(Map<String, String> paraMap); // 예약 현황에서 선택한 select 값에 따른 좌석 정보를 불러온다.
+
 }

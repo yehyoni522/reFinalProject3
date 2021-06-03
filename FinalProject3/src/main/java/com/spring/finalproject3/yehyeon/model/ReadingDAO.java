@@ -60,4 +60,11 @@ public class ReadingDAO implements InterReadingDAO {
 		return m;
 	}
 
+	@Override
+	public List<BookListVO> selectDateBookList(Map<String, String> paraMap) {
+		List<BookListVO> bookList = sqlsession.selectList("Reading.selectDateBookList", paraMap);
+		return bookList;
+	}
+
+
 }

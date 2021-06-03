@@ -117,7 +117,7 @@ h3 {
 }
 .cal-table td {
   padding: 3px 0;
-  height: 39px;
+  height: 35px;
   font-size: 15px;
   vertical-align: middle;
 }
@@ -149,12 +149,105 @@ h3 {
 </style>
 <script type="text/javascript">
 
-	$(function() {
-		$(document).on('click','td.day',function(){
-			console.log("gg" + $(this).val());
-		});
+var rno = 1;
+var tno = 1;
+
+$(function() {
+	
+	
+	
+	var bdate = $("td.today").attr('data-fdate');
+	//console.log(bdate); 오늘 날짜
+	//selectDateBookList(bdate);
+	bookListView(rno, tno);
+	
+	$("td#disabled").each(function() {
+		console.log("gmdl");
 	});
 
+	$(document).on('click','td.day',function(){
+		//console.log($(this).attr('data-fdate'));
+		//yy.mm.dd 형태로 출력
+		bdate = $(this).attr('data-fdate');
+		//selectDateBookList(bdate);
+	}); //document ------------
+	
+	
+	/* $("select.timeselect").bind("change", function(){
+		tno = $(this).val();
+		cnt=0;
+		goTimeSelectView(rname, tno);
+	});
+	
+	$("select.timeselect").bind("change", function(){
+		tno = $(this).val();
+		cnt=0;
+		goTimeSelectView(rname, tno);
+	}); */
+	
+	$("select#sel3").bind("change", function(){
+		rno = $(this).val();
+		bookListView(rno, tno);
+	});
+	
+	$("select#sel4").bind("change", function(){
+		tno = $(this).val();
+		bookListView(rno, tno);
+	});
+	
+	
+	
+	
+}); // $(function() {}--------------------------
+		
+		
+
+
+function bookListView(rno, tno, bdate) {
+	// ajax 들어갈 자리
+	// 열람실 예약현황의 select 값들이 변할 때마다 ajax를 호출. 선택한 값에 따른 좌석의 정보를 읽어와야한다.
+	html = "";
+	var count = 0;
+	$.ajax({
+		url:"<%=ctxPath%>/admin/selectDateBookList.sam",
+		type:"get",
+		data:{"rno":rno, "tno":tno, "bdate":bdate},
+		dataType:"json",
+	   	success:function(json) {
+	   		$.each(json, function(index, item){
+	   			count++; // 한 줄에 5석씩 출력하기 위한 변수
+	   			if(count == 1) {
+	   				html += "<tr>";
+	   			}
+	   			
+	   			if(item.dscheck == '1') {
+	   				html += '<td class="seat" style="word-break:break-all;">'+item.dsname+item.perno+iten.name+'<input  type="hidden"  value="item.dsno"/></td>';
+	   			} else {
+	   				html += '<td class="seat">'+item.dsname+'<input id="seat" type="hidden"  value='+item.dsno+'></td>'
+	   			}
+	   			
+	   			if(count == 5) {
+	   				html += "</tr>";
+	   				count = 0;
+	   			}
+	   			
+	   		});
+	   		$("tbody#seatinfo").html(html);
+	   	}, error: function(request, status, error){
+		      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		}
+	});
+}
+
+function goSearchDeposit() {
+	//보증금 조회 메소드
+	alert($("select#sel1").val() + ", " + $("select#sel2").val());
+}
+
+function goSearchBookList() {
+	//보증금 조회 메소드
+	alert($("select#sel3").val() + ", " + $("select#sel4").val());
+}
 </script>
 
 <div id="adminhome">
@@ -230,19 +323,19 @@ h3 {
 	
 	<div style="padding-top:32px;" align="center">
 		<h3>보증금 현황</h3>
-		<select class="form-control" id="sel1" style="width:140px;">
-			<option>00:00 ~ 02:00</option>
-			<option>02:00 ~ 04:00</option>
-			<option>04:00 ~ 06:00</option>
-			<option>06:00 ~ 08:00</option>
-			<option>08:00 ~ 10:00</option>
-			<option>10:00 ~ 12:00</option>
-			<option>12:00 ~ 14:00</option>
-			<option>14:00 ~ 16:00</option>
-			<option>16:00 ~ 18:00</option>
-			<option>18:00 ~ 20:00</option>
-			<option>20:00 ~ 22:00</option>
-		</select>
+		<form>
+			<select form=""class="form-control timeselect" id="sel1" style="width:140px; display:inline-block;">
+				<c:forEach var="list" items="${requestScope.rRoomList}">
+					<option value="${list.rno}" >${list.rname}</option>
+			     </c:forEach>
+			</select>
+			<select class="form-control timeselect" id="sel2" style="width:140px; display:inline-block;">
+				<c:forEach var="tvo" items="${requestScope.timeList}">
+					<option value="${tvo.tno}" >${tvo.tname}</option>
+			     </c:forEach>
+			</select>
+			<button type="submit" onclick="goSearchDeposit()">조회</button>
+		</form>
 		<div style="padding-top:25px;">
 			<table class="table table-bordered" style="width:410px;">
 				<thead>
@@ -287,16 +380,22 @@ h3 {
 	
 	<div class="clearfix" align="center">
 	<h3>열람실 예약 현황</h3><br><br>
-	<select class="form-control" id="sel1" style="width:140px;">
-			<option>제1열람실</option>
-			<option>제2열람실</option>
-			<option>제3열람실</option>
-	</select>
+	<form>
+		<select form=""class="form-control timeselect" id="sel3" style="width:140px; display:inline-block;">
+			<c:forEach var="list" items="${requestScope.rRoomList}">
+				<option value="${list.rno}" >${list.rname}</option>
+		     </c:forEach>
+		</select>
+		<select class="form-control timeselect" id="sel4" style="width:140px; display:inline-block;">
+			<c:forEach var="tvo" items="${requestScope.timeList}">
+				<option value="${tvo.tno}" >${tvo.tname}</option>
+		     </c:forEach>
+		</select>
+	</form>
 	<br>
 		<table class="table table-bordered" style="width:800px; text-align: center">
 				<thead>
 					<tr>
-						<th></th>
 						<th>A</th>
 						<th>B</th>
 						<th>C</th>
@@ -304,42 +403,11 @@ h3 {
 						<th>E</th>
 					<tr>
 				</thead>
-				<tbody>
-					<tr>
-						<th>1</th>
-						<td>1-1</td>
-						<td>1-2</td>
-						<td>1-3</td>
-						<td>1-4</td>
-						<td>1-5</td>
-					</tr>
-					<tr>
-						<th>2</th>
-						<td>1-6</td>
-						<td>1-7</td>
-						<td>1-8</td>
-						<td>1-9</td>
-						<td>1-10</td>
-					</tr>
-					<tr>
-						<th>3</th>
-						<td>1-11</td>
-						<td>1-12</td>
-						<td>1-13</td>
-						<td>1-14</td>
-						<td>1-15</td>
-					</tr>
-					<tr>
-						<th>4</th>
-						<td>1-16</td>
-						<td>1-17</td>
-						<td>1-18</td>
-						<td>1-19</td>
-						<td>1-20</td>
-					</tr>
+				<tbody id="seatinfo">
 				</tbody>
 			</table>
 	</div>
 </div>
+
 
 <script type="text/javascript" src="<%= ctxPath%>/resources/js/calendar.js"></script>

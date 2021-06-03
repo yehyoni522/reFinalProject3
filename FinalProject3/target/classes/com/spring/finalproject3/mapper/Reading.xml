@@ -52,6 +52,43 @@
 		insert into tbl_booklist(bno, bDate, fk_dsno, fk_perno, fk_tno)
 		values (seq_tbl_booklist.nextval, default, #{fk_dsno}, #{fk_perno}, #{fk_tno})
 	</insert>
+	
+	
+	<resultMap type="com.spring.finalproject3.yehyeon.model.BookListVO" id="booklistvo">
+		<result column="bno" property="bno"/>
+		<result column="bdate" property="bdate"/>
+		<collection property="detailvo" ofType="com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO">
+			<id column="dsno" property="dsno"/>
+			<result column="dsname" property="dsname"/>
+			<result column="dscheck" property="dscheck"/>
+			<result column="fk_rno" property="fk_rno"/>
+			<result column="fk_tno" property="fk_tno"/>
+		</collection>
+		<collection property="personvo" ofType="com.spring.finalproject3.yehyeon.model.PersonVO">
+			<id column="perno" property="perno"/>
+			<result column="name" property="name"/>
+		</collection>
+	</resultMap>
+	
+	<select id="selectDateBookList" parameterType="HashMap" resultMap="booklistvo">
+		select dsno, dsname, dscheck, nvl(perno, 0) as perno, nvl(name, '없음') as name
+		from
+		(
+		    select d.dsno, d.dsname, d.dscheck, d.fk_rno, d.fk_tno, b.bno, b.bdate
+		    from tbl_detailseatinfo d left outer join tbl_booklist b
+		    on d.dsno = b.fk_dsno
+		    where d.fk_rno = 1 and d.fk_tno = 1
+		) V
+		left outer join
+		(
+		    select bno, bdate, perno, fk_dsno, name
+		    from tbl_booklist join tbl_person
+		    on fk_perno = perno
+		    where to_date( bdate, 'yy.mm.dd' ) = to_date( '21.05.31', 'yy.mm.dd' )
+		)X
+		on fk_dsno = dsno
+		order by V.dsno
+	</select>
 
 
 </mapper>

@@ -77,7 +77,7 @@ for (let i = 0; i < 6; i++) {
      let fullDate = yy + '.' + init.addZero(mm + 1) + '.' + init.addZero(countDay + 1);
      trtd += '<td class="day';
      trtd += (markToday && markToday === countDay + 1) ? ' today" ' : '"';
-     trtd += ` data-date="${countDay + 1}" data-fdate="${fullDate}" value="${fullDate}">`;
+     trtd += ` data-date="${countDay + 1}" data-fdate="${fullDate}">`;
    }
    trtd += (startCount) ? ++countDay : '';
    if (countDay === lastDay.getDate()) { 

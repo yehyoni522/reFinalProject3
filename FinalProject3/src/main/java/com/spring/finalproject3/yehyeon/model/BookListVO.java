@@ -2,25 +2,37 @@ package com.spring.finalproject3.yehyeon.model;
 
 public class BookListVO {
 	private int bno;
-	private String bDate;
+	private String bdate;
 	private int fk_perno;
 	private int fk_dsno;
 	private int fk_tno;
 	
+	private PersonVO personvo;
+	private DetailSeatInfoVO detailvo;
+	
+	
+	public DetailSeatInfoVO getDetailvo() {
+		return detailvo;
+	}
+
+	public void setDetailvo(DetailSeatInfoVO detailvo) {
+		this.detailvo = detailvo;
+	}
+
+	public PersonVO getPersonvo() {
+		return personvo;
+	}
+
+	public void setPersonvo(PersonVO personvo) {
+		this.personvo = personvo;
+	}
+
 	public int getBno() {
 		return bno;
 	}
 	
 	public void setBno(int bno) {
 		this.bno = bno;
-	}
-	
-	public String getbDate() {
-		return bDate;
-	}
-	
-	public void setbDate(String bDate) {
-		this.bDate = bDate;
 	}
 	
 	public int getFk_perno() {
@@ -45,6 +57,14 @@ public class BookListVO {
 	
 	public void setFk_tno(int fk_tno) {
 		this.fk_tno = fk_tno;
+	}
+
+	public String getBdate() {
+		return bdate;
+	}
+
+	public void setBdate(String bdate) {
+		this.bdate = bdate;
 	}
 	
 }
