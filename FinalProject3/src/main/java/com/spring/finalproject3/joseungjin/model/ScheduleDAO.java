@@ -1,5 +1,8 @@
 package com.spring.finalproject3.joseungjin.model;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -16,6 +19,12 @@ public class ScheduleDAO implements InterScheduleDAO {
 	public int scheduleAdd(ScheduleVO svo) {
 		int n = sqlsession.insert("member.scheduleAdd", svo);
 		return n;
+	}
+	//일정가져오기
+	@Override
+	public List<Map<String, String>> scheduleView(String perno) {
+		List<Map<String,String>>scheduleList = sqlsession.selectList("member.scheduleView",perno);
+		return scheduleList;
 	} 
 	
 	

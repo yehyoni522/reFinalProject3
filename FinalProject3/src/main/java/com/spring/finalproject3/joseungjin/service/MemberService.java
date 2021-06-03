@@ -102,6 +102,12 @@ public class MemberService implements InterMemberService {
 		int n = scdao.scheduleAdd(svo);
 		return n;
 	}
+	//일정 가져오기
+	@Override
+	public List<Map<String, String>> scheduleView(String perno) {
+		List<Map<String,String>>scheduleList = scdao.scheduleView(perno);
+		return scheduleList;
+	}
 
 
 
