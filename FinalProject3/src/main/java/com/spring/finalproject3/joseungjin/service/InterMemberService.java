@@ -37,5 +37,7 @@ public interface InterMemberService {
 	List<MainSubjectVO> Mainsubject(int userid);
 	//일정추가하기
 	int scheduleAdd(ScheduleVO svo);
+	//일정 가져오기
+	List<Map<String, String>> scheduleView(String perno);
 
 }
