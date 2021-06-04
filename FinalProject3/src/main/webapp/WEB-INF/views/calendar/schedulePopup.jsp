@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
  <!DOCTYPE html> <html> <head> <meta charset="UTF-8"> 
- 
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+
  <% String ctxPath = request.getContextPath(); %>  
 <title>일정 추가</title>
  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
@@ -55,6 +56,13 @@ button#ok {
 
 </style>
 <script type="text/javascript">
+$(document).ready(function(){
+	backgroundCh = function() {
+	    var sel = document.getElementById('color');
+	    sel.style.backgroundColor = sel.value;
+	};
+});
+
  $(function() { 
 		$.datepicker.setDefaults({
 			dateFormat : 'yy-mm-dd', 
@@ -74,11 +82,31 @@ button#ok {
 	});
  
 function click_ok(){
+
+	 var calsubject = $("input#calsubject").val().trim();
+	var memo = $("textarea#memo").val().trim();
+	
+	if(!$('#color> option:selected').val()) {
+	    alert("색상을 선택해주세요");
+	    return;
+	}
+	
+	if(calsubject == "") {
+		alert("제목을 입력하세요!!");
+		$("input#lcalsubject").focus();
+		return; 
+	}
+	if(memo == "") {
+		alert("메모를 입력하세요!!");
+		$("input#memo").focus();
+		return;  
+	}
  	var frm = document.scheduleData;
 	frm.method = "POST";
 	frm.action = "<%= ctxPath%>/scheduleEnd.sam";
 	frm.submit();
 }
+
 </script>
 </head> 
 <body> 
@@ -92,6 +120,28 @@ function click_ok(){
 				 	
 			
 				<form name = "scheduleData">
+					<div class = "domain"> 
+				 		<h3> 색상 </h3> 
+				 	</div> 
+					<div>
+						<select name="color" id="color" class="color" style="height: 26px;"  onchange="backgroundCh();">
+								<option value="">색상을 선택해주세요</option>
+								<c:choose>
+								
+								<c:when test="${sessionScope.loginuser.identity == 2}">
+									<option value="#FFCD42"style=" background-color:#FFCD42;"></option>
+								</c:when>
+								<c:otherwise>
+								<option value="#9775FA"style=" background-color:#9775FA;"></option>
+								<option value="#F06595"style=" background-color:#F06595;"></option>
+								<option value="#919191"style=" background-color:#919191;"></option>
+								<option value="#46E086"style=" background-color:#46E086;"></option>
+								<option value="#3788D8" style=" background-color:#3788D8;"></option>
+								</c:otherwise>
+								</c:choose>
+						</select>
+					</div>
+				
 					<div class = "domain"> 
 				 		<h3> 제목 </h3> 
 				 	</div> 
