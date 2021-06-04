@@ -7,16 +7,17 @@ public class ScheduleVO {
 	private String startDate; 
 	private String endDate; 
 	private String memo;
-	
+	private String color;
 	
 	public ScheduleVO() {}
 	
-	public ScheduleVO(String calsubject, String fk_perno,String startDate,String endDate, String memo) {
+	public ScheduleVO(String calsubject, String fk_perno,String startDate,String endDate, String memo,String color) {
 		this.calsubject=calsubject;
 		this.fk_perno = fk_perno;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.memo=memo;
+		this.color=color;
 	}
 
 	
@@ -56,6 +57,14 @@ public class ScheduleVO {
 		this.memo = memo;
 	}
 
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+	
 	
 
 }

@@ -500,11 +500,12 @@ public class joseungjin_Controller {
 					jsonObj.addProperty("calsubject",map.get("calsubject"));
 					jsonObj.addProperty("startDate",map.get("startDate"));
 					jsonObj.addProperty("endDate",map.get("endDate"));
+					jsonObj.addProperty("color",map.get("color"));
 					jsonObj.addProperty("memo",map.get("memo"));
 					jsonArr.add(jsonObj);
 				}//end of for(Map<String,String>map:deptnamePercentageList){}-----
 				
-				
+				//System.out.println(jsonArr);
 				return jsonArr.toString();
 			
 			}
