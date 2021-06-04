@@ -83,7 +83,7 @@
 	
 	<!-- 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색 -->
 	<select id="getquiz" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.QuizVO">
-		select quizno
+		select quizno, quizname, fk_subno
 		from tbl_quiz
 		where quizname = #{quizname}
 	</select>
@@ -95,10 +95,10 @@
 	</insert>
 	
 	<!-- 쪽지시험_문제_문제번호로 문제일련번호 검색  -->
-	<select id="getquestion" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.QuestionVO">
-		select questionno
+	<select id="getquestion" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.QuestionVO">
+		select questionno, fk_quizno, qzno, qzcontent, answerfirst, answersecond, answerthird, answerfourth
 		from tbl_question
-		where qzno = #{qzno}
+		where qzno = #{qzno} and fk_quizno = #{fk_quizno}
 	</select>
 	
 	<!-- 쪽지시험_정답 필드 생성  -->

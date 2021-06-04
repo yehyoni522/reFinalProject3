@@ -451,32 +451,33 @@ public class AdminMemberController {
 		
 		Map<String, String> paraMap = new HashMap<String, String>();
 		
-		int cnt = Integer.parseInt(request.getParameter("cnt"));	
+		int cnt = Integer.parseInt(request.getParameter("cnt"));	// 문제 추가를 클린한 횟수	
+		cnt = cnt + 1;
 		
 		String quizname = request.getParameter("quizname");
 		
 		// System.out.println("cnt 확인중 : " + cnt);
-		// System.out.println("quizname 확인중 : " + quizname);
+		// System.out.println("~~~~~~ quizname 확인중 : " + quizname);
 		
-		int n = service.addquiz(quizname); // 쪽지시험 필드 생성
+		// 시험과목 만들기
+		quizvo = service.addquiz(quizname); // 쪽지시험 테이블에 insert 하고 select 해서 일련번호 가져오기
 		
-		int j = 0;
+		if(quizvo != null) {
 		
-		int m = 0;
+			////////////////////////////////////////////////////////////////
+			
+			// System.out.println("~~~~~ 확인용 : quizvo.getQuizname()" + quizvo.getQuizname());
+			
+			// System.out.println("n : " + n);
+			// System.out.println("~~~~~ 확인용 :cnt : " + cnt);
+			
+			// System.out.println("~~~~~ 확인용 :quizno : " + quizvo.getQuizno());
+			String quizno = String.valueOf(quizvo.getQuizno());
+			
+			////////////////////////////////////////////////////////////////
 		
-		quizvo = service.getquiz(quizname); // 쪽지시험_시험명으로 일련번호 검색
-		
-		System.out.println("n : " + n);
-		System.out.println("cnt : " + cnt);
-		
-		System.out.println("quizno : " + quizvo.getQuizno());
-		String quizno = String.valueOf(quizvo.getQuizno());
-		
-		if(n == 1) {
-					
-			 for(int i=1; i<3; i++) {
-			  
-			 // quizvo = service.getquiz(quizname); // 쪽지시험_시험명으로 일련번호 검색
+			// 생성된 시험과목에 딸린 문제 만들기 
+			for(int i=0; i< cnt; i++) {
 			  
 			 String qzno = request.getParameter("qzno"+i); 
 			 String qzcontent =request.getParameter("qzcontent"+i);
@@ -487,10 +488,10 @@ public class AdminMemberController {
 			 
 			 String quizanswer = request.getParameter("quizanswer"+i); 
 			 
-	//		 System.out.println("answerfirst : " + answerfirst + " answersecond : " + answersecond);
-	//		 System.out.println("answerthird : " + answerthird + " answerfourth : " + answerfourth);
-	//		 System.out.println("qzno : " + qzno + " qzcontent : " + qzcontent);
-	//		 System.out.println("quizanswer : " + quizanswer);		 
+			 //System.out.println("answerfirst : " + answerfirst + " answersecond : " + answersecond);
+			 //System.out.println("answerthird : " + answerthird + " answerfourth : " + answerfourth);
+			 //System.out.println("qzno : " + qzno + " qzcontent : " + qzcontent);
+			 //System.out.println("quizanswer : " + quizanswer);		 
 			 		 
 			 paraMap.put("fk_quizno", quizno);
 			 paraMap.put("qzno", qzno);
@@ -502,22 +503,18 @@ public class AdminMemberController {
 			 
 			 paraMap.put("quizanswer", quizanswer);
 			 	 
-			 j = service.addquestion(paraMap); // 쪽지시험_문제  필드 생성
-			 
-			 questionvo = service.getquestion(qzno); // 쪽지시험_문제_문제번호로 문제일련번호 검색
-			 
+			 questionvo = service.addquestion(paraMap); // 쪽지시험_문제  insert
 			 
 			 paraMap.put("fk_questionno", String.valueOf(questionvo.getQuestionno()));
 			 
-			 m = service.addquizans(paraMap); // 쪽지시험_정답 필드 생성
-			 
-			 if(m*j*n == 1) {
-				 break;
-			 }
+			 if(questionvo != null) {
+					 
+				 int m = service.addquizans(paraMap); // 쪽지시험_정답 필드 생성
+				 
+			 }	 
 			 
 			 } // end of for
 			 
-
 			 mav.setViewName("redirect:/lesson/quiz.sam");
 
 		}	 

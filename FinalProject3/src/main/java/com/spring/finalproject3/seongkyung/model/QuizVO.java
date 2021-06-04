@@ -3,14 +3,14 @@ package com.spring.finalproject3.seongkyung.model;
 public class QuizVO {
 
 	private int quizno; 	// 쪽지시험_일련번호
-	private int quizname;	// 쪽지시험_시험명
+	private String quizname;	// 쪽지시험_시험명
 	private int fk_subno;	// FK_과목코드
 	
-	private int cnt; // 문제 갯수 읽기용
+
 	
 	public QuizVO() {}
 	
-	public QuizVO(int quizno, int quizname, int fk_subno) {
+	public QuizVO(int quizno, String quizname, int fk_subno) {
 		super();
 		this.quizno = quizno;
 		this.quizname = quizname;
@@ -25,11 +25,11 @@ public class QuizVO {
 		this.quizno = quizno;
 	}
 
-	public int getQuizname() {
+	public String getQuizname() {
 		return quizname;
 	}
 
-	public void setQuizname(int quizname) {
+	public void setQuizname(String quizname) {
 		this.quizname = quizname;
 	}
 
@@ -41,12 +41,6 @@ public class QuizVO {
 		this.fk_subno = fk_subno;
 	}
 
-	public int getCnt() {
-		return cnt;
-	}
 
-	public void setCnt(int cnt) {
-		this.cnt = cnt;
-	}
 	
 }

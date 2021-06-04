@@ -83,8 +83,8 @@ tr {
 		
 		$(html).appendTo("table");	
 		
-		console.log(cnt);
-		console.log(i);
+		// console.log(cnt);
+		// console.log(i);
 		
 	};
 	
@@ -92,8 +92,8 @@ tr {
 		
  		
  		
-		// console.log(cnt);
-		// console.log(i);
+		console.log(cnt);
+		console.log(i);
 		
 		$("tr.remove"+(i-1)+"").remove();
 		
