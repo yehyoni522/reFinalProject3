@@ -75,7 +75,7 @@
 
 	<insert id="insertInbox" parameterType="HashMap">
 		insert into tbl_inbox(inboxSeq, fk_perno, receiver, subject, reDate, readState, inboxName)
-		values(seq_tbl_inbox_inboxSeq.nextval,   #{login_userid},  #{receiver},  #{text},  default, default, #{name})
+		values(seq_tbl_inbox_inboxSeq.nextval,   #{login_userid},  #{receiver},  #{text},  default, default, #{sender})
 	</insert>
 	
 	<insert id="insertOutbox" parameterType="HashMap">

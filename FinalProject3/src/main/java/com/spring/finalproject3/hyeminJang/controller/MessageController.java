@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
@@ -29,26 +30,43 @@ public class MessageController {
    @Autowired   // Type에 따라 알아서 Bean 을 주입해준다.
    private InterMessageService service;
    
+   // 마이페이지 보기
+   @RequestMapping(value="/mypage/mypage.sam")
+   public ModelAndView requiredLogin_mypage(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+	   
+	   HttpSession session = request.getSession(); 
+	   PersonVO loginuser = (PersonVO)session.getAttribute("loginuser");
+	   
+	   // 안읽은 글의 갯수 세기
+	   int nonReadCount = service.getNonReadCount(loginuser.getPerno());// 로그인한 사람의 id값이 들어가야함
+	   mav.addObject("nonReadCount", nonReadCount);
+	   
+	   mav.addObject("name", loginuser.getName()); // 이름 불러오기
+	   mav.addObject("email", loginuser.getEmail()); // 이메일
+	   mav.addObject("identity", loginuser.getIdentity()); //교수 or 학생
+	   mav.addObject("perno", loginuser.getPerno()); // 학번/교번
+	   
+	   int majseq =  loginuser.getFk_majseq();
+       String nameMaj = service.getNameMaj(majseq); //학과이름 알아오기
+       mav.addObject("nameMaj", nameMaj); // 학과이름
+	   
+	   mav.setViewName("mypage/mypage.tiles2");
+	    
+	   return mav;
+   }
+   
+   
+   
    // 받은 쪽지함 (리스트) 보기 
    @RequestMapping(value="/message/inbox.sam")
-   public ModelAndView inbox(ModelAndView mav, HttpServletRequest request) {
+   public ModelAndView requiredLogin_inbox(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
       
       List<InboxVO> inboxList = null;
 		
 	  HttpSession session = request.getSession(); 
 	  PersonVO loginuser = (PersonVO)session.getAttribute("loginuser");
 	
-	  if(loginuser == null) {
-		  
-	         String message = "로그인먼저 진행해주세요.";
-	         String loc = "javascript:history.back()";
-	         
-	         mav.addObject("message", message);
-	         mav.addObject("loc", loc);
-	         
-	         mav.setViewName("msg");
-	  }
-	  else {
+	 
 		// 안읽은 글의 갯수 세기
 	      int nonReadCount = service.getNonReadCount(loginuser.getPerno());// 로그인한 사람의 id값이 들어가야함
 	      
@@ -65,7 +83,7 @@ public class MessageController {
 	      String searchWord = request.getParameter("searchWord");
 	      String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 	      
-	      if(searchType == null || (!"subject".equals(searchType) && !"name".equals(searchType)) ) {
+	      if(searchType == null || (!"subject".equals(searchType) && !"inboxname".equals(searchType)) ) {
 	      searchType = "";
 	      }
 	      
@@ -178,32 +196,17 @@ public class MessageController {
 	      
 	      mav.addObject("inboxList", inboxList);   
 	      mav.setViewName("message/inbox.tiles2");
-	      // /WEB-INF/views/tiles2/message/inbox.jsp 파일을 생성한다.
-	  }
-      
-      
-      
+	    
       return mav;
    }
    
    // 받은 쪽지 보기
    @RequestMapping(value="/message/inView.sam")
-   public ModelAndView inView(HttpServletRequest request, ModelAndView mav) {
+   public ModelAndView requiredLogin_inView(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
       
 	  HttpSession session = request.getSession(); 
 	  PersonVO loginuser = (PersonVO)session.getAttribute("loginuser");
 	
-	  if(loginuser == null) {
-		  
-	         String message = "로그인먼저 진행해주세요.";
-	         String loc = "javascript:history.back()";
-	         
-	         mav.addObject("message", message);
-	         mav.addObject("loc", loc);
-	         
-	         mav.setViewName("msg");
-	  }
-	  else {
 		// 조회하고자 하는 글번호 받아오기
 	      String str_inboxSeq = request.getParameter("inboxSeq");
 	      try {
@@ -225,8 +228,7 @@ public class MessageController {
 	      }
 	      
 	      mav.setViewName("message/inView.tiles2");
-	  }
-      
+	 
       
       
       return mav;
@@ -234,26 +236,20 @@ public class MessageController {
    
    // 쪽지 쓰기
    @RequestMapping(value="/message/write.sam")
-   public ModelAndView write(HttpServletRequest request,ModelAndView mav) {
+   public ModelAndView requiredLogin_write(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
       
 	  HttpSession session = request.getSession(); 
 	  PersonVO loginuser = (PersonVO)session.getAttribute("loginuser");
 	
-	  if(loginuser == null) {
-		  
-	         String message = "로그인먼저 진행해주세요.";
-	         String loc = "javascript:history.back()";
-	         
-	         mav.addObject("message", message);
-	         mav.addObject("loc", loc);
-	         
-	         mav.setViewName("msg");
-	  }
-	  else {
+	  
 		// 안읽은 글의 갯수 세기
 	      int nonReadCount = service.getNonReadCount(loginuser.getPerno());// 로그인한 사람의 id값이 들어가야함
 	      
 	      mav.addObject("nonReadCount", nonReadCount);
+	      // 기본적으로 들어가야 하는 것
+	      
+	      
+	      
 	      mav.addObject("loginuser_id",loginuser.getPerno());
 	      mav.addObject("loginuser_name",loginuser.getName());
 	      
@@ -261,16 +257,13 @@ public class MessageController {
 	      String name = request.getParameter("name");
 	      
 	      if(fk_userid != null && name!= null) {
-	    	  mav.addObject("loginuser_id",fk_userid);
-		      mav.addObject("loginuser_name",name);
+	    	  mav.addObject("fk_userid",fk_userid);
+		      mav.addObject("fk_name",name);
 	      }
 	      
 	      
 	      mav.setViewName("message/write.tiles2");
-	      // /WEB-INF/views/tiles2/message/write.jsp 파일을 생성한다.
-	  }
-      
-      
+	 
       
       return mav;
    }
@@ -299,6 +292,8 @@ public class MessageController {
 	      String name_es = request.getParameter("name_es"); // 이름들
 	      String receiver_es = request.getParameter("receiver_es"); // 번호들
 	      String text = request.getParameter("DOC_TEXT");
+	      String sender = loginuser.getName();
+	      
 	      
 	      String receiverArr[] = receiver_es.split(",");
 	      String nameArr[] = name_es.split(",");
@@ -308,7 +303,8 @@ public class MessageController {
 	         String name = nameArr[i];
 	         
 	         paraMap.put("receiver", receiver);
-	         paraMap.put("name", name);
+	         paraMap.put("name", name);// 받는 사람
+	         paraMap.put("sender", sender);// 보내는 사람
 	         paraMap.put("text", text);
 	         paraMap.put("login_userid", String.valueOf(loginuser.getPerno()));// 현재 로그인된 아이디를 1004라고 가정한다.
 	         
@@ -410,7 +406,7 @@ public class MessageController {
           
            
           int majseq =  pervo.getFk_majseq();
-          String nameMaj = service.getNameMaj(majseq);
+          String nameMaj = service.getNameMaj(majseq); //학과이름 알아오기
           
             jsonObj.put("name", pervo.getName());
             jsonObj.put("perno", pervo.getPerno());
@@ -458,24 +454,14 @@ public class MessageController {
      
      // 보낸 쪽지함 (리스트) 보기 
      @RequestMapping(value="/message/outbox.sam")
-     public ModelAndView outbox(ModelAndView mav, HttpServletRequest request) {
+     public ModelAndView requiredLogin_outbox(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
         
         List<OutboxVO> outboxList = null;
   		
   	  HttpSession session = request.getSession(); 
   	  PersonVO loginuser = (PersonVO)session.getAttribute("loginuser");
   	
-  	  if(loginuser == null) {
-  		  
-  	         String message = "로그인먼저 진행해주세요.";
-  	         String loc = "javascript:history.back()";
-  	         
-  	         mav.addObject("message", message);
-  	         mav.addObject("loc", loc);
-  	         
-  	         mav.setViewName("msg");
-  	  }
-  	  else {
+  	 
   		// 안읽은 글의 갯수 세기
          int nonReadCount = service.getNonReadCount(loginuser.getPerno());// 로그인한 사람의 id값이 들어가야함
          
@@ -596,32 +582,18 @@ public class MessageController {
   	      mav.addObject("outboxList", outboxList);   
   	      mav.setViewName("message/outbox.tiles2");
   	      // /WEB-INF/views/tiles2/message/inbox.jsp 파일을 생성한다.
-  	  }
-        
-        
-        
+  	 
         return mav;
      }
      
      // 보낸 쪽지 보기
      @RequestMapping(value="/message/outView.sam")
-     public ModelAndView outView(HttpServletRequest request, ModelAndView mav) {
+     public ModelAndView requiredLogin_outView(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
         
   	  HttpSession session = request.getSession(); 
   	  PersonVO loginuser = (PersonVO)session.getAttribute("loginuser");
   	
-  	  if(loginuser == null) {
-  		  
-  	         String message = "로그인먼저 진행해주세요.";
-  	         String loc = "javascript:history.back()";
-  	         
-  	         mav.addObject("message", message);
-  	         mav.addObject("loc", loc);
-  	         
-  	         mav.setViewName("msg");
-  	  }
-  	  else {
-  		// 조회하고자 하는 글번호 받아오기
+  	 
   	      String str_outboxSeq = request.getParameter("outboxSeq");
   	      try {
   	         int outboxSeq = Integer.parseInt(str_outboxSeq);
@@ -642,9 +614,7 @@ public class MessageController {
   	      }
   	      
   	      mav.setViewName("message/outView.tiles2");
-  	  }
-        
-        
+  	  
         
         return mav;
      }
