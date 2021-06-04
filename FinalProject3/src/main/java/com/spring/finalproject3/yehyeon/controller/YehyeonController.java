@@ -72,7 +72,7 @@ public class YehyeonController {
 			jsonObj.addProperty("usecheck", map.get("usecheck")); 
 			jsonObj.addProperty("cnt1", map.get("cnt1"));
 			jsonObj.addProperty("cnt2", map.get("cnt2"));
-			jsonObj.addProperty("rno", map.get("rno"));
+			jsonObj.addProperty("fk_rno", map.get("fk_rno"));
 			jsonObj.addProperty("rname", map.get("rname"));
 			
 			jsonArr.add(jsonObj);

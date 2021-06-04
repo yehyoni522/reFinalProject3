@@ -86,7 +86,7 @@
 		<result property="cnt1" 							column="cnt1" 				javaType="String" />
 		<result property="cnt2" 							column="cnt2" 				javaType="String" />
     	<result property="usecheck" 					column="usecheck" 			javaType="String" />
-    	<result property="rno" 								column="rno" 					javaType="String" />
+    	<result property="fk_rno" 						column="fk_rno" 				javaType="String" />
     	<result property="rname" 						column="rname" 				javaType="String" />
 	</resultMap>	
 	
@@ -105,7 +105,7 @@
 		        select count(*) as cnt1, fk_rno
 		        from tbl_booklist join tbl_detailseatinfo
 		        on fk_dsno = dsno
-		        where to_char(bdate, 'mm') = to_char(to_date('21.05.31', 'yy.mm.dd'), 'mm')
+		        where to_char(bdate, 'mm') = to_char(to_date(#{bdate}, 'yy.mm.dd'), 'mm')
 		        group by fk_rno
 		    )V
 		    join
@@ -113,7 +113,7 @@
 		        select count(*) AS cnt2, usecheck, fk_rno
 		        from tbl_booklist join tbl_detailseatinfo
 		        on fk_dsno = dsno
-		        where to_char(bdate, 'mm') = to_char(to_date('21.05.31', 'yy.mm.dd'), 'mm')
+		        where to_char(bdate, 'mm') = to_char(to_date(#{bdate}, 'yy.mm.dd'), 'mm')
 		        group by fk_rno, usecheck
 		    )X
 		    on V.fk_rno = X.fk_rno
