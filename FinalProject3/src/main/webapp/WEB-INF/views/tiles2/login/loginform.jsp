@@ -11,7 +11,7 @@ div.loginView{
 	border: solid 0px red;
 	margin: 0 auto;
 	margin-left: 400px;
-	padding-top: 40px;
+	padding-top: 10px;
 	height: 500px;
 	width: 600px;
 }
@@ -129,10 +129,6 @@ label.title{
 
 }
 
-li{
-   	width:80%;
-}
-   
 input.findinput{
 	height: 35px;
 	width: 50%;
@@ -201,12 +197,7 @@ input.findinput{
 	    frm.method = "post";
 		frm.submit();
 		
-		function idFind(){
-			function openWin(){  
-			    window.open("http://www.naver.net", "네이버새창", "width=800, height=700, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
-			}  
-			
-		}
+
 	}// end of function goLogin()-----------------------------------------
 	
 
@@ -219,10 +210,8 @@ input.findinput{
 		    <form name="loginFrm">
 			    <h3 style="text-align: center;"></h3>
 			    <div class="form-group">
-			        <i class="fa fa-user"></i>
 					<input type="text" id="loginUserid" class="form-control" placeholder="Username" name="userid" maxlength="20">
 					<br>
-			    	<i class="fa fa-lock"></i>
 			    	 <input type="password" id="loginPwd"  class="form-control" placeholder="●●●●" name="pwd" maxlength="20">
 			    	
 			    	

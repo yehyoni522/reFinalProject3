@@ -29,7 +29,7 @@
 		from
 		(
 		    select row_number() over(order by seq desc) as rno, seq, subject, good, readCount, commentCount, fk_perno  
-					   , to_char(regDate, 'yyyy/mm/dd') as regDate, categoryno, namecheck
+					   , to_char(regDate, 'yyyy-mm-dd') as regDate, categoryno, namecheck
 		    from tbl_board
 		    where status = 1 and categoryno = #{categoryno}
 		    <if test='searchWord != ""'>
@@ -76,7 +76,7 @@
   		</if>   		 -->     	  	    	
 	</select>
 	
-	<!-- (댓글쓰기가 없는 게시판에서) 글 1개 보여주기 -->
+	<!-- 글 1개 보여주기 -->
 	<select id="getView" parameterType="String" resultType="com.spring.finalproject3.yeonha.BoardVO">
 		select previousseq, previoussubject
 		     , seq, fk_perno, subject, name, content, readcount, B.regDate
@@ -87,12 +87,15 @@
 		         , lag(subject,1) over(order by seq desc) AS previoussubject
 		         
 		         , seq, fk_perno, subject, content, readcount, commentCount
-		         , to_char(regDate, 'yyyy/mm/dd') as regDate
+		         , to_char(regDate, 'yyyy-mm-dd') as regDate
 		         
 		         , lead(seq,1) over(order by seq desc) AS nextseq
 		         , lead(subject,1) over(order by seq desc) AS nextsubject
 		    from tbl_board
 		    where status = 1
+		    <if test='searchType != "" and searchWord != ""'>
+            and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+          	</if>
 		)B
 		join tbl_person P
 		on P.perno = B.fk_perno
@@ -105,5 +108,83 @@
 		where seq = #{seq}
 	</update>
 	
+	<!-- 댓글쓰기 -->
+	<insert id="addComment" parameterType="com.spring.finalproject3.yeonha.CommentVO">
+		insert into tbl_comment(comseq, fk_seq, fk_perno, content, reregDate, status)
+		values(commentSeq.nextval, #{fk_seq}, #{fk_perno}, #{content}, default, default)
+	</insert>
+	
+	<!-- tbl_board 테이블에 commentCount 컬럼의 값을 1증가(update) -->
+	<update id="updateCommentCount" parameterType="String">
+		update tbl_board set commentCount = commentCount + 1
+		where seq = #{fk_seq} 
+	</update>
     
+	
+	<!-- 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) -->
+   	<select id="getCommentListPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha.CommentVO">
+   		select name, identity, content, reregDate
+		from
+		(
+		    select rno, name, identity, content, reregDate 
+		    from
+		    (
+		        select row_number() over(order by comseq desc) as rno, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate 
+		        from tbl_comment
+		        where status = 1 and fk_seq = #{fk_seq}
+		        order by comseq desc
+		    )C
+		    join tbl_person P
+		    on P.perno = C.fk_perno
+		) V
+		where rno between #{startRno} and #{endRno}
+   	</select>
+   	
+   	<!-- 원게시물에 딸린 댓글 totalPage 알아오기 (Ajax 로 처리) -->
+   	<select id="getCommentTotalPage" parameterType="HashMap" resultType="int">
+   		select ceil(count(*)/#{sizePerPage})
+		from tbl_comment
+		where status = 1 and fk_seq = #{fk_seq}
+   	</select>
+   	
+   	<!-- 글 1개 보여주기 -->
+	<select id="getViewNo" parameterType="String" resultType="com.spring.finalproject3.yeonha.BoardVO">
+		select previousseq, previoussubject
+		     , seq, fk_perno, subject, name, content, readcount, B.regDate
+		     , nextseq , nextsubject, commentCount
+		from 
+		(
+		    select lag(seq,1) over(order by seq desc) AS previousseq
+		         , lag(subject,1) over(order by seq desc) AS previoussubject
+		         
+		         , seq, fk_perno, subject, content, readcount, commentCount
+		         , to_char(regDate, 'yyyy-mm-dd') as regDate
+		         
+		         , lead(seq,1) over(order by seq desc) AS nextseq
+		         , lead(subject,1) over(order by seq desc) AS nextsubject
+		    from tbl_board
+		    where status = 1
+		)B
+		join tbl_person P
+		on P.perno = B.fk_perno
+		where B.seq = #{seq}
+	</select>
+	
+	<!-- 게시글 수정하기 -->
+	<update id="edit" parameterType="com.spring.finalproject3.yeonha.BoardVO">
+		update tbl_board set subject = #{subject}
+		                   , content = #{content}
+		where seq = #{seq}
+	</update>
+   	
+   	<!-- 게시글 삭제하기 -->
+	<delete id="del" parameterType="int">
+		delete from tbl_board 
+		where seq = #{seqno}
+	</delete>	
+	
+	
+	
+	
+
 </mapper>

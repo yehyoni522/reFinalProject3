@@ -4,8 +4,6 @@
 
 <% String ctxPath = request.getContextPath(); %>
 
-<!DOCTYPE html>
-<html>
 
 <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +14,6 @@
 body{
    font-family: 'Noto Sans KR', sans-serif;
 }
-
 div#msgSide{
 	/* border: solid 1px blue;  */
 	display:inline-block ; 
@@ -32,11 +29,10 @@ span#title{
 	margin-bottom: 10px;
 	font-weight: bold;
 }
-
 .button {
 	
 	margin-top:40px;
-	margin-left: 120px;
+	margin-left: 160px;
     width:100px;
     background-color:#2ECC71;
     border: none;
@@ -51,7 +47,6 @@ span#title{
     border-radius: 10px;
 	transition:0.3s;
 	transform: translate(-50%,-50%);
-
 }
 .button:hover {
     background-color: #27AF61;
@@ -62,7 +57,6 @@ span#title{
 .button:focus {
 	outline:0;
 }
-
 div.msgBox{
 	
 	/* border: solid 1px red;  */
@@ -73,13 +67,10 @@ div.msgBox{
 	padding-top: 7px;
 	cursor: pointer;
 	
-
-
 }
 div.msgBox:hover{
 	 opacity:0.7;
 }
-
 div#msgNew{
 	 border-radius: 50%;
 	 background-color: red;
@@ -93,13 +84,11 @@ div#msgNew{
 	 text-align: center;
 	 padding-top:2px;
 }
-
 thead{
 	color: black;
 	background-color: #F9F9F9;
 	
 }
-
 button.del{
 	width:50px;
 	height: 30px;
@@ -122,7 +111,6 @@ button.del:hover{
 	color: #fff;
 	box-shadow: 0 2px 4px #f8585b;
 }
-
 button.re{
 	width:50px;
 	height: 30px;
@@ -145,7 +133,6 @@ button.re:hover{
 	box-shadow: 0 2px 4px #2ECC71;
 }
 /* /////////////////// */
-
 .green_window {
 	display: inline-block;
 	width: 200px;
@@ -174,13 +161,11 @@ button.re:hover{
 .sch_smit:hover {
 	background: #27AF61;
 }
-
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-
 	$(document).ready(function(){
 		$("div#inbox").bind("click", function(){
 			goInbox();
@@ -189,32 +174,31 @@ button.re:hover{
 			goOutbox();
 		});
 	});
-
 	function goWrite(){
-		location.href="<%= ctxPath%>/write.sam";
+		location.href="<%= ctxPath%>/message/write.sam";
 	}
 	function goInbox(){
-		location.href="<%= ctxPath%>/inbox.sam";
+		location.href="<%= ctxPath%>/message/inbox.sam";
 	}
 	function goOutbox(){
-		location.href="<%= ctxPath%>/outbox.sam";
+		location.href="<%= ctxPath%>/message/outbox.sam";
 	}
-<<<<<<< HEAD
-	function goView(seq){
-		location.href="<%= ctxPath%>/view.sam?inboxSeq="+inboxSeq;	
-	}
-=======
 	function inDelOne(inboxSeq){
 		 var bool = confirm("해당 쪽지를 삭제하시겠습니까?");
 		 if(bool){
 			 location.href="<%= ctxPath%>/message/inDelOne.sam?inboxSeq="+inboxSeq;
 		 }
 	}
-
->>>>>>> refs/heads/main
+	function gorResponse(){
+		
+		
+		var frm = document.responseFrm;
+		frm.action = "<%=ctxPath%>/message/write.sam";
+		frm.method = "get";
+		frm.submit();
+		
+	}
 </script>
-
-<body>
 
 <div class="msgHead">
 	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">쪽지함</span></div>
@@ -225,7 +209,7 @@ button.re:hover{
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">2</div></div>
+			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
 			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
 		</div>
 	</div>	
@@ -233,26 +217,18 @@ button.re:hover{
 
 <div class="msgContents" style="width: 70%; display:inline-block ; ">
 
-<<<<<<< HEAD
-		<button class="del" type="button" onclick="javascript:location.href='<%= ctxPath%>/inDel.sam?inboxSeq=${requestScope.inboxvo.inboxSeq}'">삭제</button>
-=======
 		<button class="del" type="button" onclick="inDelOne(${requestScope.inboxvo.inboxSeq})">삭제</button>
->>>>>>> refs/heads/main
-		 <button class="re">답장</button>
-		 	<div>보낸사람 <span>${requestScope.inboxvo.fk_name}</span></div>
-		 	<div>받은시간 <span>${requestScope.inboxvo.reDate}</span></div>
-		 	<hr>
-		 	<div>내용</div>
+		 <button class="re" type="button" onclick="gorResponse()">답장</button>
+		 <form  name="responseFrm">
+		 	<input type="hidden" name="fk_userid" value="${requestScope.inboxvo.fk_perno}">
+			<input type="hidden" name="name" value="${requestScope.inboxvo.inboxName}">
+		 </form>	
 
 	<c:if test="${not empty requestScope.inboxvo}">
-		
-		
-		
-		<br>
-		
-		<div style="margin-bottom: 1%;">이전글제목&nbsp;&nbsp;<span class="move" onclick="javascript:location.href='view.action?seq=${requestScope.boardvo.previousseq}'">${requestScope.boardvo.previoussubject}</span></div>
-		<div style="margin-bottom: 1%;">다음글제목&nbsp;&nbsp;<span class="move" onclick="javascript:location.href='view.action?seq=${requestScope.boardvo.nextseq}'">${requestScope.boardvo.nextsubject}</span></div>
-
+		<div>보낸사람 <span>${requestScope.inboxvo.inboxName}</span></div>
+	 	<div>받은시간 <span>${requestScope.inboxvo.reDate}</span></div>
+	 	<hr>
+	 	<div>${requestScope.inboxvo.subject}</div>
 	</c:if>
 	
 	<c:if test="${empty requestScope.inboxvo}">
@@ -260,7 +236,3 @@ button.re:hover{
 	</c:if>
 
 </div>
-
-
-</body>
-</html>

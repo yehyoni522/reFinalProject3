@@ -52,6 +52,35 @@
 		insert into tbl_booklist(bno, bDate, fk_dsno, fk_perno, fk_tno)
 		values (seq_tbl_booklist.nextval, default, #{fk_dsno}, #{fk_perno}, #{fk_tno})
 	</insert>
+	
+	
+	<resultMap type="HashMap" id="booklistvo">
+		<result property="dsno" 				column="dsno" 				javaType="String" />
+    	<result property="dsname" 			column="dsname" 			javaType="String" />
+    	<result property="bookcheck" 		column="bookcheck" 		javaType="String" />
+    	<result property="perno" 				column="perno" 				javaType="String" />
+    	<result property="name" 				column="name" 				javaType="String" />
+	</resultMap>
+	
+	<select id="selectDateBookList" parameterType="HashMap" resultMap="booklistvo">
+		select dsno, dsname, bookcheck, nvl(perno, 0) as perno, nvl(name, '없음') as name
+		from
+		(
+		    select d.dsno, d.dsname, d.dscheck, d.fk_rno, d.fk_tno, b.bno, b.bdate
+		    from tbl_detailseatinfo d left outer join tbl_booklist b
+		    on d.dsno = b.fk_dsno
+		    where d.fk_rno = #{rno} and d.fk_tno = #{tno}
+		) V
+		left outer join
+		(
+		    select bno, bdate, perno, fk_dsno, name, bookcheck
+		    from tbl_booklist join tbl_person
+		    on fk_perno = perno
+		    where to_date( bdate, 'yy.mm.dd' ) = to_date( #{bdate}, 'yy.mm.dd' )
+		)X
+		on fk_dsno = dsno
+		order by V.dsno
+	</select>
 
 
 </mapper>

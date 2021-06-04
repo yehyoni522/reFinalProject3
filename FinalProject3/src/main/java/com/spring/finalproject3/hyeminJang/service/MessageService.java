@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.InterMessageDAO;
+import com.spring.finalproject3.hyeminJang.model.OutboxVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 //=== #31. Service 선언 === 
@@ -87,6 +88,56 @@ public class MessageService implements InterMessageService {
 	public String getNameMaj(int majseq) {
 		String str = dao.getNameMaj(majseq);
 		return str;
+	}
+
+	// 쪽지작성 insert 
+	@Override
+	public int writeEnd(Map<String, String> paraMap) {
+		
+		int n = dao.insertInbox(paraMap); // inbox 에 insert (로그인한 사람이 발신자, 배열로 얻어온 사람들이 수신자)
+		
+		if(n ==1) {
+			n = dao.insertOutbox(paraMap); // outbox 에 insert (로그인한 사람이 발신자)
+		}
+		return n;
+	}
+
+	// outbox에서 체크박스에서 선택된 쪽지  삭제하기 
+	@Override
+	public int outDel(ArrayList<Integer> deleteArray) {
+		int n = dao.outDel(deleteArray);
+		
+		return n;
+	}
+
+	// outbox 총게시물건수
+	@Override
+	public int getTotalCountout(Map<String, String> paraMap) {
+		int n = dao.getTotalCountout(paraMap);
+		return n;
+	}
+
+	// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것) <<outbox>>
+	@Override
+	public List<OutboxVO> outboxListSearchWithPaging(Map<String, String> paraMap) {
+		List<OutboxVO> outboxList = dao.outboxListSearchWithPaging(paraMap);
+		return outboxList;
+	}
+
+	// 쪽지 글 조회 <<outbox>>
+	@Override
+	public OutboxVO getOutView(int outboxSeq) {
+		OutboxVO outboxvo = dao.getOutView(outboxSeq);
+		
+		return outboxvo;
+	}
+
+	 // 세부읽기에서 한개만 쪽지 삭제하기<<outbox>>
+	@Override
+	public int outDelOne(int parseInt) {
+		int n = dao.outDelOne(parseInt);
+		
+		return n;
 	}
 
 

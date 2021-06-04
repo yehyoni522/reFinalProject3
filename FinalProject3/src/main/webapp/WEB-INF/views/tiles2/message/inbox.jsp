@@ -4,9 +4,6 @@
 
 <% String ctxPath = request.getContextPath(); %>
 
-<!DOCTYPE html>
-<html>
-
 <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -16,7 +13,6 @@
 body{
    font-family: 'Noto Sans KR', sans-serif;
 }
-
 div#msgSide{
 	/* border: solid 1px blue;  */
 	display:inline-block ; 
@@ -32,11 +28,10 @@ span#title{
 	margin-bottom: 10px;
 	font-weight: bold;
 }
-
 .button {
 	
 	margin-top:40px;
-	margin-left: 120px;
+	margin-left: 160px;
     width:100px;
     background-color:#2ECC71;
     border: none;
@@ -51,7 +46,6 @@ span#title{
     border-radius: 10px;
 	transition:0.3s;
 	transform: translate(-50%,-50%);
-
 }
 .button:hover {
     background-color: #27AF61;
@@ -62,7 +56,6 @@ span#title{
 .button:focus {
 	outline:0;
 }
-
 div.msgBox{
 	
 	/* border: solid 1px red;  */
@@ -73,13 +66,10 @@ div.msgBox{
 	padding-top: 7px;
 	cursor: pointer;
 	
-
-
 }
 div.msgBox:hover{
 	 opacity:0.7;
 }
-
 div#msgNew{
 	 border-radius: 50%;
 	 background-color: red;
@@ -93,13 +83,11 @@ div#msgNew{
 	 text-align: center;
 	 padding-top:2px;
 }
-
 thead{
 	color: black;
 	background-color: #F9F9F9;
 	
 }
-
 button.del{
 	width:50px;
 	height: 30px;
@@ -122,7 +110,6 @@ button.del:hover{
 	color: #fff;
 	box-shadow: 0 2px 4px #f8585b;
 }
-
 button.re{
 	width:50px;
 	height: 30px;
@@ -145,7 +132,6 @@ button.re:hover{
 	box-shadow: 0 2px 4px #2ECC71;
 }
 /* /////////////////// */
-
 .green_window {
 	display: inline-block;
 	width: 200px;
@@ -174,9 +160,6 @@ button.re:hover{
 .sch_smit:hover {
 	background: #27AF61;
 }
-
-<<<<<<< HEAD
-=======
  .subjectStyle {font-weight: bold;
                    text-decoration:underline;
                    cursor: pointer;} 
@@ -185,14 +168,17 @@ button.re:hover{
     color: red;
    
 }
-
->>>>>>> refs/heads/main
+tr#tr_1:hover{
+	cursor: pointer;
+}
+a:visited {
+  background-color : black;
+}
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-
 	$(document).ready(function(){
 		
 		
@@ -202,8 +188,6 @@ button.re:hover{
 		$("div#outbox").bind("click", function(){
 			goOutbox();
 		});
-<<<<<<< HEAD
-=======
 		
 		$("span.subject").bind("mouseover", function(event){
 			var $target = $(event.target);
@@ -234,9 +218,7 @@ button.re:hover{
 			// 체크되어있으면 true, 해제되어있으면 false
 			
 			$("input:checkbox[name=check]").prop("checked", bool);
-
 		});
-
 		// == 상품의 체크박스 클릭시 == //
 		$("input:checkbox[name=check]").click(function(){
 			var bool = $(this).prop("checked");
@@ -266,10 +248,7 @@ button.re:hover{
 		//== 체크박스 전체선택/전체해제 == 끝// 
 	  
 	  
->>>>>>> refs/heads/main
 	});
-<<<<<<< HEAD
-=======
 	
 	// === 장바구니에서 특정 제품을 비우기 === //  
 	function goInDel() {
@@ -328,30 +307,39 @@ button.re:hover{
     	
 		
 	}// end of function gatheringNonRead()----------------------------------
->>>>>>> refs/heads/main
-
 	function goWrite(){
-		location.href="<%= ctxPath%>/write.sam";
+		location.href="<%= ctxPath%>/message/write.sam";
 	}
 	function goInbox(){
-		location.href="<%= ctxPath%>/inbox.sam";
+		location.href="<%= ctxPath%>/message/inbox.sam";
 	}
 	function goOutbox(){
-		location.href="<%= ctxPath%>/outbox.sam";
+		location.href="<%= ctxPath%>/message/outbox.sam";
 	}
-<<<<<<< HEAD
-	function goView(seq){
-		location.href="<%= ctxPath%>/inView.sam?inboxSeq="+inboxSeq;	
-	}
-=======
 	function goView(inboxSeq){
 		location.href="<%= ctxPath%>/message/inView.sam?inboxSeq="+inboxSeq;	
 	}
+	function goreRead(){
+		location.href="<%= ctxPath%>/message/inbox.sam";
+	}
+	
+	function gorResponse(){
 
->>>>>>> refs/heads/main
+		var cnt = $("input[name='check']:checked").length;
+        
+        if(cnt > 1){
+            alert("답장은 한개의 쪽지만 선택이 가능합니다!");
+            return;
+        }
+        else{
+        	 var name = $("input[name=name]").val();
+        	 var fk_userid = $("input[name=fk_userid]").val();
+        	location.href="<%= ctxPath%>/message/write.sam?fk_userid="+fk_userid+"&name="+name;
+        	
+        }
+		
+	}
 </script>
-
-<body>
 
 <div class="msgHead">
 	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">쪽지함</span></div>
@@ -362,43 +350,40 @@ button.re:hover{
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
-			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">2</div></div>
+			<div class="msgBox" id="inbox" style=" background-color: #2ECC71;  margin-top: 30px; color: white; padding-right: 55px;">받은쪽지함<div id="msgNew">${requestScope.nonReadCount}</div></div>
 			<div class="msgBox" id="outbox" style="padding-right: 100px;" >보낸쪽지함</div>
 		</div>
 	</div>	
 </div>
 
-<div class="msgContents" style="width: 70%; display:inline-block ; ">
+<div class="msgContents" style="width: 70%; display:inline-block; ">
 
-		<button class="del" type="button" onclick="javascript:location.href='<%= ctxPath%>/del.action?seq=${requestScope.boardvo.seq}'">삭제</button>
-		 <button class="re" >답장</button>
+		<button class="del" type="button" onclick="goInDel()">삭제</button>
+		 <button class="re" onclick="gorResponse()">답장</button>
+		 
 
-<<<<<<< HEAD
-	<div style="margin-left: 30px; display: inline-block; float: right;">
-	
-	<a style="font-size:10px;">안읽은쪽지삭제</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">5</span>/<span>500</span>
-		<select id="msgSearch" name="msgSearch">
-			<option value="name">이름</option>
-			<option value="contents">내용</option>
-=======
 	<div style="margin-left: 100px; display: inline-block; float: right;">
 	<form name="readState">
 		<input type='hidden'  name="readState" value="0" />
 	</form>
-	<a id="readstate" style="font-size:13px;  cursor: pointer;" onclick="goNonRead()">안읽은쪽지보기</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>500</span>
-	
+	<c:if test="${not empty requestScope.nonReadCount}">
+		<a id="readstate" style="font-size:13px;  cursor: pointer;" onclick="goNonRead()">안읽은쪽지보기</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>${requestScope.totalCount}</span>
+	</c:if>
+	<c:if test="${empty requestScope.nonReadCount}">
+		<a id="readstate" style="font-size:13px;  cursor: pointer; background-color: red; color: white;" onclick="goreRead()">안읽은쪽지보기</a>&nbsp;&nbsp;<span style="color: #2ECC71; font-weight: bold;">${requestScope.nonReadCount}</span>/<span>${requestScope.totalCount}</span>
+	</c:if>
 	<form name="searchFrm">
-		<select id="searchType" name="searchType" ">
-			<option value="inboxName">이름</option>
+		<select id="searchType" name="searchType">
 			<option value="subject">내용</option>
->>>>>>> refs/heads/main
+			<option value="inboxname">이름</option>
 		</select>
 		<span class='green_window'>
-			<input type='text' class='input_text' />
+			<input type='text'  name="searchWord" id="searchWord"  class='input_text' />
 		</span>
-			<button type='submit' class='sch_smit' onclick="goSearch();">검색</button>
+			<button type='button' class='sch_smit' onclick="goSearch();">검색</button>
+	</form>
+	
 	</div>
-
   <table class="table table-hover">
     <thead>
       <tr>
@@ -410,36 +395,54 @@ button.re:hover{
       </tr>
     </thead>
     
+    <c:if test="${empty requestScope.inboxList}">
+    	<tbody>
+	      <tr id="tr_1" style="color: #055AC1;">
+	        <td colspan="5" style="text-align: center;">받은 쪽지가 존재하지 않습니다.</td>
+	      </tr>
+	    </tbody>
+    </c:if>
+    
     <c:forEach var="inboxvo" items="${requestScope.inboxList}" varStatus="status">     
     
+    <c:if test="${inboxvo.readState == 0}">
     <tbody>
-      <tr>
-<<<<<<< HEAD
-        <td><input type="checkbox" /></td>
-        <td>${inboxvo.fk_name}</td>
-        <td><span onclick="goView(${inboxvo.inboxSeq})">${inboxvo.subject}</span></td>
-=======
+      <tr  id="tr_1" style="color: #055AC1;">
         <td><input type="checkbox" name="check" value="${inboxvo.inboxSeq}"/></td>
-        <td>${inboxvo.inboxName}</td>
-        <td><span class="subject" onclick="goView(${inboxvo.inboxSeq})">${inboxvo.subject}</span></td>
->>>>>>> refs/heads/main
-        <td>${inboxvo.reDate}</td>
-        <c:if test="${inboxvo.readState == 0}">
-        	<td style="color:red; font-weight: bold;">new</td>
-        </c:if>
-        <c:if test="${inboxvo.readState == 1}">
-        	<td>읽음</td>
-        </c:if>
+        <td onclick="goView(${inboxvo.inboxSeq}" >${inboxvo.inboxName}
+        <input type="hidden" name="name" value="${inboxvo.inboxName}" />
+        <input type="hidden" name="fk_userid" value="${inboxvo.fk_perno}" />
+        </td>
+        <td onclick="goView(${inboxvo.inboxSeq})"><span class="subject" >${inboxvo.subject}</span></td>
+        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.reDate}</td>
+        <td onclick="goView(${inboxvo.inboxSeq})" style="color:red; font-weight: bold;">new</td>
       </tr>
-
     </tbody>
+    </c:if>
+    
+    <c:if test="${inboxvo.readState == 1}">
+    <tbody>
+      <tr  id="tr_1" style="color: gray;">
+        <td><input type="checkbox" name="check" value="${inboxvo.inboxSeq}"/></td>
+        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.inboxName}
+        <input type="hidden" name="name" value="${inboxvo.inboxName}" />
+        <input type="hidden" name="fk_userid" value="${inboxvo.fk_perno}" />
+        </td>
+        <td onclick="goView(${inboxvo.inboxSeq})"><span class="subject" >${inboxvo.subject}</span></td>
+        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.reDate}</td>
+        <td onclick="goView(${inboxvo.inboxSeq})">읽음</td>
+      </tr>
+    </tbody>
+    </c:if>
     
     </c:forEach>
     
   </table>
-
+  
+  <div align="center" style="width: 70%; margin: 20px auto;">
+     	${requestScope.pageBar}
+   </div>
 </div>
 
 
-</body>
-</html>
+

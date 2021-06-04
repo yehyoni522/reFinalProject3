@@ -6,42 +6,39 @@
 <% String ctxPath = request.getContextPath(); %>
 
 <style type="text/css">
-
-    #table {
-    	width: 90%;
-    
-    	border-collapse: collapse;
-    	border-top: 1px solid #e6e6e6;
-    }
-    #table th, #table td {
-    	padding: 5px;
-    	height: 50px; 
-    	border-bottom: 1px solid #e6e6e6;
-    }
-    #table th {background-color: #DDD;}
-     
-    .subjectStyle {
- 		font-weight: bold;
-       	color: navy;
-   		cursor: pointer;
-   	}
-	#newhit{
-		position: relative;
-		left: 85%;
-		margin-bottom: 5px;
-	}
-	#btnadd{
-		background-color: white;
-		border: solid #e6e6e6 1px;
-		position: relative;
-		left: 84%;
-		top: -27px;		
-		height: 26px;
-	}
-	.boarda{
-		color:black;
-	}          
-
+#table {
+	width: 90%;
+ 	border-collapse: collapse;
+ 	border-top: 1px solid #ccc;
+}
+#table th, #table td {
+	padding: 5px;
+ 	height: 50px; 
+ 	border-bottom: 1px solid #ccc;
+}
+#table th {background-color: #ccc;}
+  
+.subjectStyle {
+	font-weight: bold;
+   	color: navy;
+	cursor: pointer;
+}
+#newhit{
+	position: relative;
+	left: 84%;
+	margin-bottom: 5px;
+}
+#btnadd{
+	background-color: white;
+	border: solid #ccc 1px;
+	position: relative;
+	left: 83%;
+	top: -27px;		
+	height: 30px;
+}
+.boarda{
+	color:black;
+}          
 </style>
 
 <script type="text/javascript">
@@ -124,10 +121,6 @@
 		$("input#searchWord").val("${requestScope.paraMap.searchWord}");
 	}
 	
-	// 글쓰기 버튼
-  	$("button#btnadd").click(function(){
-  		location.href="<%=ctxPath%>/board/add.sam";
-	});
 	
 
 	});// end of $(document).ready(function(){})------------------
@@ -137,6 +130,8 @@
 		
 		var frm = document.goViewFrm;
 		frm.seq.value=seq;
+		frm.searchType.value = "${requestScope.paraMap.searchType}";
+	    frm.searchWord.value = "${requestScope.paraMap.searchWord}"; 
 		frm.method="get";
 		frm.action="<%= ctxPath%>/board/view.sam";
 		frm.submit();
@@ -179,6 +174,7 @@
  		<c:if test="${categoryno == 4}">공지사항</c:if> 
  		<c:if test="${categoryno == 5}">Q&A</c:if> 
  	</h2>
+
  	<form name="newhitFrm">
 		<select id="newhit">
 			<option value="1">최신순</option>
@@ -231,7 +227,10 @@
    	 	<button type="button" onclick="goSearch()">검색</button>
 	</form>
 	
-	<button type="button" id="btnadd">게시글 등록</button>
+	<c:if test="${categoryno != 4 || (categoryno == 4 && sessionScope.loginuser.identity == 2)}">
+		<button type="button" id="btnadd" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${categoryno}'">게시글 등록</button>
+	</c:if>
+
 	
 	</div>
 	<%-- 검색어 입력시 자동글 완성하기 1--%>
@@ -241,11 +240,13 @@
 
 <%-- 페이지 바 --%>
 <div style="text-align:center; width:70%; border:solid 0px grey; margin:20px auto; ">
-	${requestScope.pageBar}
+	${requestScope.pageBar}  
 </div>
 
 <form name="goViewFrm">
 	<input type="hidden" name="seq" />
 	<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
 	<input type="hidden" name="categoryno" value="${categoryno}">
+	<input type="hidden" name="searchType" />
+    <input type="hidden" name="searchWord" />
 </form>
