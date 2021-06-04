@@ -57,13 +57,13 @@
          }
          
          // 글내용 유효성 검사(스마트에디터 사용 안 할시)
-         <%--
+         
          var contentVal = $("textarea#content").val().trim();
          if(contentVal == "") {
             alert("글내용을 입력하세요!!");
             return;
          }
-         --%>
+         
          
          <%-- === 스마트에디터 구현 시작 === --%>
          // 스마트에디터 사용시 무의미하게 생기는 p태그 제거
@@ -100,13 +100,12 @@
  		<c:if test="${requestScope.categoryno == 1}">자유게시판</c:if>
  		<c:if test="${requestScope.categoryno == 2}">중고거래</c:if>
  		<c:if test="${requestScope.categoryno == 2}">동아리&공모전 모집</c:if>
- 		${categoryno}
 	</h1>
 	<hr class="mainline" align="left" >
 	
 	<form name="addFrm"> 
- 		<input type="hidden" name="categoryno" value="1" />                   
-		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
+ 		<input type="hidden" name="categoryno" value="${categoryno}" />                   
+		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}"/>
 		<input type="hidden" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />
 		
 		작성자 : ${sessionScope.loginuser.name}&nbsp;${sessionScope.loginuser.perno}

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.spring.board.model.BoardVO;
 import com.spring.finalproject3.common.MyUtil;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
@@ -35,7 +34,10 @@ public class BoardController {
 	// 게시판 글쓰기 폼
 	@RequestMapping(value="/board/add.sam")
 	public ModelAndView requiredLogin_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
-				
+		String categoryno = request.getParameter("categoryno");
+		System.out.println("글쓰기폼: "+categoryno);
+		mav.addObject("categoryno", categoryno); 
+		
 		mav.setViewName("board/add.tiles2");		
 		return mav;
 	}
@@ -131,13 +133,10 @@ public class BoardController {
 		boardList = service.boardListSearchWithPaging(paraMap);
 		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
 		
-		// 아래는 검색대상 컬럼과 검색어를 유지시키기 위한 것임.
 		if(!"".equals(searchType) && !"".equals(searchWord)) {
 			mav.addObject("paraMap", paraMap);
 		}
-		
-		
-		// === #121. 페이지바 만들기 === //
+				
 		int blockSize = 5;
 		
 		int loop = 1;
@@ -176,26 +175,20 @@ public class BoardController {
 		
 		mav.addObject("pageBar",pageBar);
 		
-		// === #123. 페이징 처리되어진 후 특정 글제목을 클릭하여 상세내용을 본 이후
-	    //           사용자가 목록보기 버튼을 클릭했을때 돌아갈 페이지를 알려주기 위해
-	    //           현재 페이지 주소를 뷰단으로 넘겨준다.
 		String gobackURL = MyUtil.getCurrentURL(request);
 		// System.out.println("~~~goback확인용"+gobackURL);
 		
-		if(gobackURL != null) {
-			gobackURL = gobackURL.replaceAll("", "&");
-		}
+		/*
+		 * if(gobackURL != null) { gobackURL = gobackURL.replaceAll("", "&"); }
+		 */
 		
-		mav.addObject("gobackURL", gobackURL);
-		
-		// ==== 페이징 처리를 한 검색어가 있는 전체 글목록 보여주기 끝 ==== //
-		/////////////////////////////////////////////////////////
-		
+		mav.addObject("gobackURL", gobackURL);				
 		mav.addObject("boardList", boardList);
 		mav.setViewName("board/list.tiles2");
 		
 		return mav;
 	}
+	
 	
 	// 검색어 입력시 자동글 완성하기(글쓴이검색 아직 안됨 board.xml 오류나는거 수정하기)
 	@ResponseBody
@@ -307,30 +300,6 @@ public class BoardController {
 	}
 	
 	
-	// 원게시물에 딸린 댓글들을 조회해오기(Ajax로 처리) 
-	@ResponseBody
-	@RequestMapping(value="/board/readComment.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
-	public String readComment(HttpServletRequest request) {
-		
-		String fk_seq = request.getParameter("fk_seq");
-		
-		List<CommentVO> commentList = service.getCommentList(fk_seq);
-		
-		JSONArray jsonArr = new JSONArray(); 
-		
-		if(commentList != null) {
-			for(CommentVO cmtvo : commentList) {
-				JSONObject jsonObj = new JSONObject();
-				jsonObj.put("content", cmtvo.getContent());
-				jsonObj.put("name", cmtvo.getName());
-				jsonObj.put("reregDate", cmtvo.getReregDate());
-				
-				jsonArr.put(jsonObj);
-			}
-		}		
-		return jsonArr.toString();
-	}	
-	
 	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
 	@ResponseBody
 	@RequestMapping(value="/board/commentList.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
@@ -355,7 +324,7 @@ public class BoardController {
 		
 		List<CommentVO> commentList = service.getCommentListPaging(paraMap);
 		
-		JSONArray jsonArr = new JSONArray(); // []
+		JSONArray jsonArr = new JSONArray(); 
 		
 		if(commentList != null) { 
 			for(CommentVO cmtvo : commentList) {
@@ -363,6 +332,7 @@ public class BoardController {
 				jsonObj.put("content", cmtvo.getContent());
 				jsonObj.put("name", cmtvo.getName());
 				jsonObj.put("reregDate", cmtvo.getReregDate());
+				jsonObj.put("identity", cmtvo.getIdentity());
 				
 				jsonArr.put(jsonObj);
 			}
@@ -400,9 +370,22 @@ public class BoardController {
 	@RequestMapping(value="/board/edit.sam")
 	public ModelAndView requiredLogin_edit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
       
-		// 글 수정해야 할 글번호 가져오기
 		String seq = request.getParameter("seq");
 	  
+		String searchType = request.getParameter("searchType");
+		// System.out.println("써치타입: "+searchType);
+		if(searchType == null) {
+			searchType = "";
+		}
+		mav.addObject(searchType);
+		
+		String searchWord = request.getParameter("searchWord");
+		// System.out.println("써치워드: "+searchWord);
+		if(searchWord == null) {
+			searchWord = "";
+		}
+		mav.addObject(searchWord);
+		 
 		// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
 		BoardVO boardvo = service.getViewNo(seq);
 	  
@@ -428,26 +411,85 @@ public class BoardController {
 	}
 	
 	
-	// === #72. 글수정 페이지 완료하기 === //
-	@RequestMapping(value="/editEnd.action", method= {RequestMethod.POST})
+	// 글수정 페이지 완료하기 
+	@RequestMapping(value="/board/editEnd.sam", method= {RequestMethod.POST})
 	public ModelAndView editEnd(ModelAndView mav, BoardVO boardvo, HttpServletRequest request) {   
 	   
+		String searchType = request.getParameter("searchType");
+		String searchWord = request.getParameter("searchWord");
+		
 		int n = service.edit(boardvo);
 	   
-	   if(n == 0) {
-          mav.addObject("message", "수정이 실패했습니다.");
-       }
-       else {
-          mav.addObject("message", "글수정 성공!!");      
-       }
-
-       mav.setViewName("msg");
+		if(n == 0) {
+			mav.addObject("message", "수정이 실패했습니다.");
+		}
+		else {
+			mav.addObject("message", "글수정 성공!!");      
+		}
+	  
+		mav.addObject("loc", request.getContextPath()+"/board/view.sam?seq="+boardvo.getSeq()+
+							"&categoryno="+boardvo.getCategoryno()+
+							"&searchType="+searchType+
+							"&searchWord="+searchWord);
+		mav.setViewName("msg");
        
-	   return mav;
-   }
+		return mav;
+	}
+
+	// 글 삭제하기
+	@RequestMapping(value="/board/del.sam")
+	public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+   
+		String seq = request.getParameter("seq");
+		String categoryno = request.getParameter("categoryno");	
+		System.out.println(seq);
+		
+		
+		BoardVO boardvo = service.getViewNo(seq);
+		
+		String gobackURL = request.getParameter("gobackURL");
+		mav.addObject("gobackURL", gobackURL);
+      
+		HttpSession session = request.getSession();
+		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+      
+		String loginuserPerno = String.valueOf(loginuser.getPerno());
+		
+		String loc = "javascript:history.back()";
+		
+		if( !loginuserPerno.equals(boardvo.getFk_perno()) ) {
+			String message = "다른 사용자의 글은 삭제가 불가합니다.";
+			       
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+			mav.setViewName("msg");
+      	}
+      	else {
+    	    
+    	    int n = service.del(Integer.parseInt(request.getParameter("seq"))); 
+    	    
+    		System.out.println(n);
+    		
+    	    if(n == 0) {
+    	         mav.addObject("message", "글 삭제가 불가합니다.");
+    	         mav.addObject("loc", loc);
+    	         mav.setViewName("msg");
+    	    }     
+    	    else {
+    	         mav.addObject("message", "글삭제 성공!!");
+    	         mav.addObject("loc", request.getContextPath()+"/board/list.sam?categoryno="+categoryno);
+    	         mav.setViewName("msg");
+    	    }
+    	    
+    	    
+    	    return mav;
+      		
+      	}
+      
+		return mav;
+	}
 	
-	// 게시글 삭제하기 /board/del.sam
-	
+
 	
 	// 댓글 수정하기 /board/commentedit.sam
 	

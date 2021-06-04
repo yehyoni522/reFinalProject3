@@ -4,9 +4,6 @@
 
 <% String ctxPath = request.getContextPath(); %>
 
-<!DOCTYPE html>
-<html>
-
 <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -193,7 +190,6 @@ button.re:hover{
 	}
 </script>
 
-<body>
 
 <div class="msgHead">
 	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">쪽지함</span></div>
@@ -229,5 +225,3 @@ button.re:hover{
 </div>
 
 
-</body>
-</html>

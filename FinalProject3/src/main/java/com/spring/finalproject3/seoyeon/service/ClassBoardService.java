@@ -6,8 +6,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.finalproject3.seoyeon.model.InterClassBoardDAO;
+import com.spring.finalproject3.seoyeon.model.SubmitVO;
 import com.spring.finalproject3.seoyeon.model.assignmentBoardVO;
 
 @Component
@@ -50,6 +54,76 @@ public class ClassBoardService implements InterClassBoardService {
 	public String getTotalPerson(String subno) {
 		String totalPerson = dao.getTotalPerson(subno);
 		return totalPerson;
-	} 
-	
+	}
+
+    // 과제 게시글1개 조회
+	@Override
+	public assignmentBoardVO assignmentView(String assgnno) {
+		assignmentBoardVO assignmentVO = dao.assignmentView(assgnno);
+		return assignmentVO;
+	}
+
+	// ===  1개글 수정하기 === //
+	@Override
+	public int assignmentEdit(assignmentBoardVO assignmentVO) {
+		int n = dao.assignmentEdit(assignmentVO);
+		return n;
+	}
+
+	// === 1개글 삭제하기 === //
+	@Override
+	public int assignmentDelete(String assgnno) {
+		int n = dao.assignmentDelete(assgnno);
+		return n;
+	}
+
+	// === 과제 제출 댓글 작성하기 === //
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
+	public int addSubmit(SubmitVO submitvo) throws Throwable {
+
+		int n=0, m=0, result=0;
+		
+		n = dao.addSubmit(submitvo); // 댓글쓰기(tbl_assgn 테이블에 insert)
+		
+		if(n==1) {
+			m = dao.updateSubmitCount(submitvo.getFk_assgnno()); // tbl_assgn 테이블에 submitCount 컬럼의 값을 1증가(update) 
+		}
+		
+		if(m==1) {
+			result=1;
+		}
+		
+		return result;
+	}
+
+	// === 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) === //
+	@Override
+	public List<SubmitVO> getSubmitListPaging(Map<String, String> paraMap) {
+		List<SubmitVO> submitList = dao.getSubmitListPaging(paraMap);
+		return submitList;
+	}
+
+	// === 원게시물에 딸린 댓글 totalPage 알아오기 (Ajax 로 처리) === //
+	@Override
+	public int getSubmitTotalPage(Map<String, String> paraMap) {
+		int totalPage = dao.getSubmitTotalPage(paraMap);
+	    return totalPage;
+	}
+
+	// 학생이 과제 제출했는지 확인하기
+	@Override
+	public int studentSubmit(Map<String, String> paraMap) {
+		int n = dao.studentSubmit(paraMap);
+		return n;
+	}
+
+	// === 학생)댓글 페이징 처리해서 조회하기 (Ajax 로 처리) === //
+	@Override
+	public List<SubmitVO> mysubmitList(Map<String, String> paraMap) {
+		List<SubmitVO> submitList = dao.mysubmitList(paraMap);
+		return submitList;
+	}
+
+
 }

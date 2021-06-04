@@ -115,6 +115,20 @@ public class BoardService implements InterBoardService {
 		BoardVO boardvo = dao.getViewNo(seq);
 		return boardvo;
 	}
+	
+	// 글수정 페이지 완료하기 
+	@Override
+	public int edit(BoardVO boardvo) {
+		int n = dao.edit(boardvo);
+		return n;
+	}
+
+	// 게시글 삭제하기
+	@Override
+	public int del(int seqno) {
+		int n = dao.del(seqno);
+		return n;
+	}
 
 
 

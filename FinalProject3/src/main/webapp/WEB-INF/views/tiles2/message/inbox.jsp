@@ -4,9 +4,6 @@
 
 <% String ctxPath = request.getContextPath(); %>
 
-<!DOCTYPE html>
-<html>
-
 <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -344,8 +341,6 @@ a:visited {
 	}
 </script>
 
-<body>
-
 <div class="msgHead">
 	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">쪽지함</span></div>
 	<hr style="border: solid 1px #E5E5E5;">
@@ -361,7 +356,7 @@ a:visited {
 	</div>	
 </div>
 
-<div class="msgContents" style="width: 70%; display:inline-block ; ">
+<div class="msgContents" style="width: 70%; display:inline-block; ">
 
 		<button class="del" type="button" onclick="goInDel()">삭제</button>
 		 <button class="re" onclick="gorResponse()">답장</button>
@@ -448,5 +443,6 @@ a:visited {
      	${requestScope.pageBar}
    </div>
 </div>
-</body>
-</html>
+
+
+

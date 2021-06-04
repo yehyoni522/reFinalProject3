@@ -10,11 +10,13 @@ public class CommentVO {
 	private String status;
 	
 	private String name; // sql 문에서 가져온 tbl_person의 이름
+	private String identity; // 0:학생, 1:교수, 2:관리자
+	
 	
 	public CommentVO() {}		
-
+	
 	public CommentVO(String comseq, String fk_seq, String fk_perno, String content, String reregDate, String status,
-			String name) {
+			String name, String identity) {
 		super();
 		this.comseq = comseq;
 		this.fk_seq = fk_seq;
@@ -23,9 +25,18 @@ public class CommentVO {
 		this.reregDate = reregDate;
 		this.status = status;
 		this.name = name;
+		this.identity = identity;
 	}
 
 	
+	public String getIdentity() {
+		return identity;
+	}
+
+	public void setIdentity(String identity) {
+		this.identity = identity;
+	}
+
 	public String getName() {
 		return name;
 	}

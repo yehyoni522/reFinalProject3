@@ -48,6 +48,70 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		String totalPerson = sqlsession.selectOne("classBoard.getTotalPerson", subno);
 		return totalPerson;
 	}
+
+    // 과제 게시글1개 조회
+	@Override
+	public assignmentBoardVO assignmentView(String assgnno) {
+		assignmentBoardVO assignmentVO = sqlsession.selectOne("classBoard.assignmentView",assgnno);
+		return assignmentVO;
+	}
+
+	// ===1개글 수정하기 === //
+	@Override
+	public int assignmentEdit(assignmentBoardVO assignmentVO) {
+		int n = sqlsession.update("classBoard.assignmentEdit", assignmentVO);
+		return n;
+	}
+
+	// === 1개글 삭제하기 === //
+	@Override
+	public int assignmentDelete(String assgnno) {
+		int n = sqlsession.delete("classBoard.assignmentDelete", assgnno);
+		return n;
+	}
+
+	// 과제 제출 댓글쓰기
+	@Override
+	public int addSubmit(SubmitVO submitvo) {
+		int n = sqlsession.insert("classBoard.addSubmit", submitvo);
+		return n;
+	}
+
+	// tbl_assgn 테이블의 submitCount 컬럼의 값을 1증가(update)  
+	@Override
+	public int updateSubmitCount(String fk_assgnno) {
+		int n = sqlsession.update("classBoard.updateSubmitCount", fk_assgnno);
+		return n;
+	}
+
+	// === 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) === //
+	@Override
+	public List<SubmitVO> getSubmitListPaging(Map<String, String> paraMap) {
+		List<SubmitVO> submitList = sqlsession.selectList("classBoard.getSubmitListPaging", paraMap);
+	     return submitList;
+	}
+
+	// === 원게시물에 딸린 댓글 totalPage 알아오기 (Ajax 로 처리) === //
+	@Override
+	public int getSubmitTotalPage(Map<String, String> paraMap) {
+		int totalPage = sqlsession.selectOne("classBoard.getSubmitTotalPage", paraMap);
+	    return totalPage;
+	}
+
+	// 학생이 과제 제출했는지 확인하기
+	@Override
+	public int studentSubmit(Map<String, String> paraMap) {
+		int n =  sqlsession.selectOne("classBoard.studentSubmit", paraMap);
+		return n;
+	}
+
+	// === 학생)댓글 페이징 처리해서 조회하기 (Ajax 로 처리) === //
+	@Override
+	public List<SubmitVO> mysubmitList(Map<String, String> paraMap) {
+		List<SubmitVO> submitList = sqlsession.selectList("classBoard.mysubmitList", paraMap);
+		return submitList;
+	}
+
 	
 	
 	

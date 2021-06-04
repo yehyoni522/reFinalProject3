@@ -4,9 +4,6 @@
 
 <% String ctxPath = request.getContextPath(); %>
 
-<!DOCTYPE html>
-<html>
-
 <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -129,7 +126,7 @@ button.re{
 	transition:0.3s;
 	transform: translate(-50%,-50%);
 	margin-top:20px;
-	margin-left: 270px;
+	margin-left: 320px;
 }
 button.re:focus {
 	outline:0;
@@ -188,12 +185,19 @@ div#add{
 	
 
 	$(document).ready(function(){
+		
+		$("div#add").html("");
+		$("input[name=receiver_es]").val("");
+		$("input[name=name_es]").val("");
+		
 		$("div#inbox").bind("click", function(){
 			goInbox();
 		});
 		$("div#outbox").bind("click", function(){
 			goOutbox();
 		});
+		
+		
 	
 		$('textarea.DOC_TEXT').keyup(function (e){
 		    var content = $(this).val();
@@ -233,15 +237,20 @@ div#add{
 		
 		
 		// 답장하기 때문에 값이 들어왔을때 
-		var loginuser_id = $("input#loginuser_id").val();
-		var loginuser_name = $("input#loginuser_name").val();
+		var fk_userid = $("input#fk_userid").val();
+		var fk_name = $("input#fk_name").val();
 		
-		if(loginuser_id !=null && loginuser_name !=null){
-			getval = loginuser_name +"("+loginuser_id+")";
+		if(fk_userid != "" && fk_name != ""){
+			val = fk_name +"("+fk_userid+")";
 			
-			 $("div#add").html(getval);
+			 $("div#add").html(val);
 			 $("input[name=receiver_es]").val(loginuser_id);
 			 $("input[name=name_es]").val(loginuser_name);
+		}
+		else{
+			$("div#add").html("");
+			$("input[name=receiver_es]").val("");
+			$("input[name=name_es]").val("");
 		}
 		
 		
@@ -281,17 +290,19 @@ div#add{
 	// 전송하기
 	function goSubmit() {
 		
-		var addHtml = $("div#add").html();
+		var addHtml = $("input[name=name_es]").val();
 		
-		if(addHtml == null) {
+		if(addHtml == "") {
 			alert("받는사람의 정보가 없습니다!");
 			return; // 종료
 		}
 		
-		var textarea = $("textarea.DOC_TEXT").val();
+		var textarea = $("textarea.DOC_TEXT").val().trim();
 		
-		if(textarea == null) {
+		if(textarea == "") {
 			alert("내용을 입력하셔야 합니다!");
+			$("textarea.DOC_TEXT").val("");
+			$('span#counter').html(0);
 			return; // 종료
 		}
 		var frm = document.writeFrm2;
@@ -306,8 +317,6 @@ div#add{
 	
 
 </script>
-
-<body>
 
 <div class="msgHead">
 	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">쪽지함</span></div>
@@ -331,6 +340,8 @@ div#add{
 			<input name="forme" type="checkbox"><label for="forme" style="font-size:12px;">내게쓰기</label>&nbsp;&nbsp;
 			<input type="hidden" id="loginuser_id" value="${requestScope.loginuser_id}">
 			<input type="hidden" id="loginuser_name" value="${requestScope.loginuser_name}">
+			<input type="hidden" id="fk_userid" value="${requestScope.fk_userid}">
+			<input type="hidden" id="fk_name" value="${requestScope.fk_name}">
 			<span class='green_window'>
 				<input type='text' class='input_text' placeholder="학번/교번을 입력하세요" name="receiver"/>
 			</span>
@@ -345,7 +356,7 @@ div#add{
 				<div class="addBox" id="receiverID" style="font-size: 13px; font-weight: bold; color: #205890;">내용 <span style="color:#aaa;">(<span id="counter">0</span> / 1000자)</span></div>
 				<textarea rows="15" cols="50" style="margin: 0px; width: 408px; height: 215px;" class="DOC_TEXT" name="DOC_TEXT"></textarea>
 			<br>
-			<a>임시저장</a>
+			
 			<button class="re" id="btnComment" type="button" onclick="goSubmit();">전송</button> 
 			<button class="del" type="reset">취소</button> 
 		</form>
@@ -384,6 +395,4 @@ div#add{
   </div>
 <%-- ****** 학번/교수번호 찾기 Modal 끝****** --%>
 
-
-</body>
-</html>
+ㄴ
