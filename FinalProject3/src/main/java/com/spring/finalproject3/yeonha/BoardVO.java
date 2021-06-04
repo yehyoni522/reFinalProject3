@@ -1,5 +1,6 @@
 package com.spring.finalproject3.yeonha;
 
+import org.springframework.web.multipart.MultipartFile;
 
 public class BoardVO {
 
@@ -8,7 +9,6 @@ public class BoardVO {
 	private String fk_perno;	 // 사람번호(학번,교수번호,관리자번호?)
     private String subject;      // 글제목
     private String content;      // 글내용 
-    private String files;		 // 파일
     private String categoryno;	 // 카테고리번호(1:자유,2:중고,3:모집)
     private String good;		 // 좋아요
     private String readCount;    // 글조회수
@@ -26,8 +26,93 @@ public class BoardVO {
     private String name; // sql 문에서 가져온 tbl_person의 이름
     private String newhit; // 최신순,인기순 sleect
     
+    private String groupno; // 게시글 답글에서 사용
+    private String fk_seq;
+    private String depthno;
     
-    public String getNewhit() {
+    private MultipartFile attach; // form 태그에서 type="file" 인 파일을 받아서 저장되는 필드이다. 
+    
+    private String fileName;    // WAS(톰캣)에 저장될 파일명(2020120809271535243254235235234.png) 
+    private String orgFilename; // 진짜 파일명(강아지.png)  // 사용자가 파일을 업로드 하거나 파일을 다운로드 할때 사용되어지는 파일명
+    private String fileSize;    // 파일크기
+    
+    
+	public BoardVO(){}   
+	
+    public BoardVO(String seq, String fk_perno, String subject, String content, String categoryno, String good,
+			String readCount, String regDate, String status, String commentCount, String namecheck, String previousseq,
+			String previoussubject, String nextseq, String nextsubject, String name, String newhit, String groupno,
+			String fk_seq, String depthno, MultipartFile attach, String fileName, String orgFilename, String fileSize) {
+		super();
+		this.seq = seq;
+		this.fk_perno = fk_perno;
+		this.subject = subject;
+		this.content = content;
+		this.categoryno = categoryno;
+		this.good = good;
+		this.readCount = readCount;
+		this.regDate = regDate;
+		this.status = status;
+		this.commentCount = commentCount;
+		this.namecheck = namecheck;
+		this.previousseq = previousseq;
+		this.previoussubject = previoussubject;
+		this.nextseq = nextseq;
+		this.nextsubject = nextsubject;
+		this.name = name;
+		this.newhit = newhit;
+		this.groupno = groupno;
+		this.fk_seq = fk_seq;
+		this.depthno = depthno;
+		this.attach = attach;
+		this.fileName = fileName;
+		this.orgFilename = orgFilename;
+		this.fileSize = fileSize;
+	}
+
+	public String getGroupno() {
+		return groupno;
+	}
+	public void setGroupno(String groupno) {
+		this.groupno = groupno;
+	}
+	public String getFk_seq() {
+		return fk_seq;
+	}
+	public void setFk_seq(String fk_seq) {
+		this.fk_seq = fk_seq;
+	}
+	public String getDepthno() {
+		return depthno;
+	}
+	public void setDepthno(String depthno) {
+		this.depthno = depthno;
+	}
+	public MultipartFile getAttach() {
+		return attach;
+	}
+	public void setAttach(MultipartFile attach) {
+		this.attach = attach;
+	}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	public String getOrgFilename() {
+		return orgFilename;
+	}
+	public void setOrgFilename(String orgFilename) {
+		this.orgFilename = orgFilename;
+	}
+	public String getFileSize() {
+		return fileSize;
+	}
+	public void setFileSize(String fileSize) {
+		this.fileSize = fileSize;
+	}
+	public String getNewhit() {
 		return newhit;
 	}
 
@@ -42,31 +127,6 @@ public class BoardVO {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public BoardVO(){}   
-	
-	public BoardVO(String seq, String fk_perno, String subject, String content, String files, String categoryno,
-			String good, String readCount, String regDate, String status, String commentCount, String namecheck,
-			String previousseq, String previoussubject, String nextseq, String nextsubject) {
-		super();
-		this.seq = seq;
-		this.fk_perno = fk_perno;
-		this.subject = subject;
-		this.content = content;
-		this.files = files;
-		this.categoryno = categoryno;
-		this.good = good;
-		this.readCount = readCount;
-		this.regDate = regDate;
-		this.status = status;
-		this.commentCount = commentCount;
-		this.namecheck = namecheck;
-		this.previousseq = previousseq;
-		this.previoussubject = previoussubject;
-		this.nextseq = nextseq;
-		this.nextsubject = nextsubject;
-	}
-	
 	public String getNamecheck() {
 		return namecheck;
 	}
@@ -98,12 +158,6 @@ public class BoardVO {
 	}
 	public void setContent(String content) {
 		this.content = content;
-	}
-	public String getFiles() {
-		return files;
-	}
-	public void setFiles(String files) {
-		this.files = files;
 	}
 	public String getCategoryno() {
 		return categoryno;

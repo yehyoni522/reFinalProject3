@@ -86,4 +86,12 @@ public class ReadingService implements InterReadingService {
 		return mapList;
 	}
 
+
+
+	@Override
+	public List<Map<String, String>> viewChart(String bdate) {
+		List<Map<String, String>> mapList = dao.viewChart(bdate);
+		return mapList;
+	}
+
 }
