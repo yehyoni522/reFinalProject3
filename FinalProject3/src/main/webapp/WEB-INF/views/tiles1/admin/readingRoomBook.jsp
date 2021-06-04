@@ -229,51 +229,15 @@ var rno = 1;
 var tno = 1;
 
 $(function() {
+
 	
-	Highcharts.chart('container', {
-
-	    chart: {
-	        type: 'column',
-	        styledMode: true
-	    },
-
-	    title: {
-	        text: '이용 현황'
-	    },
-
-	    yAxis: [{
-	        className: 'highcharts-color-0',
-	        title: {
-	            text: '총 예약 수'
-	        }
-	    }, {
-	        className: 'highcharts-color-1',
-	        opposite: true,
-	        title: {
-	            text: '실제 이용 수'
-	        }
-	    }],
-
-	    plotOptions: {
-	        column: {
-	            borderRadius: 5
-	        }
-	    },
-
-	    series: [{
-	        data: [124, 86, 117]
-	    }, {
-	        data: [83, 71, 98],
-	        yAxis: 1
-	    }]
-
-	});
 	
 	var bdate = $("td.today").attr('data-fdate');
 	//console.log(bdate); 오늘 날짜
 	//selectDateBookList(bdate);
 	bookListView(bdate);
-	
+	viewChart(bdate);
+		
 
 	$(document).on('click','td.day',function(){
 		//console.log($(this).attr('data-fdate'));
@@ -281,21 +245,10 @@ $(function() {
 		bdate = $(this).attr('data-fdate');
 		console.log("gn");
 		bookListView(bdate);
+		viewChart(bdate);
 		//selectDateBookList(bdate);
 	}); //document ------------
 	
-	
-	/* $("select.timeselect").bind("change", function(){
-		tno = $(this).val();
-		cnt=0;
-		goTimeSelectView(rname, tno);
-	});
-	
-	$("select.timeselect").bind("change", function(){
-		tno = $(this).val();
-		cnt=0;
-		goTimeSelectView(rname, tno);
-	}); */
 	
 	$("select#sel3").bind("change", function(){
 		rno = $(this).val();
@@ -353,14 +306,76 @@ function bookListView(bdate) {
 	});
 }
 
-function goSearchDeposit() {
-	//보증금 조회 메소드
-	alert($("select#sel1").val() + ", " + $("select#sel2").val());
-}
+function viewChart(bdate) {
+	
+	var arr1 = new Array();
+	var arr2 = new Array();
+	var arr3 = new Array();
+	
+	$.ajax({
+		url:"<%=ctxPath%>/admin/viewChart.sam",
+		type:"get",
+		data:{"bdate":bdate},
+		dataType:"json",
+	   	success:function(json) {
+	   		$.each(json, function(index, item){
+	   			arr1.push(Number(item.cnt1));  
+	   			arr2.push(Number(item.cnt2));
+	   			arr3.push(item.rname);
+	   		});
+	   		
+	   		Highcharts.chart('container', {
 
-function goSearchBookList() {
-	//보증금 조회 메소드
-	alert($("select#sel3").val() + ", " + $("select#sel4").val());
+	   		    chart: {
+	   		        type: 'column',
+	   		        styledMode: true
+	   		    },
+
+	   		    title: {
+	   		        text: '이용 현황'
+	   		    },
+	   		    
+	   		 	xAxis: [{
+   		        	categories:[arr3[0], arr3[1], arr3[2]]
+	   		    }],
+
+	   		    yAxis: [{
+	   		        className: 'highcharts-color-0',
+	   		        title: {
+	   		            text: '총 예약 수'
+	   		        }
+	   		    }, {
+	   		        className: 'highcharts-color-1',
+	   		        opposite: true,
+	   		        title: {
+	   		            text: '실제 이용 수'
+	   		        }
+	   		    }],
+
+	   		    plotOptions: {
+	   		        column: {
+	   		            borderRadius: 5
+	   		        }
+	   		    },
+
+	   		    series: [{
+	   		    	data: [ arr1[0], arr1[1], arr1[2] ], 
+	   		    	 name:"총 예약 수"
+	   		    }, {
+	   		    	data: [ arr2[0], arr2[1], arr2[2] ],
+	   		        yAxis: 1, 
+	   		        name:"실제 이용 수"
+	   		    } 
+	   		    ]
+
+	   		});
+	   	}, error: function(request, status, error){
+		      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		}
+
+	});
+	
+	
 }
 </script>
 

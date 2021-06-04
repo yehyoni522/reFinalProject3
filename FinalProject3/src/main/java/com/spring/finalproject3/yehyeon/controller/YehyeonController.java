@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.spring.finalproject3.yehyeon.mail.GoogleMail_yehyeon;
 import com.spring.finalproject3.yehyeon.model.BookListVO;
 import com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO;
@@ -50,6 +53,38 @@ public class YehyeonController {
 		mav.setViewName("reading/index.tiles2");
 		
 		return mav;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/admin/viewChart.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String viewChart(HttpServletRequest request) {
+		
+		String bdate = request.getParameter("bdate");
+		System.out.println("bdate" + bdate);
+		
+		List<Map<String,String>> readingroomchart = service.viewChart(bdate); 
+		
+		JsonArray jsonArr = new JsonArray();
+		
+		for(Map<String,String> map : readingroomchart) {
+			
+			JsonObject jsonObj = new JsonObject();
+			jsonObj.addProperty("usecheck", map.get("usecheck")); 
+			jsonObj.addProperty("cnt1", map.get("cnt1"));
+			jsonObj.addProperty("cnt2", map.get("cnt2"));
+			jsonObj.addProperty("rno", map.get("rno"));
+			jsonObj.addProperty("rname", map.get("rname"));
+			
+			jsonArr.add(jsonObj);
+		}// end of for------------------------------------
+
+	/*	
+		Gson gson = new Gson();
+		return gson.toJson(jsonArr);
+		
+		또는
+	*/
+		return new Gson().toJson(jsonArr);
 	}
 	
 	@ResponseBody
