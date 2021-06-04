@@ -81,9 +81,9 @@ public class ReadingService implements InterReadingService {
 
 
 	@Override
-	public List<BookListVO> selectDateBookList(Map<String, String> paraMap) {
-		List<BookListVO> bookList = dao.selectDateBookList(paraMap);
-		return bookList;
+	public List<Map<String, String>> selectDateBookList(Map<String, String> paraMap) {
+		List<Map<String, String>> mapList = dao.selectDateBookList(paraMap);
+		return mapList;
 	}
 
 }

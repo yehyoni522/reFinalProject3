@@ -170,7 +170,7 @@ public class YehyeonController {
 	
 	////////////////////////////관리자 전용 열람실 예약 내역 시작///////////////////////////////////
 	
-	@RequestMapping(value="/admin/readingRoomBook.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	@RequestMapping(value="/admin/readingRoomBook.sam")
 	public ModelAndView readingRoomBook(ModelAndView mav) {
 		
 		List<RroomNumVO> rRoomList = service.readingRoomView();
@@ -185,46 +185,79 @@ public class YehyeonController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/admin/selectDateBookList.sam")
+	@RequestMapping(value="/admin/selectDateBookList.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public String selectDateBookList(HttpServletRequest request) {
 		
-		/*
-		 * String tno = request.getParameter("tno"); String rno =
-		 * request.getParameter("rno"); String bdate = request.getParameter("bdate");
-		 * 
-		 * System.out.println("확인 ~~ tno : " + tno); System.out.println("확인 ~~ rno : " +
-		 * rno); System.out.println("확인 ~~ bdate : " + bdate);
-		 */
 		
-		Map<String,String> paraMap = new HashMap<>();
-		paraMap.put("tno", "1");
-		paraMap.put("rno", "1");
-		paraMap.put("bdate", "21.05.31");
+		 String tno = request.getParameter("tno"); 
+		 String rno = request.getParameter("rno"); 
+		 String bdate = request.getParameter("bdate");
+		 
+		 System.out.println("~~~ 확인용 tno" + tno);
+		 System.out.println("~~~ 확인용 rno" + rno);
+		 System.out.println("~~~ 확인용 bdate" + bdate);
 
 		
-		List<BookListVO> bookList = service.selectDateBookList(paraMap);
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("tno", tno);
+		paraMap.put("rno", rno);
+		paraMap.put("bdate", bdate);
+
+		
+		//List<BookListVO> bookList = service.selectDateBookList(paraMap);
+		List<Map<String, String>> mapList = service.selectDateBookList(paraMap);
+		
+		///////////////////////////////////////////////////////////////////////////
+		/*
+			System.out.println("~~~~~ 확인용 ~~~~");
+			for(int i=0; i<mapList.size(); i++) {
+				System.out.println(mapList.get(i).get("perno"));
+				 ~~~~~ 확인용 ~~~~
+						1-1
+						1-2
+						1-3
+						1-4
+						1-5
+						1-6
+						1-7
+						1-8
+						1-9
+						1-10
+						1-11
+						1-12
+						1-13
+						1-14
+						1-15
+						1-16
+						1-17
+						1-18
+						1-19
+						1-20
+				
+			}
+		 */
+		///////////////////////////////////////////////////////////////////////////
 		
 		JSONArray jsonArr = new JSONArray(); // []
 		
-		if(bookList != null) {
-			for(BookListVO bvo : bookList) {
-				//dsno, dsname, dscheck, perno, name
+
+		if(mapList != null) { 
+			for(Map<String,String> map : mapList) { //dsno, dsname,
 				JSONObject jsonObj = new JSONObject(); // {}
-				
-				//bno, bdate, perno, fk_dsno, name
-				jsonObj.put("dsno", bvo.getDetailvo().getDsno());
-				jsonObj.put("dsname", bvo.getDetailvo().getDsname());
-				jsonObj.put("dscheck", bvo.getDetailvo().getDscheck());
-				jsonObj.put("perno", bvo.getPersonvo().getPerno());
-				jsonObj.put("name", bvo.getPersonvo().getName());
-				
-				jsonArr.put(jsonObj);
-			}
+				 
+				jsonObj.put("dsno", map.get("dsno"));
+				jsonObj.put("dsname", map.get("dsname"));
+				jsonObj.put("bookcheck", map.get("bookcheck"));
+				jsonObj.put("perno", map.get("perno"));
+				jsonObj.put("name", map.get("name"));
+				 
+				jsonArr.put(jsonObj); 
+			} 
 		}
+
 		
 		return jsonArr.toString(); 
 	}
-	
 	
 	////////////////////////////관리자 전용 열람실 예약 내역 끝///////////////////////////////////	
 	

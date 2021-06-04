@@ -3,6 +3,7 @@ package com.spring.finalproject3.yehyeon.model;
 public class BookListVO {
 	private int bno;
 	private String bdate;
+	private int bookcheck;
 	private int fk_perno;
 	private int fk_dsno;
 	private int fk_tno;
@@ -25,6 +26,14 @@ public class BookListVO {
 
 	public void setPersonvo(PersonVO personvo) {
 		this.personvo = personvo;
+	}
+
+	public int getBookcheck() {
+		return bookcheck;
+	}
+
+	public void setBookcheck(int bookcheck) {
+		this.bookcheck = bookcheck;
 	}
 
 	public int getBno() {

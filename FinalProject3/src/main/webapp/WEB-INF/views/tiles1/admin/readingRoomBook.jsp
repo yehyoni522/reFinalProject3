@@ -5,6 +5,10 @@
 	String ctxPath = request.getContextPath();
     //     /MyMVC 
 %>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <style type="text/css">
     
 div#adminhome {
@@ -38,6 +42,12 @@ div#admincontent {
 
 h3 {
  font-weight: bold;
+}
+
+div.chart::after {
+	content: ''; 
+	dispaly: table; 
+	clear: both;
 }
 
 /* ======== Calendar ======== */
@@ -147,6 +157,72 @@ h3 {
 }
 
 </style>
+<style>
+@import 'https://code.highcharts.com/css/highcharts.css';
+
+.highcharts-figure, .highcharts-data-table table {
+    min-width: 310px; 
+	max-width: 800px;
+    margin: 1em auto;
+}
+
+.highcharts-data-table table {
+	font-family: Verdana, sans-serif;
+	border-collapse: collapse;
+	border: 1px solid #EBEBEB;
+	margin: 10px auto;
+	text-align: center;
+	width: 100%;
+	max-width: 500px;
+}
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+.highcharts-data-table th {
+	font-weight: 600;
+    padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}
+
+
+/* Link the series colors to axis colors */
+.highcharts-color-0 {
+	fill: #7cb5ec;
+	stroke: #7cb5ec;
+}
+.highcharts-axis.highcharts-color-0 .highcharts-axis-line {
+	stroke: #7cb5ec;
+}
+.highcharts-axis.highcharts-color-0 text {
+	fill: #7cb5ec;
+}
+.highcharts-color-1 {
+	fill: #90ed7d;
+	stroke: #90ed7d;
+}
+.highcharts-axis.highcharts-color-1 .highcharts-axis-line {
+	stroke: #90ed7d;
+}
+.highcharts-axis.highcharts-color-1 text {
+	fill: #90ed7d;
+}
+
+
+.highcharts-yaxis .highcharts-axis-line {
+	stroke-width: 2px;
+}
+
+</style>
 <script type="text/javascript">
 
 var rno = 1;
@@ -154,18 +230,57 @@ var tno = 1;
 
 $(function() {
 	
-	
+	Highcharts.chart('container', {
+
+	    chart: {
+	        type: 'column',
+	        styledMode: true
+	    },
+
+	    title: {
+	        text: '이용 현황'
+	    },
+
+	    yAxis: [{
+	        className: 'highcharts-color-0',
+	        title: {
+	            text: '총 예약 수'
+	        }
+	    }, {
+	        className: 'highcharts-color-1',
+	        opposite: true,
+	        title: {
+	            text: '실제 이용 수'
+	        }
+	    }],
+
+	    plotOptions: {
+	        column: {
+	            borderRadius: 5
+	        }
+	    },
+
+	    series: [{
+	        data: [124, 86, 117]
+	    }, {
+	        data: [83, 71, 98],
+	        yAxis: 1
+	    }]
+
+	});
 	
 	var bdate = $("td.today").attr('data-fdate');
 	//console.log(bdate); 오늘 날짜
 	//selectDateBookList(bdate);
-	bookListView(rno, tno, bdate);
+	bookListView(bdate);
 	
 
 	$(document).on('click','td.day',function(){
 		//console.log($(this).attr('data-fdate'));
 		//yy.mm.dd 형태로 출력
 		bdate = $(this).attr('data-fdate');
+		console.log("gn");
+		bookListView(bdate);
 		//selectDateBookList(bdate);
 	}); //document ------------
 	
@@ -184,12 +299,14 @@ $(function() {
 	
 	$("select#sel3").bind("change", function(){
 		rno = $(this).val();
-		bookListView(rno, tno, bdate);
+		console.log(rno);
+		bookListView(bdate);
 	});
 	
 	$("select#sel4").bind("change", function(){
 		tno = $(this).val();
-		bookListView(rno, tno, bdate);
+		console.log("g"+tno);
+		bookListView(bdate);
 	});
 	
 	
@@ -200,7 +317,7 @@ $(function() {
 		
 
 
-function bookListView(rno, tno, bdate) {
+function bookListView(bdate) {
 	// ajax 들어갈 자리
 	// 열람실 예약현황의 select 값들이 변할 때마다 ajax를 호출. 선택한 값에 따른 좌석의 정보를 읽어와야한다.
 	html = "";
@@ -217,8 +334,8 @@ function bookListView(rno, tno, bdate) {
 	   				html += "<tr>";
 	   			}
 	   			
-	   			if(item.dscheck == '1') {
-	   				html += '<td class="seat" style="word-break:break-all;">'+item.dsname+item.perno+item.name+'<input  type="hidden"  value="item.dsno"/></td>';
+	   			if(item.bookcheck == '1') {
+	   				html += '<td class="seat" style="word-break:break-all;">'+item.dsname+'<br>'+item.perno+'<br>'+item.name+'<input  type="hidden"  value='+item.dsno+'/></td>';
 	   			} else {
 	   				html += '<td class="seat">'+item.dsname+'<input id="seat" type="hidden"  value='+item.dsno+'></td>'
 	   			}
@@ -318,64 +435,15 @@ function goSearchBookList() {
 	  <!-- // .my-calendar -->
 	</div>
 	
-	<div style="padding-top:32px;" align="center">
-		<h3>보증금 현황</h3>
-		<form>
-			<select form=""class="form-control timeselect" id="sel1" style="width:140px; display:inline-block;">
-				<c:forEach var="list" items="${requestScope.rRoomList}">
-					<option value="${list.rno}" >${list.rname}</option>
-			     </c:forEach>
-			</select>
-			<select class="form-control timeselect" id="sel2" style="width:140px; display:inline-block;">
-				<c:forEach var="tvo" items="${requestScope.timeList}">
-					<option value="${tvo.tno}" >${tvo.tname}</option>
-			     </c:forEach>
-			</select>
-			<button type="submit" onclick="goSearchDeposit()">조회</button>
-		</form>
-		<div style="padding-top:25px;">
-			<table class="table table-bordered" style="width:410px;">
-				<thead>
-					<tr>
-						<th>열람실</th>
-						<th>이용인원</th>
-						<th>좌석반납</th>
-						<th>미회수 보증금</th>
-					<tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>제1열람실</td>
-						<td>13/20</td>
-						<td>10/20</td>
-						<td>1,500원</td>
-					</tr>
-					<tr>
-						<td>제2열람실</td>
-						<td>13/20</td>
-						<td>10/20</td>
-						<td>1,500원</td>
-					</tr>
-					<tr>
-						<td>제2열람실</td>
-						<td>13/20</td>
-						<td>13/20</td>
-						<td>0원</td>
-					</tr>
-					<tr>
-						<td>누적보증금액</td>
-						<td>180,500원</td>
-						<td>보증금액합계</td>
-						<td>1,500원</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+	<div class="chart" style="float:right; padding-top:70px;">
+		<figure class="highcharts-figure">
+		    <div id="container" style="width:450px; height:300px;"></div>
+		</figure>
 	</div>
 	
-	</div>
-	
-	<div class="clearfix" align="center">
+</div>
+
+<div class="seattable clearfix" align="center">
 	<h3>열람실 예약 현황</h3><br><br>
 	<form>
 		<select form=""class="form-control timeselect" id="sel3" style="width:140px; display:inline-block;">
@@ -405,6 +473,5 @@ function goSearchBookList() {
 			</table>
 	</div>
 </div>
-
 
 <script type="text/javascript" src="<%= ctxPath%>/resources/js/calendar.js"></script>
