@@ -75,8 +75,37 @@
 		where rno between #{startRno} and #{endRno}
 	</select>
 	
+	<!-- 쪽지시험 필드 생성 -->
+	<insert id="addquiz" parameterType="String">
+		insert into tbl_quiz(quizno, quizname, fk_subno)
+		values(quizSeq.nextval, #{quizname}, 1000)
+	</insert>
 	
-
+	<!-- 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색 -->
+	<select id="getquiz" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.QuizVO">
+		select quizno
+		from tbl_quiz
+		where quizname = #{quizname}
+	</select>
+	
+	<!-- 쪽지시험_문제  필드 생성 -->
+	<insert id="addquestion" parameterType="HashMap">
+		insert into tbl_question(questionno, fk_quizno, qzno, qzcontent, answerfirst, answersecond, answerthird, answerfourth)
+		values(questionSeq.nextval, #{fk_quizno}, #{qzno}, #{qzcontent}, #{answerfirst}, #{answersecond}, #{answerthird}, #{answerfourth})
+	</insert>
+	
+	<!-- 쪽지시험_문제_문제번호로 문제일련번호 검색  -->
+	<select id="getquestion" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.QuestionVO">
+		select questionno
+		from tbl_question
+		where qzno = #{qzno}
+	</select>
+	
+	<!-- 쪽지시험_정답 필드 생성  -->
+	<insert id="addquizans" parameterType="HashMap">
+		insert into tbl_quizans(quizansno, fk_quizno, fk_questionno, quizanswer)
+		values(quizanswerSeq.nextval, #{fk_quizno}, #{fk_questionno}, #{quizanswer})
+	</insert>
 
 
 </mapper>

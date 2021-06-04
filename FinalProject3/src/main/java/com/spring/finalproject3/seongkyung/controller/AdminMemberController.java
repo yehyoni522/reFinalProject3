@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.common.MyUtil;
 import com.spring.finalproject3.seongkyung.model.PersonVO;
+import com.spring.finalproject3.seongkyung.model.QuestionVO;
+import com.spring.finalproject3.seongkyung.model.QuizVO;
 import com.spring.finalproject3.seongkyung.service.InteradminMemberService;
 
 @Component
@@ -421,13 +424,110 @@ public class AdminMemberController {
 	}
 	
 	
-	@RequestMapping(value="/lesson/test.sam")
-	public ModelAndView lesson_test(ModelAndView mav, HttpServletRequest request) {
+	@RequestMapping(value="/lesson/quiz.sam")
+	public ModelAndView lesson_quiz(ModelAndView mav, HttpServletRequest request) {
 		
 		
-		mav.setViewName("lessonadmin/lessontest.tiles2");
+		mav.setViewName("lessonadmin/lessonquiz.tiles2");
 		
 		return mav;
 	}
+	
+	
+	@RequestMapping(value="/lesson/quizadd.sam")
+	public ModelAndView lesson_quizadd(ModelAndView mav, HttpServletRequest request) {
+		
+		
+		mav.setViewName("lessonadmin/lessonquizadd.tiles2");
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="/lesson/quizaddEnd.sam", method= {RequestMethod.POST})
+	public ModelAndView lesson_quizaddEnd(ModelAndView mav, HttpServletRequest request) {
+		
+		QuizVO quizvo = null;
+		QuestionVO questionvo = null;
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+		
+		int cnt = Integer.parseInt(request.getParameter("cnt"));	
+		
+		String quizname = request.getParameter("quizname");
+		
+		// System.out.println("cnt 확인중 : " + cnt);
+		// System.out.println("quizname 확인중 : " + quizname);
+		
+		int n = service.addquiz(quizname); // 쪽지시험 필드 생성
+		
+		int j = 0;
+		
+		int m = 0;
+		
+		quizvo = service.getquiz(quizname); // 쪽지시험_시험명으로 일련번호 검색
+		
+		System.out.println("n : " + n);
+		System.out.println("cnt : " + cnt);
+		
+		System.out.println("quizno : " + quizvo.getQuizno());
+		String quizno = String.valueOf(quizvo.getQuizno());
+		
+		if(n == 1) {
+					
+			 for(int i=1; i<3; i++) {
+			  
+			 // quizvo = service.getquiz(quizname); // 쪽지시험_시험명으로 일련번호 검색
+			  
+			 String qzno = request.getParameter("qzno"+i); 
+			 String qzcontent =request.getParameter("qzcontent"+i);
+			 String answerfirst = request.getParameter("answerfirst"+i); 
+			 String answersecond = request.getParameter("answersecond"+i); 
+			 String answerthird = request.getParameter("answerthird"+i); 
+			 String answerfourth = request.getParameter("answerfourth"+i); 
+			 
+			 String quizanswer = request.getParameter("quizanswer"+i); 
+			 
+	//		 System.out.println("answerfirst : " + answerfirst + " answersecond : " + answersecond);
+	//		 System.out.println("answerthird : " + answerthird + " answerfourth : " + answerfourth);
+	//		 System.out.println("qzno : " + qzno + " qzcontent : " + qzcontent);
+	//		 System.out.println("quizanswer : " + quizanswer);		 
+			 		 
+			 paraMap.put("fk_quizno", quizno);
+			 paraMap.put("qzno", qzno);
+			 paraMap.put("qzcontent", qzcontent);
+			 paraMap.put("answerfirst", answerfirst);
+			 paraMap.put("answersecond", answersecond);
+			 paraMap.put("answerthird", answerthird);
+			 paraMap.put("answerfourth", answerfourth);
+			 
+			 paraMap.put("quizanswer", quizanswer);
+			 	 
+			 j = service.addquestion(paraMap); // 쪽지시험_문제  필드 생성
+			 
+			 questionvo = service.getquestion(qzno); // 쪽지시험_문제_문제번호로 문제일련번호 검색
+			 
+			 
+			 paraMap.put("fk_questionno", String.valueOf(questionvo.getQuestionno()));
+			 
+			 m = service.addquizans(paraMap); // 쪽지시험_정답 필드 생성
+			 
+			 if(m*j*n == 1) {
+				 break;
+			 }
+			 
+			 } // end of for
+			 
+
+			 mav.setViewName("redirect:/lesson/quiz.sam");
+
+		}	 
+			 
+
+		
+		return mav;
+	}
+	
+	
+	
 	
 }

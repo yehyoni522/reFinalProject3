@@ -65,4 +65,56 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 		return personList;
 	}
 
+	
+	// 쪽지시험 필드 생성
+	@Override
+	public int addquiz(String quizname) {
+		
+		int n = sqlsession.insert("adminmember.addquiz", quizname);
+		
+		return n;
+	}
+
+	
+	// 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색
+	@Override
+	public QuizVO getquiz(String quizname) {
+		
+		QuizVO quizvo = sqlsession.selectOne("adminmember.getquiz", quizname);
+		
+		return quizvo;
+	}
+
+	
+	// 쪽지시험_문제  필드 생성
+	@Override
+	public int addquestion(Map<String, String> paraMap) {
+		
+		int j = sqlsession.insert("adminmember.addquestion", paraMap);
+		
+		return j;
+	}
+
+	
+	// 쪽지시험_문제_문제번호로 문제일련번호 검색
+	@Override
+	public QuestionVO getquestion(String qzno) {
+		
+		QuestionVO questionvo = sqlsession.selectOne("adminmember.getquestion", qzno);
+		
+		return questionvo;
+	}
+
+	
+	// 쪽지시험_정답 필드 생성
+	@Override
+	public int addquizans(Map<String, String> paraMap) {
+		
+		int m = sqlsession.insert("adminmember.addquizans",paraMap);
+		
+		return m;
+	}
+	
+	
+
 }

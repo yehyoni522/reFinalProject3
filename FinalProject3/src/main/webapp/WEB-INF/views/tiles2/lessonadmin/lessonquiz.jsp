@@ -66,7 +66,6 @@
 					<td class="tablesize">반복문 인덱스</td>
 					<td class="tablesize1">시험명</td>
 					<td class="tablesize">교수</td>
-					<span></span>
 					<td class="tablesize">시험현황(학생정답테이블이 null이 아니면 응시완료를 주자.)</td>
 					<td class="tablesize">시험날짜</td>
 				</tr>
@@ -75,7 +74,7 @@
 		
 		<div align="center" style="margin-top: 7px;">페이지 이동링크</div>
 		
-		<div align="right">글쓰기 c:if 로 교수만 읽을 수 있게.</div>
+		<div style="cursor: pointer;" align="right" onclick="javascript:location.href='<%=ctxPath%>/lesson/testadd.sam'">글쓰기</div>
 		
 	</div>
 

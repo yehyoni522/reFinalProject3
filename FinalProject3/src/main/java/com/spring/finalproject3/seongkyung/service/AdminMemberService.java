@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.spring.finalproject3.seongkyung.model.InteradminMemberDAO;
 import com.spring.finalproject3.seongkyung.model.PersonVO;
+import com.spring.finalproject3.seongkyung.model.QuestionVO;
+import com.spring.finalproject3.seongkyung.model.QuizVO;
 
 @Component
 @Service
@@ -66,6 +68,56 @@ public class AdminMemberService implements InteradminMemberService {
 		List<Map<String, String>> personList = dao.getAdminProfessor(paraMap);
 		
 		return personList;
+	}
+	
+
+	// 쪽지시험 필드 생성
+	@Override
+	public int addquiz(String quizname) {
+		
+		int n  = dao.addquiz(quizname);
+		
+		return n;
+	}
+
+	
+	// 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색
+	@Override
+	public QuizVO getquiz(String quizname) {
+		
+		QuizVO quizvo = dao.getquiz(quizname);
+		
+		return quizvo;
+	}
+
+	
+	// 쪽지시험_문제  필드 생성
+	@Override
+	public int addquestion(Map<String, String> paraMap) {
+		
+		int j = dao.addquestion(paraMap);
+		
+		return j;
+	}
+
+	
+	// 쪽지시험_문제_문제번호로 문제일련번호 검색
+	@Override
+	public QuestionVO getquestion(String qzno) {
+		
+		QuestionVO questionvo = dao.getquestion(qzno);
+		
+		return questionvo;
+	}
+
+	
+	// 쪽지시험_정답 필드 생성
+	@Override
+	public int addquizans(Map<String, String> paraMap) {
+		
+		int m = dao.addquizans(paraMap);
+		
+		return m;
 	}
 	
 
