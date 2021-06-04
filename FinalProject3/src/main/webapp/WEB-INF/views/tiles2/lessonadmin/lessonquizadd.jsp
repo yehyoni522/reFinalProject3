@@ -115,7 +115,7 @@ tr {
 
 <div style="margin: 0 50px 30px 50px; font-family: 'Noto Sans KR', sans-serif;" align="center">
 
-	<div align="left" style="color: #0099cc; font-weight: bold; text-decoration: underline;" onclick="javascript:location.href='<%= ctxPath%>/lesson/quiz.sam'">시험 작성 취소</div>
+	<div align="left" style="color: #0099cc; font-weight: bold; text-decoration: underline; cursor: pointer;" onclick="javascript:location.href='<%= ctxPath%>/lesson/quiz.sam'">시험 작성 취소</div>
 
 	<h2 style="margin-bottom: 20px;" >쪽지시험 문제 작성</h2>
 
