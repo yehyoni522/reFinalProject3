@@ -117,6 +117,34 @@ public class BoardDAO implements InterBoardDAO {
 		return n;
 	}
 
+	// 댓글 불러오기
+	@Override
+	public CommentVO getComment(String comseq) {
+		CommentVO cmtvo = sqlsession.selectOne("board.getComment", comseq);
+		return cmtvo;
+	}
+
+	// 댓글 삭제하기
+	@Override
+	public int delcomment(int comseq) {
+		int n = sqlsession.delete("board.delcomment", comseq);
+		return n;
+	}
+
+	// tbl_board 테이블에서 groupno 컬럼의 최대값 구하기
+	@Override
+	public int getGroupnoMax() {
+		int max = sqlsession.selectOne("board.getGroupnoMax");
+	    return max;
+	}
+
+	// 첨부파일이 있는 글쓰기
+	@Override
+	public int add_withFile(BoardVO boardvo) {
+		int n = sqlsession.insert("board.add_withFile", boardvo);
+		return n;
+	}
+
 
 
 

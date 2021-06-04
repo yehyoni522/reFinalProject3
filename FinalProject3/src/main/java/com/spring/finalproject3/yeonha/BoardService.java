@@ -23,6 +23,13 @@ public class BoardService implements InterBoardService {
 	// 게시판 글쓰기완료, 게시글 등록 ( 파일첨부X)
 	@Override
 	public int add(BoardVO boardvo) {
+		
+		if(boardvo.getFk_seq() == null || boardvo.getFk_seq().trim().isEmpty() ) {
+			// 원글쓰기 이라면 groupno 컬럼의 값은 groupno 컬럼의 최대값(max)+1 로 해야 한다. 
+			int groupno = dao.getGroupnoMax() + 1;
+			boardvo.setGroupno(String.valueOf(groupno));
+		}
+		
 		int n = dao.add(boardvo);
 		return n;
 	}
@@ -129,6 +136,36 @@ public class BoardService implements InterBoardService {
 		int n = dao.del(seqno);
 		return n;
 	}
+
+	// (삭제할) 댓글 불러오기
+	@Override
+	public CommentVO getComment(String comseq) {
+		CommentVO cmtvo = dao.getComment(comseq);
+		return cmtvo;
+	}
+
+	// 댓글 삭제하기
+	@Override
+	public int delcomment(int comseq) {
+		int n = dao.delcomment(comseq);
+		return n;
+	}
+
+	// 첨부파일이 있는 글쓰기
+	@Override
+	public int add_withFile(BoardVO boardvo) {
+		
+		// 원글쓰기인지 , 답변글쓰기인지 구분하기 
+		if(boardvo.getFk_seq() == null || boardvo.getFk_seq().trim().isEmpty() ) {
+			// 원글쓰기 이라면 groupno 컬럼의 값은 groupno 컬럼의 최대값(max)+1 로 해야 한다. 
+			int groupno = dao.getGroupnoMax() + 1;
+			boardvo.setGroupno(String.valueOf(groupno));
+		}
+				
+		int n = dao.add_withFile(boardvo); // 첨부파일이 있는 경우
+		return n;
+	}
+
 
 
 

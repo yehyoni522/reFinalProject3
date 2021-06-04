@@ -45,7 +45,8 @@ a {
 	font-size: 12pt;
 }
 #contentinfo{
-	margin: 10px;
+	margin-left: 10px;
+	margin-top: 10px;
 }
 #boardcontent{
 	width:80%; 
@@ -101,6 +102,9 @@ a {
 }
 #comcont{
 	margin: 2px;
+}
+#fileDown{
+	 text-align: right;
 }
 </style>
 
@@ -165,7 +169,9 @@ a {
 				var html = "";
 				
 				if(json.length > 0) {
-					$.each(json, function(index, item){					
+					$.each(json, function(index, item){		
+						html += "<form name='commentFrm'>"
+						html += "<input type='hidden' value='item.comseq'/>";
 						html += "<div class='putcomment'>";
 						html += "<div id='comname'>&nbsp;"+ item.name;
 						
@@ -173,15 +179,17 @@ a {
 						
 						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
 						html += "<span id='commentfunc'>";
-						html += "<span id='commentreply' ><a href='<%=ctxPath%>/board/reply.sam'>답글</a></span>";
-						html += "<span id='commentedit'><a href='<%=ctxPath%>/board/commentedit.sam'>수정</a></span>";
-						html += "<span id='commentdel'><a href='<%=ctxPath%>/board/commentdel.sam'>삭제</a></span>";
+						html += "<span id='commentreply' ><button type='button' onclick='commentreply()'>답글</button></span>";
+						html += "<span id='commentedit'><button type='button' onclick='commentedit()'>수정</button></span>";
+						html += "<span id='commentdel'><button type='button' onclick='commentdel()'>삭제</button></span>";
 						html += "</span></c:if></div>";
 						
 						html += "<div >&nbsp;"+item.identity+"</div>";
 						html += "<div id='comcont'>&nbsp;"+item.content+"</div>";
 						html += "<div id='comdate'>&nbsp;"+item.reregDate+"</div>";
 						html += "</div>";
+						
+						html += "</form>"
 					});
 				}
 				else {
@@ -262,16 +270,55 @@ a {
 
 		if (confirm("정말 삭제하시겠습니까??") == true){    //확인
 		
-	 		var frm = document.delFrm;
+			var comment_form = $("form[name=delFrm]").serialize();
+	 		
+			$.ajax({
+				url:"<%= ctxPath%>/board/del.sam",
+				data: comment_form,
+				type: "get",
+				dataType:"json",
+				success:function(json){
+					var n = json.n;
+					console.log(n);
+					
+				},
+				error: function(request, status, error){
+					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			 	}
+			});
+		
+			<%-- var frm = document.delFrm;
 		   	frm.method = "POST";
 		   	frm.action = "<%= ctxPath%>/board/del.sam";
-		   	frm.submit();	
+		   	frm.submit(); --%>
+		   	
 		}else{   //취소	
-			
-		    return false;	
+			return false;	
 		}
 
-	}
+	} // end of function removeCheck() {} 글삭제하기
+	
+	function commentreply(){
+		
+	} // end of function commentreply(){} 댓글 답글달기
+	
+	function commentedit(){
+		
+	} // end of function commentedit(){} 댓글 수정하기
+	
+	function commentdel(){
+		
+		if (confirm("정말 삭제하시겠습니까??") == true){    //확인			
+	 		var frm = document.commentFrm;
+		   	frm.method = "POST";
+		   	frm.action = "<%= ctxPath%>/board/commentdel.sam";
+		   	frm.submit();	
+		}else{   //취소				
+		    return false;	
+		}
+		
+	} // end of function commentdel(){} 댓글 삭제하기
+	
 </script>										
 						
 										
@@ -306,6 +353,13 @@ a {
 			<div id="contentinfo">			
 				${requestScope.boardvo.name} &nbsp; ${requestScope.boardvo.regDate}
 			</div>
+			<div id="fileDown"> 
+				<c:if test="${requestScope.boardvo.orgFilename != null}"> 
+				<a href="<%=ctxPath%>/board/download.sam?seq=${requestScope.boardvo.seq}&categoryno=${boardvo.categoryno}"> ${requestScope.boardvo.orgFilename} 
+			    <span>(<fmt:formatNumber value="${requestScope.boardvo.fileSize}" pattern="#,###"/>&nbsp;byte)</span></a>
+				</c:if>
+			</div>
+
 			<br>
 			<div id="boardcontent" >
 				<p style="word-break: break-all;">${requestScope.boardvo.content}</p>
@@ -323,7 +377,7 @@ a {
 		<div id="boardcomment">				
 			<!-- 공지사항 게시판에서는 댓글사용 안함 -->
 			<c:if test="${categoryno != 4}">			      			    		    
-			    <!-- 댓글 내용 보여주기 -->
+			    <!-- 댓글 내용 보여주기 -->			   
 				<div id="table2" >
 					<div id="commentDisplay"></div>
 				</div>
