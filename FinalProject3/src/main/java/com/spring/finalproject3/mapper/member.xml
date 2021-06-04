@@ -82,4 +82,25 @@
 		insert into tbl_schedule(calsubject,fk_perno,startDate,endDate,memo)
 		values(#{calsubject},#{fk_perno},#{startDate},#{endDate},#{memo})
 	</insert>
+	
+	<resultMap type="HashMap" id="scheduleViewMap">
+		<result property="perno" column="fk_perno" javaType="String"/>
+		<result property="calsubject" column="calsubject" javaType="String"/>
+		<result  property="startDate" column="startDate" javaType="String" />
+		<result property="endDate" column="endDate" javaType="String"/>
+		<result property="memo" column="memo" javaType="String"/>
+	</resultMap>
+	
+	
+	<select id="scheduleView" resultMap="scheduleViewMap">
+	select 
+			calsubject,
+			to_char(startDate, 'yyyy-mm-dd') as startDate,
+			to_char(endDate+1, 'yyyy-mm-dd') as endDate,
+			memo
+	from tbl_schedule
+
+	where fk_perno=#{perno} OR fk_perno='1004'
+	</select>
+	
 </mapper>
