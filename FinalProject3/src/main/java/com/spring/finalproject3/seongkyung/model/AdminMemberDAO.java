@@ -66,7 +66,7 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 	}
 
 	
-	// 쪽지시험 필드 생성
+	// 쪽지시험 insert
 	@Override
 	public int addquiz(String quizname) {
 		
@@ -86,7 +86,7 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 	}
 
 	
-	// 쪽지시험_문제  필드 생성
+	// 쪽지시험_문제  insert
 	@Override
 	public int addquestion(Map<String, String> paraMap) {
 		
@@ -98,15 +98,15 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 	
 	// 쪽지시험_문제_문제번호로 문제일련번호 검색
 	@Override
-	public QuestionVO getquestion(String qzno) {
+	public QuestionVO getquestion(Map<String, String> paraMap) {
 		
-		QuestionVO questionvo = sqlsession.selectOne("adminmember.getquestion", qzno);
-		
+		QuestionVO questionvo = sqlsession.selectOne("adminmember.getquestion", paraMap);
+
 		return questionvo;
 	}
 
 	
-	// 쪽지시험_정답 필드 생성
+	// 쪽지시험_정답 insert
 	@Override
 	public int addquizans(Map<String, String> paraMap) {
 		

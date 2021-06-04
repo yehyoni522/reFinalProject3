@@ -73,42 +73,55 @@ public class AdminMemberService implements InteradminMemberService {
 
 	// 쪽지시험 필드 생성
 	@Override
-	public int addquiz(String quizname) {
+	public QuizVO addquiz(String quizname) {
 		
-		int n  = dao.addquiz(quizname);
+		QuizVO quizvo = null;
 		
-		return n;
-	}
-
-	
-	// 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색
-	@Override
-	public QuizVO getquiz(String quizname) {
+		int n = dao.addquiz(quizname);
 		
-		QuizVO quizvo = dao.getquiz(quizname);
+		if(n==1) {
+		   quizvo = dao.getquiz(quizname);
+		}   
 		
 		return quizvo;
 	}
 
 	
-	// 쪽지시험_문제  필드 생성
-	@Override
-	public int addquestion(Map<String, String> paraMap) {
-		
-		int j = dao.addquestion(paraMap);
-		
-		return j;
-	}
+	/*
+	  // 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색
+	  
+	  @Override public QuizVO getquiz(String quizname) {
+	  
+	  QuizVO quizvo = dao.getquiz(quizname);
+	  
+	  return quizvo; }
+	 */
 
 	
-	// 쪽지시험_문제_문제번호로 문제일련번호 검색
+	// 쪽지시험_문제  필드 생성
 	@Override
-	public QuestionVO getquestion(String qzno) {
+	public QuestionVO addquestion(Map<String, String> paraMap) {
 		
-		QuestionVO questionvo = dao.getquestion(qzno);
+		QuestionVO questionvo = null;
+		
+		int m = dao.addquestion(paraMap);
+		
+		if(m==1) {
+			questionvo = dao.getquestion(paraMap);
+		}
 		
 		return questionvo;
 	}
+
+	
+	  /*
+	 // 쪽지시험_문제_문제번호로 문제일련번호 검색
+	 @Override public QuestionVO getquestion(String qzno) {
+	  
+	 QuestionVO questionvo = dao.getquestion(qzno);
+	  
+	 return questionvo; }
+	 */
 
 	
 	// 쪽지시험_정답 필드 생성

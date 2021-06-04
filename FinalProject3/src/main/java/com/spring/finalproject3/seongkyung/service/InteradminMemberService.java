@@ -24,17 +24,17 @@ public interface InteradminMemberService {
 	// 관리자 교수관리메뉴에서 교수리스트를 출력
 	List<Map<String, String>> getAdminProfessor(Map<String, String> paraMap);
 	
-	// 쪽지시험  필드 생성
-	int addquiz(String quizname);
+	// 쪽지시험 테이블에 insert 하고 select 해서 일련번호 가져오기
+	QuizVO addquiz(String quizname);
 	
 	// 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색
-	QuizVO getquiz(String quizname);
+	// QuizVO getquiz(String quizname);
 	
 	// 쪽지시험_문제  필드 생성
-	int addquestion(Map<String, String> paraMap);
+	QuestionVO addquestion(Map<String, String> paraMap);
 	
 	// 쪽지시험_문제_문제번호로 문제일련번호 검색
-	QuestionVO getquestion(String qzno);
+	// QuestionVO getquestion(String qzno);
 	
 	// 쪽지시험_정답 필드 생성
 	int addquizans(Map<String, String> paraMap);
