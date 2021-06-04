@@ -18,10 +18,34 @@ public interface InterBoardDAO {
 	List<String> wordSearchShow(Map<String, String> paraMap);
 
 	// 글1개 조회하기 
-	BoardVO getView(String seq);
+	BoardVO getView(Map<String, String> paraMap);
 
 	// 글조회수 1증가 하기
 	void setAddReadCount(String seq);
+
+	// 댓글쓰기
+	int addComment(CommentVO commentvo);
+
+	// tbl_board 테이블에 commentCount 컬럼의 값을 1증가(update)
+	int updateCommentCount(String fk_seq);
+
+	// 원게시물에 딸린 댓글들을 조회해오기
+	List<CommentVO> getCommentList(String fk_seq);
+
+	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
+	List<CommentVO> getCommentListPaging(Map<String, String> paraMap);
+
+	// 원글 글번호(parentSeq)에 해당하는 댓글의 총 페이지수를 알아오기
+	int getCommentTotalPage(Map<String, String> paraMap);
+
+	// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
+	BoardVO getViewNo(String seq);
+
+	// 글수정 페이지 완료하기 
+	int edit(BoardVO boardvo);
+
+	// 게시글 삭제하기
+	int del(int seqno);
 
 
 	

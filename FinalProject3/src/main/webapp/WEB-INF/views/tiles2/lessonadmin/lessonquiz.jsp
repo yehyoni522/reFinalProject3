@@ -74,7 +74,7 @@
 		
 		<div align="center" style="margin-top: 7px;">페이지 이동링크</div>
 		
-		<div style="cursor: pointer;" align="right" onclick="javascript:location.href='<%=ctxPath%>/lesson/testadd.sam'">글쓰기</div>
+		<div style="cursor: pointer;" align="right" onclick="javascript:location.href='<%=ctxPath%>/lesson/quizadd.sam'">글쓰기</div>
 		
 	</div>
 

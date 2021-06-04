@@ -75,10 +75,7 @@ tr {
 		html += "<tr class='remove"+i+"'><td class='quizaddform"+i+" quiztitle'>3.</td><td><input type='text' name='answerthird"+i+"'></input></td></tr>";
 		html += "<tr class='remove"+i+"'><td class='quizaddform"+i+" quiztitle'>4.</td><td><input type='text' name='answerfourth"+i+"'></input></td></tr>";
 		
-		html += "<tr class='addquiz'><td class='11' colspan='2' align='center'><span><button type='button' onclick='addquiz()''>문제 추가하기</button></span><span><button type='button' onclick='removequiz()''>문제 삭제하기</button></span></td></tr>";
-		
-		
-		
+		html += "<tr class='addquiz'><td class='11' colspan='2' align='center'><span><button type='button' onclick='addquiz()''>문제 추가하기</button></span><span><button type='button' onclick='removequiz()''>문제 삭제하기</button></span></td></tr>";		
 		}
 		
 		$(html).appendTo("table");	
@@ -118,7 +115,7 @@ tr {
 
 <div style="margin: 0 50px 30px 50px; font-family: 'Noto Sans KR', sans-serif;" align="center">
 
-	<div align="left" style="color: #0099cc; font-weight: bold; text-decoration: underline;">시험 작성 취소</div>
+	<div align="left" style="color: #0099cc; font-weight: bold; text-decoration: underline;" onclick="javascript:location.href='<%= ctxPath%>/lesson/quiz.sam'">시험 작성 취소</div>
 
 	<h2 style="margin-bottom: 20px;" >쪽지시험 문제 작성</h2>
 

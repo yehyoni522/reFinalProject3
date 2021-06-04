@@ -79,4 +79,11 @@ public class ReadingService implements InterReadingService {
 		return m;
 	}
 
+
+	@Override
+	public List<Map<String, String>> selectDateBookList(Map<String, String> paraMap) {
+		List<Map<String, String>> mapList = dao.selectDateBookList(paraMap);
+		return mapList;
+	}
+
 }

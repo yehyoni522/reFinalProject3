@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="classBoard">
+
+	<!-- === 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === -->
+	<select id="getTotalAssign" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_assgn 
+		where fk_subno=#{subno}
+	</select>
+	
+	
+	<!-- === 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
+	<select id="assignListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
+		select assgnno, subject, deadline, submitcount,status
+			from
+			(
+				select row_number() over(order by assgnno desc) as rno,
+	                    assgnno,subject, submitcount,status,
+				        to_char(deadline, 'yyyy-mm-dd hh24:mi:ss') as deadline
+				from tbl_assgn A left join tbl_submit S
+	            on assgnno = fk_assgnno
+	        where A. fk_subno=#{subno}
+			)V
+			where rno between #{startRno} and #{endRno}
+	</select>
+	
+
+	<!-- === 과제 게시판 글쓰기(파일첨부가 없는 글쓰기) === -->
+   <insert id="assignmentAdd" parameterType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
+		insert into tbl_assgn(assgnno, fk_perno,fk_subno,subject ,content, deadline)
+		values(assgnno_seq.nextval, 1004, 1000,#{subject}, #{content},#{deadline})
+   </insert>
+
+
+	<!-- === 어떤 과목인지 과목번호 알아오기  === -->
+	<select id="getSubjectname" parameterType="String" resultType="String">
+		select distinct subname
+		from tbl_assgn A join tbl_subject S
+		on fk_subno=subno
+		where fk_subno = #{subno}
+	</select>
+	
+	
+	<!-- === 해당 수업을 듣는 학생의 총 인원수 알아오기(교수 총 수강인원 나타낼때 필요) === -->
+	<select id="getTotalPerson" parameterType="String" resultType="String">
+		select count(*)
+		from tbl_class
+		where fk_subno = #{subno}
+	</select>
+
+	<!-- === 글 1개 조회해오기 === -->
+	<select id="assignmentView" parameterType="String" resultType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
+		select previousseq, previoussubject
+		   , assgnno, fk_perno, subject, content, regDate, deadline
+		   , nextseq , nextsubject
+		from 
+		(
+		  select lag(assgnno,1) over(order by assgnno desc) AS previousseq
+		       , lag(subject,1) over(order by assgnno desc) AS previoussubject
+		       
+		       , assgnno, fk_perno, subject, content
+		       , to_char(regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+		       , to_char(deadline, 'yyyy-mm-dd hh24:mi:ss') as deadline
+		       
+		       , lead(assgnno,1) over(order by assgnno desc) AS nextseq
+		       , lead(subject,1) over(order by assgnno desc) AS nextsubject    
+		  from tbl_assgn
+		) V
+		where V.assgnno = #{assgnno}
+	</select>
+	
+	<!-- === 1개글 수정하기 === -->
+	<update id="assignmentEdit" parameterType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
+		update tbl_assgn set subject = #{subject}, deadline=#{deadline}
+		                   , content = #{content}
+		<if test="files neq null">
+			, files=#{files}
+		</if>
+		where assgnno = #{assgnno} 
+	</update>
+	
+	<!-- === 1개글 삭제하기 === -->
+	<delete id="assignmentDelete" parameterType="String">
+		delete from tbl_assgn 
+		where assgnno = #{assgnno}
+	</delete>	
+	
+	<!-- 과제 제출 댓글쓰기(tbl_submit 테이블에 insert) === -->
+	<insert id="addSubmit" parameterType="com.spring.finalproject3.seoyeon.model.SubmitVO">
+		insert into tbl_submit(submitno, fk_perno, fk_subno, fk_assgnno, content, status)
+		values(subno.nextval, #{fk_perno}, #{fk_subno}, #{fk_assgnno}, #{content}, 1)
+	</insert>
+	
+	<!--  === tbl_assgn 테이블에 commentCount 컬럼의 값을 1증가(update) === -->
+	<update id="updateSubmitCount" parameterType="String">
+		update tbl_assgn set submitCount = submitCount + 1
+		where assgnno = #{assgnno} 
+	</update>
+	
+	<!-- === 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) ===  --> 
+	<select id="getSubmitListPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.SubmitVO">
+		select name as submitName, content, submitdate
+		from 
+		(
+		    select row_number() over(order by submitno desc) as submitno, name, content, to_char(submitdate, 'yyyy-mm-dd hh24:mi:ss') as submitdate 
+		    from tbl_submit S join tbl_person p
+		    on fk_perno = perno
+		    where fk_assgnno = #{fk_assgnno}
+		) V 
+		where submitno between #{startRno} and #{endRno}
+	</select>
+	
+	<!--  === 원게시물에 딸린 댓글 totalPage 알아오기 (Ajax 로 처리) === -->
+	<select id="getSubmitTotalPage" parameterType="HashMap" resultType="int">
+		select ceil(count(*) / #{sizePerPage})
+		from tbl_submit
+		where fk_assgnno = #{fk_assgnno}
+	</select>
+	
+	<!-- === 학생이 과제 제출했는지 확인하기 -->
+	<select id="studentSubmit" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_submit join tbl_person
+		on fk_perno = perno
+		where fk_assgnno=#{assgnno} and perno=#{perno}
+	</select>
+	
+	<!-- === 학생)댓글 페이징 처리해서 조회하기 (Ajax 로 처리) === // -->
+		<select id="mysubmitList" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.SubmitVO">
+		    select submitno, name as submitName, content, to_char(submitdate, 'yyyy-mm-dd hh24:mi:ss') as submitdate 
+		    from tbl_submit S join tbl_person p
+		    on fk_perno = perno
+		    where fk_assgnno = #{fk_assgnno} and perno=#{perno}
+	</select>
+	
+	
+	
+
+</mapper>

@@ -12,18 +12,24 @@ public class InboxVO {
 	private int readState;  // 읽음표시 읽으면 0 -> 나중에 업데이트로 1로바꾸어줌
 	
 	
-	private String fk_name; // 발신자이름
+	private String inboxName; // 발신자이름
 	
 	
-	public InboxVO(int inboxSeq, int fk_perno, int receiver, String subject, String reDate, int readState) {
+	public InboxVO() {
+		
+	}
+	
+	public InboxVO(int inboxSeq, int fk_perno, int receiver, String subject, String reDate, int readState,
+			String inboxName) {
+		
 		this.inboxSeq = inboxSeq;
 		this.fk_perno = fk_perno;
 		this.receiver = receiver;
 		this.subject = subject;
 		this.reDate = reDate;
 		this.readState = readState;
+		this.inboxName = inboxName;
 	}
-	
 	public int getInboxSeq() {
 		return inboxSeq;
 	}
@@ -61,12 +67,12 @@ public class InboxVO {
 		this.readState = readState;
 	}
 
-	public String getFk_name() {
-		return fk_name;
+	public String getInboxName() {
+		return inboxName;
 	}
 
-	public void setFk_name(String fk_name) {
-		this.fk_name = fk_name;
+	public void setInboxName(String inboxName) {
+		this.inboxName = inboxName;
 	}
 	
 	

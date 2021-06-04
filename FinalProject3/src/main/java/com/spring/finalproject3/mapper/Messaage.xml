@@ -7,10 +7,10 @@
    <select id="getTotalCount" parameterType="HashMap" resultType="int" >
    		select count(*)
    		from tbl_inbox
+   		where receiver = to_number(#{userid})
 		<if test='searchWord != "" '>
          and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
       	</if>
-   		order by inboxSeq desc
    </select>
    
 	<!-- 페이징 처리를 한 검색어가 있는 전체 글목록 보여주기  -->
@@ -52,7 +52,7 @@
    <select id="getNonReadCount" parameterType="int" resultType="int">
    		select count(*)
    		from tbl_inbox
-   		where readState = 0 and fk_perno = #{userid} 
+   		where readState = 0 and receiver = #{userid} 
    </select>
    
    <!-- // inbox에서 체크박스에서 선택된 쪽지  삭제하기  -->
@@ -73,6 +73,55 @@
    		where majseq = #{majseq} 
    </select>
 
-
+	<insert id="insertInbox" parameterType="HashMap">
+		insert into tbl_inbox(inboxSeq, fk_perno, receiver, subject, reDate, readState, inboxName)
+		values(seq_tbl_inbox_inboxSeq.nextval,   #{login_userid},  #{receiver},  #{text},  default, default, #{sender})
+	</insert>
+	
+	<insert id="insertOutbox" parameterType="HashMap">
+		insert into tbl_outbox(outboxSeq, fk_perno, sender, subject, senDate, readDate, outboxName)
+		values(seq_tbl_outbox_outboxSeq.nextval,   #{receiver}, #{login_userid} ,  #{text},  default, default, #{name})
+	</insert>
+	
+	<!-- // outbox에서 체크박스에서 선택된 쪽지  삭제하기  -->
+   <delete id="outDel"  parameterType="int" >
+   		delete tbl_outbox
+   		where outboxSeq = #{deleteSeq}
+   </delete>
+	
+	 <!--  총 게시물 건수(totalCount) 구하기  -->
+   <select id="getTotalCountout" parameterType="HashMap" resultType="int" >
+   		select count(*)
+   		from tbl_outbox
+   		where sender = to_number(#{userid})
+		<if test='searchWord != "" '>
+         and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+      	</if>
+   </select>
+   
+   <!-- // 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것) <<outbox>> -->
+   <select id="outboxListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.hyeminJang.model.OutboxVO">
+   		select  outboxSeq, fk_perno, sender, subject, senDate,  readDate , outboxName
+		from (
+			select row_number() over (order by outboxSeq desc) as rno, 
+			            outboxSeq, fk_perno, sender, subject, 
+			            to_char(senDate, 'yyyy-mm-dd PM HH:MI:SS') as senDate, readDate, outboxName
+			from tbl_outbox
+			where sender = to_number(#{userid})
+			<if test='searchWord != "" '>
+			and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+			</if>
+		)V
+		where rno between #{startRno} and #{endRno} 
+		order by outboxSeq desc
+   </select>
+   
+   <!-- // 쪽지 1개 글 조회 <<outbox>> -->
+   <select id="getOutView" parameterType="int" resultType="com.spring.finalproject3.hyeminJang.model.OutboxVO">
+		    select  outboxSeq, fk_perno, sender, subject, outboxName,
+		             to_char(senDate, 'yyyy-mm-dd PM HH:MI:SS') as senDate, readDate
+		    from tbl_outbox
+		    where outboxSeq = #{outboxSeq}
+   </select>
 
 </mapper>

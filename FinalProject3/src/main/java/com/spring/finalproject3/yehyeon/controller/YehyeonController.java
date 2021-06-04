@@ -3,7 +3,6 @@ package com.spring.finalproject3.yehyeon.controller;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +28,14 @@ import com.spring.finalproject3.yehyeon.service.InterReadingService;
       여기서는 @Controller 를 사용하므로 @Component 기능이 이미 있으므로 @Component를 명기하지 않아도 BoardController 는 bean 으로 등록되어 스프링컨테이너가 자동적으로 관리해준다. 
 */
 @Controller
-public class ReadingController {
+public class YehyeonController {
 	
 	
 	@Autowired   // Type에 따라 알아서 Bean 을 주입해준다.
 	private InterReadingService service;
 	
+	
+	////////////////////////////열람실 예약 페이지 시작///////////////////////////////////
 	
 	@RequestMapping(value="/reading/index.sam")
 	public ModelAndView readingRoomView(ModelAndView mav) {
@@ -162,5 +163,102 @@ public class ReadingController {
 		
 		return jsonObj.toString();
 	}
+	
+	
+	////////////////////////////열람실 예약 페이지 끝///////////////////////////////////
+	
+	
+	////////////////////////////관리자 전용 열람실 예약 내역 시작///////////////////////////////////
+	
+	@RequestMapping(value="/admin/readingRoomBook.sam")
+	public ModelAndView readingRoomBook(ModelAndView mav) {
+		
+		List<RroomNumVO> rRoomList = service.readingRoomView();
+		
+		mav.addObject("rRoomList", rRoomList);
+		
+		List<TimeVO> timeList = service.timeView();
+		mav.addObject("timeList", timeList);
+		
+		mav.setViewName("/admin/readingRoomBook.tiles1");
+		return mav;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/admin/selectDateBookList.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String selectDateBookList(HttpServletRequest request) {
+		
+		
+		 String tno = request.getParameter("tno"); 
+		 String rno = request.getParameter("rno"); 
+		 String bdate = request.getParameter("bdate");
+		 
+		 System.out.println("~~~ 확인용 tno" + tno);
+		 System.out.println("~~~ 확인용 rno" + rno);
+		 System.out.println("~~~ 확인용 bdate" + bdate);
+
+		
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("tno", tno);
+		paraMap.put("rno", rno);
+		paraMap.put("bdate", bdate);
+
+		
+		//List<BookListVO> bookList = service.selectDateBookList(paraMap);
+		List<Map<String, String>> mapList = service.selectDateBookList(paraMap);
+		
+		///////////////////////////////////////////////////////////////////////////
+		/*
+			System.out.println("~~~~~ 확인용 ~~~~");
+			for(int i=0; i<mapList.size(); i++) {
+				System.out.println(mapList.get(i).get("perno"));
+				 ~~~~~ 확인용 ~~~~
+						1-1
+						1-2
+						1-3
+						1-4
+						1-5
+						1-6
+						1-7
+						1-8
+						1-9
+						1-10
+						1-11
+						1-12
+						1-13
+						1-14
+						1-15
+						1-16
+						1-17
+						1-18
+						1-19
+						1-20
+				
+			}
+		 */
+		///////////////////////////////////////////////////////////////////////////
+		
+		JSONArray jsonArr = new JSONArray(); // []
+		
+
+		if(mapList != null) { 
+			for(Map<String,String> map : mapList) { //dsno, dsname,
+				JSONObject jsonObj = new JSONObject(); // {}
+				 
+				jsonObj.put("dsno", map.get("dsno"));
+				jsonObj.put("dsname", map.get("dsname"));
+				jsonObj.put("bookcheck", map.get("bookcheck"));
+				jsonObj.put("perno", map.get("perno"));
+				jsonObj.put("name", map.get("name"));
+				 
+				jsonArr.put(jsonObj); 
+			} 
+		}
+
+		
+		return jsonArr.toString(); 
+	}
+	
+	////////////////////////////관리자 전용 열람실 예약 내역 끝///////////////////////////////////	
 	
 }

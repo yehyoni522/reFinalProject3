@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 
+
+
+
 @Component
 @Repository
 public class BoardDAO implements InterBoardDAO {
@@ -47,8 +50,8 @@ public class BoardDAO implements InterBoardDAO {
 
 	// 글1개 조회하기
 	@Override
-	public BoardVO getView(String seq) {
-		BoardVO boardvo = sqlsession.selectOne("board.getView", seq);
+	public BoardVO getView(Map<String, String> paraMap) {
+		BoardVO boardvo = sqlsession.selectOne("board.getView", paraMap);
 		return boardvo;
 	}
 
@@ -56,6 +59,62 @@ public class BoardDAO implements InterBoardDAO {
 	@Override
 	public void setAddReadCount(String seq) {
 		sqlsession.update("board.setAddReadCount", seq);		
+	}
+
+	// 댓글쓰기
+	@Override
+	public int addComment(CommentVO commentvo) {
+		int n = sqlsession.insert("board.addComment", commentvo);
+		return n;
+	}
+
+	// tbl_board 테이블에 commentCount 컬럼의 값을 1증가(update)
+	@Override
+	public int updateCommentCount(String fk_seq) {
+		int n = sqlsession.update("board.updateCommentCount", fk_seq);
+		return n;
+	}
+
+	// 원게시물에 딸린 댓글들을 조회해오기
+	@Override
+	public List<CommentVO> getCommentList(String fk_seq) {
+		List<CommentVO> commentList = sqlsession.selectList("board.getCommentList", fk_seq);
+		return commentList;
+	}
+
+	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
+	@Override
+	public List<CommentVO> getCommentListPaging(Map<String, String> paraMap) {
+		List<CommentVO> commentList = sqlsession.selectList("board.getCommentListPaging", paraMap);
+		return commentList;
+	}
+
+	// 원글 글번호(parentSeq)에 해당하는 댓글의 총 페이지수를 알아오기
+	@Override
+	public int getCommentTotalPage(Map<String, String> paraMap) {
+		int totalPage = sqlsession.selectOne("board.getCommentTotalPage", paraMap);
+		return totalPage;
+	}
+
+	// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
+	@Override
+	public BoardVO getViewNo(String seq) {
+		BoardVO boardvo = sqlsession.selectOne("board.getViewNo", seq);
+		return boardvo;
+	}
+
+	// 글수정 페이지 완료하기 
+	@Override
+	public int edit(BoardVO boardvo) {
+		int n = sqlsession.update("board.edit", boardvo);
+		return n;
+	}
+
+	// 게시글 삭제하기
+	@Override
+	public int del(int seqno) {
+		int n = sqlsession.delete("board.del", seqno);
+		return n;
 	}
 
 
