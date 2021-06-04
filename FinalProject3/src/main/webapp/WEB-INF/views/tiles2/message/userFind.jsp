@@ -207,7 +207,15 @@ input#delete{
 	// 삭제하기
 	function del(perno){
 		$("tr#"+perno+"").remove();
-		perno_es.replace(perno,"");
+		var perno_es = $("input[name=perno_es]").val();
+		
+		
+		perno_es = perno_es.replace(perno,"");
+		perno_es = perno_es.replace(",","");
+		
+		$("input[name=perno_es]").val(perno_es);
+		
+		
 	}
 
 </script>
