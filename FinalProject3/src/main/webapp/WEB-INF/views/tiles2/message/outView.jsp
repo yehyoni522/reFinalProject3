@@ -28,10 +28,38 @@ span#title{
 	margin-bottom: 10px;
 	font-weight: bold;
 }
+div#adminhome {
+	min-height: 700px;
+	padding-top: 20px;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+div#adminside {
+	border-right:1px solid #b0b0b5;
+	float: left;
+	width: 20%;
+	padding-left: 50px;
+	min-height: 600px;
+}
+    
+div#admincontent {
+	float: left;
+	padding: 0 50px 0 50px;
+	width: 80%;
+}    
+.admsubtitle {
+	border-left:solid 5px black; 
+ 	clear: both;
+ 	font-size: 18pt;
+ 	font-weight:bold;	
+ 	padding-left: 5px;
+ 	margin-bottom: 30px;
+ 
+}
 .button {
 	
 	margin-top:40px;
-	margin-left: 160px;
+	margin-left: 120px;
     width:100px;
     background-color:#2ECC71;
     border: none;
@@ -190,13 +218,9 @@ button.re:hover{
 	}
 </script>
 
+<div id="adminhome">
 
-<div class="msgHead">
-	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">쪽지함</span></div>
-	<hr style="border: solid 1px #E5E5E5;">
-</div>
-
-<div id="msgSide" >
+<div id=adminside  >
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
@@ -206,14 +230,17 @@ button.re:hover{
 	</div>	
 </div>
 
-<div class="msgContents" style="width: 70%; display:inline-block ; ">
+<div id="admincontent">
+<div class="admsubtitle">
+			<span >보낸쪽지함</span>
+		</div>
 
 		<button class="del" type="button" onclick="outDelOne(${requestScope.outboxvo.outboxSeq})">삭제</button>
 		
 
 	<c:if test="${not empty requestScope.outboxvo}">
-		<div>보낸사람 <span>${requestScope.outboxvo.outboxName}</span></div>
-	 	<div>받은시간 <span>${requestScope.outboxvo.senDate}</span></div>
+		<div>받은사람 : <span>${requestScope.outboxvo.outboxName}(${requestScope.outboxvo.fk_perno})</span></div>
+	 	<div>보낸시간 : <span>${requestScope.outboxvo.senDate}</span></div>
 	 	<hr>
 	 	<div>${requestScope.outboxvo.subject}</div>
 	</c:if>
@@ -224,4 +251,4 @@ button.re:hover{
 
 </div>
 
-
+</div>

@@ -42,12 +42,12 @@ a#msgNew{
 	 width: 30px;
 	 height: 30px;
 	 display: inline-block;
-	 margin-left: 30px;
+	 margin-left: 50px;
+	 margin-top: -20px;
 	 float:right;
 	 font-size: 17px;
 	 text-align: center;
 	 padding-top:2px;
-	 border: solid 2px #049704;
 	 font-weight: bold;
 	 font-style: normal;
 }
@@ -73,14 +73,14 @@ table.type04 {
   font-size: 15px;
 }
 table.type04 th {
-  width: 150px;
+  width: 160px;
   padding: 10px;
   font-weight: bold;
   vertical-align: top;
  
 }
 table.type04 td {
-  width: 350px;
+  width: 250px;
   padding: 10px;
   vertical-align: top;
 
@@ -102,7 +102,7 @@ dfn::after {
   content: attr(data-info);
   display: inline;
   position: absolute;
-  top: 70px; left: 0;
+  top: 40px; left: 0;
   opacity: 0;
   width: 150px;
   font-size: 13px;
@@ -118,7 +118,7 @@ dfn::before {
   content: '';
   display: block;
   position: absolute;
-  top: 60px; left: 40px;
+  top: 50px; left: 40px;
   opacity: 0;
   width: 0; height: 0;
   border: solid transparent 5px;
@@ -131,7 +131,15 @@ dfn:hover::before {opacity: 1;}
 dfn:hover::after {top: 60px;}
 dfn:hover::before {top: 50px;}
 
-
+.admsubtitle {
+	border-left:solid 5px black; 
+ 	clear: both;
+ 	font-size: 18pt;
+ 	font-weight:bold;	
+ 	padding-left: 5px;
+ 	margin-bottom: 30px;
+ 
+}
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -149,19 +157,23 @@ dfn:hover::before {top: 50px;}
 	function goInbox(){
 		location.href="<%= ctxPath%>/message/inbox.sam";
 	}
+	function goEdit(){
+		location.href="<%= ctxPath%>/mypage/edit.sam";
+	}
 </script>
 
 <div class="msgHead">
-	<span style="font-weight: bold; font-size: 30px; color:#3498DB;">${requestScope.name}</span><span style="font-weight: bold; font-size: 30px; ">님의 마이페이지 </span>
+	<span style="font-weight: bold; font-size: 30px; color:#3498DB;">${requestScope.name}<c:if test="${requestScope.identity == 0}">(학생)</c:if><c:if test="${requestScope.identity == 1}">(교수)</c:if>
+	</span><span style="font-weight: bold; font-size: 30px; ">님의 마이페이지 </span>
 	
 	
 	<c:if test="${requestScope.nonReadCount == 0}">
-		<img src="<%= ctxPath%>/resources/images/mypage/message.png" onclick="goInbox()" style="width:60px; height:60px; cursor: pointer; ">
+		<button onclick="goInbox()" style="font-weight: bold; font-size: 20px;">쪽지함</button><%-- <img src="<%= ctxPath%>/resources/images/mypage/message.png" onclick="goInbox()" style="width:60px; height:60px; cursor: pointer; "> --%>
 	</c:if>
 	
 	<c:if test="${requestScope.nonReadCount > 0}">
 		<div class="image">
-		<img src="<%= ctxPath%>/resources/images/mypage/message.png" onclick="goInbox()" style="width:60px; height:60px; ">
+		<button onclick="goInbox()" style="font-weight: bold; font-size: 20px;">쪽지함</button><%-- <img src="<%= ctxPath%>/resources/images/mypage/message.png" onclick="goInbox()" style="width:60px; height:60px; "> --%>
 		<dfn data-info="쪽지함을 클릭하여 &nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;메세지를 확인하세요!">
 		<a class="text"  id="msgNew" onclick="goInbox()">
 			${requestScope.nonReadCount}
@@ -177,8 +189,11 @@ dfn:hover::before {top: 50px;}
 
 	<div class="belongHead" >
 	
-		<div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title" >나의 회원정보</span>
-		<div style="display:inline; margin-left: 500px; float: left; margin-top: -30px;  "><button>회원정보수정</button></div>
+		
+		<div class="admsubtitle" >
+			<span >나의회원정보</span><button style="margin-left: 350px; font-size: 15px; " onclick="goEdit()">회원정보수정</button>
+		</div>
+
 	
 	<div class="belongHead2" >
 
@@ -187,7 +202,7 @@ dfn:hover::before {top: 50px;}
 		
 			<table class="type04">
 			 <tr>
-			    <td rowspan="5" style="padding-left:30px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:160px; height:160px;"></td>
+			    <td rowspan="5" style="padding-left:30px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:150px; height:150px;"></td>
 			  </tr>
 			  <tr>
 			    <th scope="row">● 성명</th>
@@ -213,7 +228,7 @@ dfn:hover::before {top: 50px;}
 		
 			<table class="type04">
 			 <tr>
-			    <td rowspan="5" style="padding-left:30px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:160px; height:160px;"></td>
+			    <th rowspan="5" style="padding-left:30px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:160px; height:160px;"></th>
 			  </tr>
 			  <tr>
 			    <th scope="row">● 성명</th>
@@ -232,20 +247,28 @@ dfn:hover::before {top: 50px;}
 			    <td>${requestScope.email}</td>
 			  </tr>
 			</table>
-		
+			
 		</c:if>
 	</div>
+
 </div>
 
 
 <div class="belongHead">
-	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">열람실 예약내역</span></div>
+	<div class="admsubtitle" >
+			<span >열람실예약내역</span>
+		</div>
 	<div class="belongHead2">
 	</div>
 </div>
 
+
+<c:if test="${requestScope.identity == 0}">
+
 <div class="belongHead" style="width:88%;">
-	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">과목별 성적조회</span>- 2021년도 봄학기</div>
+	<div class="admsubtitle" >
+			<span >과목별성적조회</span>
+		</div>- 2021년도 봄학기
 	<div class="belongHead2" >
 		<table class="table table-hover" >
 		
@@ -298,4 +321,42 @@ dfn:hover::before {top: 50px;}
 	</div>
 </div>
 
+</c:if>
+<c:if test="${requestScope.identity == 1}">
 
+<div class="belongHead" style="width:88%;">
+	<div class="admsubtitle" >
+			<span >수업조회 - 2021년도 봄학기</span>
+		</div>
+	<div class="belongHead2" >
+		<table class="table table-hover" >
+		
+	      <thead class="scoretable">
+	      <tr id="score"> 
+	        <th>과목번호</th>
+	        <th style="width: 20%;">과목명</th>
+	        <th>개설학기</th>
+	        <th>수강인원</th>
+	        <th>현재진행차수</th>
+	        <th>최근진행과제/시험</th>
+	      </tr>
+	    </thead>
+    
+	    <tbody class="scoretable">
+	      <tr id="tr_1" style="color: #055AC1;">
+	        <td>1</td>
+	        <td >경영학원론</td>
+	        <td>2021년도 1학기</td>
+	        <td>10명</td>
+	        <td>15차수</td>
+	        <td>경영학이란 무엇인가 책읽고 보고서작성</td>
+	      </tr>
+	    </tbody>
+	    
+
+	  </table>
+	
+	</div>
+</div>
+
+</c:if>

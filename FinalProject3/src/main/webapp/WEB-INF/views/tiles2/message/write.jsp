@@ -31,10 +31,38 @@ span#title{
 	font-weight: bold;
 }
 
+div#adminhome {
+	min-height: 700px;
+	padding-top: 20px;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+div#adminside {
+	border-right:1px solid #b0b0b5;
+	float: left;
+	width: 20%;
+	padding-left: 50px;
+	min-height: 600px;
+}
+    
+div#admincontent {
+	float: left;
+	padding: 0 50px 0 50px;
+	width: 80%;
+}    
+.admsubtitle {
+	border-left:solid 5px black; 
+ 	clear: both;
+ 	font-size: 18pt;
+ 	font-weight:bold;	
+ 	padding-left: 5px;
+ 	margin-bottom: 30px;
+ 
+}
 .button {
 	
 	margin-top:40px;
-	margin-left: 160px;
+	margin-left: 120px;
     width:100px;
     background-color:#2ECC71;
     border: none;
@@ -49,8 +77,6 @@ span#title{
     border-radius: 10px;
 	transition:0.3s;
 	transform: translate(-50%,-50%);
-	box-shadow: 2px 2px 2px 2px #27AF61;
-
 }
 .button:hover {
     background-color: #27AF61;
@@ -139,35 +165,6 @@ button.re:hover{
 }
 
 
-
-.green_window {
-	display: inline-block;
-	width: 200px;
-	border: 3px solid #2ECC71;
-	border-radius: 20px;
-}
-.input_text {
-	width: calc( 100% - 40px );
-	margin: 6px 7px;
-	border: 0;
-	font-weight: bold;
-	font-size: 12px;
-	outline: none;
-	border-radius: 20px;
-}
-.sch_smit {
-	width: 40px; height: 30px;
-	margin-top: 5px; border: 0;
-	vertical-align: top;
-	background: #2ECC71;
-	color: white;
-	border-radius: 20px;
-	cursor: pointer;
-	font-size: 12px;
-}
-.sch_smit:hover {
-	background: #27AF61;
-}
 div#add{
 	border: solid 1px gray;
 	 width: 408px; height: 40px;
@@ -317,13 +314,8 @@ div#add{
 	
 
 </script>
-
-<div class="msgHead">
-	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">쪽지함</span></div>
-	<hr style="border: solid 1px #E5E5E5;">
-</div>
-
-<div id="msgSide" >
+<div id="adminhome">
+<div id=adminside  >
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
@@ -333,7 +325,10 @@ div#add{
 	</div>	
 </div>
 
-<div class="msgContents" style="width: 70%; display:inline-block ; margin-left:20px; ">
+<div id="admincontent">
+<div class="admsubtitle">
+			<span >쪽지보내기</span>
+		</div>
 
  	
     	<form name="writeFrm" style="margin-top: 20px;" >
@@ -394,5 +389,4 @@ div#add{
     </div>
   </div>
 <%-- ****** 학번/교수번호 찾기 Modal 끝****** --%>
-
-ㄴ
+</div>
