@@ -437,6 +437,8 @@ public class AdminMemberController {
 	@RequestMapping(value="/lesson/quizadd.sam")
 	public ModelAndView lesson_quizadd(ModelAndView mav, HttpServletRequest request) {
 		
+		request.getParameter("");
+		
 		
 		mav.setViewName("lessonadmin/lessonquizadd.tiles2");
 		
