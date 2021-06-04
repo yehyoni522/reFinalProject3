@@ -29,10 +29,38 @@ span#title{
 	margin-bottom: 10px;
 	font-weight: bold;
 }
+div#adminhome {
+	min-height: 700px;
+	padding-top: 20px;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+div#adminside {
+	border-right:1px solid #b0b0b5;
+	float: left;
+	width: 20%;
+	padding-left: 50px;
+	min-height: 600px;
+}
+    
+div#admincontent {
+	float: left;
+	padding: 0 50px 0 50px;
+	width: 80%;
+}    
+.admsubtitle {
+	border-left:solid 5px black; 
+ 	clear: both;
+ 	font-size: 18pt;
+ 	font-weight:bold;	
+ 	padding-left: 5px;
+ 	margin-bottom: 30px;
+ 
+}
 .button {
 	
 	margin-top:40px;
-	margin-left: 160px;
+	margin-left: 120px;
     width:100px;
     background-color:#2ECC71;
     border: none;
@@ -133,34 +161,7 @@ button.re:hover{
 	box-shadow: 0 2px 4px #2ECC71;
 }
 /* /////////////////// */
-.green_window {
-	display: inline-block;
-	width: 200px;
-	border: 3px solid #2ECC71;
-	border-radius: 20px;
-}
-.input_text {
-	width: calc( 100% - 40px );
-	margin: 6px 7px;
-	border: 0;
-	font-weight: bold;
-	font-size: 12px;
-	outline: none;
-	border-radius: 20px;
-}
-.sch_smit {
-	width: 40px; height: 30px;
-	margin-top: 5px; border: 0;
-	vertical-align: top;
-	background: #2ECC71;
-	color: white;
-	border-radius: 20px;
-	cursor: pointer;
-	font-size: 12px;
-}
-.sch_smit:hover {
-	background: #27AF61;
-}
+
  .subjectStyle {font-weight: bold;
                    text-decoration:underline;
                    cursor: pointer;} 
@@ -175,6 +176,7 @@ tr#tr_1:hover{
 a:visited {
   background-color : black;
 }
+.target { display: inline-block; width: 700px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -312,12 +314,9 @@ a:visited {
 	}
 </script>
 
-<div class="msgHead">
-	<div><div style="display:inline-block; width:10px; height: 30px; background-color: #3498DB;"></div>&nbsp;&nbsp;<span id="title">쪽지함</span></div>
-	<hr style="border: solid 1px #E5E5E5;">
-</div>
+<div id="adminhome">
 
-<div id="msgSide" >
+<div id=adminside >
 	<div class="row">
 		<div class="col-md-12" >
 			<button class="button" onclick="goWrite()">쪽지보내기</button>
@@ -327,7 +326,10 @@ a:visited {
 	</div>	
 </div>
 
-<div class="msgContents" style="width: 70%; display:inline-block ; ">
+<div id="admincontent">
+<div class="admsubtitle">
+			<span >보낸쪽지함</span>
+		</div>
 
 		<button class="del" type="button" onclick="goOutDel()">삭제</button>
 
@@ -348,6 +350,8 @@ a:visited {
 	</form>
 	
 	</div>
+	
+
   <table class="table table-hover">
     <thead>
       <tr>
@@ -360,7 +364,7 @@ a:visited {
     
     <c:if test="${empty requestScope.outboxList}">
     	<tbody>
-	      <tr id="tr_1" style="color: #055AC1;">
+	      <tr id="tr_1" >
 	        <td colspan="5" style="text-align: center;">보낸 쪽지가 존재하지 않습니다.</td>
 	      </tr>
 	    </tbody>
@@ -372,10 +376,10 @@ a:visited {
     <c:forEach var="outboxvo" items="${requestScope.outboxList}" varStatus="status">     
     
     <tbody>
-      <tr id="tr_1" style="color: #055AC1;">
+      <tr id="tr_1" >
         <td><input type="checkbox" name="check" value="${outboxvo.outboxSeq}"/></td>
-        <td  onclick="goView(${outboxvo.outboxSeq})">${outboxvo.outboxName}</td>
-        <td  onclick="goView(${outboxvo.outboxSeq})"><span class="subject" >${outboxvo.subject}</span></td>
+        <td  onclick="goView(${outboxvo.outboxSeq})">${outboxvo.outboxName}<span style="font-size: 12px;">(${outboxvo.fk_perno})</span></td>
+        <td  onclick="goView(${outboxvo.outboxSeq})"><span class="subject target" >${outboxvo.subject}</span></td>
         <td  onclick="goView(${outboxvo.outboxSeq})">${outboxvo.senDate}</td>
       </tr>
     </tbody>
@@ -391,3 +395,5 @@ a:visited {
      	${requestScope.pageBar}
    </div>
 </div>
+
+</div>s
