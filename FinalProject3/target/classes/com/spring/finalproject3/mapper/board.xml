@@ -58,31 +58,24 @@
 	<select id="wordSearchShow" parameterType="HashMap" resultType="String">
 		<choose> 
     		<when test="searchType eq 'name'">
-    			select  distinct ${searchType}
+    			select  distinct ${searchType} as name
     		</when>
     		<otherwise>
     			select  ${searchType}    
     		</otherwise>     		
-    	</choose>   
-    	from tbl_board
-     	where status = 1
-     	and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
-     	<if test="searchType neq 'name'">
-     		order by seq desc
-     	</if> 	  		        
-		<!-- from
+    	</choose>   		        
+		 from
 		(
 		    select subject,fk_perno, seq
 		    from tbl_board
-		    where status = 1 and categoryno = 1
-    
+		    where status = 1 and categoryno = #{categoryno}
 		)B
 		join tbl_person P
 		on P.perno = B.fk_perno
-		where lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%';	
+		where lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
 	    <if test="searchType neq 'name'">
   		order by seq desc
-  		</if>   		 -->     	  	    	
+  		</if>   		    	  	    	
 	</select>
 	
 	<!-- 글 1개 보여주기 -->

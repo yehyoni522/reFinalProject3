@@ -168,7 +168,7 @@ public class BoardController {
 		paraMap.put("categoryno", categoryno);
 		
 		int totalCount = 0;         // 총 게시물 건수
-		int sizePerPage = 5;        // 한 페이지당 보여줄 게시물 건수
+		int sizePerPage = 10;        // 한 페이지당 보여줄 게시물 건수
 		int currentShowPageNo = 0;  // 현재 보여주는 페이지 번호로서, 초기치로는 1페이지로 설정함.
 		int totalPage = 0;          // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)  
 		
@@ -206,7 +206,7 @@ public class BoardController {
 			mav.addObject("paraMap", paraMap);
 		}
 				
-		int blockSize = 10;
+		int blockSize = 5;
 		
 		int loop = 1;
 		
@@ -259,7 +259,7 @@ public class BoardController {
 	}
 	
 	
-	// 검색어 입력시 자동글 완성하기(글쓴이검색 아직 안됨 board.xml 오류나는거 수정하기)
+	// 검색어 입력시 자동글 완성하기
 	@ResponseBody
 	@RequestMapping(value="/board/wordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public String wordSearchShow(HttpServletRequest request) {
@@ -268,7 +268,7 @@ public class BoardController {
 		String searchWord = request.getParameter("searchWord");
 		String categoryno = request.getParameter("categoryno");	
 		
-		// System.out.println(categoryno);
+		// System.out.println(searchType);
 		
 		Map<String,String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
@@ -277,11 +277,11 @@ public class BoardController {
 		
 		List<String> wordList = service.wordSearchShow(paraMap);
 		
-		JSONArray jsonArr = new JSONArray(); // []
+		JSONArray jsonArr = new JSONArray(); 
 		
 		if(wordList != null) {
 			for(String word : wordList) {
-				JSONObject jsonObj = new JSONObject(); // {}
+				JSONObject jsonObj = new JSONObject(); 
 				jsonObj.put("word", word); 
 				
 				jsonArr.put(jsonObj);
