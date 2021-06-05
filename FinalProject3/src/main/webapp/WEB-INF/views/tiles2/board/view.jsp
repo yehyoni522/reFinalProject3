@@ -272,28 +272,11 @@ a {
 	function removeCheck() {
 
 		if (confirm("정말 삭제하시겠습니까??") == true){    //확인
-		
-			var comment_form = $("form[name=delFrm]").serialize();
-	 		
-			$.ajax({
-				url:"<%= ctxPath%>/board/del.sam",
-				data: comment_form,
-				type: "get",
-				dataType:"json",
-				success:function(json){
-					var n = json.n;
-					
-					
-				},
-				error: function(request, status, error){
-					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			 	}
-			});
-		
-			<%-- var frm = document.delFrm;
+			
+		 var frm = document.delFrm;
 		   	frm.method = "POST";
 		   	frm.action = "<%= ctxPath%>/board/del.sam";
-		   	frm.submit(); --%>
+		   	frm.submit();
 		   	
 		}else{   //취소	
 			return false;	
@@ -322,6 +305,29 @@ a {
 		
 	} // end of function commentdel(){} 댓글 삭제하기
 	
+<%-- 	function goGoodAdd(seq){
+		
+		if( ${empty sessionScope.loginuser} ) {
+			   alert("좋아요 하시려면 먼저 로그인 하셔야 합니다.");
+			   return; // 종료 
+		   }
+		   
+		   $.ajax({
+			   url:"<%= ctxPath%>/board/goGoodAdd.sam",
+			   type:"get",
+			   data:{"seq":seq
+},
+			   dataType:"json",
+			   success:function(json){
+				   // alert(json.msg);
+				      swal(json.msg);
+				      goLikeDislikeCount();
+			   },
+			   error: function(request, status, error){
+					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			   }
+		   });	   
+	} // end of function goGoodAdd(seq){ --%>
 </script>										
 						
 										
@@ -368,7 +374,7 @@ a {
 				<p style="word-break: break-all;">${requestScope.boardvo.content} >>?? ${requestScope.boardvo.categoryno}</p>
 			</div>	
 			<div id="contentfooter">
-				<img src="<%=ctxPath%>/resources/images/good.PNG"  id="goodbtn" style="width:45px; height:43px;" onclick="javascript:location.href='<%= ctxPath%>/board/goodAdd.sam?seq=${boardvo.seq}'">
+				<img src="<%=ctxPath%>/resources/images/good.PNG"  id="goodbtn" style="width:45px; height:43px;" onclick="goGoodAdd(${boardvo.seq})">
 					<span style="color:red; font-weight:bold;">${requestScope.boardvo.good}</span>
 				<img src="<%=ctxPath%>/resources/images/comment.PNG" style="width:44px; height:38px;">
 					<span style="color:blue; font-weight:bold;">${requestScope.boardvo.commentCount}</span>
@@ -434,7 +440,7 @@ a {
 </div>
 
 <form name="delFrm"> 
-	<input type="hidden" name="categoryno" value="${requestScope.categoryno}" />
+	<input type="text" name="categoryno" value="${categoryno}" />
     <input type="hidden" name="seq" value="${requestScope.boardvo.seq}" />          
 </form>
 

@@ -507,12 +507,12 @@ public class BoardController {
 	}
 
 	// 글 삭제하기
-	@RequestMapping(value="/board/del.sam")
+	@RequestMapping(value="/board/del.sam", method= {RequestMethod.POST})
 	public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
    
 		String seq = request.getParameter("seq");
 		String categoryno = request.getParameter("categoryno");	
-		// System.out.println(seq);		
+		 	System.out.println(categoryno);
 		
 		String gobackURL = request.getParameter("gobackURL");
 		mav.addObject("gobackURL", gobackURL);
@@ -525,6 +525,7 @@ public class BoardController {
 		String loginuserPerno = String.valueOf(loginuser.getPerno());
 		
 		String loc = "javascript:history.back()";
+		
 		
 		if( !loginuserPerno.equals(boardvo.getFk_perno()) ) {
 			String message = "다른 사용자의 글은 삭제가 불가합니다.";
@@ -704,10 +705,11 @@ public class BoardController {
 		}		
 	}
 	
-	
-	// 게시물 좋아요
-	@RequestMapping(value="/board/goodAdd.sam")
-	public ModelAndView requiredLogin_goodAdd(HttpServletRequest request, ModelAndView mav, HttpServletResponse response) {
+
+	// 게시물 좋아요(ajax)
+	@ResponseBody
+	@RequestMapping(value="/board/goGoodAdd.sam", method= {RequestMethod.GET})
+	public void goodAdd(HttpServletRequest request) {
 		
 		String seq = request.getParameter("seq");		
 		
@@ -715,17 +717,9 @@ public class BoardController {
 		
 		String loc = "javascript:history.back()";
 		
-		if(n == 0) {
-			mav.addObject("message", "이미 좋아요를 클릭하셨습니다");
-		}
-		else {
-			mav.addObject("message", "좋아요 성공!!");
-		}
+		System.out.println(n);		
 		
-		mav.addObject("loc", loc);
-		mav.setViewName("msg");		
-		
-		return mav;
+	
 	}
    
 	
