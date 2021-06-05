@@ -120,7 +120,7 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 	@Override
 	public List<Map<String, String>> getQuizList(String seq) {
 
-		List<Map<String, String>> personList = sqlsession.selectList("adminmember.getQuizList", perno);
+		List<Map<String, String>> personList = sqlsession.selectList("adminmember.getQuizList", seq);
 				
 		return personList;
 	}
