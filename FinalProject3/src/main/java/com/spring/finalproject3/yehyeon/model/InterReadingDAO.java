@@ -21,4 +21,6 @@ public interface InterReadingDAO {
 
 	List<Map<String, String>> viewChart(String bdate); //차트 그리기
 
+	int goDeleteBook(); // 현재 예약 중인 좌석을 이용 가능하도록 컬럼 값 1 -> 0 으로 변경한다.
+
 }

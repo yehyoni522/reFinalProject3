@@ -122,6 +122,9 @@
 		where usecheck = 1
 		order by fk_rno
 	</select>
-
+	
+	<update id="goDeleteBook">
+		update tbl_detailseatinfo set dscheck = 0
+	</update>
 
 </mapper>

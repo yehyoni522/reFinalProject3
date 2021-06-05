@@ -94,4 +94,12 @@ public class ReadingService implements InterReadingService {
 		return mapList;
 	}
 
+
+
+	@Override
+	public int goDeleteBook() {
+		int n = dao.goDeleteBook();
+		return n;
+	}
+
 }

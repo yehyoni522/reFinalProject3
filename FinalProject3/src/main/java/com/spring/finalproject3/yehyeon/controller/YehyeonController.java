@@ -3,6 +3,7 @@ package com.spring.finalproject3.yehyeon.controller;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,38 +54,6 @@ public class YehyeonController {
 		mav.setViewName("reading/index.tiles2");
 		
 		return mav;
-	}
-	
-	@ResponseBody
-	@RequestMapping(value="/admin/viewChart.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
-	public String viewChart(HttpServletRequest request) {
-		
-		String bdate = request.getParameter("bdate");
-		System.out.println("bdate" + bdate);
-		
-		List<Map<String,String>> readingroomchart = service.viewChart(bdate); 
-		
-		JsonArray jsonArr = new JsonArray();
-		
-		for(Map<String,String> map : readingroomchart) {
-			
-			JsonObject jsonObj = new JsonObject();
-			jsonObj.addProperty("usecheck", map.get("usecheck")); 
-			jsonObj.addProperty("cnt1", map.get("cnt1"));
-			jsonObj.addProperty("cnt2", map.get("cnt2"));
-			jsonObj.addProperty("fk_rno", map.get("fk_rno"));
-			jsonObj.addProperty("rname", map.get("rname"));
-			
-			jsonArr.add(jsonObj);
-		}// end of for------------------------------------
-
-	/*	
-		Gson gson = new Gson();
-		return gson.toJson(jsonArr);
-		
-		또는
-	*/
-		return new Gson().toJson(jsonArr);
 	}
 	
 	@ResponseBody
@@ -155,7 +124,7 @@ public class YehyeonController {
 	
 	@ResponseBody
 	@RequestMapping(value="/reading/updateSeatInfo.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public String updateSeatInfo(HttpServletRequest request, BookListVO bookvo) {
+	public String requiredLogin_updateSeatInfo(HttpServletRequest request, HttpServletResponse response, BookListVO bookvo) {
 		
 		String dsno = request.getParameter("fk_dsno");
 		
@@ -205,8 +174,40 @@ public class YehyeonController {
 	
 	////////////////////////////관리자 전용 열람실 예약 내역 시작///////////////////////////////////
 	
+	@ResponseBody
+	@RequestMapping(value="/admin/viewChart.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String viewChart(HttpServletRequest request) {
+		
+		String bdate = request.getParameter("bdate");
+		System.out.println("bdate" + bdate);
+		
+		List<Map<String,String>> readingroomchart = service.viewChart(bdate); 
+		
+		JsonArray jsonArr = new JsonArray();
+		
+		for(Map<String,String> map : readingroomchart) {
+			
+			JsonObject jsonObj = new JsonObject();
+			jsonObj.addProperty("usecheck", map.get("usecheck")); 
+			jsonObj.addProperty("cnt1", map.get("cnt1"));
+			jsonObj.addProperty("cnt2", map.get("cnt2"));
+			jsonObj.addProperty("fk_rno", map.get("fk_rno"));
+			jsonObj.addProperty("rname", map.get("rname"));
+			
+			jsonArr.add(jsonObj);
+		}// end of for------------------------------------
+
+	/*	
+		Gson gson = new Gson();
+		return gson.toJson(jsonArr);
+		
+		또는
+	*/
+		return new Gson().toJson(jsonArr);
+	}
+	
 	@RequestMapping(value="/admin/readingRoomBook.sam")
-	public ModelAndView readingRoomBook(ModelAndView mav) {
+	public ModelAndView requiredLogin_readingRoomBook(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
 		List<RroomNumVO> rRoomList = service.readingRoomView();
 		
@@ -292,6 +293,20 @@ public class YehyeonController {
 
 		
 		return jsonArr.toString(); 
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/admin/goDeleteBook.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String goDeleteBook() {
+		
+		int n = service.goDeleteBook();
+		
+		JSONObject jsonObj = new JSONObject();  // {}
+		jsonObj.put("n", n);  // {"n":1}
+		
+		String json = jsonObj.toString(); 
+		
+		return json;   // "{"n":1}"
 	}
 	
 	////////////////////////////관리자 전용 열람실 예약 내역 끝///////////////////////////////////	

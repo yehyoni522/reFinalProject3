@@ -229,7 +229,13 @@ var rno = 1;
 var tno = 1;
 
 $(function() {
-
+	
+	console.log(${sessionScope.loginuser.perno});
+	if(${sessionScope.loginuser.perno ne '20191234'}) {
+		$("div#adminhome").hide();
+		alert("관리자만 접근할 수 있습니다.");
+		location.href="<%=ctxPath%>/index.sam";
+	}
 	
 	
 	var bdate = $("td.today").attr('data-fdate');
@@ -374,6 +380,28 @@ function viewChart(bdate) {
 		}
 
 	});
+}
+
+function goDeleteBook() {
+	
+	if (confirm("좌석 초기화를 시행하시겠습니까?")) {
+		$.ajax({
+			url:"<%=ctxPath%>/admin/goDeleteBook.sam",
+			type:"post",
+			dataType:"json",
+		   	success:function(json) {
+		   		if(json.n == "660") {
+		   			alert("열람실 초기화가 완료되었습니다.");
+		   		} else {
+		   			alert("오류!");
+		   		}
+		   	}, error: function(request, status, error){
+			      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+		});
+    } else {
+        return;
+    }
 	
 	
 }
@@ -461,6 +489,9 @@ function viewChart(bdate) {
 				</tbody>
 			</table>
 	</div>
-</div>
 
+<div style="float:right;">
+		<button class="btn btn-primary" onclick="goDeleteBook();">열람실 초기화</button>
+</div>
+</div>
 <script type="text/javascript" src="<%= ctxPath%>/resources/js/calendar.js"></script>

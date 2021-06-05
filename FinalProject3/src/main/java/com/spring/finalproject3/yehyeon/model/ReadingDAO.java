@@ -72,5 +72,11 @@ public class ReadingDAO implements InterReadingDAO {
 		return mapList;
 	}
 
+	@Override
+	public int goDeleteBook() {
+		int n = sqlsession.update("Reading.goDeleteBook");
+		return n;
+	}
+
 
 }
