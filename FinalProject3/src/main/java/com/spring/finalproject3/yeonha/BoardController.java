@@ -705,5 +705,30 @@ public class BoardController {
 	}
 	
 	
+	// 게시물 좋아요
+	@RequestMapping(value="/board/goodAdd.sam")
+	public ModelAndView requiredLogin_goodAdd(HttpServletRequest request, ModelAndView mav, HttpServletResponse response) {
+		
+		String seq = request.getParameter("seq");		
+		
+		int n  = service.goodAdd(seq);
+		
+		String loc = "javascript:history.back()";
+		
+		if(n == 0) {
+			mav.addObject("message", "이미 좋아요를 클릭하셨습니다");
+		}
+		else {
+			mav.addObject("message", "좋아요 성공!!");
+		}
+		
+		mav.addObject("loc", loc);
+		mav.setViewName("msg");		
+		
+		return mav;
+	}
+   
+	
+	
 	
 }

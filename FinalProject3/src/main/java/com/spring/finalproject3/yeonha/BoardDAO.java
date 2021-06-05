@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 
 
 
-
-
 @Component
 @Repository
 public class BoardDAO implements InterBoardDAO {
@@ -144,6 +142,14 @@ public class BoardDAO implements InterBoardDAO {
 		int n = sqlsession.insert("board.add_withFile", boardvo);
 		return n;
 	}
+
+	// 게시물 좋아요
+	@Override
+	public int goodAdd(String seq) {
+		int n = sqlsession.update("board.goodAdd", seq);
+		return n;
+	}
+
 
 
 

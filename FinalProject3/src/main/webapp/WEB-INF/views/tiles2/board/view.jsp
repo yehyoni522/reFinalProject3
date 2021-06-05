@@ -106,6 +106,9 @@ a {
 #fileDown{
 	 text-align: right;
 }
+#goodbtn{
+	cursor:pointer;
+}
 </style>
 
 <script type="text/javascript">
@@ -279,7 +282,7 @@ a {
 				dataType:"json",
 				success:function(json){
 					var n = json.n;
-					console.log(n);
+					
 					
 				},
 				error: function(request, status, error){
@@ -365,8 +368,8 @@ a {
 				<p style="word-break: break-all;">${requestScope.boardvo.content} >>?? ${requestScope.boardvo.categoryno}</p>
 			</div>	
 			<div id="contentfooter">
-				<img src="<%=ctxPath%>/resources/images/good.PNG" style="width:45px; height:43px;">
-					<span style="color:red; font-weight:bold;">${requestScope.boardvo.readCount}</span>
+				<img src="<%=ctxPath%>/resources/images/good.PNG"  id="goodbtn" style="width:45px; height:43px;" onclick="javascript:location.href='<%= ctxPath%>/board/goodAdd.sam?seq=${boardvo.seq}'">
+					<span style="color:red; font-weight:bold;">${requestScope.boardvo.good}</span>
 				<img src="<%=ctxPath%>/resources/images/comment.PNG" style="width:44px; height:38px;">
 					<span style="color:blue; font-weight:bold;">${requestScope.boardvo.commentCount}</span>
 			</div>	

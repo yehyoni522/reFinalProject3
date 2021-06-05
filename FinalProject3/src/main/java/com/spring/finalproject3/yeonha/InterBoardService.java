@@ -54,6 +54,10 @@ public interface InterBoardService {
 	// 첨부파일이 있는 글쓰기
 	int add_withFile(BoardVO boardvo);
 
+	// 게시물 좋아요
+	int goodAdd(String seq);
+
+
 
 
 

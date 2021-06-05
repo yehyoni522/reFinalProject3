@@ -87,22 +87,21 @@
 	<!-- 글 1개 보여주기 -->
 	<select id="getView" parameterType="String" resultType="com.spring.finalproject3.yeonha.BoardVO">
 		select previousseq, previoussubject
-		     , seq, fk_perno, subject, name, content, readcount, B.regDate
+		     , seq, fk_perno, subject, name, content, readcount, B.regDate as regDate, good
 		     , nextseq , nextsubject, commentCount
-		     , groupno, fk_seq, depthno, fileName, orgFilename, fileSize
+		     , groupno, fk_seq, depthno, fileName, orgFilename, fileSize 
 		from 
 		(
 		    select lag(seq,1) over(order by seq desc) AS previousseq
 		         , lag(subject,1) over(order by seq desc) AS previoussubject
 		         
 		         , seq, fk_perno, subject, content, readcount, commentCount
-		         , to_char(regDate, 'yyyy-mm-dd') as regDate
+		         , to_char(regDate, 'yyyy-mm-dd') as regDate, good
 		         
 		         , lead(seq,1) over(order by seq desc) AS nextseq
 		         , lead(subject,1) over(order by seq desc) AS nextsubject
 		         
-		         , groupno, fk_seq, depthno, fileName, orgFilename, fileSize
-		         ,  commentCount
+		         , groupno, fk_seq, depthno, fileName, orgFilename, fileSize 
 		    from tbl_board
 		    where status = 1
 		    <if test='searchType != "" and searchWord != ""'>
@@ -163,18 +162,21 @@
    	<!-- 글 1개 보여주기 -->
 	<select id="getViewNo" parameterType="String" resultType="com.spring.finalproject3.yeonha.BoardVO">
 		select previousseq, previoussubject
-		     , seq, fk_perno, subject, name, content, readcount, B.regDate
+		     , seq, fk_perno, subject, name, content, readcount, B.regDate as regDate, good
 		     , nextseq , nextsubject, commentCount
+		     , groupno, fk_seq, depthno, fileName, orgFilename, fileSize 
 		from 
 		(
 		    select lag(seq,1) over(order by seq desc) AS previousseq
 		         , lag(subject,1) over(order by seq desc) AS previoussubject
 		         
 		         , seq, fk_perno, subject, content, readcount, commentCount
-		         , to_char(regDate, 'yyyy-mm-dd') as regDate
+		         , to_char(regDate, 'yyyy-mm-dd') as regDate, good
 		         
 		         , lead(seq,1) over(order by seq desc) AS nextseq
 		         , lead(subject,1) over(order by seq desc) AS nextsubject
+		         
+		         , groupno, fk_seq, depthno, fileName, orgFilename, fileSize 
 		    from tbl_board
 		    where status = 1
 		)B
@@ -227,6 +229,12 @@
 			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, #{fk_seq}, #{depthno}+1, #{fileName}, #{orgFilename}, #{fileSize})  
 		</if>
 	</insert>
+	
+	<!-- 게시물 좋아요 -->
+	<update id="goodAdd" parameterType="String" >
+		update tbl_board set good = good+1 
+		where seq = #{seq}
+	</update> 
 	
 
 </mapper>

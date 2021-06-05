@@ -11,9 +11,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
-
-
-
 @Service
 public class BoardService implements InterBoardService {
 
@@ -163,6 +160,13 @@ public class BoardService implements InterBoardService {
 		}
 				
 		int n = dao.add_withFile(boardvo); // 첨부파일이 있는 경우
+		return n;
+	}
+
+	// 게시물 좋아요
+	@Override
+	public int goodAdd(String seq) {
+		int n = dao.goodAdd(seq);
 		return n;
 	}
 
