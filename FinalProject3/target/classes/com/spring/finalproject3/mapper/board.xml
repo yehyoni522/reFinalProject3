@@ -31,25 +31,31 @@
    	
     <!-- 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한것) -->
    	<select id="boardListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha.BoardVO">  		
-   		select B.seq as seq, B.subject as subject, B.good as good, B.readCount as readCount, B.regDate as regDate, P.name as name
-   				, B.commentCount as commentCount, B.namecheck as namecheck
-   				, groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
+   		select seq, subject, good, readCount, regDate, commentCount, name, namecheck
+		       , groupno, fk_seq, depthno
+		       , fileName, orgFilename, fileSize
 		from
 		(
-		    select row_number() over(order by seq desc) as rno, seq, subject, good, readCount, commentCount, fk_perno  
+	   		select rownum AS rno, B.seq as seq, B.subject as subject, B.good as good, B.readCount as readCount, B.regDate as regDate, P.name as name
+	   				, B.commentCount as commentCount, B.namecheck as namecheck
+	   				, groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
+			from
+			(
+			    select seq, subject, good, readCount, commentCount, fk_perno  
 					   , to_char(regDate, 'yyyy-mm-dd') as regDate, categoryno, namecheck
 					   , groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
-		    from tbl_board
-		    where status = 1 and categoryno = #{categoryno}
-		    <if test='searchWord != ""'>
-		    and lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
-		    </if>
-		    <if test="newhit eq 2">
-			order by good desc, seq desc  
-			</if>
-		)B
-		join tbl_person P
-		on P.perno = B.fk_perno		
+			    from tbl_board
+			    where status = 1 and categoryno = #{categoryno}
+			    <if test='searchWord != ""'>
+			    and lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
+			    </if>
+			    start with fk_seq = 0
+	        	connect by prior seq = fk_seq  
+				order siblings by groupno desc, seq asc 
+			)B
+			join tbl_person P
+			on P.perno = B.fk_perno	
+		)		
 		where rno between #{startRno} and #{endRno}
 		
    	</select>
@@ -96,6 +102,7 @@
 		         , lead(subject,1) over(order by seq desc) AS nextsubject
 		         
 		         , groupno, fk_seq, depthno, fileName, orgFilename, fileSize
+		         ,  commentCount
 		    from tbl_board
 		    where status = 1
 		    <if test='searchType != "" and searchWord != ""'>

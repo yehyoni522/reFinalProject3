@@ -362,7 +362,7 @@ a {
 
 			<br>
 			<div id="boardcontent" >
-				<p style="word-break: break-all;">${requestScope.boardvo.content}</p>
+				<p style="word-break: break-all;">${requestScope.boardvo.content} >>?? ${requestScope.boardvo.categoryno}</p>
 			</div>	
 			<div id="contentfooter">
 				<img src="<%=ctxPath%>/resources/images/good.PNG" style="width:45px; height:43px;">
@@ -421,8 +421,12 @@ a {
 	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/list.sam'">전체목록보기</button>
 	<button type="button" class="viewbtns" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
 	
-	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
-	<button type="button" class="viewbtns" onclick="removeCheck()">삭제</button>
+	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${boardvo.categoryno}&fk_seq=${requestScope.boardvo.seq}&groupno=${requestScope.boardvo.groupno}&depthno=${requestScope.boardvo.depthno}'">답글</button>
+	
+	<c:if test="${sessionScope.loginuser.perno == boardvo.fk_perno}"> <!-- 보고있는 글이 내글일 경우  -->
+		<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
+		<button type="button" class="viewbtns" onclick="removeCheck()">삭제</button>
+	</c:if>
  	<%-- <br><span>${requestScope.gobackURL}</span> --%>
 </div>
 

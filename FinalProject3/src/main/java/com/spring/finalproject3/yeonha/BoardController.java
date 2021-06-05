@@ -45,7 +45,7 @@ public class BoardController {
 	public ModelAndView requiredLogin_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
 		String categoryno = request.getParameter("categoryno");
-		// System.out.println("글쓰기폼: "+categoryno);
+		// System.out.println("view답글클릭: "+categoryno);
 						
 		String fk_seq = request.getParameter("fk_seq");
 		String groupno = request.getParameter("groupno");
