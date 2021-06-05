@@ -426,7 +426,12 @@ public class AdminMemberController {
 	
 	@RequestMapping(value="/lesson/quiz.sam")
 	public ModelAndView lesson_quiz(ModelAndView mav, HttpServletRequest request) {
+	
+		List<Map<String, String>> personList = null;
 		
+		String seq =  request.getParameter("seq");
+		
+		personList = service.getQuizList(seq); // 사람번호로 교수의 정보와 과목 정보 얻어오기 (조인)
 		
 		mav.setViewName("lessonadmin/lessonquiz.tiles2");
 		
@@ -435,10 +440,7 @@ public class AdminMemberController {
 	
 	
 	@RequestMapping(value="/lesson/quizadd.sam")
-	public ModelAndView lesson_quizadd(ModelAndView mav, HttpServletRequest request) {
-		
-		request.getParameter("");
-		
+	public ModelAndView lesson_quizadd(ModelAndView mav, HttpServletRequest request) {	
 		
 		mav.setViewName("lessonadmin/lessonquizadd.tiles2");
 		

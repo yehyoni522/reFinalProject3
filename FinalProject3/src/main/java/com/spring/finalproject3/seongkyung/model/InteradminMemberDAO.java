@@ -35,6 +35,9 @@ public interface InteradminMemberDAO {
 	// 쪽지시험_정답 insert
 	int addquizans(Map<String, String> paraMap);
 	
+	// 사람번호로 교수의 정보와 과목 정보 얻어오기 (조인)
+	List<Map<String, String>> getQuizList(String seq);
+	
 	
 
 }

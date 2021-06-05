@@ -50,8 +50,7 @@
 					<th>교수</th>
 					<th>시험현황</th>
 					<th>시험일자</th>
-				</tr>
-				
+				</tr>				
 			</thead>
 			
 			<tbody>
@@ -62,13 +61,7 @@
 					<td class="tablesize">시험현황(학생정답테이블이 null이 아니면 응시완료를 주자.)</td>
 					<td class="tablesize">시험날짜</td>
 				</tr>
-				<tr>
-					<td class="tablesize">반복문 인덱스</td>
-					<td class="tablesize1">시험명</td>
-					<td class="tablesize">교수</td>
-					<td class="tablesize">시험현황(학생정답테이블이 null이 아니면 응시완료를 주자.)</td>
-					<td class="tablesize">시험날짜</td>
-				</tr>
+				
 			</tbody>
 		</table>
 		

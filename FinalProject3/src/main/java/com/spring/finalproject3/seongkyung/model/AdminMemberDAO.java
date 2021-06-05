@@ -114,6 +114,16 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 		
 		return m;
 	}
+
+	
+	// 사람번호로 교수의 정보와 과목 정보 얻어오기 (조인)
+	@Override
+	public List<Map<String, String>> getQuizList(String seq) {
+
+		List<Map<String, String>> personList = sqlsession.selectList("adminmember.getQuizList", perno);
+				
+		return personList;
+	}
 	
 	
 

@@ -132,6 +132,16 @@ public class AdminMemberService implements InteradminMemberService {
 		
 		return m;
 	}
+
+	
+	// 사람번호로 교수의 정보와 과목 정보 얻어오기 (조인)
+	@Override
+	public List<Map<String, String>> getQuizList(String seq) {
+		
+		List<Map<String, String>> personList = dao.getQuizList(seq);
+		
+		return personList;
+	}
 	
 
 }
