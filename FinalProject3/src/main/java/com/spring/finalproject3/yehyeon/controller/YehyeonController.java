@@ -215,7 +215,7 @@ public class YehyeonController {
 		List<TimeVO> timeList = service.timeView();
 		mav.addObject("timeList", timeList);
 		
-		mav.setViewName("/admin/readingRoomBook.tiles1");
+		mav.setViewName("/admin/readingRoomBook.tiles3");
 		return mav;
 	}
 	
