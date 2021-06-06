@@ -82,6 +82,12 @@ public class BoardService implements InterBoardService {
 		
 		int n=0, result=0;
 		
+		if(commentvo.getFk_comseq() == null || commentvo.getFk_comseq().trim().isEmpty() ) {
+			// 원 댓글쓰기 이라면 co_groupno 컬럼의 값은 co_groupno 컬럼의 최대값(max)+1 로 해야 한다. 
+			int co_groupno = dao.getco_GroupnoMax() + 1;
+			commentvo.setCo_groupno(String.valueOf(co_groupno));
+		}
+		
 		n = dao.addComment(commentvo); // 댓글쓰기(tbl_comment 테이블에 insert)
 		
 		if(n==1) {

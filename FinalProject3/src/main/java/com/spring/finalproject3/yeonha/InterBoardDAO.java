@@ -62,6 +62,9 @@ public interface InterBoardDAO {
 	// tbl_board에서 commentCount -1 하기
 	int minusCommentCount(String fk_seq);
 
+	// tbl_comment 테이블에서 co_groupno 컬럼의 최대값 구하기
+	int getco_GroupnoMax();
+
 	
 
 

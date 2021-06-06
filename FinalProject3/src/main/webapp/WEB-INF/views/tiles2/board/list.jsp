@@ -38,11 +38,7 @@
 }
 .boarda{
 	color:black;
-}    
-#bottomop{
-	position: relative;
-	top:-60px;
-}      
+}     
 #displayList{
 	border:solid 1px gray; 
 	border-top:0px; width: 
@@ -268,15 +264,10 @@
 		   </tr>
 		</c:forEach>		
 	</table>		
-	
-	<%-- 페이지 바 --%>
-	<div style="text-align:center; width:70%; border:solid 0px grey; margin:20px auto;">
-		${requestScope.pageBar}  
-	</div>
 
 	<%-- 검색창(글쓴이,글제목) --%>
 	<div id="bottomop" style="height: 30px;"> 
-		<form name="searchFrm" style="margin-top: 20px;">
+		<form name="searchFrm" style="margin-top: 20px; ">
 			<input type="hidden" name="categoryno" id="catnoSearch" value="${categoryno}"/>
 	   		<select name="searchType" id="searchType" style="height: 26px;">
 	      		<option value="subject">글제목</option>
@@ -293,6 +284,11 @@
 		<%-- 검색어 입력시 자동글 완성하기 1--%>
 		<div id="displayList"></div>		
 	</div>	
+	
+	<%-- 페이지 바 --%>
+	<div style="text-align:center; width:70%; border:solid 0px grey; margin:20px auto;">
+		${requestScope.pageBar}  
+	</div>
 </div>
 
 

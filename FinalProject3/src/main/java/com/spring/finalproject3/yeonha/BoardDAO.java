@@ -150,6 +150,13 @@ public class BoardDAO implements InterBoardDAO {
 		return m;
 	}
 
+	// tbl_comment 테이블에서 co_groupno 컬럼의 최대값 구하기
+	@Override
+	public int getco_GroupnoMax() {
+		int max = sqlsession.selectOne("board.getco_GroupnoMax");
+	    return max;
+	}
+
 
 
 

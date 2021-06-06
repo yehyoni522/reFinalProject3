@@ -168,7 +168,7 @@ public class BoardController {
 		paraMap.put("categoryno", categoryno);
 		
 		int totalCount = 0;         // 총 게시물 건수
-		int sizePerPage = 10;        // 한 페이지당 보여줄 게시물 건수
+		int sizePerPage = 10;       // 한 페이지당 보여줄 게시물 건수
 		int currentShowPageNo = 0;  // 현재 보여주는 페이지 번호로서, 초기치로는 1페이지로 설정함.
 		int totalPage = 0;          // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)  
 		
@@ -370,6 +370,7 @@ public class BoardController {
 		
 		try {
 			n = service.addComment(commentvo);
+			System.out.println("댓글쓰기 결과: "+n);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -405,7 +406,7 @@ public class BoardController {
 	    paraMap.put("endRno", String.valueOf(endRno));  
 		
 		List<CommentVO> commentList = service.getCommentListPaging(paraMap);
-		
+	
 		JSONArray jsonArr = new JSONArray(); 
 		
 		if(commentList != null) { 
@@ -416,6 +417,9 @@ public class BoardController {
 				jsonObj.put("reregDate", cmtvo.getReregDate());
 				jsonObj.put("identity", cmtvo.getIdentity());
 				jsonObj.put("comseq", cmtvo.getComseq());
+				jsonObj.put("fk_comseq", cmtvo.getFk_comseq());
+				jsonObj.put("co_groupno", cmtvo.getCo_groupno());
+				jsonObj.put("co_depthno", cmtvo.getCo_depthno());
 				
 				jsonArr.put(jsonObj);
 			}
@@ -592,36 +596,6 @@ public class BoardController {
 		
 		return jsonObj.toString();
 	}
-	
-	
-	/*@ResponseBody
-	@RequestMapping(value="/board/commentdel.sam", method= {RequestMethod.GET})
-	public String commentdel(HttpServletRequest request) {
-		
-		int comseq = Integer.parseInt(request.getParameter("comseq"));
-		int fk_seq = Integer.parseInt(request.getParameter("fk_seq"));
-		
-		// System.out.println("댓글번호"+comseq);
-		
-		int n = 0;
-		int m = 0;
-		
-		n = service.delcomment(comseq); // tbl_comment에서 댓글 삭제
-	
-		if(n==1) {
-			m = service.updateCommentCount(fk_seq); // tbl_board에서 commentCount -1 하기
-		}
-		
-		// System.out.println("삭제결과: "+n);
-		
-		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("m", m); 
-
-		
-		return jsonObj.toString();
-	
-	}
-	*/
 	
 	
 	// 댓글 수정하기 /board/commentedit.sam

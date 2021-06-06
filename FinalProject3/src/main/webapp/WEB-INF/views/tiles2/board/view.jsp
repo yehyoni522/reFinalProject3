@@ -446,7 +446,9 @@ a {
 	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/list.sam'">전체목록보기</button>
 	<button type="button" class="viewbtns" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
 	
-	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${boardvo.categoryno}&fk_seq=${requestScope.boardvo.seq}&groupno=${requestScope.boardvo.groupno}&depthno=${requestScope.boardvo.depthno}'">답글</button>
+	<c:if test="${categoryno == 1}"> <!-- 자유게시판에서만 답글기능 사용  -->
+		<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${boardvo.categoryno}&fk_seq=${requestScope.boardvo.seq}&groupno=${requestScope.boardvo.groupno}&depthno=${requestScope.boardvo.depthno}'">답글</button>
+	</c:if>
 	
 	<c:if test="${sessionScope.loginuser.perno == boardvo.fk_perno}"> <!-- 보고있는 글이 내글일 경우  -->
 		<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>

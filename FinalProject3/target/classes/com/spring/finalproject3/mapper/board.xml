@@ -6,7 +6,7 @@
 <!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
 <mapper namespace="board">
     
-    <!-- 글쓰기  -->
+    <!-- (파일첨부없는)글쓰기  -->
     <insert id="add" parameterType="com.spring.finalproject3.yeonha.BoardVO">
 		<if test='fk_seq.equals("")'>
 			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno)
@@ -16,6 +16,19 @@
 		<if test='!fk_seq.equals("")'>
 			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno)
 			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, #{fk_seq}, #{depthno}+1)  
+		</if>
+	</insert>
+	
+	<!-- 글쓰기(파일첨부가 있는 글쓰기) -->
+	<insert id="add_withFile" parameterType="com.spring.finalproject3.yeonha.BoardVO">
+		<if test='fk_seq.equals("")'>
+			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno, fileName, orgFilename, fileSize)
+			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, default, default, #{fileName}, #{orgFilename}, #{fileSize})
+		</if>
+		
+		<if test='!fk_seq.equals("")'>
+			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno, fileName, orgFilename, fileSize)
+			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, #{fk_seq}, #{depthno}+1, #{fileName}, #{orgFilename}, #{fileSize})  
 		</if>
 	</insert>
 	
@@ -121,8 +134,14 @@
 	
 	<!-- 댓글쓰기 -->
 	<insert id="addComment" parameterType="com.spring.finalproject3.yeonha.CommentVO">
-		insert into tbl_comment(comseq, fk_seq, fk_perno, content, reregDate, status)
-		values(commentSeq.nextval, #{fk_seq}, #{fk_perno}, #{content}, default, default)
+		<if test='fk_comseq eq null'> <!-- 원 댓글이라면..  -->
+			insert into tbl_comment(comseq, fk_seq, fk_perno, content, reregDate, status, co_groupno, fk_comseq, co_depthno)
+			values(commentSeq.nextval, #{fk_seq}, #{fk_perno}, #{content}, default, default, #{co_groupno}, default, default)
+		</if>
+		<if test='fk_comseq neq null'> <!-- 답댓글이라면..  -->
+			insert into tbl_comment(comseq, fk_seq, fk_perno, content, reregDate, status, co_groupno, fk_comseq, co_depthno)
+			values(commentSeq.nextval, #{fk_seq}, #{fk_perno}, #{content}, default, default, #{co_groupno}, #{fk_comseq}, #{co_depthno}+1)
+		</if>
 	</insert>
 	
 	<!-- tbl_board 테이블에 commentCount 컬럼의 값을 1증가(update) -->
@@ -134,14 +153,14 @@
 	
 	<!-- 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) -->
    	<select id="getCommentListPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha.CommentVO">
-   		select name, identity, content, reregDate, comseq
+   		select name, identity, content, reregDate, comseq, fk_comseq, co_groupno, co_depthno
 		from
 		(
-		    select rno, name, identity, content, reregDate, comseq 
+		    select rno, name, identity, content, reregDate, comseq, fk_comseq, co_groupno, co_depthno
 		    from
 		    (
 		        select row_number() over(order by comseq desc) as rno, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate
-		        	   , comseq 
+		        	   , comseq, fk_comseq, co_groupno, co_depthno  
 		        from tbl_comment
 		        where status = 1 and fk_seq = #{fk_seq}
 		        order by comseq desc
@@ -200,22 +219,9 @@
 	
 	<!-- tbl_board 테이블에서 groupno 컬럼의 최대값 구하기 -->
 	<select id="getGroupnoMax" resultType="int">
-	    select nvl(max(groupno), 0)
+	    select nvl(max(groupno), 0) as groupno
 		from tbl_board
 	</select>
-	
-	<!-- 글쓰기(파일첨부가 있는 글쓰기) -->
-	<insert id="add_withFile" parameterType="com.spring.finalproject3.yeonha.BoardVO">
-		<if test='fk_seq.equals("")'>
-			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno, fileName, orgFilename, fileSize)
-			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, default, default, #{fileName}, #{orgFilename}, #{fileSize})
-		</if>
-		
-		<if test='!fk_seq.equals("")'>
-			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno, fileName, orgFilename, fileSize)
-			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, #{fk_seq}, #{depthno}+1, #{fileName}, #{orgFilename}, #{fileSize})  
-		</if>
-	</insert>
 	
 	<!-- 게시물 좋아요 -->
 	<update id="goodAdd" parameterType="String" >
@@ -234,4 +240,9 @@
 		update tbl_board set commentCount = commentCount-1 where seq = #{fk_seq}
 	</update>
 
+	<!-- tbl_comment 테이블에서 co_groupno 컬럼의 최대값 구하기 -->
+	<select id="getco_GroupnoMax" resultType="int">
+	    select nvl(max(co_groupno), 0) as co_groupno
+		from tbl_comment
+	</select>
 </mapper>
