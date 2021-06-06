@@ -475,6 +475,7 @@ function goDeleteBook() {
 		</select>
 	</form>
 	<br>
+	<div style="padding-left:260px;"align="center">
 		<table class="table table-bordered" style="width:800px; text-align: center">
 				<thead>
 					<tr>
@@ -488,7 +489,8 @@ function goDeleteBook() {
 				<tbody id="seatinfo">
 				</tbody>
 			</table>
-	</div>
+		</div>
+</div>
 
 <div style="float:right;">
 		<button class="btn btn-primary" onclick="goDeleteBook();">열람실 초기화</button>
