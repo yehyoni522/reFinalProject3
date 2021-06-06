@@ -196,20 +196,7 @@
 	<delete id="del" parameterType="int">
 		delete from tbl_board 
 		where seq = #{seqno}
-	</delete>	
-	
-	<!-- 댓글 조회하기 -->
-	<select id="getComment" parameterType="String">
-	select comseq, fk_perno
-	from tbl_comment
-	where status = 1 and comseq = #{comseq}
-	</select>
-	
-	<!-- 댓글 삭제하기 -->
-	<delete id="delcomment" parameterType="int">
-		delete from tbl_comment 
-		where comseq = #{comseq}
-	</delete>
+	</delete>		
 	
 	<!-- tbl_board 테이블에서 groupno 컬럼의 최대값 구하기 -->
 	<select id="getGroupnoMax" resultType="int">
@@ -236,5 +223,15 @@
 		where seq = #{seq}
 	</update> 
 	
+	<!-- 댓글 삭제하기 -->
+	<delete id="delcomment" parameterType="int">
+		delete from tbl_comment 
+		where comseq = #{comseq}
+	</delete>	
+		
+	<!-- tbl_board에서 commentCount -1 하기 --> 
+	<update id="minusCommentCount" parameterType="String">
+		update tbl_board set commentCount = commentCount-1 where seq = #{fk_seq}
+	</update>
 
 </mapper>

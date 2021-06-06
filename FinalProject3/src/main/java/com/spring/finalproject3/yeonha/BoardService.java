@@ -134,20 +134,6 @@ public class BoardService implements InterBoardService {
 		return n;
 	}
 
-	// (삭제할) 댓글 불러오기
-	@Override
-	public CommentVO getComment(String comseq) {
-		CommentVO cmtvo = dao.getComment(comseq);
-		return cmtvo;
-	}
-
-	// 댓글 삭제하기
-	@Override
-	public int delcomment(int comseq) {
-		int n = dao.delcomment(comseq);
-		return n;
-	}
-
 	// 첨부파일이 있는 글쓰기
 	@Override
 	public int add_withFile(BoardVO boardvo) {
@@ -168,6 +154,20 @@ public class BoardService implements InterBoardService {
 	public int goodAdd(String seq) {
 		int n = dao.goodAdd(seq);
 		return n;
+	}
+
+	// tbl_comment에서 댓글 삭제
+	@Override
+	public int delcomment(int comseq) {
+		int n = dao.delcomment(comseq); 
+		return n;
+	}
+
+	// tbl_board에서 commentCount -1 하기
+	@Override
+	public int minusCommentCount(String fk_seq) {
+		int m = dao.minusCommentCount(fk_seq);
+		return m;
 	}
 
 

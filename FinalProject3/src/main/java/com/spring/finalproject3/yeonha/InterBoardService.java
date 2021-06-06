@@ -45,17 +45,19 @@ public interface InterBoardService {
 	// 게시글 삭제하기 
 	int del(int seqno);
 
-	// (삭제할) 댓글 불러오기
-	CommentVO getComment(String comseq);
-
-	// 댓글 삭제하기
-	int delcomment(int comseq);
-
 	// 첨부파일이 있는 글쓰기
 	int add_withFile(BoardVO boardvo);
 
 	// 게시물 좋아요
 	int goodAdd(String seq);
+
+	// tbl_comment에서 댓글 삭제
+	int delcomment(int comseq);
+
+	// tbl_board에서 commentCount -1 하기
+	int minusCommentCount(String fk_seq);
+
+
 
 
 

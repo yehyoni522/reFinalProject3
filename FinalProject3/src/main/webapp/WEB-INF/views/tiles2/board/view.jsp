@@ -173,8 +173,6 @@ a {
 				
 				if(json.length > 0) {
 					$.each(json, function(index, item){		
-						html += "<form name='commentFrm'>"
-						html += "<input type='hidden' value='item.comseq'/>";
 						html += "<div class='putcomment'>";
 						html += "<div id='comname'>&nbsp;"+ item.name;
 						
@@ -184,7 +182,7 @@ a {
 						html += "<span id='commentfunc'>";
 						html += "<span id='commentreply' ><button type='button' onclick='commentreply()'>답글</button></span>";
 						html += "<span id='commentedit'><button type='button' onclick='commentedit()'>수정</button></span>";
-						html += "<span id='commentdel'><button type='button' onclick='commentdel()'>삭제</button></span>";
+						html += "<span id='commentdel'><button type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
 						html += "</span></c:if></div>";
 						
 						html += "<div >&nbsp;"+item.identity+"</div>";
@@ -192,7 +190,6 @@ a {
 						html += "<div id='comdate'>&nbsp;"+item.reregDate+"</div>";
 						html += "</div>";
 						
-						html += "</form>"
 					});
 				}
 				else {
@@ -292,17 +289,36 @@ a {
 		
 	} // end of function commentedit(){} 댓글 수정하기
 	
-	function commentdel(){
+	// 댓글삭제하기
+	function commentdel(comseq){
+
+		  //alert(${requestScope.boardvo.seq});
 		
-		if (confirm("정말 삭제하시겠습니까??") == true){    //확인			
-	 		var frm = document.commentFrm;
-		   	frm.method = "POST";
-		   	frm.action = "<%= ctxPath%>/board/commentdel.sam";
-		   	frm.submit();	
-		}else{   //취소				
-		    return false;	
-		}
+		 $.ajax({
+			   url:"<%= ctxPath%>/board/commentdel.sam",
+			   type:"get",
+			   data:{"comseq":comseq,
+				     "fk_seq":"${requestScope.boardvo.seq}"},
+			   dataType:"json",
+			   success:function(json){
+				   
+				   if(json.m == 1){
+					   alert("댓글이 삭제되었습니다.");
+					   return;
+				   }
+				   else{
+					   alert("댓글 삭제가 실패했습니다.");
+					   return;
+				   }
+				  
+				   
 		
+				   
+			   },
+			   error: function(request, status, error){
+					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			   }
+		   });	   				
 	} // end of function commentdel(){} 댓글 삭제하기
 	
 <%-- 	function goGoodAdd(seq){
@@ -440,10 +456,8 @@ a {
 </div>
 
 <form name="delFrm"> 
-	<input type="text" name="categoryno" value="${categoryno}" />
+	<input type="hidden" name="categoryno" value="${categoryno}" />
     <input type="hidden" name="seq" value="${requestScope.boardvo.seq}" />          
 </form>
-
-
 
     

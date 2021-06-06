@@ -115,20 +115,6 @@ public class BoardDAO implements InterBoardDAO {
 		return n;
 	}
 
-	// 댓글 불러오기
-	@Override
-	public CommentVO getComment(String comseq) {
-		CommentVO cmtvo = sqlsession.selectOne("board.getComment", comseq);
-		return cmtvo;
-	}
-
-	// 댓글 삭제하기
-	@Override
-	public int delcomment(int comseq) {
-		int n = sqlsession.delete("board.delcomment", comseq);
-		return n;
-	}
-
 	// tbl_board 테이블에서 groupno 컬럼의 최대값 구하기
 	@Override
 	public int getGroupnoMax() {
@@ -149,6 +135,21 @@ public class BoardDAO implements InterBoardDAO {
 		int n = sqlsession.update("board.goodAdd", seq);
 		return n;
 	}
+
+	// tbl_comment에서 댓글 삭제
+	@Override
+	public int delcomment(int comseq) {
+		int n = sqlsession.delete("board.delcomment", comseq);
+		return n;
+	}
+
+	// tbl_board에서 commentCount -1 하기
+	@Override
+	public int minusCommentCount(String fk_seq) {
+		int m = sqlsession.update("board.minusCommentCount", fk_seq);
+		return m;
+	}
+
 
 
 

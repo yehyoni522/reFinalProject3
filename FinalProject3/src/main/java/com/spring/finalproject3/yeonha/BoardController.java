@@ -291,14 +291,21 @@ public class BoardController {
 		return jsonArr.toString(); 
 	}
 	
-	// 글 한개를 보여주는 페이지 요청  
+	// 글 한개를 보여주는 페이지 요청  (댓글 목록 포함)
 	@RequestMapping(value="/board/view.sam")
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		
 		String seq = request.getParameter("seq");		
 	    String searchType = request.getParameter("searchType");
 	    String searchWord = request.getParameter("searchWord");
-	      
+	    
+	    if(searchType == null) {
+			searchType = "";	
+		}
+		if(searchWord == null) {
+			searchWord = "";	
+		}
+		
 	    Map<String,String> paraMap = new HashMap<>();
 	    paraMap.put("seq", seq);
 	    paraMap.put("searchType", searchType);
@@ -307,7 +314,13 @@ public class BoardController {
 	    mav.addObject("searchType", searchType);
 	    mav.addObject("searchWord", searchWord);
 	    
-		String gobackURL = request.getParameter("gobackURL");
+	    
+		String gobackURL = request.getParameter("gobackURL");		
+	
+		if(gobackURL != null && gobackURL.contains(" ")) {
+			gobackURL = gobackURL.replaceAll(" ", "&");	
+		}
+		
 		mav.addObject("gobackURL", gobackURL);
 		
 		String categoryno = request.getParameter("categoryno");
@@ -330,12 +343,12 @@ public class BoardController {
 			
 			if("yes".equals(session.getAttribute("readCountPermission"))) {
 				
-				boardvo = service.getView(paraMap, login_userid);
+				boardvo = service.getView(paraMap, login_userid); // 조회수 증가 후 글 조회
 				
 				session.removeAttribute("readCountPermission");
 			}
 			else {				
-				boardvo = service.getViewWithNoAddCount(paraMap);				
+				boardvo = service.getViewWithNoAddCount(paraMap); // 조회수 증가 없이 글 조회				
 			}			
 			
 			mav.addObject("boardvo", boardvo);			
@@ -367,8 +380,8 @@ public class BoardController {
 		
 		return jsonObj.toString();
 	}
-	
-	
+
+		
 	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
 	@ResponseBody
 	@RequestMapping(value="/board/commentList.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
@@ -553,62 +566,63 @@ public class BoardController {
 	}
 	
 	// 댓글 삭제하기
+	@ResponseBody
 	@RequestMapping(value="/board/commentdel.sam", method= {RequestMethod.GET})
-	public ModelAndView commentdel(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
-   
-		// 댓글 고유번호 불러와서 삭제하기
+	public String commentdel(HttpServletRequest request) {
 		
-		String comseq = request.getParameter("comseq");
-		// String categoryno = request.getParameter("categoryno");	
-		System.out.println(comseq);
+		int comseq = Integer.parseInt(request.getParameter("comseq"));
+		String fk_seq = request.getParameter("fk_seq");
+		// System.out.println("게시물 번호: " + fk_seq);
 		
-		String gobackURL = request.getParameter("gobackURL");
-		mav.addObject("gobackURL", gobackURL);
+		int n = 0;
 		
-		CommentVO cmtvo = service.getComment(comseq);				
-      
-		HttpSession session = request.getSession();
-		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
-      
-		String loginuserPerno = String.valueOf(loginuser.getPerno());
+		n = service.delcomment(comseq); // tbl_comment에서 댓글 삭제
 		
+		int m = 0;
 		
-		String loc = "javascript:history.back()";
+		if(n == 1) {
+			//System.out.println("게시물 번호: " + fk_seq);
+			
+			m = service.minusCommentCount(fk_seq); // tbl_board에서 commentCount -1 하기
+		}
 		
-		if( !loginuserPerno.equals(cmtvo.getFk_perno()) ) {
-			String message = "다른 사용자의 댓글은 삭제가 불가합니다.";
-			       
-			mav.addObject("message", message);
-			mav.addObject("loc", loc);
-			mav.setViewName("msg");
-      	}
-      	else {
-    	    
-    	    int n = service.delcomment(Integer.parseInt(comseq));     	    
-    		
-    	    if(n == 0) {
-    	         mav.addObject("message", "댓글 삭제가 불가합니다.");
-    	         mav.addObject("loc", loc);
-    	         mav.setViewName("msg");
-    	    }     
-    	    else {
-    	         mav.addObject("message", "댓글삭제 성공!!");
-    	         mav.addObject("loc", loc);
-    	         mav.setViewName("msg");
-    	    }      		
-      	}     
-		return mav;
-		/*
-		 view.jsp 에서 댓글 삭제하기를 ajax를 이용하여 int n = json.n으로 받았다 
-		그러니까 컨트롤러에서 n으로 보내던지 ajax에서 json으로 받지 말던가 ...
-		아마도 위에 (컨트롤러 위쪽에) 댓글쓰기랑 댓글 조회하기보니까 json으로 return해준게 보인다
-		여긴 delete니까 json으로 안보내도될 것 같다
-		ajax에서 json부분을 다른것으로 수정해야할듯 ...
-		 */
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("m", m); 
+
+		
+		return jsonObj.toString();
 	}
 	
 	
+	/*@ResponseBody
+	@RequestMapping(value="/board/commentdel.sam", method= {RequestMethod.GET})
+	public String commentdel(HttpServletRequest request) {
+		
+		int comseq = Integer.parseInt(request.getParameter("comseq"));
+		int fk_seq = Integer.parseInt(request.getParameter("fk_seq"));
+		
+		// System.out.println("댓글번호"+comseq);
+		
+		int n = 0;
+		int m = 0;
+		
+		n = service.delcomment(comseq); // tbl_comment에서 댓글 삭제
+	
+		if(n==1) {
+			m = service.updateCommentCount(fk_seq); // tbl_board에서 commentCount -1 하기
+		}
+		
+		// System.out.println("삭제결과: "+n);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("m", m); 
 
+		
+		return jsonObj.toString();
+	
+	}
+	*/
+	
 	
 	// 댓글 수정하기 /board/commentedit.sam
 	
