@@ -153,10 +153,10 @@
 	
 	<!-- 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) -->
    	<select id="getCommentListPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha.CommentVO">
-   		select name, identity, content, reregDate, comseq, fk_comseq, co_groupno, co_depthno
+   		select name, identity, content, reregDate, comseq, fk_comseq, co_groupno, co_depthno, fk_perno
 		from
 		(
-		    select rno, name, identity, content, reregDate, comseq, fk_comseq, co_groupno, co_depthno
+		    select rno, name, identity, content, reregDate, comseq, fk_comseq, co_groupno, co_depthno, fk_perno
 		    from
 		    (
 		        select row_number() over(order by comseq desc) as rno, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate
@@ -245,4 +245,11 @@
 	    select nvl(max(co_groupno), 0) as co_groupno
 		from tbl_comment
 	</select>
+	
+	<!-- 댓글 수정완료하기 -->
+	<update id="comEditEnd" parameterType="HashMap" >
+		update tbl_comment set content = #{content}, reregDate = default where comseq = #{comseq}
+	</update>  
+	
+	
 </mapper>

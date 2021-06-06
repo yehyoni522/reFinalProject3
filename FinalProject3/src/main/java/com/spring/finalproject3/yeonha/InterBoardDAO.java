@@ -65,6 +65,9 @@ public interface InterBoardDAO {
 	// tbl_comment 테이블에서 co_groupno 컬럼의 최대값 구하기
 	int getco_GroupnoMax();
 
+	// 댓글 수정완료하기
+	int comEditEnd(Map<String, String> paraMap);
+
 	
 
 

@@ -157,6 +157,13 @@ public class BoardDAO implements InterBoardDAO {
 	    return max;
 	}
 
+	// 댓글 수정완료하기
+	@Override
+	public int comEditEnd(Map<String, String> paraMap) {
+		int n = sqlsession.update("board.comEditEnd", paraMap);
+		return n;
+	}
+
 
 
 

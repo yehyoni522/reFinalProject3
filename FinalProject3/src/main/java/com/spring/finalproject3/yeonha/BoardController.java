@@ -420,6 +420,7 @@ public class BoardController {
 				jsonObj.put("fk_comseq", cmtvo.getFk_comseq());
 				jsonObj.put("co_groupno", cmtvo.getCo_groupno());
 				jsonObj.put("co_depthno", cmtvo.getCo_depthno());
+				jsonObj.put("fk_perno", cmtvo.getFk_perno());
 				
 				jsonArr.put(jsonObj);
 			}
@@ -575,6 +576,7 @@ public class BoardController {
 	public String commentdel(HttpServletRequest request) {
 		
 		int comseq = Integer.parseInt(request.getParameter("comseq"));
+		
 		String fk_seq = request.getParameter("fk_seq");
 		// System.out.println("게시물 번호: " + fk_seq);
 		
@@ -592,14 +594,36 @@ public class BoardController {
 		
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("m", m); 
-
 		
 		return jsonObj.toString();
 	}
 	
 	
-	// 댓글 수정하기 /board/commentedit.sam
+	// 댓글 수정완료하기
+	@ResponseBody
+	@RequestMapping(value="/board/comEditEnd.sam", method= {RequestMethod.POST})
+	public String comEditEnd(HttpServletRequest request) {
 	
+		String comseq = request.getParameter("comseq");
+		String content = request.getParameter("comEditVal");
+		
+		System.out.println("댓글번호: "+comseq);
+		System.out.println("댓글수정내용: "+content);
+				
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("comseq", comseq);
+		paraMap.put("content", content);
+		
+		int n = 0;
+		
+		n = service.comEditEnd(paraMap);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n); 
+		
+		return jsonObj.toString();
+			
+	}	
 	
 	// 첨부파일 다운로드 받기
 	@RequestMapping(value="/board/download.sam")

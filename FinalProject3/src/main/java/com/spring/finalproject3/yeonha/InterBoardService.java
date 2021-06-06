@@ -57,6 +57,9 @@ public interface InterBoardService {
 	// tbl_board에서 commentCount -1 하기
 	int minusCommentCount(String fk_seq);
 
+	// 댓글 수정완료하기
+	int comEditEnd(Map<String, String> paraMap);
+
 
 
 
