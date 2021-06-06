@@ -46,18 +46,30 @@ public interface InterBoardDAO {
 
 	// 게시글 삭제하기
 	int del(int seqno);
-
-	// 댓글 불러오기
-	CommentVO getComment(String comseq);
-
-	// 댓글 삭제하기
-	int delcomment(int comseq);
 	
 	// tbl_board 테이블에서 groupno 컬럼의 최대값 구하기
 	int getGroupnoMax();
 
 	// 첨부파일이 있는 글쓰기
 	int add_withFile(BoardVO boardvo);
+
+	// 게시물 좋아요
+	int goodAdd(String seq);
+
+	// tbl_comment에서 댓글 삭제
+	int delcomment(int comseq);
+
+	// tbl_board에서 commentCount -1 하기
+	int minusCommentCount(String fk_seq);
+
+	// tbl_comment 테이블에서 co_groupno 컬럼의 최대값 구하기
+	int getco_GroupnoMax();
+
+	// 댓글 수정완료하기
+	int comEditEnd(Map<String, String> paraMap);
+
+	
+
 
 
 	

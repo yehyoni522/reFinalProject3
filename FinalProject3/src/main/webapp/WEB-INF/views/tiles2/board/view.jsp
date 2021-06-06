@@ -90,9 +90,6 @@ a {
 	padding: 5px auto;
 	margin-left: 80%;
 }
-#commentfunc:hover{
-	color:blue;
-}
 .logidentity{
 	border: 2px solid green;
 	padding: 2px ;
@@ -106,11 +103,16 @@ a {
 #fileDown{
 	 text-align: right;
 }
+#goodbtn{
+	cursor:pointer;
+}
 </style>
 
 <script type="text/javascript">
 
 	$(document).ready(function(){
+		
+		$("#comEditFrm").hide();
 		
 		goViewComment(1); // 페이징처리 한 댓글 읽어오기 
 
@@ -169,27 +171,40 @@ a {
 				var html = "";
 				
 				if(json.length > 0) {
-					$.each(json, function(index, item){		
-						html += "<form name='commentFrm'>"
-						html += "<input type='hidden' value='item.comseq'/>";
-						html += "<div class='putcomment'>";
-						html += "<div id='comname'>&nbsp;"+ item.name;
-						
 					
+					
+					$.each(json, function(index, item){		
+						
+						var content = '"'+item.content+'"';
+						
+						
+						html += "<div class='putcomment'>";
+						html += "<input type='text' value='"+item.comseq+"'/>"
+						html += "<div id='comname'>&nbsp;"+ item.name;	
 						
 						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
 						html += "<span id='commentfunc'>";
 						html += "<span id='commentreply' ><button type='button' onclick='commentreply()'>답글</button></span>";
-						html += "<span id='commentedit'><button type='button' onclick='commentedit()'>수정</button></span>";
-						html += "<span id='commentdel'><button type='button' onclick='commentdel()'>삭제</button></span>";
-						html += "</span></c:if></div>";
 						
-						html += "<div >&nbsp;"+item.identity+"</div>";
-						html += "<div id='comcont'>&nbsp;"+item.content+"</div>";
+					
+						html += "<span id='commentedit'><button type='button' onclick='commentedit("+item.comseq+","+content+")'>수정</button></span>";
+						html += "<span id='commentdel'><button type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
+						
+						
+						html += "</span></c:if></div>";	
+						
+						html += "<div>&nbsp;"+item.identity+"</div>";
+						html += "<div id='comcont"+item.comseq+"'>&nbsp;"+item.content+"</div>";
+						
+						html += "<div id='comEditFrm"+item.comseq+"' style='display:none;'>"
+						html += "<textarea id='comcontEdit' row='10' style='width: 95%; height:80px;''>"+item.content+"</textarea>";
+						html += "<button id='comEditEnd' style='height:50px;' onclick='comEditEnd("+item.comseq+")'>수정 완료</button>"
+						html += "</div>"
+						
 						html += "<div id='comdate'>&nbsp;"+item.reregDate+"</div>";
-						html += "</div>";
 						
-						html += "</form>"
+						html += "</div>";
+						html += "<div id='coeditInput'></div>"
 					});
 				}
 				else {
@@ -269,28 +284,11 @@ a {
 	function removeCheck() {
 
 		if (confirm("정말 삭제하시겠습니까??") == true){    //확인
-		
-			var comment_form = $("form[name=delFrm]").serialize();
-	 		
-			$.ajax({
-				url:"<%= ctxPath%>/board/del.sam",
-				data: comment_form,
-				type: "get",
-				dataType:"json",
-				success:function(json){
-					var n = json.n;
-					console.log(n);
-					
-				},
-				error: function(request, status, error){
-					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			 	}
-			});
-		
-			<%-- var frm = document.delFrm;
+			
+		 var frm = document.delFrm;
 		   	frm.method = "POST";
 		   	frm.action = "<%= ctxPath%>/board/del.sam";
-		   	frm.submit(); --%>
+		   	frm.submit();
 		   	
 		}else{   //취소	
 			return false;	
@@ -302,23 +300,96 @@ a {
 		
 	} // end of function commentreply(){} 댓글 답글달기
 	
-	function commentedit(){
+	// 댓글 수정 버튼 클릭
+	function commentedit(comseq, content){
+		// alert("댓글 수정하기 클릭, 댓글번호와 내용: "+comseq+content);
+		
+		$("div#comcont"+comseq).hide();
+		$("div#comEditFrm"+comseq).show();					
 		
 	} // end of function commentedit(){} 댓글 수정하기
 	
-	function commentdel(){
+	
+	// 댓글 수정완료 버튼 클릭
+	function comEditEnd(comseq){
 		
-		if (confirm("정말 삭제하시겠습니까??") == true){    //확인			
-	 		var frm = document.commentFrm;
-		   	frm.method = "POST";
-		   	frm.action = "<%= ctxPath%>/board/commentdel.sam";
-		   	frm.submit();	
-		}else{   //취소				
-		    return false;	
-		}
+		var comEditVal = $("textarea#comcontEdit").val().trim();
+        				
+		if(comEditVal == "") {
+           alert("댓글내용을 입력하세요!!");
+           return;
+        } 
 		
+		 // alert("수정댓글내용 : "+comEditVal);
+		 
+		$.ajax({
+			   url:"<%= ctxPath%>/board/comEditEnd.sam",
+			   type:"post",
+			   data:{"comseq":comseq,
+				     comEditVal},
+			   dataType:"json",
+			   success:function(json){
+				   goViewComment(1);		   
+			   },
+			   error: function(request, status, error){
+					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			   }
+		   });	   		       
+	}
+
+	
+	// 댓글삭제하기
+	function commentdel(comseq){
+
+		  //alert(${requestScope.boardvo.seq});
+		
+		 $.ajax({
+			   url:"<%= ctxPath%>/board/commentdel.sam",
+			   type:"get",
+			   data:{"comseq":comseq,
+				     "fk_seq":"${requestScope.boardvo.seq}"},
+			   dataType:"json",
+			   success:function(json){
+				   
+				   if(json.m == 1){
+					   alert("댓글이 삭제되었습니다.");
+					   goViewComment(1);
+					   return;
+				   }
+				   else{
+					   alert("댓글 삭제가 실패했습니다.");
+					   return;
+				   }			   
+			   },
+			   error: function(request, status, error){
+					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			   }
+		   });	   				
 	} // end of function commentdel(){} 댓글 삭제하기
 	
+<%-- 	function goGoodAdd(seq){
+		
+		if( ${empty sessionScope.loginuser} ) {
+			   alert("좋아요 하시려면 먼저 로그인 하셔야 합니다.");
+			   return; // 종료 
+		   }
+		   
+		   $.ajax({
+			   url:"<%= ctxPath%>/board/goGoodAdd.sam",
+			   type:"get",
+			   data:{"seq":seq
+},
+			   dataType:"json",
+			   success:function(json){
+				   // alert(json.msg);
+				      swal(json.msg);
+				      goLikeDislikeCount();
+			   },
+			   error: function(request, status, error){
+					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			   }
+		   });	   
+	} // end of function goGoodAdd(seq){ --%>
 </script>										
 						
 										
@@ -362,11 +433,11 @@ a {
 
 			<br>
 			<div id="boardcontent" >
-				<p style="word-break: break-all;">${requestScope.boardvo.content}</p>
+				<p style="word-break: break-all;">${requestScope.boardvo.content} >>?? ${requestScope.boardvo.categoryno}</p>
 			</div>	
 			<div id="contentfooter">
-				<img src="<%=ctxPath%>/resources/images/good.PNG" style="width:45px; height:43px;">
-					<span style="color:red; font-weight:bold;">${requestScope.boardvo.readCount}</span>
+				<img src="<%=ctxPath%>/resources/images/good.PNG"  id="goodbtn" style="width:45px; height:43px;" onclick="goGoodAdd(${boardvo.seq})">
+					<span style="color:red; font-weight:bold;">${requestScope.boardvo.good}</span>
 				<img src="<%=ctxPath%>/resources/images/comment.PNG" style="width:44px; height:38px;">
 					<span style="color:blue; font-weight:bold;">${requestScope.boardvo.commentCount}</span>
 			</div>	
@@ -421,16 +492,20 @@ a {
 	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/list.sam'">전체목록보기</button>
 	<button type="button" class="viewbtns" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
 	
-	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
-	<button type="button" class="viewbtns" onclick="removeCheck()">삭제</button>
+	<c:if test="${categoryno == 1}"> <!-- 자유게시판에서만 답글기능 사용  -->
+		<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${boardvo.categoryno}&fk_seq=${requestScope.boardvo.seq}&groupno=${requestScope.boardvo.groupno}&depthno=${requestScope.boardvo.depthno}'">답글</button>
+	</c:if>
+	
+	<c:if test="${sessionScope.loginuser.perno == boardvo.fk_perno}"> <!-- 보고있는 글이 내글일 경우  -->
+		<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/edit.sam?seq=${requestScope.boardvo.seq}'">수정</button>
+		<button type="button" class="viewbtns" onclick="removeCheck()">삭제</button>
+	</c:if>
  	<%-- <br><span>${requestScope.gobackURL}</span> --%>
 </div>
 
 <form name="delFrm"> 
-	<input type="hidden" name="categoryno" value="${requestScope.categoryno}" />
+	<input type="hidden" name="categoryno" value="${categoryno}" />
     <input type="hidden" name="seq" value="${requestScope.boardvo.seq}" />          
 </form>
-
-
 
     

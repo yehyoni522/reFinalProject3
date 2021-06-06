@@ -45,7 +45,7 @@ public class BoardController {
 	public ModelAndView requiredLogin_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
 		String categoryno = request.getParameter("categoryno");
-		// System.out.println("글쓰기폼: "+categoryno);
+		// System.out.println("view답글클릭: "+categoryno);
 						
 		String fk_seq = request.getParameter("fk_seq");
 		String groupno = request.getParameter("groupno");
@@ -168,7 +168,7 @@ public class BoardController {
 		paraMap.put("categoryno", categoryno);
 		
 		int totalCount = 0;         // 총 게시물 건수
-		int sizePerPage = 5;        // 한 페이지당 보여줄 게시물 건수
+		int sizePerPage = 10;       // 한 페이지당 보여줄 게시물 건수
 		int currentShowPageNo = 0;  // 현재 보여주는 페이지 번호로서, 초기치로는 1페이지로 설정함.
 		int totalPage = 0;          // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)  
 		
@@ -206,7 +206,7 @@ public class BoardController {
 			mav.addObject("paraMap", paraMap);
 		}
 				
-		int blockSize = 10;
+		int blockSize = 5;
 		
 		int loop = 1;
 		
@@ -259,7 +259,7 @@ public class BoardController {
 	}
 	
 	
-	// 검색어 입력시 자동글 완성하기(글쓴이검색 아직 안됨 board.xml 오류나는거 수정하기)
+	// 검색어 입력시 자동글 완성하기
 	@ResponseBody
 	@RequestMapping(value="/board/wordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public String wordSearchShow(HttpServletRequest request) {
@@ -268,7 +268,7 @@ public class BoardController {
 		String searchWord = request.getParameter("searchWord");
 		String categoryno = request.getParameter("categoryno");	
 		
-		// System.out.println(categoryno);
+		// System.out.println(searchType);
 		
 		Map<String,String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
@@ -277,11 +277,11 @@ public class BoardController {
 		
 		List<String> wordList = service.wordSearchShow(paraMap);
 		
-		JSONArray jsonArr = new JSONArray(); // []
+		JSONArray jsonArr = new JSONArray(); 
 		
 		if(wordList != null) {
 			for(String word : wordList) {
-				JSONObject jsonObj = new JSONObject(); // {}
+				JSONObject jsonObj = new JSONObject(); 
 				jsonObj.put("word", word); 
 				
 				jsonArr.put(jsonObj);
@@ -291,14 +291,21 @@ public class BoardController {
 		return jsonArr.toString(); 
 	}
 	
-	// 글 한개를 보여주는 페이지 요청  
+	// 글 한개를 보여주는 페이지 요청  (댓글 목록 포함)
 	@RequestMapping(value="/board/view.sam")
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		
 		String seq = request.getParameter("seq");		
 	    String searchType = request.getParameter("searchType");
 	    String searchWord = request.getParameter("searchWord");
-	      
+	    
+	    if(searchType == null) {
+			searchType = "";	
+		}
+		if(searchWord == null) {
+			searchWord = "";	
+		}
+		
 	    Map<String,String> paraMap = new HashMap<>();
 	    paraMap.put("seq", seq);
 	    paraMap.put("searchType", searchType);
@@ -307,7 +314,13 @@ public class BoardController {
 	    mav.addObject("searchType", searchType);
 	    mav.addObject("searchWord", searchWord);
 	    
-		String gobackURL = request.getParameter("gobackURL");
+	    
+		String gobackURL = request.getParameter("gobackURL");		
+	
+		if(gobackURL != null && gobackURL.contains(" ")) {
+			gobackURL = gobackURL.replaceAll(" ", "&");	
+		}
+		
 		mav.addObject("gobackURL", gobackURL);
 		
 		String categoryno = request.getParameter("categoryno");
@@ -330,12 +343,12 @@ public class BoardController {
 			
 			if("yes".equals(session.getAttribute("readCountPermission"))) {
 				
-				boardvo = service.getView(paraMap, login_userid);
+				boardvo = service.getView(paraMap, login_userid); // 조회수 증가 후 글 조회
 				
 				session.removeAttribute("readCountPermission");
 			}
 			else {				
-				boardvo = service.getViewWithNoAddCount(paraMap);				
+				boardvo = service.getViewWithNoAddCount(paraMap); // 조회수 증가 없이 글 조회				
 			}			
 			
 			mav.addObject("boardvo", boardvo);			
@@ -357,6 +370,7 @@ public class BoardController {
 		
 		try {
 			n = service.addComment(commentvo);
+			System.out.println("댓글쓰기 결과: "+n);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -367,8 +381,8 @@ public class BoardController {
 		
 		return jsonObj.toString();
 	}
-	
-	
+
+		
 	// 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리)
 	@ResponseBody
 	@RequestMapping(value="/board/commentList.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
@@ -392,7 +406,7 @@ public class BoardController {
 	    paraMap.put("endRno", String.valueOf(endRno));  
 		
 		List<CommentVO> commentList = service.getCommentListPaging(paraMap);
-		
+	
 		JSONArray jsonArr = new JSONArray(); 
 		
 		if(commentList != null) { 
@@ -403,6 +417,10 @@ public class BoardController {
 				jsonObj.put("reregDate", cmtvo.getReregDate());
 				jsonObj.put("identity", cmtvo.getIdentity());
 				jsonObj.put("comseq", cmtvo.getComseq());
+				jsonObj.put("fk_comseq", cmtvo.getFk_comseq());
+				jsonObj.put("co_groupno", cmtvo.getCo_groupno());
+				jsonObj.put("co_depthno", cmtvo.getCo_depthno());
+				jsonObj.put("fk_perno", cmtvo.getFk_perno());
 				
 				jsonArr.put(jsonObj);
 			}
@@ -507,12 +525,12 @@ public class BoardController {
 	}
 
 	// 글 삭제하기
-	@RequestMapping(value="/board/del.sam")
+	@RequestMapping(value="/board/del.sam", method= {RequestMethod.POST})
 	public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
    
 		String seq = request.getParameter("seq");
 		String categoryno = request.getParameter("categoryno");	
-		// System.out.println(seq);		
+		 	System.out.println(categoryno);
 		
 		String gobackURL = request.getParameter("gobackURL");
 		mav.addObject("gobackURL", gobackURL);
@@ -525,6 +543,7 @@ public class BoardController {
 		String loginuserPerno = String.valueOf(loginuser.getPerno());
 		
 		String loc = "javascript:history.back()";
+		
 		
 		if( !loginuserPerno.equals(boardvo.getFk_perno()) ) {
 			String message = "다른 사용자의 글은 삭제가 불가합니다.";
@@ -552,65 +571,59 @@ public class BoardController {
 	}
 	
 	// 댓글 삭제하기
+	@ResponseBody
 	@RequestMapping(value="/board/commentdel.sam", method= {RequestMethod.GET})
-	public ModelAndView commentdel(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
-   
-		// 댓글 고유번호 불러와서 삭제하기
+	public String commentdel(HttpServletRequest request) {
 		
-		String comseq = request.getParameter("comseq");
-		// String categoryno = request.getParameter("categoryno");	
-		System.out.println(comseq);
+		int comseq = Integer.parseInt(request.getParameter("comseq"));
 		
-		String gobackURL = request.getParameter("gobackURL");
-		mav.addObject("gobackURL", gobackURL);
+		String fk_seq = request.getParameter("fk_seq");
+		// System.out.println("게시물 번호: " + fk_seq);
 		
-		CommentVO cmtvo = service.getComment(comseq);				
-      
-		HttpSession session = request.getSession();
-		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
-      
-		String loginuserPerno = String.valueOf(loginuser.getPerno());
+		int n = 0;
 		
+		n = service.delcomment(comseq); // tbl_comment에서 댓글 삭제
 		
-		String loc = "javascript:history.back()";
+		int m = 0;
 		
-		if( !loginuserPerno.equals(cmtvo.getFk_perno()) ) {
-			String message = "다른 사용자의 댓글은 삭제가 불가합니다.";
-			       
-			mav.addObject("message", message);
-			mav.addObject("loc", loc);
-			mav.setViewName("msg");
-      	}
-      	else {
-    	    
-    	    int n = service.delcomment(Integer.parseInt(comseq));     	    
-    		
-    	    if(n == 0) {
-    	         mav.addObject("message", "댓글 삭제가 불가합니다.");
-    	         mav.addObject("loc", loc);
-    	         mav.setViewName("msg");
-    	    }     
-    	    else {
-    	         mav.addObject("message", "댓글삭제 성공!!");
-    	         mav.addObject("loc", loc);
-    	         mav.setViewName("msg");
-    	    }      		
-      	}     
-		return mav;
-		/*
-		 view.jsp 에서 댓글 삭제하기를 ajax를 이용하여 int n = json.n으로 받았다 
-		그러니까 컨트롤러에서 n으로 보내던지 ajax에서 json으로 받지 말던가 ...
-		아마도 위에 (컨트롤러 위쪽에) 댓글쓰기랑 댓글 조회하기보니까 json으로 return해준게 보인다
-		여긴 delete니까 json으로 안보내도될 것 같다
-		ajax에서 json부분을 다른것으로 수정해야할듯 ...
-		 */
+		if(n == 1) {
+			//System.out.println("게시물 번호: " + fk_seq);
+			
+			m = service.minusCommentCount(fk_seq); // tbl_board에서 commentCount -1 하기
+		}
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("m", m); 
+		
+		return jsonObj.toString();
 	}
 	
 	
-
+	// 댓글 수정완료하기
+	@ResponseBody
+	@RequestMapping(value="/board/comEditEnd.sam", method= {RequestMethod.POST})
+	public String comEditEnd(HttpServletRequest request) {
 	
-	// 댓글 수정하기 /board/commentedit.sam
-	
+		String comseq = request.getParameter("comseq");
+		String content = request.getParameter("comEditVal");
+		
+		System.out.println("댓글번호: "+comseq);
+		System.out.println("댓글수정내용: "+content);
+				
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("comseq", comseq);
+		paraMap.put("content", content);
+		
+		int n = 0;
+		
+		n = service.comEditEnd(paraMap);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n); 
+		
+		return jsonObj.toString();
+			
+	}	
 	
 	// 첨부파일 다운로드 받기
 	@RequestMapping(value="/board/download.sam")
@@ -703,6 +716,24 @@ public class BoardController {
 			
 		}		
 	}
+	
+
+	// 게시물 좋아요(ajax)
+	@ResponseBody
+	@RequestMapping(value="/board/goGoodAdd.sam", method= {RequestMethod.GET})
+	public void goodAdd(HttpServletRequest request) {
+		
+		String seq = request.getParameter("seq");		
+		
+		int n  = service.goodAdd(seq);
+		
+		String loc = "javascript:history.back()";
+		
+		System.out.println(n);		
+		
+	
+	}
+   
 	
 	
 	

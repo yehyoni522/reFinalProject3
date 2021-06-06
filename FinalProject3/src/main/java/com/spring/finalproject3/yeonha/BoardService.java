@@ -11,9 +11,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
-
-
-
 @Service
 public class BoardService implements InterBoardService {
 
@@ -85,6 +82,12 @@ public class BoardService implements InterBoardService {
 		
 		int n=0, result=0;
 		
+		if(commentvo.getFk_comseq() == null || commentvo.getFk_comseq().trim().isEmpty() ) {
+			// 원 댓글쓰기 이라면 co_groupno 컬럼의 값은 co_groupno 컬럼의 최대값(max)+1 로 해야 한다. 
+			int co_groupno = dao.getco_GroupnoMax() + 1;
+			commentvo.setCo_groupno(String.valueOf(co_groupno));
+		}
+		
 		n = dao.addComment(commentvo); // 댓글쓰기(tbl_comment 테이블에 insert)
 		
 		if(n==1) {
@@ -137,20 +140,6 @@ public class BoardService implements InterBoardService {
 		return n;
 	}
 
-	// (삭제할) 댓글 불러오기
-	@Override
-	public CommentVO getComment(String comseq) {
-		CommentVO cmtvo = dao.getComment(comseq);
-		return cmtvo;
-	}
-
-	// 댓글 삭제하기
-	@Override
-	public int delcomment(int comseq) {
-		int n = dao.delcomment(comseq);
-		return n;
-	}
-
 	// 첨부파일이 있는 글쓰기
 	@Override
 	public int add_withFile(BoardVO boardvo) {
@@ -163,6 +152,34 @@ public class BoardService implements InterBoardService {
 		}
 				
 		int n = dao.add_withFile(boardvo); // 첨부파일이 있는 경우
+		return n;
+	}
+
+	// 게시물 좋아요
+	@Override
+	public int goodAdd(String seq) {
+		int n = dao.goodAdd(seq);
+		return n;
+	}
+
+	// tbl_comment에서 댓글 삭제
+	@Override
+	public int delcomment(int comseq) {
+		int n = dao.delcomment(comseq); 
+		return n;
+	}
+
+	// tbl_board에서 commentCount -1 하기
+	@Override
+	public int minusCommentCount(String fk_seq) {
+		int m = dao.minusCommentCount(fk_seq);
+		return m;
+	}
+
+	// 댓글 수정완료하기
+	@Override
+	public int comEditEnd(Map<String, String> paraMap) {
+		int n = dao.comEditEnd(paraMap);
 		return n;
 	}
 
