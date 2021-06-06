@@ -88,7 +88,7 @@ a {
 	font-size: 8pt;
 	cursor:pointer;
 	padding: 5px auto;
-	margin-left: 80%;
+	margin-left: 85%;
 }
 .logidentity{
 	border: 2px solid green;
@@ -179,7 +179,7 @@ a {
 						
 						
 						html += "<div class='putcomment'>";
-						html += "<input type='text' value='"+item.comseq+"'/>"
+						html += "<input type='hidden' value='"+item.comseq+"'/>"
 						html += "<div id='comname'>&nbsp;"+ item.name;	
 						
 						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
@@ -281,6 +281,7 @@ a {
 		
 	}// end of function makeCommentPageBar(currentShowPageNo) {}-----------------
 	
+	// 글 삭제하기
 	function removeCheck() {
 
 		if (confirm("정말 삭제하시겠습니까??") == true){    //확인
@@ -343,6 +344,8 @@ a {
 
 		  //alert(${requestScope.boardvo.seq});
 		
+		if (confirm("정말 삭제하시겠습니까??") == true){    //확인
+					  
 		 $.ajax({
 			   url:"<%= ctxPath%>/board/commentdel.sam",
 			   type:"get",
@@ -351,20 +354,16 @@ a {
 			   dataType:"json",
 			   success:function(json){
 				   
-				   if(json.m == 1){
-					   alert("댓글이 삭제되었습니다.");
-					   goViewComment(1);
-					   return;
-				   }
-				   else{
-					   alert("댓글 삭제가 실패했습니다.");
-					   return;
-				   }			   
+				   goViewComment(1);		   
 			   },
 			   error: function(request, status, error){
 					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			   }
-		   });	   				
+		   });
+		
+		}else{   //취소	
+			return false;	
+		}
 	} // end of function commentdel(){} 댓글 삭제하기
 	
 <%-- 	function goGoodAdd(seq){

@@ -607,8 +607,8 @@ public class BoardController {
 		String comseq = request.getParameter("comseq");
 		String content = request.getParameter("comEditVal");
 		
-		System.out.println("댓글번호: "+comseq);
-		System.out.println("댓글수정내용: "+content);
+		// System.out.println("댓글번호: "+comseq);
+		// System.out.println("댓글수정내용: "+content);
 				
 		Map<String,String> paraMap = new HashMap<>();
 		paraMap.put("comseq", comseq);
