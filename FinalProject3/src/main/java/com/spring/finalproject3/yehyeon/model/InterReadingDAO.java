@@ -23,4 +23,8 @@ public interface InterReadingDAO {
 
 	int goDeleteBook(); // 현재 예약 중인 좌석을 이용 가능하도록 컬럼 값 1 -> 0 으로 변경한다.
 
+	int selectRcheck(String perno); // 예약을 시도한 사람이 예약한 좌석이 있는지 없는지 확인한다.
+
+	int updateRcheck(String perno); //예약한 사람의 rcheck 컬럼값을 0->1로 변경한다.
+
 }

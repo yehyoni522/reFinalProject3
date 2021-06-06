@@ -78,5 +78,17 @@ public class ReadingDAO implements InterReadingDAO {
 		return n;
 	}
 
+	@Override
+	public int selectRcheck(String perno) {
+		int n = sqlsession.selectOne("Reading.selectRcheck", perno);
+		return n;
+	}
+
+	@Override
+	public int updateRcheck(String perno) {
+		int n = sqlsession.update("Reading.updateRcheck", perno);
+		return n;
+	}
+
 
 }

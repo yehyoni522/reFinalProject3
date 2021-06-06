@@ -126,5 +126,16 @@
 	<update id="goDeleteBook">
 		update tbl_detailseatinfo set dscheck = 0
 	</update>
+	
+	<select id="selectRcheck" parameterType="String" resultType="int">
+		select rcheck
+		from tbl_person
+		where perno = #{perno}
+	</select>
+	
+	<update id="updateRcheck" parameterType="String">
+	 	update tbl_person set rcheck = 1
+		where perno =#{perno}
+	</update>
 
 </mapper>

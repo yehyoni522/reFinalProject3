@@ -123,20 +123,41 @@ public class YehyeonController {
 	}
 	
 	@ResponseBody
+	@RequestMapping(value="/reading/selectRcheck.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String selectRcheck(HttpServletRequest request) {
+		
+		String perno = request.getParameter("perno");
+		
+		int n = service.selectRcheck(perno);
+			
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n);
+		
+		return jsonObj.toString();
+	}
+	
+	@ResponseBody
 	@RequestMapping(value="/reading/updateSeatInfo.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public String requiredLogin_updateSeatInfo(HttpServletRequest request, HttpServletResponse response, BookListVO bookvo) {
 		
 		String dsno = request.getParameter("fk_dsno");
+		String perno = request.getParameter("fk_perno");
 		
 		int n = service.updateDscheck(dsno);
 		int m = 0;
+		int l = 0;
 		if(n == 1) {
 			// insert 해주기 위해선 fk_dsno, fk_perno, fk_tno 를 알아야한다.
 			m = service.insertBooklist(bookvo);
+			
+			if(m == 1) {
+				l = service.updateRcheck(perno);
+			}
+			
 		}
 			
 		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("m", m);
+		jsonObj.put("l", l);
 		
 		return jsonObj.toString();
 	}

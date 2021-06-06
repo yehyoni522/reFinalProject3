@@ -10,7 +10,7 @@ body{
 #logo			{ width: 300px;  height:200px;}
 #login			{ text-align: right; padding-right: 30px;}
 
-#mycontent		{ min-height:1300px; padding-top: 10px;}
+#mycontent		{padding-top: 10px;}
 
 #myheader a {text-decoration:none;}
 

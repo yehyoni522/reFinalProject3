@@ -9,6 +9,7 @@ div#adminside {
 	float: left;
 	width: 20%;
 	padding-left: 50px;
+	padding-top: 50px;
 	min-height: 600px;
 }
 </style>    

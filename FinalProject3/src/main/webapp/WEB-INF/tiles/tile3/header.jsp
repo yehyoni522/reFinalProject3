@@ -24,4 +24,3 @@
 		</div>
 		
 </div>
-<hr style="border:solid 0.7px black;">
