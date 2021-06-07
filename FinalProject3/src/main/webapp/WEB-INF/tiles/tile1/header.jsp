@@ -26,7 +26,9 @@
 				<a href="">관리자페이지</a> &nbsp;&nbsp;
 			</c:if>
 				<button type="button" class="btn btn-secondary" onclick="location.href='<%=ctxPath%>/logout.sam'">로그아웃</button>
-		
+
+				<button type="button" class="btn btn-secondary" onclick="location.href='<%=ctxPath%>/mypage/mypage.sam'">마이페이지</button>
+
 			</c:if>
 		</div>
 		<div id="logo">
