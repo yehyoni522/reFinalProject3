@@ -332,4 +332,26 @@ public class YehyeonController {
 	
 	////////////////////////////관리자 전용 열람실 예약 내역 끝///////////////////////////////////	
 	
+	////////////////////////////관리자 전용 메인 페이지 시작///////////////////////////////////	
+	
+	@RequestMapping(value="/admin/index.sam")
+	public ModelAndView adminIndex(ModelAndView mav) {
+		
+		
+		mav.setViewName("admin/index.tiles3");
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="/admin/addSubject.sam")
+	public ModelAndView addSubject(ModelAndView mav) {
+		
+		
+		mav.setViewName("admin/addSubject.tiles3");
+		
+		return mav;
+	}
+	
+	////////////////////////////관리자 전용 메인 페이지 시작///////////////////////////////////	
+	
 }
