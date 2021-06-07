@@ -55,6 +55,30 @@ public class MessageController {
 	   return mav;
    }
    
+   // 마이페이지 보기
+   @RequestMapping(value="/mypage/edit.sam")
+   public ModelAndView requiredLogin_editMypage(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+	   
+	   HttpSession session = request.getSession(); 
+	   PersonVO loginuser = (PersonVO)session.getAttribute("loginuser");
+	   
+	   // 안읽은 글의 갯수 세기
+	   int nonReadCount = service.getNonReadCount(loginuser.getPerno());// 로그인한 사람의 id값이 들어가야함
+	   mav.addObject("nonReadCount", nonReadCount);
+	   
+	   mav.addObject("name", loginuser.getName()); // 이름 불러오기
+	   mav.addObject("email", loginuser.getEmail()); // 이메일
+	   mav.addObject("identity", loginuser.getIdentity()); //교수 or 학생
+	   mav.addObject("perno", loginuser.getPerno()); // 학번/교번
+	   
+	   int majseq =  loginuser.getFk_majseq();
+       String nameMaj = service.getNameMaj(majseq); //학과이름 알아오기
+       mav.addObject("nameMaj", nameMaj); // 학과이름
+	   
+	   mav.setViewName("mypage/mypage.tiles2");
+	    
+	   return mav;
+   }
    
    
    // 받은 쪽지함 (리스트) 보기 
@@ -158,7 +182,7 @@ public class MessageController {
 	      int pageNo = ((currentShowPageNo - 1)/blockSize) * blockSize + 1;
 	      
 	      String pageBar = "<ul style='list-style: none;'>";
-	      String url = "/message/inbox.sam";
+	      String url = "inbox.sam";
 
 	      // === [맨처음][이전] 만들기 === 
 	      if(pageNo != 1) {
@@ -471,7 +495,7 @@ public class MessageController {
   	      String searchWord = request.getParameter("searchWord");
   	      String str_currentShowPageNo = request.getParameter("currentShowPageNo");
   	      
-  	      if(searchType == null || (!"subject".equals(searchType) && !"name".equals(searchType)) ) {
+  	      if(searchType == null || (!"subject".equals(searchType) && !"outboxName".equals(searchType)) ) {
   	      searchType = "";
   	      }
   	      
@@ -543,7 +567,7 @@ public class MessageController {
   	      int pageNo = ((currentShowPageNo - 1)/blockSize) * blockSize + 1;
   	      
   	      String pageBar = "<ul style='list-style: none;'>";
-  	      String url = "/message/outbox.sam";
+  	      String url = "outbox.sam";
 
   	      // === [맨처음][이전] 만들기 === 
   	      if(pageNo != 1) {

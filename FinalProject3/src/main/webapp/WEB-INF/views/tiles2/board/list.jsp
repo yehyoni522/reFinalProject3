@@ -193,14 +193,55 @@
 		
 		<c:forEach var="boardvo" items="${requestScope.boardList}" varStatus="status"> 
 		   <tr>	
-		   	   <td align="center">${boardvo.seq}</td>
+	   	   	   <td align="center">${boardvo.seq}</td>
 		   	   <td align="center">
-		   	   	<c:if test="${boardvo.commentCount > 0}">
-		   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> 
-		   	   	 </c:if>
-		   	   	 <c:if test="${boardvo.commentCount == 0}">
-		   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
-	   	  		 </c:if> 
+		   	   
+		   	   <!-- 첨부파일이 없는 경우   -->
+		   	   <c:if test="${empty boardvo.fileName}">
+		   	   	   <!-- 답변글이 아닌 원글인 경우 -->
+		   	   	   <c:if test="${boardvo.depthno == 0}">
+			   	   	   <c:if test="${boardvo.commentCount > 0}">
+				   	   		<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> 
+				   	   </c:if>
+				   	   <c:if test="${boardvo.commentCount == 0}">
+				   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
+			   	  	   </c:if>
+			   	   </c:if>
+			   	   
+			   	   <!-- 답변글인 경우 -->
+		   	   	   <c:if test="${boardvo.depthno > 0}">
+			   	   	   <c:if test="${boardvo.commentCount > 0}">
+				   	   		<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> 
+				   	   </c:if>
+				   	   <c:if test="${boardvo.commentCount == 0}">
+				   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject}</span>
+			   	  		 </c:if>
+			   	   </c:if>			 
+	   	  	   </c:if>
+	   	  	   
+	   	  	   <!-- 첨부파일이 있는 경우   -->
+		   	   <c:if test="${not empty boardvo.fileName}">
+		   	   	   <!-- 답변글이 아닌 원글인 경우 -->
+		   	   	   <c:if test="${boardvo.depthno == 0}">
+			   	   	   <c:if test="${boardvo.commentCount > 0}">
+				   	   		<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> &nbsp;<img src="<%=ctxPath%>/resources/images/disk.gif" /> 
+				   	   </c:if>
+				   	   <c:if test="${boardvo.commentCount == 0}">
+				   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span> &nbsp;<img src="<%=ctxPath%>/resources/images/disk.gif" />
+			   	  		 </c:if>
+			   	   </c:if>
+			   	   
+			   	   <!-- 답변글인 경우 -->
+		   	   	   <c:if test="${boardvo.depthno > 0}">
+			   	   	   <c:if test="${boardvo.commentCount > 0}">
+				   	   		<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> &nbsp;<img src="<%=ctxPath%>/resources/images/disk.gif" /> 
+				   	   </c:if>
+				   	   <c:if test="${boardvo.commentCount == 0}">
+				   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject}</span> &nbsp;<img src="<%=ctxPath%>/resources/images/disk.gif" />
+			   	  		 </c:if>
+			   	   </c:if>			 
+	   	  	   </c:if>	 
+	   	  		
 		   	   </td>
 		   	   <td align="center">${boardvo.good}</td>
 		   	   <c:if test="${boardvo.namecheck == 0}">

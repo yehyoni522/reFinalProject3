@@ -66,5 +66,11 @@ public class ReadingDAO implements InterReadingDAO {
 		return mapList;
 	}
 
+	@Override
+	public List<Map<String, String>> viewChart(String bdate) {
+		List<Map<String, String>> mapList = sqlsession.selectList("Reading.viewChart", bdate);
+		return mapList;
+	}
+
 
 }

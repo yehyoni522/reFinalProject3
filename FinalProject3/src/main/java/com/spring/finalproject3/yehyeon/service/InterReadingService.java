@@ -24,4 +24,6 @@ public interface InterReadingService {
 
 	List<Map<String, String>> selectDateBookList(Map<String, String> paraMap); // 예약 현황에서 선택한 select 값에 따른 좌석 정보를 불러온다.
 
+	List<Map<String, String>> viewChart(String bdate); // 차트 그리기
+
 }

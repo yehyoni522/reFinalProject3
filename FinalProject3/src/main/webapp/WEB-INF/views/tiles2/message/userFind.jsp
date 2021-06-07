@@ -18,35 +18,6 @@
 
 <style type="text/css">
 
-
-.green_window {
-	display: inline-block;
-	width: 200px;
-	border: 3px solid #2ECC71;
-	border-radius: 20px;
-}
-.input_text {
-	width: calc( 100% - 40px );
-	margin: 6px 7px;
-	border: 0;
-	font-weight: bold;
-	font-size: 12px;
-	outline: none;
-	border-radius: 20px;
-}
-.sch_smit {
-	width: 40px; height: 30px;
-	margin-top: 5px; border: 0;
-	vertical-align: top;
-	background: #2ECC71;
-	color: white;
-	border-radius: 20px;
-	cursor: pointer;
-	font-size: 12px;
-}
-.sch_smit:hover {
-	background: #27AF61;
-}
 textarea {
 	border: 3px solid #2ECC71;
 }

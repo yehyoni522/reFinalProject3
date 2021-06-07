@@ -83,7 +83,7 @@
 	
 	<!-- 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색 -->
 	<select id="getquiz" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.QuizVO">
-		select quizno, quizname, fk_subno
+		select quizno, quizname, fk_subno, quizday
 		from tbl_quiz
 		where quizname = #{quizname}
 	</select>
@@ -106,6 +106,79 @@
 		insert into tbl_quizans(quizansno, fk_quizno, fk_questionno, quizanswer)
 		values(quizanswerSeq.nextval, #{fk_quizno}, #{fk_questionno}, #{quizanswer})
 	</insert>
-
-
+	
+	<resultMap type="HashMap" id="QuizListMap">
+		<result property="quizname" column="quizname" javaType="String" />
+		<result property="quizday" column="quizday" javaType="String" />
+		<result property="subname" column="subname" javaType="String" />
+		<result property="name" column="name" javaType="String" />
+		<result property="quizno" column="quizno" javaType="String" />
+	</resultMap>
+	
+	<!-- === 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
+	<select id="quizvoListSearchWithPaging" parameterType="HashMap" resultMap="QuizListMap">
+		select rno, quizname, quizday, subname, name, quizno
+		from
+		(            
+		     SELECT row_number() over(order by quizno desc) as rno, 
+		           A.quizname AS quizname, to_char(A.quizday, 'yyyy-mm-dd') AS quizday, S.subname AS subname, C.name AS name, quizno
+		     FROM tbl_quiz A JOIN tbl_subject S
+		     ON fk_subno = subno
+		     JOIN tbl_person c
+		     ON fk_perno = perno   
+		     where a.fk_subno = #{subno}  
+		) V
+		where rno between #{startRno} and #{endRno}
+	</select>
+	
+	<!-- 총 쪽지시험 수(totalCount) -->
+	<select id="getTotalQuiz" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_quiz join tbl_subject
+		ON fk_subno = subno
+		where fk_subno = #{subno}
+	</select>
+	
+	<!-- 받아온 시험명으로 과목명 검색하기 -->
+	<select id="getSubname" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.SubjectVO">
+		select subname
+		from tbl_subject
+		where subno = (select fk_subno from tbl_quiz where quizname = #{quizname})
+	</select>
+	
+	<!-- 받아온 시험명으로 문제리스트 검색 -->
+	<select id="getQuestionList" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.QuestionVO">
+		select qzno, qzcontent, answerfirst, answersecond, answerthird, answerfourth, questionno
+		from tbl_question
+		where fk_quizno = (select quizno from tbl_quiz where quizname = #{quizname})	
+	</select>
+	
+	<!-- 가져온 시험명으로 문제의 총 갯수를 구한다. -->
+	<select id="getQuizTotalCount" parameterType="String" resultType="int">
+		select count(*)
+		from tbl_question
+		where fk_quizno = (select quizno from tbl_quiz where quizname = #{quizname})
+	</select>
+	
+	<!-- 시험명으로 일련번호 검색 -->
+	<select id="getQuizNo" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.QuizVO">
+		select quizno, quizname, fk_subno, quizday 
+		from tbl_quiz 
+		where quizname = #{quizname}
+	</select>
+	
+	<!-- 시험명과 문제번호로 문제 일련번호 검색 -->
+	<select id="getQuestionNo" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.QuestionVO">
+		select questionno, fk_quizno, qzno, qzcontent, answerfirst, answersecond, answerthird, answerfourth
+		from tbl_question
+		where fk_quizno = (select quizno from tbl_quiz where quizname = #{quizname}) and qzno = #{qzno}
+	</select>
+	
+	<!-- 일련번호, 문제일련번호, 사람번호를 구했으면 그 값을 가지고 insert -->
+	<insert id="addStudentAnswer" parameterType="HashMap"> 
+		insert into tbl_stdtans (stdtanswerno, fk_perno, fk_quizno, fk_questionno, stdtanswer)
+		values(stdtansSeq.nextval, #{perno}, #{quizno}, #{questionno}, #{stdtanswer})
+	</insert>
+	
+	
 </mapper>

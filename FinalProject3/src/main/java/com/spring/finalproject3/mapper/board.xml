@@ -8,8 +8,15 @@
     
     <!-- 글쓰기  -->
     <insert id="add" parameterType="com.spring.finalproject3.yeonha.BoardVO">
-		insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck)
-		values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}) 	
+		<if test='fk_seq.equals("")'>
+			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno)
+			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, default, default)
+		</if>
+		
+		<if test='!fk_seq.equals("")'>
+			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno)
+			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, #{fk_seq}, #{depthno}+1)  
+		</if>
 	</insert>
 	
 	<!-- === #116. 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === -->
@@ -26,10 +33,12 @@
    	<select id="boardListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha.BoardVO">  		
    		select B.seq as seq, B.subject as subject, B.good as good, B.readCount as readCount, B.regDate as regDate, P.name as name
    				, B.commentCount as commentCount, B.namecheck as namecheck
+   				, groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
 		from
 		(
 		    select row_number() over(order by seq desc) as rno, seq, subject, good, readCount, commentCount, fk_perno  
 					   , to_char(regDate, 'yyyy-mm-dd') as regDate, categoryno, namecheck
+					   , groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
 		    from tbl_board
 		    where status = 1 and categoryno = #{categoryno}
 		    <if test='searchWord != ""'>
@@ -81,6 +90,7 @@
 		select previousseq, previoussubject
 		     , seq, fk_perno, subject, name, content, readcount, B.regDate
 		     , nextseq , nextsubject, commentCount
+		     , groupno, fk_seq, depthno, fileName, orgFilename, fileSize
 		from 
 		(
 		    select lag(seq,1) over(order by seq desc) AS previousseq
@@ -91,6 +101,8 @@
 		         
 		         , lead(seq,1) over(order by seq desc) AS nextseq
 		         , lead(subject,1) over(order by seq desc) AS nextsubject
+		         
+		         , groupno, fk_seq, depthno, fileName, orgFilename, fileSize
 		    from tbl_board
 		    where status = 1
 		    <if test='searchType != "" and searchWord != ""'>
@@ -123,13 +135,14 @@
 	
 	<!-- 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) -->
    	<select id="getCommentListPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha.CommentVO">
-   		select name, identity, content, reregDate
+   		select name, identity, content, reregDate, comseq
 		from
 		(
-		    select rno, name, identity, content, reregDate 
+		    select rno, name, identity, content, reregDate, comseq 
 		    from
 		    (
-		        select row_number() over(order by comseq desc) as rno, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate 
+		        select row_number() over(order by comseq desc) as rno, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate
+		        	   , comseq 
 		        from tbl_comment
 		        where status = 1 and fk_seq = #{fk_seq}
 		        order by comseq desc
@@ -183,8 +196,37 @@
 		where seq = #{seqno}
 	</delete>	
 	
+	<!-- 댓글 조회하기 -->
+	<select id="getComment" parameterType="String">
+	select comseq, fk_perno
+	from tbl_comment
+	where status = 1 and comseq = #{comseq}
+	</select>
 	
+	<!-- 게시글 삭제하기 -->
+	<delete id="delcomment" parameterType="int">
+		delete from tbl_comment 
+		where comseq = #{comseq}
+	</delete>
 	
+	<!-- tbl_board 테이블에서 groupno 컬럼의 최대값 구하기 -->
+	<select id="getGroupnoMax" resultType="int">
+	    select nvl(max(groupno), 0)
+		from tbl_board
+	</select>
+	
+	<!-- 글쓰기(파일첨부가 있는 글쓰기) -->
+	<insert id="add_withFile" parameterType="com.spring.finalproject3.yeonha.BoardVO">
+		<if test='fk_seq.equals("")'>
+			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno, fileName, orgFilename, fileSize)
+			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, default, default, #{fileName}, #{orgFilename}, #{fileSize})
+		</if>
+		
+		<if test='!fk_seq.equals("")'>
+			insert into tbl_board(seq, fk_perno, subject, content, categoryno, good, readCount, regDate, status, commentCount, namecheck, groupno, fk_seq, depthno, fileName, orgFilename, fileSize)
+			values(boardSeq.nextval, #{fk_perno}, #{subject}, #{content}, #{categoryno}, default, default, default, default, default, #{namecheck}, #{groupno}, #{fk_seq}, #{depthno}+1, #{fileName}, #{orgFilename}, #{fileSize})  
+		</if>
+	</insert>
 	
 
 </mapper>
