@@ -112,7 +112,81 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		return submitList;
 	}
 
-	
+	// 글쓰기(파일첨부가 있는 글쓰기)
+	@Override
+	public int assignmentAdd_withFile(assignmentBoardVO assgnVO) {
+		int n = sqlsession.insert("classBoard.assignmentAdd_withFile",assgnVO);
+		return n;
+	}
+
+
+
+	// 전체 질문게시판 글 개수{
+	@Override
+	public int getTotalQna(Map<String, String> paraMap) {
+		int n = sqlsession.selectOne("classBoard.getTotalQna", paraMap);
+		return n;
+	}
+
+	// 질문게시판 페이징 글목록
+	@Override
+	public List<QnAVO> qnaListSearchWithPaging(Map<String, String> paraMap) {
+		List<QnAVO> qnaList = sqlsession.selectList("classBoard.qnaListSearchWithPaging", paraMap);
+		return qnaList;
+	}
+
+	// 질문게시판 글 쓰기완료 요청
+	@Override
+	public int qnaAdd(QnAVO qnavo) {
+		int n = sqlsession.insert("classBoard.qnaAdd",qnavo);
+		return n;
+	}
+
+	// === #145. tbl_board 테이블에서 groupno 컬럼의 최대값 구하기 === //
+	@Override
+	public int getGroupnoMax() {
+		int max = sqlsession.selectOne("classBoard.getGroupnoMax");
+		return max;
+	}
+
+	// == 질문 게시판 글 1개 상세보기 == //
+	@Override
+	public QnAVO getQnaView(Map<String, String> paraMap) {
+		QnAVO qnavo = sqlsession.selectOne("classBoard.getQnaView", paraMap);
+		return qnavo;
+	}
+
+	// == 질문 게시판 답변 글쓰기하면 원글의 answer cnt +1하기
+	@Override
+	public void updateAnswerCount(String fk_qnano) {
+		sqlsession.selectOne("classBoard.updateAnswerCount",fk_qnano);
+	}
+
+	// == 질문 게시판 글 수정하기 == //
+	@Override
+	public int qnaEdit(QnAVO qnavo) {
+		int n = sqlsession.update("classBoard.qnaEdit", qnavo);
+		return n;
+	}
+
+	// 답변글쓰기 삭제일 경우 원글의 answer count -1해야함
+	@Override
+	public void updateAnswerMinus(String fk_qnano) {
+		sqlsession.update("classBoard.updateAnswerMinus", fk_qnano);
+	}
+
+	// 글삭제하기
+	@Override
+	public int qnaDelete(String qnano) {
+		int n = sqlsession.delete("classBoard.qnaDelete", qnano);
+		return n;
+	}
+
+	@Override
+	public SubmitVO getSubmitOne(String submitno) {
+		SubmitVO submitvo = sqlsession.selectOne("classBoard.getSubmitOne",submitno);
+		return submitvo;
+	}
 	
 	
 }

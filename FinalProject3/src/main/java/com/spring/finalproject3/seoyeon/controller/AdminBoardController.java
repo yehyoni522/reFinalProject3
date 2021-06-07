@@ -158,7 +158,7 @@ public class AdminBoardController {
 			mav.addObject("pageBar",pageBar);	    	
 	    	mav.addObject("totalCount",totalCount);
 	    	mav.addObject("boardList", boardList);
-	    	mav.setViewName("admin/adminBoard.tiles1");	    		    	
+	    	mav.setViewName("admin/adminBoard.tiles3");	    		    	
 	        
 	    	return mav;
 		}
@@ -371,7 +371,7 @@ public class AdminBoardController {
 			mav.addObject("pageBar",pageBar);	    	
 	    	mav.addObject("totalCount",totalCount);
 	    	mav.addObject("commentList", commentList);
-	    	mav.setViewName("admin/adminComment.tiles1");	    		    	
+	    	mav.setViewName("admin/adminComment.tiles3");	    		    	
 	        
 	    	return mav;
 		}

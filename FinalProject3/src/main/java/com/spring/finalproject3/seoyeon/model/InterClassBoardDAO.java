@@ -47,5 +47,38 @@ public interface InterClassBoardDAO {
 	// === 학생)댓글 페이징 처리해서 조회하기 (Ajax 로 처리) === //
 	List<SubmitVO> mysubmitList(Map<String, String> paraMap);
 
+	// 글쓰기(파일첨부가 있는 글쓰기)
+	int assignmentAdd_withFile(assignmentBoardVO assgnVO);
+
+	// 전체 질문게시판 글 개수
+	int getTotalQna(Map<String, String> paraMap);
+
+	// 질문게시판 페이징 글목록
+	List<QnAVO> qnaListSearchWithPaging(Map<String, String> paraMap);
+
+	// 질문게시판 글 쓰기완료 요청
+	int qnaAdd(QnAVO qnavo);
+
+	// groupnp 컬럼의 최대값 구하기
+	int getGroupnoMax();
+
+	// == 질문 게시판 글 1개 상세보기 == //
+	QnAVO getQnaView(Map<String, String> paraMap);
+
+	// == 질문 게시판 답변 글쓰기하면 원글의 answer cnt +1하기
+	void updateAnswerCount(String fk_qnano);
+
+	// == 질문 게시판 수정하기
+	int qnaEdit(QnAVO qnavo);
+
+	// 답변글쓰기 삭제할 경우 원글의 answer count -1해야함
+	void updateAnswerMinus(String qnano);
+
+	// 글삭제하기
+	int qnaDelete(String qnano);
+
+	// 댓글 1개 조회만을 해주는 것이다.
+	SubmitVO getSubmitOne(String submitno);
+
 
 }
