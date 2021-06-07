@@ -17,6 +17,7 @@
 			</c:if>
 			<c:if test="${not empty sessionScope.loginuser}">
 				<button type="button" class="btn btn-secondary" onclick="location.href='<%=ctxPath%>/logout.sam'">로그아웃</button>
+				<button type="button" class="btn btn-secondary" onclick="location.href='<%=ctxPath%>/mypage/mypage.sam'">마이페이지</button>
 			</c:if>
 		</div>
 		<div id="logo">
