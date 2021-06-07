@@ -50,7 +50,8 @@ a {
 }
 #boardcontent{
 	width:80%; 
-	height: 100px; 
+	/* height: 500px;  */
+	word-break: break-all;
 	border: 0px solid blue; 
 	padding: 2px; 
 	margin: 15px 5px 5px 10px;
@@ -415,7 +416,7 @@ a {
 	<hr class="styhr">
 	
 	<c:if test="${not empty requestScope.boardvo}">
-		<div id="viewcontent">
+		<div id="viewcontent" >
 			<div id="contnentsubj">
 				${requestScope.boardvo.subject}
 			</div>
@@ -431,8 +432,8 @@ a {
 			</div>
 
 			<br>
-			<div id="boardcontent" >
-				<p style="word-break: break-all;">${requestScope.boardvo.content} >>?? ${requestScope.boardvo.categoryno}</p>
+			<div id="boardcontent">
+				<p>${requestScope.boardvo.content}</p>
 			</div>	
 			<div id="contentfooter">
 				<img src="<%=ctxPath%>/resources/images/good.PNG"  id="goodbtn" style="width:45px; height:43px;" onclick="goGoodAdd(${boardvo.seq})">
