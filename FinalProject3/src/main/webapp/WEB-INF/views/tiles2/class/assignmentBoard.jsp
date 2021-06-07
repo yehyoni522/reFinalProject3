@@ -131,8 +131,17 @@ div#btn-board{
 			<tr class="list">
 				<td>${assgnVO.assgnno}</td>
 				<td style="text-align:left;">
-					<%-- <span class="subject" onclick="javascript:location.href='/class/assignmentView.sam?assgnno=${assgnVO.assgnno}'">${assgnVO.subject}</span> --%>
-					<span class="subject" onclick="goView('${assgnVo.assgnno}')">${assgnVO.subject}</span>
+					<%-- 첨부파일이 없는 경우 시작 --%>
+						<c:if test="${empty assgnVO.fileName}">
+							<span class="subject" >${assgnVO.subject}</span>
+						</c:if>
+					<%-- 첨부파일이 없는 경우 끝 --%>
+					
+					<%-- 첨부파일이 있는 경우 시작 --%>
+						<c:if test="${not empty assgnVO.fileName}">
+							<span class="subject">${assgnVO.subject}</span>&nbsp;<img src="<%=ctxPath %>/resources/images/disk.gif"/>
+						</c:if>
+					<%-- 첨부파일이 있는 경우 끝 --%>
 				</td>				
 				
 				

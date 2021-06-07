@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.finalproject3.seoyeon.model.InterClassBoardDAO;
+import com.spring.finalproject3.seoyeon.model.QnAVO;
 import com.spring.finalproject3.seoyeon.model.SubmitVO;
 import com.spring.finalproject3.seoyeon.model.assignmentBoardVO;
 
@@ -125,5 +126,80 @@ public class ClassBoardService implements InterClassBoardService {
 		return submitList;
 	}
 
+	// 글쓰기(파일첨부가 있는 글쓰기)
+	@Override
+	public int assignmentAdd_withFile(assignmentBoardVO assgnVO) {
+		int n = dao.assignmentAdd_withFile(assgnVO); // 첨부파일이 있는 경우
+		return n;
+	}
+
+
+	// 전체 질문게시판 글 개수
+	@Override
+	public int getTotalQna(Map<String, String> paraMap) {
+		int n = dao.getTotalQna(paraMap);
+		return n;
+	}
+
+	// 질문게시판 페이징 글목록
+	@Override
+	public List<QnAVO> qnaListSearchWithPaging(Map<String, String> paraMap) {
+		List<QnAVO> qnaList = dao.qnaListSearchWithPaging(paraMap);
+		return qnaList;
+	}
+
+	// 질문게시판 글 쓰기완료 요청
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
+	public int qnaAdd(QnAVO qnavo) {
+		
+		if(qnavo.getFk_qnano() == null || qnavo.getFk_qnano().trim().isEmpty() ) {
+	         // 원글쓰기 이라면 groupno 컬럼의 값은 groupno 컬럼의 최대값(max)+1 로 해야 한다. 
+	         int groupno = dao.getGroupnoMax() + 1;
+	         qnavo.setGroupno(String.valueOf(groupno));
+	      }				
+		else {
+			dao.updateAnswerCount(qnavo.getFk_qnano());
+		}
+		int n = dao.qnaAdd(qnavo);
+		return n;
+	}
+
+	// == 질문 게시판 글 1개 상세보기 == //
+	@Override
+	public QnAVO getQnaView(Map<String, String> paraMap) {
+		QnAVO qnavo = dao.getQnaView(paraMap);
+		return qnavo;
+	}
+
+	// == 질문 게시판 글 수정하기 == //
+	@Override
+	public int qnaEditEnd(QnAVO qnavo) {
+		int n = dao.qnaEdit(qnavo);
+		return n;
+	}
+
+	// == 질문 게시판 글 1개 삭제하기 == //
+	@Override
+	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
+	public int qnaDelete(Map<String, String> paraMap) {
+		String fk_qnano = paraMap.get("fk_qnano");
+		String qnano = paraMap.get("qnano");
+		
+		if(!(fk_qnano == null || fk_qnano.trim().isEmpty()) ) {
+			// 답변글쓰기일 경우 원글의 answer count -1해야함
+			dao.updateAnswerMinus(fk_qnano);
+	      }				
+		
+		int n = dao.qnaDelete(qnano);
+		return n;
+	}
+
+	// 댓글 1개 조회만을 해주는 것이다.
+	@Override
+	public SubmitVO getSubmitOne(String submitno) {
+		SubmitVO submitvo = dao.getSubmitOne(submitno);
+		return submitvo;
+	}
 
 }

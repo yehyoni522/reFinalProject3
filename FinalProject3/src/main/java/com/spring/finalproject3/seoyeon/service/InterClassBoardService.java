@@ -3,6 +3,7 @@ package com.spring.finalproject3.seoyeon.service;
 import java.util.List;
 import java.util.Map;
 
+import com.spring.finalproject3.seoyeon.model.QnAVO;
 import com.spring.finalproject3.seoyeon.model.SubmitVO;
 import com.spring.finalproject3.seoyeon.model.assignmentBoardVO;
 
@@ -46,6 +47,30 @@ public interface InterClassBoardService {
 
 	// === 학생)댓글 페이징 처리해서 조회하기 (Ajax 로 처리) === //
 	List<SubmitVO> mysubmitList(Map<String, String> paraMap);
+	
+	// 글쓰기(파일첨부가 있는 글쓰기)
+	int assignmentAdd_withFile(assignmentBoardVO assgnVO);
+
+	// 전체 질문게시판 글 개수
+	int getTotalQna(Map<String, String> paraMap);
+
+	// 질문게시판 페이징
+	List<QnAVO> qnaListSearchWithPaging(Map<String, String> paraMap);
+
+	// 질문게시판 글 쓰기완료 요청
+	int qnaAdd(QnAVO qnavo);
+
+	// == 질문 게시판 글 1개 상세보기 == //
+	QnAVO getQnaView(Map<String, String> paraMap);
+
+	// == 질문 게시판 글 1개 수정하기 == //
+	int qnaEditEnd(QnAVO qnavo);
+
+	// == 질문 게시판 글 1개 삭제하기 == //
+	int qnaDelete(Map<String, String> paraMap);
+
+	// 댓글 1개 조회만을 해주는 것이다.
+	SubmitVO getSubmitOne(String seq);
 
 
 
