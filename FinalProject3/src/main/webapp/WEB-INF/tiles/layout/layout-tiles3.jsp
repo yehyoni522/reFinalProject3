@@ -16,7 +16,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+<%------------------------------------------------%>
+<link href='<%= ctxPath%>/resources/fullcalendar/main.css' rel='stylesheet' />
+<script src='<%= ctxPath%>/resources/fullcalendar/main.js'></script>
+<script src='<%= ctxPath%>/resources/fullcalendar/ko.js'></script>
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 <link rel="stylesheet" type="text/css" href="<%=ctxPath %>/resources/css/style3.css" />
 </head>
 <body>

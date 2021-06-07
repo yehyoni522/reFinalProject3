@@ -115,7 +115,7 @@
 			fk_perno,
 			calsubject,
 			to_char(startDate, 'yyyy-mm-dd') as startDate,
-			to_char(endDate+1, 'yyyy-mm-dd') as endDate,
+			to_char(endDate, 'yyyy-mm-dd') as endDate,
 			memo,color
 	from tbl_schedule
 
