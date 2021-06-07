@@ -106,7 +106,7 @@ padding: 15px 10px 10px 0;
 	<div id="admincontent">
 	
 	<div class="admsubtitle">
-		<span >수업 관리</span>
+		<span >수업 갱신</span>
 	</div>
 	
 	<div align="center" class="form-group">

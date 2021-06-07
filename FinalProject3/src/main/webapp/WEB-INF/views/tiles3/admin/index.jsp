@@ -36,7 +36,8 @@ div#admincontent {
  
 }
 div#adimnCalendar{
-	margin-left:20px;
+	margin-top:25px;
+	margin-left:55px;
 	width: 90%;
 	min-height: 40%;
 }
@@ -171,12 +172,9 @@ function click_add(){
 	<div id="admincontent">
 	
 		<div class="admsubtitle">
-			<span >관리자 페이지</span>
+			<span >학사 일정 관리</span>
 		</div>
-		<div id="calsub">
-			<span >학사일정 관리</span>
-		</div>
-		<div id="adimnCalendar">
+		<div id="adimnCalendar" style="padding-top:30px;">
 			<div id='calendar' style="position : relative; height: 600px;">
 				<c:if test="${not empty sessionScope.loginuser}">
 				<button class = "add-button" type = "button" onclick="click_add();">추가</button> 
