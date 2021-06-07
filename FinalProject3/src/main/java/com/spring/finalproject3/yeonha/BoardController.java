@@ -735,6 +735,7 @@ public class BoardController {
 	}
    
 	
+	// 스마트에디터  /image/photoUpload.sam
 	
 	
 }
