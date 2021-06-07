@@ -16,7 +16,7 @@ div#adminside {
 
 <div id="adminside" >
 	<a href="<%=ctxPath%>/admin/index.sam"><span style="font-family: 'Noto Sans KR', sans-serif;">관리자 페이지 홈</span></a>
-	<br>
+	<br> 
 	<br>
 	<span>회원/교수진 관리</span>
 	<ul>
