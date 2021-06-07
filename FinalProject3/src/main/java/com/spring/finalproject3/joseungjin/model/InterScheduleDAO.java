@@ -8,5 +8,9 @@ public interface InterScheduleDAO {
 	int scheduleAdd(ScheduleVO svo);
 	//일정가져오기
 	List<Map<String, String>> scheduleView(String perno);
+	//일정 수정할 정보가져오기
+	ScheduleVO scheduleEdit(Map<String, String> paraMap);
+	//일정수정하기
+	int scheduleEditEnd(ScheduleVO scvo);
 
 }
