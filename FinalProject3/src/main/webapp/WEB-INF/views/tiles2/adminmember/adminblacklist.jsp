@@ -43,27 +43,17 @@ div.admintitlesearch {
 	margin-bottom: 30px;
 }
 
-
-.adminsbopt {
-	float: left;
-	margin: 0 15px 0 15px;
-}
-
 div.admtitleoptions {
-	border-bottom: 2px solid #b0b0b5; 
+	border-bottom: 3px solid #b0b0b5; 
 	border-top: 3px solid #b0b0b5; 
 	height: 50px;	
 	padding: 10px 10px 0 10px;
 	
 }
 
-.adminsearchoption {
-	margin: 0 5px 0 5px;
-}
-
 .admsubtsp {
 	font-size: 12pt;
-	margin: 0 20px 0 280px;
+	margin: 0 20px 0 550px;
 	font-weight:bold;
 }
 
@@ -80,13 +70,11 @@ th {
 td {
 	padding-right: 15px;
 	margin-bottom: 50px;
-	border-top: 0px solid;
 }
 
 tr {
 	height: 27px;
 	border-bottom: 1px solid #b0b0b5;
-	border-top: 1px solid #b0b0b5;
 }
 
 .admthtd {
@@ -106,13 +94,10 @@ tr {
 	font-size: 11pt;
 }
 
-.goinfo {
-	cursor: pointer;
-}
-
 </style>
 
 <script>
+
 	$(function(){
 		
 		$("input#searchWord").bind("keydown", function(event){
@@ -154,29 +139,17 @@ tr {
 				
 			});
 			
-		} // end of for // 체크박스 전체선택/해체		
+		} // end of for // 체크박스 전체선택/해체	
+		
 		
 	}); // end of $(function(){})
-	
-	function goView(PERNO){
-		
-		var frm = document.studentinfoFrm;
-		
-		frm.PERNO.value = PERNO;
-		frm.method = "get";
-		frm.action = "<%=ctxPath%>/admin/studentinfo.sam?perno="+PERNO;
-		frm.submit();
-		
-		
-	} // end of goView(PERNO){})
-	
 	
 	function goSearch(){
 		
 		var frm = document.searchFrm;
 		
 		frm.method = "get";
-		frm.action = "<%=ctxPath%>/admin/student.sam";
+		frm.action = "<%=ctxPath%>/admin/blacklist.sam";
 		frm.submit();	
 		
 	} // end of function goSearch(){}
@@ -221,7 +194,7 @@ tr {
 	<div id="admincontent">
 	
 		<div class="admsubtitle">
-			<span >학생관리</span>
+			<span >활동중지회원</span>
 		</div>
 		
 		<div class="admintitlesearch">
@@ -234,28 +207,25 @@ tr {
 				<input type="text" id="searchWord" name="searchWord"/>    
 	     		<input type="text" style="display: none;"/>
 	     		<button type="button" onclick="goSearch();">검색</button>
-     		</form>  
+     		</form> 
+		</div>
+		
+		<div style="clear: both;">
+			<select style="display: inline-block; float: right; margin-right: 20px; height: 25px; margin-bottom: 10px;">
+					<option>15개씩</option>
+			</select>
 		</div>
 		
 		<div style="clear: both;"></div>
-		
-		<div class="admtitleoptions">
-			<div class="adminsbopt">
-				<select class="adminsearchoption">
-					<option>단과대학</option>
-				</select>
-				<select class="adminsearchoption">
-					<option>학과</option>
-				</select>
-				<select class="adminsearchoption">
-					<option>학번</option>
-				</select>
-			</div>
-			<span class="admsubtsp">선택된 학생</span>
-			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">게시판 활동 중지</button>
-			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">열람실 이용 중지</button>
-			<button style="background-color: #99ccff; border-radius: 10%; color: white;">이메일 보내기</button>
-			<button style="background-color: #99ccff; border-radius: 10%; color: white;">메세지 보내기</button>
+			
+		<div class="admtitleoptions" align="right">
+			<span class="admsubtsp">선택한 회원</span>
+			<select class="adminsearchoption">
+					<option>게시판 활동</option>
+					<option>열람실 이용</option>
+			</select>
+			<button style="background-color: #99ccff; border-radius: 10%; color: white;">중지 해제</button>
+			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">강제탈퇴</button>
 		</div>
 				
 		<div style="clear: both;">
@@ -284,24 +254,17 @@ tr {
 							<td class="admthtdall goinfo" onclick="goView('${personMap.PERNO}')">${personMap.PERNO}</td>
 							<td class="admthtdall goinfo">${personMap.NAME}</td>
 							<td class="admthtdall goinfo">${personMap.MOBILE}</td>
-							<td class="admthtdall goinfo">${personMap.EMAIL}</td>
-							<input type="hidden" name="PERNO" />
-							<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />							
+							<td class="admthtdall goinfo">${personMap.EMAIL}</td>						
 						</tr>
 						</form>
 					</c:forEach>
 				</tbody>
 			</table>
-		   	<div align="center" style="width: 70%; border: 0px gray solid; margin: 20px auto;">
+			<div align="center" style="width: 70%; border: 0px gray solid; margin: 20px auto;">
 		   		${requestScope.pageBar}
 		   	</div>
 		</div>
 						
 	</div>
-	
-	<form name="goViewFrm">
-		<input type="hidden" name="PERNO" />
-		<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
-	</form>
 
 </div>

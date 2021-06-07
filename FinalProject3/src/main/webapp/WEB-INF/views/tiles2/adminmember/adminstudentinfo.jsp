@@ -57,8 +57,12 @@ table {
 td, tr, th {
 	border:1px solid #b0b0b5;
 	width: 150px;
+	text-align: center;
 }
 
+th {
+	background-color: #cdcbcb;
+}
 
 </style>
 
@@ -97,7 +101,7 @@ td, tr, th {
 	<div id="admincontent">
 	
 		<div class="backadminstudent">
-			<span>학생 관리 목록 돌아가기</span>
+			<button type="button" onclick="javascript:location.href='${requestScope.gobackURL}'">학생 관리 목록 돌아가기</button>
 		</div>
 		
 		<h4> 학생 상세 정보 </h4>
@@ -107,11 +111,11 @@ td, tr, th {
 					<tr>
 						<td rowspan="3"></td>
 						<td>학번</td>
-						<td></td>
+						<td>${requestScope.personvo.perno}</td>
 						<td>성명</td>
-						<td></td>
+						<td>${requestScope.personvo.name}</td>
 						<td>생년월일</td>
-						<td></td>
+						<td>${requestScope.personvo.birthday}</td>
 					</tr>
 					<tr>
 						<td>소속 및 학년</td>
@@ -121,18 +125,18 @@ td, tr, th {
 					</tr>
 					<tr>
 						<td>연락처</td>
-						<td></td>
+						<td>${requestScope.personvo.mobile}</td>
 						<td>이메일</td>
-						<td></td>
+						<td>${requestScope.personvo.email}</td>
 						<td>주소</td>
-						<td></td>
+						<td>${requestScope.personvo.address}</td>
 					</tr>
 				</tbody>
 			</table>
-			<button>게시판 활동 중지</button>
-			<button>열람실 이용 중지</button>
-			<button>이메일 보내기</button>
-			<button>메세지 보내기</button>
+			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">게시판 활동 중지</button>
+			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">열람실 이용 중지</button>
+			<button style="background-color: #99ccff; border-radius: 10%; color: white;">이메일 보내기</button>
+			<button style="background-color: #99ccff; border-radius: 10%; color: white;">메세지 보내기</button>
 		</div>
 		
 		<h4> 수강 내역 </h4>
@@ -160,15 +164,17 @@ td, tr, th {
 					</tr>
 				</tbody>
 			</table>
-			<div align="center">페이지 이동 링크</div>
+			<div align="center" style="margin-top: 10px;">페이지 이동 링크</div>
 		</div>
 		
 		<h4> 작성한 게시글 / 댓글 </h4>
 		<div>
+			<button style="background-color: #cdcbcb; border-radius: 10%;">게시글</button>
+			<button style="background-color: #cdcbcb; border-radius: 10%;">댓글</button>
 			<table>
 				<thead>
 					<tr>
-						<th>No</th>
+						<th style="width: 40px;">No</th>
 						<th>게시판 명</th>
 						<th>제목</th>
 						<th>작성일</th>
@@ -176,14 +182,14 @@ td, tr, th {
 				</thead>
 				<tbody>
 					<tr>
-						<td>1</td>
+						<td style="width: 40px;">1</td>
 						<td>자유게시판 </td>
 						<td>오늘 수업 듣기 싫다 </td>
 						<td>2021-05-01 </td>
 					</tr>
 				</tbody>
 			</table>	
-			<div align="center">페이지 이동 링크</div>
+			<div align="center" style="margin-top: 10px;">페이지 이동 링크</div>
 		</div>
 		
 		<h4> 열람실 이용 내역 </h4>
@@ -192,7 +198,7 @@ td, tr, th {
 			<table>
 				<thead>
 					<tr>
-						<th>No</th>
+						<th style="width: 40px;">No</th>
 						<th>날짜</th>
 						<th>열람실</th>
 						<th>좌석</th>
@@ -202,7 +208,7 @@ td, tr, th {
 				</thead>
 				<tbody>
 					<tr>
-						<td>1</td>
+						<td style="width: 40px;">1</td>
 						<td>2021-04-02</td>
 						<td>제 1 열람실</td>
 						<td>D25</td>
@@ -211,7 +217,7 @@ td, tr, th {
 					</tr>
 				</tbody>
 			</table>
-			<div align="center">페이지 이동 링크</div>			
+			<div align="center" style="margin-top: 10px;">페이지 이동 링크</div>			
 		</div>
 						
 	</div>
