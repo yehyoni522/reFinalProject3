@@ -3,6 +3,7 @@ package com.spring.finalproject3.yehyeon.controller;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.spring.finalproject3.yehyeon.mail.GoogleMail_yehyeon;
 import com.spring.finalproject3.yehyeon.model.BookListVO;
 import com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO;
@@ -119,20 +123,41 @@ public class YehyeonController {
 	}
 	
 	@ResponseBody
+	@RequestMapping(value="/reading/selectRcheck.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String selectRcheck(HttpServletRequest request) {
+		
+		String perno = request.getParameter("perno");
+		
+		int n = service.selectRcheck(perno);
+			
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n);
+		
+		return jsonObj.toString();
+	}
+	
+	@ResponseBody
 	@RequestMapping(value="/reading/updateSeatInfo.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public String updateSeatInfo(HttpServletRequest request, BookListVO bookvo) {
+	public String requiredLogin_updateSeatInfo(HttpServletRequest request, HttpServletResponse response, BookListVO bookvo) {
 		
 		String dsno = request.getParameter("fk_dsno");
+		String perno = request.getParameter("fk_perno");
 		
 		int n = service.updateDscheck(dsno);
 		int m = 0;
+		int l = 0;
 		if(n == 1) {
 			// insert 해주기 위해선 fk_dsno, fk_perno, fk_tno 를 알아야한다.
 			m = service.insertBooklist(bookvo);
+			
+			if(m == 1) {
+				l = service.updateRcheck(perno);
+			}
+			
 		}
 			
 		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("m", m);
+		jsonObj.put("l", l);
 		
 		return jsonObj.toString();
 	}
@@ -170,8 +195,40 @@ public class YehyeonController {
 	
 	////////////////////////////관리자 전용 열람실 예약 내역 시작///////////////////////////////////
 	
+	@ResponseBody
+	@RequestMapping(value="/admin/viewChart.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String viewChart(HttpServletRequest request) {
+		
+		String bdate = request.getParameter("bdate");
+		System.out.println("bdate" + bdate);
+		
+		List<Map<String,String>> readingroomchart = service.viewChart(bdate); 
+		
+		JsonArray jsonArr = new JsonArray();
+		
+		for(Map<String,String> map : readingroomchart) {
+			
+			JsonObject jsonObj = new JsonObject();
+			jsonObj.addProperty("usecheck", map.get("usecheck")); 
+			jsonObj.addProperty("cnt1", map.get("cnt1"));
+			jsonObj.addProperty("cnt2", map.get("cnt2"));
+			jsonObj.addProperty("fk_rno", map.get("fk_rno"));
+			jsonObj.addProperty("rname", map.get("rname"));
+			
+			jsonArr.add(jsonObj);
+		}// end of for------------------------------------
+
+	/*	
+		Gson gson = new Gson();
+		return gson.toJson(jsonArr);
+		
+		또는
+	*/
+		return new Gson().toJson(jsonArr);
+	}
+	
 	@RequestMapping(value="/admin/readingRoomBook.sam")
-	public ModelAndView readingRoomBook(ModelAndView mav) {
+	public ModelAndView requiredLogin_readingRoomBook(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
 		List<RroomNumVO> rRoomList = service.readingRoomView();
 		
@@ -180,7 +237,7 @@ public class YehyeonController {
 		List<TimeVO> timeList = service.timeView();
 		mav.addObject("timeList", timeList);
 		
-		mav.setViewName("/admin/readingRoomBook.tiles1");
+		mav.setViewName("/admin/readingRoomBook.tiles3");
 		return mav;
 	}
 	
@@ -257,6 +314,20 @@ public class YehyeonController {
 
 		
 		return jsonArr.toString(); 
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/admin/goDeleteBook.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String goDeleteBook() {
+		
+		int n = service.goDeleteBook();
+		
+		JSONObject jsonObj = new JSONObject();  // {}
+		jsonObj.put("n", n);  // {"n":1}
+		
+		String json = jsonObj.toString(); 
+		
+		return json;   // "{"n":1}"
 	}
 	
 	////////////////////////////관리자 전용 열람실 예약 내역 끝///////////////////////////////////	

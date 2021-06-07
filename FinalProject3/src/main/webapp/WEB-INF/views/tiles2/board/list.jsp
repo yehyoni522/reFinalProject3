@@ -25,20 +25,29 @@
 }
 #newhit{
 	position: relative;
-	left: 84%;
+	left: 91%;
 	margin-bottom: 5px;
 }
 #btnadd{
 	background-color: white;
 	border: solid #ccc 1px;
 	position: relative;
-	left: 83%;
-	top: -27px;		
+	left: 90%;
+	top: -28px;		
 	height: 30px;
 }
 .boarda{
 	color:black;
-}          
+}     
+#displayList{
+	border:solid 1px gray; 
+	border-top:0px; width: 
+	302px; height:100px; 
+	margin-left:70px; 
+	overflow:auto;
+	position: relative;
+	top:-28px;
+}
 </style>
 
 <script type="text/javascript">
@@ -181,26 +190,67 @@
 			<option value="2">인기순</option>
 		</select>
 	</form>
-	<table id="table">
+	<table id="table" style="width: 1300px;">
 		<tr>
 			<th style="width: 80px;  text-align: center;">번호</th>
 			<th style="width: 410px; text-align: center;">제목</th>
-			<th style="width: 60px; text-align: center;">추천</th>
-			<th style="width: 60px;  text-align: center;">작성자</th>
+			<th style="width: 80px; text-align: center;">추천</th>
+			<th style="width: 80px;  text-align: center;">작성자</th>
 			<th style="width: 150px; text-align: center;">작성일자</th>
-			<th style="width: 60px;  text-align: center;">조회수</th>
+			<th style="width: 80px;  text-align: center;">조회수</th>
 		</tr>
 		
 		<c:forEach var="boardvo" items="${requestScope.boardList}" varStatus="status"> 
 		   <tr>	
-		   	   <td align="center">${boardvo.seq}</td>
-		   	   <td align="center">
-		   	   	<c:if test="${boardvo.commentCount > 0}">
-		   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> 
-		   	   	 </c:if>
-		   	   	 <c:if test="${boardvo.commentCount == 0}">
-		   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
-	   	  		 </c:if> 
+	   	   	   <td align="center">${boardvo.seq}</td>
+		   	   <td align="left">
+		   	   
+		   	   <!-- 첨부파일이 없는 경우   -->
+		   	   <c:if test="${empty boardvo.fileName}">
+		   	   	   <!-- 답변글이 아닌 원글인 경우 -->
+		   	   	   <c:if test="${boardvo.depthno == 0}">
+			   	   	   <c:if test="${boardvo.commentCount > 0}">
+				   	   		<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> 
+				   	   </c:if>
+				   	   <c:if test="${boardvo.commentCount == 0}">
+				   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
+			   	  	   </c:if>
+			   	   </c:if>
+			   	   
+			   	   <!-- 답변글인 경우 -->
+		   	   	   <c:if test="${boardvo.depthno > 0}">
+			   	   	   <c:if test="${boardvo.commentCount > 0}">
+				   	   		<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 5}px;">┗Re&nbsp;</span>${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> 
+				   	   </c:if>
+				   	   <c:if test="${boardvo.commentCount == 0}">
+				   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 5}px;">┗Re&nbsp;</span>${boardvo.subject}</span>
+			   	  		 </c:if>
+			   	   </c:if>			 
+	   	  	   </c:if>
+	   	  	   
+	   	  	   <!-- 첨부파일이 있는 경우   -->
+		   	   <c:if test="${not empty boardvo.fileName}">
+		   	   	   <!-- 답변글이 아닌 원글인 경우 -->
+		   	   	   <c:if test="${boardvo.depthno == 0}">
+			   	   	   <c:if test="${boardvo.commentCount > 0}">
+				   	   		<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> &nbsp;<img src="<%=ctxPath%>/resources/images/disk.gif" /> 
+				   	   </c:if>
+				   	   <c:if test="${boardvo.commentCount == 0}">
+				   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span> &nbsp;<img src="<%=ctxPath%>/resources/images/disk.gif" />
+			   	  		 </c:if>
+			   	   </c:if>
+			   	   
+			   	   <!-- 답변글인 경우 -->
+		   	   	   <c:if test="${boardvo.depthno > 0}">
+			   	   	   <c:if test="${boardvo.commentCount > 0}">
+				   	   		<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 5}px;">┗Re&nbsp;</span>${boardvo.subject} <span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span> </span> &nbsp;<img src="<%=ctxPath%>/resources/images/disk.gif" /> 
+				   	   </c:if>
+				   	   <c:if test="${boardvo.commentCount == 0}">
+				   	   	 	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 5}px;">┗Re&nbsp;</span>${boardvo.subject}</span> &nbsp;<img src="<%=ctxPath%>/resources/images/disk.gif" />
+			   	  		 </c:if>
+			   	   </c:if>			 
+	   	  	   </c:if>	 
+	   	  		
 		   	   </td>
 		   	   <td align="center">${boardvo.good}</td>
 		   	   <c:if test="${boardvo.namecheck == 0}">
@@ -214,34 +264,33 @@
 		   </tr>
 		</c:forEach>		
 	</table>		
-	
+
 	<%-- 검색창(글쓴이,글제목) --%>
-	<div id="bottomop"> 
-	<form name="searchFrm" style="margin-top: 20px;">
-		<input type="hidden" name="categoryno" id="catnoSearch" value="${categoryno}"/>
-   		<select name="searchType" id="searchType" style="height: 26px;">
-      		<option value="subject">글제목</option>
-       		<option value="name">글쓴이</option>
-     	</select>
-    	<input type="text" name="searchWord" id="searchWord" size="40" autocomplete="off" /> 
-   	 	<button type="button" onclick="goSearch()">검색</button>
-	</form>
+	<div id="bottomop" style="height: 30px;"> 
+		<form name="searchFrm" style="margin-top: 20px; ">
+			<input type="hidden" name="categoryno" id="catnoSearch" value="${categoryno}"/>
+	   		<select name="searchType" id="searchType" style="height: 26px;">
+	      		<option value="subject">글제목</option>
+	       		<option value="name">글쓴이</option>
+	     	</select>
+	    	<input type="text" name="searchWord" id="searchWord" size="40" autocomplete="off" /> 
+	   	 	<button type="button" onclick="goSearch()">검색</button>
+		</form>
+		
+		<c:if test="${categoryno != 4 || (categoryno == 4 && sessionScope.loginuser.identity == 2)}">
+			<button type="button" id="btnadd" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${categoryno}'">게시글 등록</button>
+		</c:if>
 	
-	<c:if test="${categoryno != 4 || (categoryno == 4 && sessionScope.loginuser.identity == 2)}">
-		<button type="button" id="btnadd" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${categoryno}'">게시글 등록</button>
-	</c:if>
-
+		<%-- 검색어 입력시 자동글 완성하기 1--%>
+		<div id="displayList"></div>		
+	</div>	
 	
+	<%-- 페이지 바 --%>
+	<div style="text-align:center; width:70%; border:solid 0px grey; margin:20px auto;">
+		${requestScope.pageBar}  
 	</div>
-	<%-- 검색어 입력시 자동글 완성하기 1--%>
-	<div id="displayList" style="border:solid 1px gray; border-top:0px; width: 326px; height:100px; margin-left:70px; overflow:auto;">		
-	</div>
-</div>	
-
-<%-- 페이지 바 --%>
-<div style="text-align:center; width:70%; border:solid 0px grey; margin:20px auto; ">
-	${requestScope.pageBar}  
 </div>
+
 
 <form name="goViewFrm">
 	<input type="hidden" name="seq" />

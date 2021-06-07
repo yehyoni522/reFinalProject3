@@ -86,4 +86,36 @@ public class ReadingService implements InterReadingService {
 		return mapList;
 	}
 
+
+
+	@Override
+	public List<Map<String, String>> viewChart(String bdate) {
+		List<Map<String, String>> mapList = dao.viewChart(bdate);
+		return mapList;
+	}
+
+
+
+	@Override
+	public int goDeleteBook() {
+		int n = dao.goDeleteBook();
+		return n;
+	}
+
+
+
+	@Override
+	public int selectRcheck(String perno) {
+		int n = dao.selectRcheck(perno);
+		return n;
+	}
+
+
+
+	@Override
+	public int updateRcheck(String perno) {
+		int n = dao.updateRcheck(perno);
+		return n;
+	}
+
 }

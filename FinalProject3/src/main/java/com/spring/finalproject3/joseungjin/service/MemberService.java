@@ -108,6 +108,19 @@ public class MemberService implements InterMemberService {
 		List<Map<String,String>>scheduleList = scdao.scheduleView(perno);
 		return scheduleList;
 	}
+	//일정 수정데이터 가져오기
+	@Override
+	public ScheduleVO scheduleEdit(Map<String, String> paraMap) {
+		ScheduleVO scvo = scdao.scheduleEdit(paraMap);
+		return scvo;
+	}
+
+	//일정 수정하기
+	@Override
+	public int scheduleEditEnd(ScheduleVO scvo) {
+		int n = scdao.scheduleEditEnd(scvo);
+		return n;
+	}
 
 
 

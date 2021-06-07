@@ -2,6 +2,7 @@ package com.spring.finalproject3.joseungjin.model;
 
 public class ScheduleVO {
 	
+	private String schno;
 	private String calsubject;
 	private String fk_perno;
 	private String startDate; 
@@ -11,7 +12,8 @@ public class ScheduleVO {
 	
 	public ScheduleVO() {}
 	
-	public ScheduleVO(String calsubject, String fk_perno,String startDate,String endDate, String memo,String color) {
+	public ScheduleVO(String schno,String calsubject, String fk_perno,String startDate,String endDate, String memo,String color) {
+		this.schno=schno;
 		this.calsubject=calsubject;
 		this.fk_perno = fk_perno;
 		this.startDate = startDate;
@@ -21,6 +23,14 @@ public class ScheduleVO {
 	}
 
 	
+	public String getSchno() {
+		return schno;
+	}
+
+	public void setSchno(String schno) {
+		this.schno = schno;
+	}
+
 	public String getCalsubject() {
 		return calsubject;
 	}

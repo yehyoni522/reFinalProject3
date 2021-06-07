@@ -77,13 +77,15 @@
 		on V.fk_perno =P.perno
 	</select>
 	
-	
+	<!-- 일정 추가-->
 	<insert id="scheduleAdd" parameterType="com.spring.finalproject3.joseungjin.model.ScheduleVO">
-		insert into tbl_schedule(calsubject,fk_perno,startDate,endDate,memo,color)
-		values(#{calsubject},#{fk_perno},#{startDate},#{endDate},#{memo},#{color})
+		insert into tbl_schedule(schno,calsubject,fk_perno,startDate,endDate,memo,color)
+		values(schnoSeq.nextval,#{calsubject},#{fk_perno},#{startDate},#{endDate},#{memo},#{color})
 	</insert>
 	
+	<!-- 일정 데이터 가져오기-->
 	<resultMap type="HashMap" id="scheduleViewMap">
+	<result property="schno" column="schno" javaType="String"/>
 		<result property="perno" column="fk_perno" javaType="String"/>
 		<result property="calsubject" column="calsubject" javaType="String"/>
 		<result  property="startDate" column="startDate" javaType="String" />
@@ -95,6 +97,8 @@
 	
 	<select id="scheduleView" resultMap="scheduleViewMap">
 	select 
+			schno,
+			fk_perno,
 			calsubject,
 			to_char(startDate, 'yyyy-mm-dd') as startDate,
 			to_char(endDate+1, 'yyyy-mm-dd') as endDate,
@@ -103,5 +107,31 @@
 
 	where fk_perno=#{perno} OR fk_perno='20191234'
 	</select>
+	
+	<!-- 일정 수정할 데이터 가져오기-->
+	<select id="scheduleEdit" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.ScheduleVO">
+	select 
+			schno,
+			fk_perno,
+			calsubject,
+			to_char(startDate, 'yyyy-mm-dd') as startDate,
+			to_char(endDate+1, 'yyyy-mm-dd') as endDate,
+			memo,color
+	from tbl_schedule
+
+	where schno=#{schno} and fk_perno=#{perno}
+	</select>
+	
+	
+	<!-- 일정 업데이트-->
+	<update id="scheduleEditEnd" parameterType="com.spring.finalproject3.joseungjin.model.ScheduleVO">
+		update tbl_schedule set calsubject = #{calsubject}
+		                   , startDate = #{startDate}
+		                   , endDate =#{endDate}
+		                   , memo =#{memo}
+		                   , color =#{color}
+		                   
+		where schno=#{schno} and fk_perno=#{fk_perno}
+	</update>
 	
 </mapper>

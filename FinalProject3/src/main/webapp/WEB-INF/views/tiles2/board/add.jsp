@@ -32,15 +32,31 @@
 	#btnWrite{
 		margin-right: 4px;
 	}
-	
+	#btnFileAdd{
+		cursor: pointer;
+		width:25px; 
+		height:25px;
+		margin-left: 5px;
+	}
+	#fileAddin{
+		margin-top: 5px;
+	}
 </style>
 
 <script type="text/javascript">
    $(document).ready(function(){
       
+	   // 파일첨부 input 숨기기
+	   $("input#fileAddin").hide();
+	   
+	   // 파일이미지 클릭하면 파일첨부 추가
+	   $("img#btnFileAdd").click(function(){
+		   $("input#fileAddin").show();   		   		   
+	   });
+	   
       <%-- === #167. 스마트 에디터 구현 시작 === --%>
        
-       <%-- === 스마트 에디터 구현 끝 === --%>
+      <%-- === 스마트 에디터 구현 끝 === --%>
       
       // 쓰기버튼
       $("button#btnWrite").click(function(){
@@ -103,28 +119,35 @@
 	</h1>
 	<hr class="mainline" align="left" >
 	
-	<form name="addFrm"> 
+	<form name="addFrm" enctype="multipart/form-data"> 
  		<input type="hidden" name="categoryno" value="${categoryno}" />                   
 		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}"/>
 		<input type="hidden" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />
 		
 		작성자 : ${sessionScope.loginuser.name}&nbsp;${sessionScope.loginuser.perno}
-		<label>익명</label> <input type="checkbox" name="namecheck" id="namecheck" value="1"/>    
+		<label>익명</label> <input type="checkbox" name="namecheck" id="namecheck" value="1"/>
+		<br>      
+		  
+		<%-- 파일첨부--%>
+		<div><img id="btnFileAdd"src="<%=ctxPath %>/resources/images/fileAdd.PNG" /> 파일 첨부하기 <input type="file" id="fileAddin" name="attach" /> </div> 
 		
 		<div>
 			<input type="text" name="subject" id="subject" placeholder="  제목을 입력하세요."/>       
 		</div>
 		 현위치 스마트에디터 추가예정 
         <textarea rows="10" cols="100" name="content" id="content" placeholder="  내용을 입력하세요."></textarea>       
-           
+        
+        <%-- 답변글쓰기가 추가 --%>
+      	<input type="hidden" name="fk_seq" value="${requestScope.fk_seq}"/>
+      	<input type="hidden" name="groupno" value="${requestScope.groupno}"/>
+      	<input type="hidden" name="depthno" value="${requestScope.depthno}"/>  
      
-	<%-- === #150. 파일첨부 타입 추가하기 === --%>
-   	<hr class="mainline" align="left" >   
-    <div style="margin: 20px;">
-    	<button type="button" id="btnWrite">등록</button>
-        <button type="button" onclick="javascript:history.back()">취소</button>
-   	</div>
-         
-</form>
+	
+	   	<hr class="mainline" align="left" >   
+	    <div style="margin: 20px;">
+	    	<button type="button" id="btnWrite">등록</button>
+	        <button type="button" onclick="javascript:history.back()">취소</button>
+	   	</div>         
+	</form>
    
 </div>    

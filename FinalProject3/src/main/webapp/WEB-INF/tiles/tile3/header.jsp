@@ -16,19 +16,7 @@
 				<button type="button" class="btn btn-secondary" onclick="location.href='<%=ctxPath%>/login.sam'">로그인</button>
 			</c:if>
 			<c:if test="${not empty sessionScope.loginuser}">
-			<c:if test="${sessionScope.loginuser.identity == 0}">
-				<a href="<%= ctxPath%>/mypage/mypage.sam">${sessionScope.loginuser.name}</a>님 &nbsp;&nbsp;
-			</c:if>
-			<c:if test="${sessionScope.loginuser.identity == 1}">
-				<a href="<%= ctxPath%>/mypage/mypage.sam">${sessionScope.loginuser.name}</a>교수 &nbsp;&nbsp;
-			</c:if>
-			<c:if test="${sessionScope.loginuser.identity == 2}">
-				<a href="">관리자페이지</a> &nbsp;&nbsp;
-			</c:if>
 				<button type="button" class="btn btn-secondary" onclick="location.href='<%=ctxPath%>/logout.sam'">로그아웃</button>
-
-				<button type="button" class="btn btn-secondary" onclick="location.href='<%=ctxPath%>/mypage/mypage.sam'">마이페이지</button>
-
 			</c:if>
 		</div>
 		<div id="logo">
@@ -36,5 +24,3 @@
 		</div>
 		
 </div>
-
-

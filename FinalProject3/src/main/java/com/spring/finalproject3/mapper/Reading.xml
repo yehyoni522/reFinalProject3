@@ -81,6 +81,61 @@
 		on fk_dsno = dsno
 		order by V.dsno
 	</select>
-
+	
+	<resultMap type="HashMap" id="chart">
+		<result property="cnt1" 							column="cnt1" 				javaType="String" />
+		<result property="cnt2" 							column="cnt2" 				javaType="String" />
+    	<result property="usecheck" 					column="usecheck" 			javaType="String" />
+    	<result property="fk_rno" 						column="fk_rno" 				javaType="String" />
+    	<result property="rname" 						column="rname" 				javaType="String" />
+	</resultMap>	
+	
+	<select id="viewChart" parameterType="String" resultMap="chart">
+		select rname, fk_rno, cnt1, cnt2, usecheck
+		from
+		(
+		    select rname, rno
+		    from tbl_rroomnum
+		)Y
+		join
+		(
+		    select distinct X.fk_rno, cnt1, cnt2, usecheck
+		    from 
+		    (
+		        select count(*) as cnt1, fk_rno
+		        from tbl_booklist join tbl_detailseatinfo
+		        on fk_dsno = dsno
+		        where to_char(bdate, 'mm') = to_char(to_date(#{bdate}, 'yy.mm.dd'), 'mm')
+		        group by fk_rno
+		    )V
+		    join
+		    (
+		        select count(*) AS cnt2, usecheck, fk_rno
+		        from tbl_booklist join tbl_detailseatinfo
+		        on fk_dsno = dsno
+		        where to_char(bdate, 'mm') = to_char(to_date(#{bdate}, 'yy.mm.dd'), 'mm')
+		        group by fk_rno, usecheck
+		    )X
+		    on V.fk_rno = X.fk_rno
+		)Z
+		on fk_rno = rno
+		where usecheck = 1
+		order by fk_rno
+	</select>
+	
+	<update id="goDeleteBook">
+		update tbl_detailseatinfo set dscheck = 0
+	</update>
+	
+	<select id="selectRcheck" parameterType="String" resultType="int">
+		select rcheck
+		from tbl_person
+		where perno = #{perno}
+	</select>
+	
+	<update id="updateRcheck" parameterType="String">
+	 	update tbl_person set rcheck = 1
+		where perno =#{perno}
+	</update>
 
 </mapper>

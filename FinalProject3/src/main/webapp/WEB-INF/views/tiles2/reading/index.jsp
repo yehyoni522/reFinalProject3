@@ -182,7 +182,7 @@
 		   		var jsontname = json.tname;
 		   		var tname = jsontname.replace(/\s/gi, "");
 		   		html = "<input type='hidden' id='rname' value="+json.rname+">";
-		   		html += "<input type='text' id='tname' value="+tname+">";
+		   		html += "<input type='hidden' id='tname' value="+tname+">";
 		   		html += "<input type='hidden' id='dsname' value="+json.dsname+">";
 		   		$("form#seatinfo").html(html);
 		   	}, error: function(request, status, error){
@@ -195,12 +195,31 @@
 		//	alert("확인용 부모창의 함수 호출함. 사용자ID : " + userid + " , 결제금액 : " + coinmoney + "원");
 		
 		var perno = "${sessionScope.loginuser.perno}";
+		
+			$.ajax({
+				url:"<%=ctxPath%>/reading/selectRcheck.sam",
+				type:"get",
+				data:{"perno":perno},
+				dataType:"json",
+			   	success:function(json) {
+			   		if(json.n == 0) {
+			   			//  아임포트 결제 팝업창 띄우기  
+						var url = "<%= request.getContextPath()%>/reading/coinPurchaseEnd.sam?perno="+perno+"&dsno="+dsno; 
+						
+						window.open(url, "coinPurchaseEnd",
+								    "left=350px, top=100px, width=820px, height=600px");
+			   		}else {
+			   			alert("이미 예약한 좌석이 존재합니다.");
+			   			location.reload();
+			   			return;
+			   		}
+			   		
+			   	}, error: function(request, status, error){
+				      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+				}
+			});
 
-		//  아임포트 결제 팝업창 띄우기  
-			var url = "<%= request.getContextPath()%>/reading/coinPurchaseEnd.sam?perno="+perno+"&dsno="+dsno; 
-			
-			window.open(url, "coinPurchaseEnd",
-					    "left=350px, top=100px, width=820px, height=600px");
+
 	 		
 		}
 	
@@ -212,7 +231,7 @@
 			data:{"fk_dsno":dsno, "fk_perno":"${sessionScope.loginuser.perno}", "fk_tno":tno},
 			dataType:"json",
 		   	success:function(json) {
-		   		if(json.m == 1) {
+		   		if(json.l == 1) {
 		   			alert("예약이 완료되었습니다.");
 		   			sendEmail(dsno);
 		   		} else {

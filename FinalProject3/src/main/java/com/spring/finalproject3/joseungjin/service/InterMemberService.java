@@ -39,5 +39,9 @@ public interface InterMemberService {
 	int scheduleAdd(ScheduleVO svo);
 	//일정 가져오기
 	List<Map<String, String>> scheduleView(String perno);
+	//일정 수정할 데이터가져오기
+	ScheduleVO scheduleEdit(Map<String, String> paraMap);
+	//일정 수정하기
+	int scheduleEditEnd(ScheduleVO scvo);
 
 }
