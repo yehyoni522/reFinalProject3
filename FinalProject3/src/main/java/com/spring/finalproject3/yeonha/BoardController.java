@@ -371,7 +371,7 @@ public class BoardController {
 		
 		try {
 			n = service.addComment(commentvo);
-			System.out.println("댓글쓰기 결과: "+n);
+			// System.out.println("댓글쓰기 결과: "+n);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

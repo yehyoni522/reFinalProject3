@@ -18,7 +18,6 @@
 .putcomment{
 	border-bottom: 1px solid #ccc;
 	margin-top: 5px;
-	margin-bottom: 2px;
 }
 .move {cursor: pointer;}
 .moveColor {color: blue; font-weight: bold; }
@@ -58,9 +57,11 @@ a {
 }
 #comname{
 	font-weight: bold;
+	margin-bottom: 2px;
 }
 #comdate{
 	font-size: 8pt;
+	margin-bottom: 5px;
 }
 #boardcomment{
 	margin-bottom: 10px;
@@ -89,14 +90,7 @@ a {
 	font-size: 8pt;
 	cursor:pointer;
 	padding: 5px auto;
-	margin-left: 85%;
-}
-.logidentity{
-	border: 2px solid green;
-	padding: 2px ;
-	border-radius: 20%;
-	margin-left: 5px;
-	
+	/* margin-left: 85%; */
 }
 #comcont{
 	margin: 2px;
@@ -106,6 +100,12 @@ a {
 }
 #goodbtn{
 	cursor:pointer;
+}
+#whoWrite{
+	margin: 0 5px 0px 5px;
+	padding: 0.5px ;
+	border: 2px green solid;
+	border-radius: 20%;	
 }
 </style>
 
@@ -172,29 +172,37 @@ a {
 				var html = "";
 				
 				if(json.length > 0) {
-					
-					
+							
 					$.each(json, function(index, item){		
 						
-						var content = '"'+item.content+'"';
-						
+						var content = '"'+item.content+'"';						
 						
 						html += "<div class='putcomment'>";
 						html += "<input type='hidden' value='"+item.comseq+"'/>"
-						html += "<div id='comname'>&nbsp;"+ item.name;	
+						
+						if(item.fk_perno == ${boardvo.fk_perno}){
+							html += "<div id='comname'>&nbsp;"+ item.name+"<span id='whoWrite'>작성자</span>";						
+						}
+						else if(item.identity == 2){
+							html += "<div id='comname'>&nbsp;"+ item.name+"<span id='whoWrite'>관리자</span>";
+						}
+						else{
+							html += "<div id='comname'>&nbsp;"+ item.name
+						}
+						
 						
 						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
 						html += "<span id='commentfunc'>";
 						html += "<span id='commentreply' ><button type='button' onclick='commentreply()'>답글</button></span>";
 						
-					
-						html += "<span id='commentedit'><button type='button' onclick='commentedit("+item.comseq+","+content+")'>수정</button></span>";
-						html += "<span id='commentdel'><button type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
-						
+						if(${sessionScope.loginuser.perno} == item.fk_perno){
+							html += "<span id='commentedit'><button type='button' onclick='commentedit("+item.comseq+","+content+")'>수정</button></span>";
+							html += "<span id='commentdel'><button type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
+						}
 						
 						html += "</span></c:if></div>";	
 						
-						html += "<div>&nbsp;"+item.identity+"</div>";
+						
 						html += "<div id='comcont"+item.comseq+"'>&nbsp;"+item.content+"</div>";
 						
 						html += "<div id='comEditFrm"+item.comseq+"' style='display:none;'>"
@@ -456,7 +464,7 @@ a {
 				<!-- 댓글 페이지바-->
     			<div id="pageBar" style="border:solid 0px gray; width: 90%; margin: 10px auto; text-align: center;"></div> 
 	 
-				<%-- 댓글쓰기 폼 추가--%> 
+				<%-- : 폼 추가--%> 
 				<c:if test="${not empty sessionScope.loginuser}">
 					<form name="addWriteFrm" style="margin-top: 20px;">
 						<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />  

@@ -102,7 +102,7 @@
 		select previousseq, previoussubject
 		     , seq, fk_perno, subject, name, content, readcount, B.regDate as regDate, good
 		     , nextseq , nextsubject, commentCount
-		     , groupno, fk_seq, depthno, fileName, orgFilename, fileSize 
+		     , groupno, fk_seq, depthno, fileName, orgFilename, fileSize, identity 
 		from 
 		(
 		    select lag(seq,1) over(order by seq desc) AS previousseq
