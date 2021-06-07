@@ -116,13 +116,83 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 	}
 
 	
-	// 사람번호로 교수의 정보와 과목 정보 얻어오기 (조인)
+	// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
 	@Override
-	public List<Map<String, String>> getQuizList(String seq) {
+	public List<Map<String, String>> quizvoListSearchWithPaging(Map<String, String> paraMap) {
 
-		List<Map<String, String>> personList = sqlsession.selectList("adminmember.getQuizList", seq);
-				
-		return personList;
+		List<Map<String, String>> quizvoList = sqlsession.selectList("adminmember.quizvoListSearchWithPaging", paraMap);
+		
+		return quizvoList;
+	}
+
+	
+	// 총 쪽지시험 수(totalCount)
+	@Override
+	public int getTotalQuiz(Map<String, String> paraMap) {
+		
+		int n = sqlsession.selectOne("adminmember.getTotalQuiz", paraMap);
+		
+		return n;
+	}
+
+	
+	// 받아온 시험명으로 과목명 검색하기
+	@Override
+	public SubjectVO getSubname(String quizname) {
+
+		SubjectVO subjectvo = sqlsession.selectOne("adminmember.getSubname", quizname);
+			
+		return subjectvo;
+	}
+
+	
+	// 받아온 시험명으로 문제리스트 검색
+	@Override
+	public List<QuestionVO> getQuestionList(String quizname) {
+		
+		List<QuestionVO> questionList = sqlsession.selectList("adminmember.getQuestionList", quizname);
+		
+		return questionList;
+	}
+
+	
+	// 가져온 시험명으로 문제의 총 갯수를 구한다.
+	@Override
+	public int getQuizTotalCount(String quizname) {
+		
+		int cnt = sqlsession.selectOne("adminmember.getQuizTotalCount", quizname);
+		
+		return cnt;
+	}
+
+	
+	// 시험명으로 일련번호 검색
+	@Override
+	public QuizVO getQuizNo(Map<String, String> paraMap) {
+		
+		QuizVO quizvo = sqlsession.selectOne("adminmember.getQuizNo", paraMap);
+		
+		return quizvo;
+	}
+
+	
+	// 시험명과 문제번호로 문제 일련번호 검색 
+	@Override
+	public QuestionVO getQuestionNo(Map<String, String> paraMap) {
+		
+		QuestionVO questionvo = sqlsession.selectOne("adminmember.getQuestionNo", paraMap);
+		
+		return questionvo;
+	}
+
+	
+	// 일련번호, 문제일련번호, 사람번호를 구했으면 그 값을 가지고 insert 
+	@Override
+	public int addStudentAnswer(Map<String, String> paraMap) {
+		
+		int n = sqlsession.insert("adminmember.addStudentAnswer", paraMap);
+		
+		return n;
 	}
 	
 	
