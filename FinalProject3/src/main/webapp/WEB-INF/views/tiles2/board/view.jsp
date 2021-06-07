@@ -17,7 +17,7 @@
 }
 .putcomment{
 	border-bottom: 1px solid #ccc;
-	margin-top: 5px;
+	margin: 10px 0 10px 0;
 }
 .move {cursor: pointer;}
 .moveColor {color: blue; font-weight: bold; }
@@ -57,11 +57,11 @@ a {
 }
 #comname{
 	font-weight: bold;
-	margin-bottom: 2px;
+	margin: 5px 0 5px 0;
 }
 #comdate{
 	font-size: 8pt;
-	margin-bottom: 5px;
+	margin: 5px 0 5px 0;
 }
 #boardcomment{
 	margin-bottom: 10px;
@@ -87,13 +87,9 @@ a {
 }
 #commentfunc{
 	border: 0px #ccc solid;
-	font-size: 8pt;
-	cursor:pointer;
-	padding: 5px auto;
-	/* margin-left: 85%; */
-}
-#comcont{
-	margin: 2px;
+	font-size: 10pt;
+	cursor:pointer;	
+	margin-left: 10px;
 }
 #fileDown{
 	 text-align: right;
@@ -106,6 +102,14 @@ a {
 	padding: 0.5px ;
 	border: 2px green solid;
 	border-radius: 20%;	
+}
+.combtn{
+	background-color: white;
+	border-radius: 20%;	
+	border: 1px solid #ccc;
+	padding: 2px;
+	position:relative;
+	left: 87%;
 }
 </style>
 
@@ -191,13 +195,13 @@ a {
 						}
 						
 						
-						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
 						html += "<span id='commentfunc'>";
-						html += "<span id='commentreply' ><button type='button' onclick='commentreply()'>답글</button></span>";
+						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
+						html += "<span id='commentreply' ><button class='combtn' type='button' onclick='commentreply()'>답글</button></span>";
 						
 						if(${sessionScope.loginuser.perno} == item.fk_perno){
-							html += "<span id='commentedit'><button type='button' onclick='commentedit("+item.comseq+","+content+")'>수정</button></span>";
-							html += "<span id='commentdel'><button type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
+							html += "<span id='commentedit'><button class='combtn' type='button' onclick='commentedit("+item.comseq+","+content+")'>수정</button></span>";
+							html += "<span id='commentdel'><button class='combtn' type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
 						}
 						
 						html += "</span></c:if></div>";	
