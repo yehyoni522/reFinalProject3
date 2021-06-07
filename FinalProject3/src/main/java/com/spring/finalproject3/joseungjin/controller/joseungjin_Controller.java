@@ -3,6 +3,7 @@ package com.spring.finalproject3.joseungjin.controller;
 import java.util.HashMap;
 
 
+
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.joseungjin.mail.GoogleMail;
 import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
@@ -497,6 +499,8 @@ public class joseungjin_Controller {
 				for(Map<String,String>map:scheduleList) {
 					
 					JsonObject jsonObj = new JsonObject();
+					jsonObj.addProperty("schno",map.get("schno"));
+					jsonObj.addProperty("perno",map.get("fk_perno"));
 					jsonObj.addProperty("calsubject",map.get("calsubject"));
 					jsonObj.addProperty("startDate",map.get("startDate"));
 					jsonObj.addProperty("endDate",map.get("endDate"));
@@ -505,11 +509,85 @@ public class joseungjin_Controller {
 					jsonArr.add(jsonObj);
 				}//end of for(Map<String,String>map:deptnamePercentageList){}-----
 				
-				//System.out.println(jsonArr);
+				System.out.println(jsonArr);
 				return jsonArr.toString();
 			
 			}
+			
+			// === 일정 수정가져오기 === // 
+			@ResponseBody
+			@RequestMapping(value="/scheduleEdit.sam",produces="text/plain;charset=UTF-8")
+			public String scheduleEdit(HttpServletRequest request) {
+				
+				String perno = request.getParameter("perno"); 
+				String schno = request.getParameter("schno");
+				
+				Map<String,String>paraMap = new HashedMap<>();
+				 paraMap.put("perno", perno);
+			      paraMap.put("schno", schno);
+			  
+				
+				ScheduleVO scvo = service.scheduleEdit(paraMap);
+				
+				JSONObject jsonObj = new JSONObject();
+						jsonObj.put("schno",scvo.getSchno());
+						jsonObj.put("title",scvo.getCalsubject());
+						jsonObj.put("perno", scvo.getFk_perno());
+						jsonObj.put("startDate", scvo.getStartDate());
+						jsonObj.put("endDate", scvo.getEndDate());
+						jsonObj.put("color", scvo.getColor());
+						jsonObj.put("memo", scvo.getMemo());
+					
+				
+				return jsonObj.toString(); 
+
+			
+			}
+			
+			
+			//일정수정 팝업페이지 요청
+			@RequestMapping(value="/scheduleEditPopup.sam")
+			public ModelAndView requiredLogin_scheduleEditPopup(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+				String perno = request.getParameter("perno"); 	
+				String schno = request.getParameter("schno");
+			System.out.println(schno);
+				Map<String,String>paraMap = new HashedMap<>();
+				 paraMap.put("perno", perno);
+				 paraMap.put("schno", schno);
+				 
+				ScheduleVO scvo = service.scheduleEdit(paraMap);
+				
+				mav.addObject("schno",scvo.getSchno());
+				mav.addObject("title",scvo.getCalsubject());
+				mav.addObject("perno", scvo.getFk_perno());
+				mav.addObject("startDate",scvo.getStartDate());
+				mav.addObject("endDate", scvo.getEndDate());
+				mav.addObject("color", scvo.getColor());
+				mav.addObject("memo", scvo.getMemo());
+				
+				mav.setViewName("calendar/scheduleEditPopup");
+				
+				return mav;
+			}
 	
-	
+			// === #71. 글수정 페이지 요청 === //
+			@RequestMapping(value="/scheduleEditEnd.sam",method= {RequestMethod.POST})
+			public ModelAndView requiredLogin_scheduleEditEnd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav,ScheduleVO scvo) {
+				
+				int n = service.scheduleEditEnd(scvo);
+				// n 이 1 이라면 정상적으로 변경됨.
+				// n 이 0 이라면 글수정에 필요한 글암호가 틀린경우 
+				
+				if(n == 0) {
+					mav.addObject("message", "암호가 일치하지 않아 글 수정이 불가합니다.");
+				}
+				else {
+					mav.addObject("message", "글수정 성공!!");
+				}
+				
+				mav.setViewName("msg");
+				
+				return mav;
+			}
 	
 }
