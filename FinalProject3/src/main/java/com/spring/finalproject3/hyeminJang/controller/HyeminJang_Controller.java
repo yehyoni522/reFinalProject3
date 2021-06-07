@@ -25,7 +25,7 @@ import com.spring.finalproject3.hyeminJang.service.InterMessageService;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 @Controller
-public class MessageController {
+public class HyeminJang_Controller {
    
    @Autowired   // Type에 따라 알아서 Bean 을 주입해준다.
    private InterMessageService service;
