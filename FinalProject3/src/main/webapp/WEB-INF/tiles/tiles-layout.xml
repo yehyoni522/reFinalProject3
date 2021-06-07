@@ -48,7 +48,7 @@
    <definition name="layout-tiles3"  template="/WEB-INF/tiles/layout/layout-tiles3.jsp"> 
       <put-attribute name="header"  value="/WEB-INF/tiles/tile3/header.jsp" />
       <put-attribute name="content" value="" />
-      <put-attribute name="sideinfo"  value="/WEB-INF/tiles/tile3/sideinfo.jsp" />
+      <put-attribute name="sidebar"  value="/WEB-INF/tiles/tile3/sidebar.jsp" />
       <put-attribute name="footer"  value="/WEB-INF/tiles/tile3/footer.jsp" />
    </definition>
    

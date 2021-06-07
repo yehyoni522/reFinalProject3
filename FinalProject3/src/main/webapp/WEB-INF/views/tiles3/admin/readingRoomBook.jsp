@@ -229,7 +229,13 @@ var rno = 1;
 var tno = 1;
 
 $(function() {
-
+	
+	console.log(${sessionScope.loginuser.perno});
+	if(${sessionScope.loginuser.perno ne '20191234'}) {
+		$("div#adminhome").hide();
+		alert("관리자만 접근할 수 있습니다.");
+		location.href="<%=ctxPath%>/index.sam";
+	}
 	
 	
 	var bdate = $("td.today").attr('data-fdate');
@@ -374,38 +380,34 @@ function viewChart(bdate) {
 		}
 
 	});
+}
+
+function goDeleteBook() {
+	
+	if (confirm("좌석 초기화를 시행하시겠습니까?")) {
+		$.ajax({
+			url:"<%=ctxPath%>/admin/goDeleteBook.sam",
+			type:"post",
+			dataType:"json",
+		   	success:function(json) {
+		   		if(json.n == "660") {
+		   			alert("열람실 초기화가 완료되었습니다.");
+		   		} else {
+		   			alert("오류!");
+		   		}
+		   	}, error: function(request, status, error){
+			      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+		});
+    } else {
+        return;
+    }
 	
 	
 }
 </script>
 
 <div id="adminhome">
-	
-	<div id="adminside" >
-		<span style="font-family: 'Noto Sans KR', sans-serif;">관리자 페이지 홈</span>
-		<br>
-		<br>
-		<span>회원/교수진 관리</span>
-		<ul>
-			<li>학생 관리</li>
-			<li>교수진 관리</li>
-			<li>활동중지 회원</li>
-		</ul>
-		<br>
-		<span>게시글 관리</span>
-		<ul>
-			<li>게시글 관리</li>
-			<li>댓글 관리</li>
-			<li>스팸글 관리</li>
-		</ul>
-		<br>
-		<a href="<%=ctxPath%>/admin/readingRoomBook.sam"><span>열람실 관리</span></a>	
-		<br><br>
-		<span>수업 관리</span>	
-		<ul>
-			<li>수업 개설</li>
-		</ul> 	
-	</div>
 	
 	<div id="admincontent">
 	
@@ -473,6 +475,7 @@ function viewChart(bdate) {
 		</select>
 	</form>
 	<br>
+	<div style="padding-left:260px;"align="center">
 		<table class="table table-bordered" style="width:800px; text-align: center">
 				<thead>
 					<tr>
@@ -486,7 +489,11 @@ function viewChart(bdate) {
 				<tbody id="seatinfo">
 				</tbody>
 			</table>
-	</div>
+		</div>
 </div>
 
+<div style="float:right;">
+		<button class="btn btn-primary" onclick="goDeleteBook();">열람실 초기화</button>
+</div>
+</div>
 <script type="text/javascript" src="<%= ctxPath%>/resources/js/calendar.js"></script>

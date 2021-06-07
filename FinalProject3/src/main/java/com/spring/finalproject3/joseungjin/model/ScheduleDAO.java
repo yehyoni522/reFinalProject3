@@ -25,6 +25,16 @@ public class ScheduleDAO implements InterScheduleDAO {
 	public List<Map<String, String>> scheduleView(String perno) {
 		List<Map<String,String>>scheduleList = sqlsession.selectList("member.scheduleView",perno);
 		return scheduleList;
+	}
+	@Override
+	public ScheduleVO scheduleEdit(Map<String, String> paraMap) {
+		ScheduleVO scvo = sqlsession.selectOne("member.scheduleEdit",paraMap);
+		return scvo;
+	}
+	@Override
+	public int scheduleEditEnd(ScheduleVO scvo) {
+		int n = sqlsession.update("member.scheduleEditEnd", scvo);
+		return n;
 	} 
 	
 	

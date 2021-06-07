@@ -20,6 +20,13 @@
 <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/resources/css/style1.css" />
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+<%------------------------------------------------%>
+<link href='<%= ctxPath%>/resources/fullcalendar/main.css' rel='stylesheet' />
+<script src='<%= ctxPath%>/resources/fullcalendar/main.js'></script>
+<script src='<%= ctxPath%>/resources/fullcalendar/ko.js'></script>
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
 <%--  ===== #179. 스피너를 사용하기 위해  jquery-ui 사용하기 ===== --%>
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/resources/jquery-ui-1.11.4.custom/jquery-ui.css" />
 <script type="text/javascript" src="<%= ctxPath%>/resources/jquery-ui-1.11.4.custom/jquery-ui.js"></script>

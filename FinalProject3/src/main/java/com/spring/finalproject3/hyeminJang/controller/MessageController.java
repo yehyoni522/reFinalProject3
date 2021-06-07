@@ -55,9 +55,9 @@ public class MessageController {
 	   return mav;
    }
    
-   // 마이페이지 보기
+   // 회원정보수정하기
    @RequestMapping(value="/mypage/edit.sam")
-   public ModelAndView requiredLogin_editMypage(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+   public ModelAndView requiredLogin_editMyInfo(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 	   
 	   HttpSession session = request.getSession(); 
 	   PersonVO loginuser = (PersonVO)session.getAttribute("loginuser");
@@ -75,7 +75,7 @@ public class MessageController {
        String nameMaj = service.getNameMaj(majseq); //학과이름 알아오기
        mav.addObject("nameMaj", nameMaj); // 학과이름
 	   
-	   mav.setViewName("mypage/mypage.tiles2");
+	   mav.setViewName("mypage/editMyInfo.tiles2");
 	    
 	   return mav;
    }
