@@ -59,6 +59,9 @@ public interface InteradminMemberDAO {
 	// 일련번호, 문제일련번호, 사람번호를 구했으면 그 값을 가지고 insert 
 	int addStudentAnswer(Map<String, String> paraMap);
 	
+	// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
+	List<PersonVO> getStudentList(Map<String, String> paraMap);
+	
 	
 
 }

@@ -194,6 +194,16 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 		
 		return n;
 	}
+
+	
+	// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
+	@Override
+	public List<PersonVO> getStudentList(Map<String, String> paraMap) {
+		
+		List<PersonVO> studentList = sqlsession.selectList("adminmember.getStudentList", paraMap);
+		
+		return studentList;
+	}
 	
 	
 

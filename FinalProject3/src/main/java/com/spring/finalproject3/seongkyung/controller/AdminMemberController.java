@@ -143,7 +143,7 @@ public class AdminMemberController {
 		
 		mav.addObject("personList", personList);
 		
-		mav.setViewName("adminmember/adminstudent.tiles2");
+		mav.setViewName("adminmember/adminstudent.tiles3");
 		
 		return mav;
 	}
@@ -176,7 +176,7 @@ public class AdminMemberController {
 			
 		}	
 		
-		mav.setViewName("adminmember/adminstudentinfo.tiles2");
+		mav.setViewName("adminmember/adminstudentinfo.tiles3");
 		
 		return mav;
 	}
@@ -292,7 +292,7 @@ public class AdminMemberController {
 		
 		mav.addObject("personList", personList);
 			
-		mav.setViewName("adminmember/adminprofessor.tiles2");
+		mav.setViewName("adminmember/adminprofessor.tiles3");
 		
 		return mav;
 	}
@@ -408,7 +408,7 @@ public class AdminMemberController {
 		
 		mav.addObject("personList", personList);
 		
-		mav.setViewName("adminmember/adminblacklist.tiles2");
+		mav.setViewName("adminmember/adminblacklist.tiles3");
 		
 		return mav;
 		
@@ -419,10 +419,33 @@ public class AdminMemberController {
 	public ModelAndView lesson_attendance(ModelAndView mav, HttpServletRequest request) {
 		
 		
-		mav.setViewName("lessonadmin/lessonattendance.tiles2");
+		mav.setViewName("lessonadmin/lessonattendance.tiles3");
 		
 		return mav;
-	}	
+	}
+	
+	@RequestMapping(value="/lesson/attendanceadmin.sam")
+	public ModelAndView lesson_attendanceadmin(ModelAndView mav, HttpServletRequest request) {	
+		
+		List<PersonVO> studentList = null;
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+		
+		String subno = request.getParameter("subno");
+		subno="1000";	////////////////////*** 과목번호 임의로 넣음 ***////////////////////////////
+		paraMap.put("subno", subno);
+		
+		// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
+		studentList = service.getStudentList(paraMap);
+		
+		// 
+		
+		mav.addObject("studentList", studentList);
+		
+		mav.setViewName("lessonadmin/lessonatdcadmin.tiles3");
+		
+		return mav;
+	}
 	
 	@RequestMapping(value="/lesson/quizlist.sam")
 	public ModelAndView lesson_quizlist(ModelAndView mav, HttpServletRequest request) {	
@@ -524,7 +547,7 @@ public class AdminMemberController {
     	mav.addObject("quizvoList", quizvoList);
 		
 		
-		mav.setViewName("lessonadmin/lessonquizlist.tiles2");
+		mav.setViewName("lessonadmin/lessonquizlist.tiles3");
 		
 		return mav;
 	}
@@ -551,7 +574,7 @@ public class AdminMemberController {
 		mav.addObject("subjectvo", subjectvo);
 		mav.addObject("quizname", quizname);
 			
-		mav.setViewName("lessonadmin/lessonquizView.tiles2");
+		mav.setViewName("lessonadmin/lessonquizView.tiles3");
 		
 		return mav;
 	}
@@ -606,7 +629,7 @@ public class AdminMemberController {
 	public ModelAndView lesson_addquiz2(ModelAndView mav, HttpServletRequest request) {
 		
 		
-		mav.setViewName("lessonadmin/lessonaddquiz.tiles2");
+		mav.setViewName("lessonadmin/lessonaddquiz.tiles3");
 		
 		return mav;
 	}

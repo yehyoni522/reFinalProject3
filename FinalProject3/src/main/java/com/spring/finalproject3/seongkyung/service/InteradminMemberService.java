@@ -58,6 +58,9 @@ public interface InteradminMemberService {
 	// 시험명으로 일련번호 검색 => 시험명과 문제번호로 문제 일련번호 검색  => 학생 정답 테이블에 넣기 
 	int addStudentAnswer(Map<String, String> paraMap);
 	
+	// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
+	List<PersonVO> getStudentList(Map<String, String> paraMap);
+	
 	
 	
 	
