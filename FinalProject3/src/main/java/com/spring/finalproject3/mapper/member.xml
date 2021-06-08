@@ -65,10 +65,10 @@
 	</select>
 	<!-- 수강중인 과목 불러오기 -->
 	<select id="Mainsubject" parameterType="int" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
-		select subname,name,day
+		select subname,name,day,time
 		from
 		(
-			select s.subname,s.day,s.fk_perno
+			select s.subname,s.day,s.time,s.fk_perno
 			from tbl_class B join tbl_subject S
 			on B.fk_subno=S.subno
 			where b.fk_perno=#{userid}
@@ -134,4 +134,9 @@
 		where schno=#{schno} and fk_perno=#{fk_perno}
 	</update>
 	
+	<!-- 일정삭제 -->	
+	<delete id="scheduledel" parameterType="HashMap">
+		delete from tbl_schedule
+		where fk_perno=#{perno} and schno=#{schno}
+	</delete>	
 </mapper>

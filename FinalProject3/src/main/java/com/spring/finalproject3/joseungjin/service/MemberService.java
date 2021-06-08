@@ -121,6 +121,12 @@ public class MemberService implements InterMemberService {
 		int n = scdao.scheduleEditEnd(scvo);
 		return n;
 	}
+	//일정삭제하기
+	@Override
+	public int scheduledel(Map<String, String> paraMap) {
+		int n = scdao.scheduledel(paraMap);
+		return n;
+	}
 
 
 

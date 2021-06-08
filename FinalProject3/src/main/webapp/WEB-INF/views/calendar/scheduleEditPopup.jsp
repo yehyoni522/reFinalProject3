@@ -14,7 +14,10 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> 
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script> 
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
 
 <style>
 .group-head{
@@ -52,7 +55,10 @@ button#ok {
 		width:120px;
 		margin-right: 10px;
 }
-
+a{
+		cursor: pointer;
+	
+	}
 
 </style>
 <script type="text/javascript">
@@ -108,13 +114,23 @@ function click_ok(){
 	frm.action = "<%= ctxPath%>/scheduleEditEnd.sam";
 	frm.submit();
 }
+function checkdelete(){
+	 $("#myModal").modal();
+}
+function schdelete(){
+	var frm = document.scheduleData;
+	frm.method = "POST";
+	frm.action = "<%= ctxPath%>/schDelEnd.sam";
+	frm.submit();
+}
+
 
 </script>
 </head> 
 <body> 
 	<div class = "group" id = "popupGroup"> 
 		<div class = "group-head"> 
-			<h1 style="	margin-left: 5px;"> 일정 수정 </h1>
+			<h1 style="	margin-left: 5px;"> 일정 수정 </h1>  
 			<hr>
 		</div> 
 		
@@ -123,7 +139,7 @@ function click_ok(){
 			
 				<form name = "scheduleData">
 					<div class = "domain"> 
-				 		<h3> 색상 </h3> 
+				 		<h3> 색상 <span style="margin-left: 330px;"><a href="#" onclick="checkdelete();"><img src="<%= ctxPath%>/resources/images/trash.png" style="height:27px; width:28px;"></a></span></h3> 
 				 	</div> 
 					<div>
 						<select name="color" id="color" class="color" style="height: 26px;"  onchange="backgroundCh();">
@@ -177,6 +193,29 @@ function click_ok(){
 		      </div>
 		   
 		 </div> 
-	 </div> 
+	 </div>
+
+
+	  
 </body> 
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myModalLabel">삭제확인</h4>
+      </div>
+      <div class="modal-body">
+       	정말 삭제 하시겠습니까?
+      </div>
+      <div class="modal-footer"> 
+      <button type="button" class="btn btn-primary" onclick="schdelete();">확인</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+      </div>
+     
+    </div>
+  </div>
+</div>
 </html>
+<!-- Modal -->
+
