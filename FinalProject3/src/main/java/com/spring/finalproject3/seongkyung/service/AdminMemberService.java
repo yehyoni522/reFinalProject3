@@ -217,6 +217,26 @@ public class AdminMemberService implements InteradminMemberService {
 		
 		return n;
 	}
+
+	
+	// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
+	@Override
+	public List<PersonVO> getStudentList(Map<String, String> paraMap) {
+		
+		List<PersonVO> studentList = dao.getStudentList(paraMap);
+		
+		return studentList;
+	}
+
+	
+	// 출석신호 테이블 insert
+	@Override
+	public int addattendancesign(Map<String, String> paraMap) {
+		
+		int n = dao.addattendancesign(paraMap);
+		
+		return n;
+	}
 	
 
 }
