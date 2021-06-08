@@ -61,6 +61,9 @@ public interface InteradminMemberService {
 	// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
 	List<PersonVO> getStudentList(Map<String, String> paraMap);
 	
+	// 출석신호 테이블 insert
+	int addattendancesign(Map<String, String> paraMap);
+	
 	
 	
 	

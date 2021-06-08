@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.common.MyUtil;
@@ -440,11 +441,38 @@ public class AdminMemberController {
 		
 		// 
 		
+		mav.addObject("subno", subno);
 		mav.addObject("studentList", studentList);
 		
 		mav.setViewName("lessonadmin/lessonatdcadmin.tiles3");
 		
 		return mav;
+	}
+	
+		
+	@ResponseBody
+	@RequestMapping(value="/lesson/attendancesign.sam", method= {RequestMethod.GET})
+	public String attendancesign(HttpServletRequest request) {
+		
+		String fk_subno = request.getParameter("fk_subno");
+		String fk_perno = request.getParameter("fk_perno");
+		String fRandom = request.getParameter("fRandom");
+		
+		fk_subno = "1000"; 
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+		
+		paraMap.put("fk_subno", fk_subno);
+		paraMap.put("fk_perno", fk_perno);
+		paraMap.put("fRandom", fRandom);
+		
+		// 출석신호 테이블 insert
+		int n = service.addattendancesign(paraMap);
+		
+		
+		
+		
+		return "";
 	}
 	
 	@RequestMapping(value="/lesson/quizlist.sam")

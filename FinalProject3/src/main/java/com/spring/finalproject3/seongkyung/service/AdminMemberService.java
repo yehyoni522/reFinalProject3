@@ -227,6 +227,16 @@ public class AdminMemberService implements InteradminMemberService {
 		
 		return studentList;
 	}
+
+	
+	// 출석신호 테이블 insert
+	@Override
+	public int addattendancesign(Map<String, String> paraMap) {
+		
+		int n = dao.addattendancesign(paraMap);
+		
+		return n;
+	}
 	
 
 }

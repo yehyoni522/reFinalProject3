@@ -204,6 +204,16 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 		
 		return studentList;
 	}
+
+	
+	// 출석신호 테이블 insert
+	@Override
+	public int addattendancesign(Map<String, String> paraMap) {
+		
+		int n = sqlsession.insert("adminmember.addattendancesign", paraMap);
+		
+		return n;
+	}
 	
 	
 
