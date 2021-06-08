@@ -7,6 +7,7 @@ import java.util.Map;
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
+import com.spring.finalproject3.yehyeon.model.BookListVO;
 
 public interface InterMessageService {
 
@@ -51,6 +52,24 @@ public interface InterMessageService {
 
 	// 세부읽기에서 한개만 쪽지 삭제하기<<outbox>>
 	int outDelOne(int parseInt);
+
+	// 열람실 사용유무 가져오기
+	int getRcheck(int perno);
+
+	// 예약된 열람실 내용 가져오기
+	List<Map<String, String>> getBooking(int perno);
+	
+	// 예약된 열람실 내용 가져오기 (오늘것)
+	Map<String, String> getBookingToday(int perno);
+
+	 // 입실확인update하기
+	int updateUsecheck(String bno);
+
+	// 회원정보수정하기
+	int updateInfo(Map<String, String> paraMap);
+
+	 //단대이름 알아오기
+	String getNameCol(int majseq);
 
 
 

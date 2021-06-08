@@ -10,6 +10,7 @@ import org.mybatis.spring.SqlSessionTemplate;import org.springframework.stereoty
 import org.springframework.stereotype.Repository;
 
 import com.spring.finalproject3.joseungjin.model.PersonVO;
+import com.spring.finalproject3.yehyeon.model.BookListVO;
 
 //=== #32. DAO 선언 ===
 @Component
@@ -164,7 +165,15 @@ public class MessageDAO implements InterMessageDAO {
 		int n = sqlsession.delete("Message.outDel", parseInt);
 		return n;
 	}
-	
+
+	//단대이름 알아오기
+	@Override
+	public String getNameCol(int majseq) {
+		String str = sqlsession.selectOne("Message.getNameCol", majseq);
+		return str;
+	}
+
+
 
 
 	

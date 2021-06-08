@@ -1,6 +1,7 @@
 package com.spring.finalproject3.hyeminJang.controller;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.finalproject3.common.AES256;
 import com.spring.finalproject3.common.MyUtil;
+import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
 import com.spring.finalproject3.hyeminJang.service.InterMessageService;
@@ -29,6 +32,7 @@ public class HyeminJang_Controller {
    
    @Autowired   // Type에 따라 알아서 Bean 을 주입해준다.
    private InterMessageService service;
+   private AES256 aes;
    
    // 마이페이지 보기
    @RequestMapping(value="/mypage/mypage.sam")
@@ -45,12 +49,40 @@ public class HyeminJang_Controller {
 	   mav.addObject("email", loginuser.getEmail()); // 이메일
 	   mav.addObject("identity", loginuser.getIdentity()); //교수 or 학생
 	   mav.addObject("perno", loginuser.getPerno()); // 학번/교번
+	  
+	   int rcheck = service.getRcheck(loginuser.getPerno()); //예약유무 가져오기
+	   
+	   mav.addObject("rcheck", rcheck); //예약유무 가져오기
+	   
+		/* System.out.println("rcheck"+rcheck ); */
+	   
+	   if(rcheck != 0) {
+		  // List<Map<String, String>> booklist = service.getBooking(loginuser.getPerno()); // 예약한 내용가져오기(날짜별다)
+		   
+		  // mav.addObject("booklist", booklist);
+		   
+		   Map<String, String> bookToday = service.getBookingToday(loginuser.getPerno());  // 오늘것 가져오기
+		   mav.addObject("bookToday", bookToday);
+	   }
 	   
 	   int majseq =  loginuser.getFk_majseq();
        String nameMaj = service.getNameMaj(majseq); //학과이름 알아오기
        mav.addObject("nameMaj", nameMaj); // 학과이름
 	   
 	   mav.setViewName("mypage/mypage.tiles2");
+	    
+	   return mav;
+   }
+
+   // 입실확인update하기
+   @RequestMapping(value="/mypage/updateUsecheck.sam")
+   public ModelAndView updateUsecheck(HttpServletRequest request, ModelAndView mav) {
+	   
+	   String bno = request.getParameter("bno");
+	   
+	   int n = service.updateUsecheck(bno);
+	   
+	   mav.setViewName("redirect:/mypage/mypage.sam");
 	    
 	   return mav;
    }
@@ -61,21 +93,64 @@ public class HyeminJang_Controller {
 	   
 	   HttpSession session = request.getSession(); 
 	   PersonVO loginuser = (PersonVO)session.getAttribute("loginuser");
-	   
-	   // 안읽은 글의 갯수 세기
-	   int nonReadCount = service.getNonReadCount(loginuser.getPerno());// 로그인한 사람의 id값이 들어가야함
-	   mav.addObject("nonReadCount", nonReadCount);
-	   
-	   mav.addObject("name", loginuser.getName()); // 이름 불러오기
-	   mav.addObject("email", loginuser.getEmail()); // 이메일
-	   mav.addObject("identity", loginuser.getIdentity()); //교수 or 학생
-	   mav.addObject("perno", loginuser.getPerno()); // 학번/교번
+	  
 	   
 	   int majseq =  loginuser.getFk_majseq();
        String nameMaj = service.getNameMaj(majseq); //학과이름 알아오기
+       String nameCol = service.getNameCol(majseq); //단대이름 알아오기
        mav.addObject("nameMaj", nameMaj); // 학과이름
-	   
+       mav.addObject("nameCol", nameCol); // 단대이름
+       
 	   mav.setViewName("mypage/editMyInfo.tiles2");
+	    
+	   return mav;
+   }
+   
+   // 회원정보수정하기
+   @RequestMapping(value="/mypage/editEnd.sam")
+   public ModelAndView requiredLogin_editEnd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+			
+		String perno = request.getParameter("perno");
+		String pwd = request.getParameter("pwd"); 
+		String email = request.getParameter("email"); 
+		String hp1 = request.getParameter("hp1"); 
+		String hp2 = request.getParameter("hp2"); 
+		String hp3 = request.getParameter("hp3"); 
+		String address = request.getParameter("address"); 
+		
+		
+		String mobile = hp1 + "-"+ hp2 +"-"+ hp3;
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+		paraMap.put("perno", perno);
+		paraMap.put("pwd", Sha256.encrypt(pwd));
+		paraMap.put("email", email);
+		paraMap.put("address", address);
+		paraMap.put("mobile", mobile);
+		
+		int n  = service.updateInfo(paraMap);
+		
+		if(n==0) {
+			String message = "회원정보 수정을 실패하셨습니다.!!";
+			String loc = "javascript:history.back()";
+			
+			request.setAttribute("message", message);
+			request.setAttribute("loc", loc);
+			
+			mav.setViewName("msg");
+		}
+		else {
+			String message = "회원정보수정을 성공하였습니다.!!";
+			String loc = "redirect:/mypage/mypage.sam";
+			
+			request.setAttribute("message", message);
+			request.setAttribute("loc", loc);
+			
+			mav.setViewName("msg");
+		}
+			
+		
+	
 	    
 	   return mav;
    }

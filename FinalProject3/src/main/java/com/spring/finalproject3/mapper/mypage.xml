@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mypage">
+
+  <!--   열람실예약유무가져오기  -->
+   <select id="getRcheck" parameterType="int" resultType="int" >
+   		select RCHECK
+   		from tbl_person
+   		where perno = #{perno}
+   </select>
+   
+ <!--   <resultMap type="HashMap" id="booklist">
+		<result property="dsno" 				column="dsno" 				javaType="String" />
+    	<result property="dsname" 				column="dsname" 			javaType="String" />
+    	<result property="bookcheck" 			column="bookcheck" 			javaType="String" />
+    	<result property="perno" 				column="perno" 				javaType="String" />
+    	<result property="bDate" 				column="bDate" 				javaType="String" />
+    	<result property="tname" 				column="tname" 				javaType="String" />
+    	<result property="rname" 				column="rname" 				javaType="String" />
+    	<result property="bno" 					column="bno" 				javaType="String" /> 
+	</resultMap>
+   
+   <select id="getBooking" parameterType="int" resultType="booklist">
+		select bno, bDate, bookcheck, usecheck, fk_perno as perno , dsno, tname, rname
+		from
+		(
+			select bno, bookcheck, usecheck, fk_perno, fk_dsno, tname, bDate
+			from tbl_booklist B join tbl_time T
+			on B.fk_tno = T.tno
+		) A
+		JOIN
+		(
+			select rname, rno, dsno, dscheck
+			from tbl_detailseatinfo D join tbl_RroomNum R
+			on D.fk_rno = R.rno
+		)V
+		ON A.fk_dsno = V.dsno
+		where A.fk_perno = #{perno};
+   </select>
+
+  -->
+      <resultMap type="HashMap" id="booklisttoday">
+		<result property="dsno" 				column="dsno" 				javaType="String" />
+    	<result property="bookcheck" 			column="bookcheck" 			javaType="String" />
+    	<result property="usecheck" 			column="usecheck" 			javaType="String" />
+    	<result property="fk_perno" 			column="fk_perno" 			javaType="String" />
+    	<result property="bDate" 				column="bDate" 				javaType="String" />
+    	<result property="tname" 				column="tname" 				javaType="String" />
+    	<result property="rname" 				column="rname" 				javaType="String" />
+    	<result property="bno" 					column="bno" 				javaType="String" /> 
+	</resultMap>
+   
+   <select id="getBookingToday" parameterType="int" resultMap="booklisttoday">
+		select bno,  to_char(bDate, 'yyyy-mm-dd') as bDate, bookcheck, usecheck, fk_perno , dsno, tname, rname
+		from
+		(
+			select bno, bookcheck, usecheck, fk_perno, fk_dsno, tname, bDate
+			from tbl_booklist B join tbl_time T
+			on B.fk_tno = T.tno
+		) A
+		JOIN
+		(
+			select rname, rno, dsno, dscheck
+			from tbl_detailseatinfo D join tbl_RroomNum R
+			on D.fk_rno = R.rno
+		)V
+		ON A.fk_dsno = V.dsno
+		where A.fk_perno = #{perno} and  to_char(bDate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd')
+   </select>
+   
+   <update id="updateUsecheck" parameterType="String">
+   		update tbl_booklist set usecheck = 1
+		where bno =#{bno}
+   </update>
+  
+	<update id="updateInfo" parameterType="HashMap">
+		update tbl_booklist set address = #{address}
+								, email = #{email}
+								, mobile = #{mobile}
+								, pwd = #{pwd}
+		where perno =#{perno}
+	</update>
+</mapper>
