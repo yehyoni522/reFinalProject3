@@ -4,7 +4,7 @@ public class PersonVO {
 	
 	private int perno;
 	private String name;
-	private int rcheck;
+	private int rcheck; 
 	
 	
 	public int getRcheck() {

@@ -90,5 +90,17 @@ public class ReadingDAO implements InterReadingDAO {
 		return n;
 	}
 
+	@Override
+	public List<Map<String, String>> searchProfessor(String majseq) {
+		List<Map<String, String>> mapList = sqlsession.selectList("Reading.searchProfessor", majseq);
+		return mapList;
+	}
+
+	@Override
+	public int insertSubject(SubjectVO subvo) {
+		int n = sqlsession.update("Reading.insertSubject", subvo);
+		return n;
+	}
+
 
 }

@@ -55,15 +55,37 @@ public class joseungjin_Controller {
 		if(session.getAttribute("loginuser") != null) {
 			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
 			int userid = loginuser.getPerno();
+		
 			MainsubjectList = service.Mainsubject(userid);
+			
+			int ident = loginuser.getIdentity();
+			if(ident ==2) {
+				mav.setViewName("admin/index.tiles3");
+			}
+			else {
+				MainboardList =service.MainboardView();
+				
+				
+				mav.addObject("MainsubjectList",MainsubjectList);
+				mav.addObject("MainboardList",MainboardList);
+				mav.setViewName("main/index.tiles1");
+			}
 		}
+		else {
+			
+			MainboardList =service.MainboardView();
+			
+			
+			mav.addObject("MainsubjectList",MainsubjectList);
+			mav.addObject("MainboardList",MainboardList);
+			mav.setViewName("main/index.tiles1");
+			
+			
+		}
+	
+	
 		
-		MainboardList =service.MainboardView();
-		
-		
-		mav.addObject("MainsubjectList",MainsubjectList);
-		mav.addObject("MainboardList",MainboardList);
-		mav.setViewName("main/index.tiles1");
+	
 		// /WEB-INF/views/tiles1/main/index.jsp 파일을 생성한다.
 		
 		return mav;
@@ -509,7 +531,7 @@ public class joseungjin_Controller {
 					jsonArr.add(jsonObj);
 				}//end of for(Map<String,String>map:deptnamePercentageList){}-----
 				
-				System.out.println(jsonArr);
+				//System.out.println(jsonArr);
 				return jsonArr.toString();
 			
 			}

@@ -5,6 +5,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import com.spring.finalproject3.yehyeon.mail.GoogleMail_yehyeon;
 import com.spring.finalproject3.yehyeon.model.BookListVO;
 import com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO;
 import com.spring.finalproject3.yehyeon.model.RroomNumVO;
+import com.spring.finalproject3.yehyeon.model.SubjectVO;
 import com.spring.finalproject3.yehyeon.model.TimeVO;
 import com.spring.finalproject3.yehyeon.service.InterReadingService;
 
@@ -331,5 +333,63 @@ public class YehyeonController {
 	}
 	
 	////////////////////////////관리자 전용 열람실 예약 내역 끝///////////////////////////////////	
+	
+	////////////////////////////관리자 전용 메인 페이지 시작///////////////////////////////////	
+	
+	@RequestMapping(value="/admin/index.sam")
+	public ModelAndView adminIndex(ModelAndView mav) {
+		
+		
+		mav.setViewName("admin/index.tiles3");
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="/admin/addSubject.sam")
+	public ModelAndView addSubject(ModelAndView mav) {
+		
+		
+		mav.setViewName("admin/addSubject.tiles3");
+		
+		return mav;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/admin/searchProfessor.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String searchProfessor(HttpServletRequest request) {
+		
+		String majseq = request.getParameter("majseq");
+		List<Map<String, String>> mapList = service.searchProfessor(majseq);
+		
+		JSONArray jsonArr = new JSONArray(); // []
+		
+		if(mapList != null) { 
+			for(Map<String,String> map : mapList) { //dsno, dsname,
+				JSONObject jsonObj = new JSONObject(); // {}
+				jsonObj.put("perno", map.get("perno"));
+				jsonObj.put("name", map.get("name"));
+				 
+				jsonArr.put(jsonObj); 
+			} 
+		}
+		return jsonArr.toString();   // "{"n":1}"
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/admin/addSubjectEnd.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String addSubjectEnd(HttpServletRequest request, SubjectVO subvo) {
+		
+		
+		int n = service.insertSubject(subvo);
+		
+		JSONObject jsonObj = new JSONObject();  // {}
+		jsonObj.put("n", n);  // {"n":1}
+		
+		String json = jsonObj.toString(); 
+		
+		return json;   // "{"n":1}"
+	}
+	
+	////////////////////////////관리자 전용 메인 페이지 시작///////////////////////////////////	
 	
 }

@@ -11,6 +11,7 @@ import com.spring.finalproject3.yehyeon.model.BookListVO;
 import com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO;
 import com.spring.finalproject3.yehyeon.model.InterReadingDAO;
 import com.spring.finalproject3.yehyeon.model.RroomNumVO;
+import com.spring.finalproject3.yehyeon.model.SubjectVO;
 import com.spring.finalproject3.yehyeon.model.TimeVO;
 
 
@@ -115,6 +116,22 @@ public class ReadingService implements InterReadingService {
 	@Override
 	public int updateRcheck(String perno) {
 		int n = dao.updateRcheck(perno);
+		return n;
+	}
+
+
+
+	@Override
+	public List<Map<String, String>> searchProfessor(String majseq) {
+		List<Map<String, String>> mapList = dao.searchProfessor(majseq);
+		return mapList;
+	}
+
+
+
+	@Override
+	public int insertSubject(SubjectVO subvo) {
+		int n = dao.insertSubject(subvo);
 		return n;
 	}
 
