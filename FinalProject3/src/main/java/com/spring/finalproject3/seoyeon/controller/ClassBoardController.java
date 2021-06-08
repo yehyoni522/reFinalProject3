@@ -1034,7 +1034,7 @@ public class ClassBoardController {
 			    
 		
 		// ==== #168. 스마트에디터. 드래그앤드롭을 사용한 다중사진 파일업로드 ====
-		   @RequestMapping(value="/image/multiplePhotoUpload.sam", method={RequestMethod.POST})
+		   @RequestMapping(value="/class/image/multiplePhotoUpload.sam", method={RequestMethod.POST})
 		   public void multiplePhotoUpload(HttpServletRequest req, HttpServletResponse res) {
 		       
 		   /*
