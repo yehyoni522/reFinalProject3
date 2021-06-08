@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.InterMessageDAO;
+import com.spring.finalproject3.hyeminJang.model.InterMypageDAO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
@@ -21,6 +22,9 @@ public class MessageService implements InterMessageService {
 	
 	@Autowired
 	private InterMessageDAO dao; 
+	
+	@Autowired
+	private InterMypageDAO dao2; 
 
 	// 총 게시물 건수(totalCount) 구하기
 	@Override
@@ -138,6 +142,48 @@ public class MessageService implements InterMessageService {
 		int n = dao.outDelOne(parseInt);
 		
 		return n;
+	}
+
+	// 열람실 사용유무 가져오기
+	@Override
+	public int getRcheck(int perno) {
+		int check = dao2.getRcheck(perno);
+		
+		return check;
+	}
+
+	// 예약된 열람실 내용 가져오기
+	@Override
+	public List<Map<String, String>> getBooking(int perno) {
+		List<Map<String, String>> bookvolist = dao2.getBooking(perno);
+		return bookvolist;
+	}
+
+	@Override
+	public Map<String, String> getBookingToday(int perno) {
+		Map<String, String> bookvolist = dao2.getBookingToday(perno);
+		return bookvolist;
+	}
+
+	 // 입실확인update하기
+	@Override
+	public int updateUsecheck(String bno) {
+		int n = dao2.updateUsecheck(bno);
+		return n;
+	}
+
+	// 회원정보수정하기
+	@Override
+	public int updateInfo(Map<String, String> paraMap) {
+		int n = dao2.updateInfo(paraMap);
+		return n;
+	}
+
+	 //단대이름 알아오기
+	@Override
+	public String getNameCol(int majseq) {
+		String str = dao.getNameCol(majseq);
+		return str;
 	}
 
 
