@@ -271,5 +271,11 @@
 		update tbl_comment set content = #{content}, reregDate = default where comseq = #{comseq}
 	</update>  
 	
+	<!-- 게시물 좋아요 수 알아오기 -->
+	<select id="likeCount" parameterType="String" resultType="int">
+		select good
+		from tbl_board
+		where seq = #{seq}
+	</select>
 	
 </mapper>

@@ -779,19 +779,40 @@ public class BoardController {
 	// 게시물 좋아요(ajax)
 	@ResponseBody
 	@RequestMapping(value="/board/goGoodAdd.sam", method= {RequestMethod.GET})
-	public void goodAdd(HttpServletRequest request) {
+	public String goodAdd(HttpServletRequest request) {
 		
 		String seq = request.getParameter("seq");		
 		
 		int n  = service.goodAdd(seq);
+		System.out.println("좋아요 결과: "+n);
 		
-		String loc = "javascript:history.back()";
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n); 
 		
-		System.out.println(n);		
-		
+		return jsonObj.toString();
 	
 	}
-   
+	
+	
+	// 게시물 좋아요 수 알아오기
+	@ResponseBody
+	@RequestMapping(value="/board/likeCount.sam")
+	public String likeCount(HttpServletRequest request) {
+		
+		String seq = request.getParameter("seq");		
+		System.out.println("게시물 좋아요 수 알아오기넘어온 seq값: "+seq);
+		
+		int likecnt  = service.likeCount(seq);
+		
+		System.out.println("좋아요 수 알아오기 결과: "+likecnt);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("likecnt", likecnt); 
+		
+		return jsonObj.toString();
+	
+	}
+	
 	
 	// 스마트에디터  /image/photoUpload.sam
 	// 스마트에디터. 드래그앤드롭을 사용한 다중사진 파일업로드 ====

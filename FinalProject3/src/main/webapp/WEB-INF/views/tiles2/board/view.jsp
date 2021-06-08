@@ -303,7 +303,7 @@ a {
 							html += "<button id='comreplyEnd' style='height:50px; width:70px;' onclick='comreplyEnd("+item.comseq+","+item.co_groupno+","+item.co_depthno+","+item.fk_seq+")'>등록</button>"
 							html += "</div>"
 							
-								html += "<div id='coeditInput'></div>"	
+							html += "<div id='coeditInput'></div>"	
 						} // end of 답변글인 경우
 					
 					});
@@ -500,29 +500,43 @@ a {
 		}
 	} // end of function commentdel(){} 댓글 삭제하기
 	
-<%-- 	function goGoodAdd(seq){
+ 	function goGoodAdd(seq){
 		
+		alert("좋아요 클릭");
 		if( ${empty sessionScope.loginuser} ) {
 			   alert("좋아요 하시려면 먼저 로그인 하셔야 합니다.");
 			   return; // 종료 
 		   }
 		   
-		   $.ajax({
-			   url:"<%= ctxPath%>/board/goGoodAdd.sam",
-			   type:"get",
-			   data:{"seq":seq
-},
-			   dataType:"json",
-			   success:function(json){
-				   // alert(json.msg);
-				      swal(json.msg);
-				      goLikeDislikeCount();
-			   },
-			   error: function(request, status, error){
-					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			   }
-		   });	   
-	} // end of function goGoodAdd(seq){ --%>
+		$.ajax({
+	   		url:"<%= ctxPath%>/board/goGoodAdd.sam",
+		   	type:"get",
+		   	data:{"seq":seq},
+		   	dataType:"json",
+		   	success:function(json){
+				goLikeCount(); // 좋아요 수 보여주기
+		   	},
+		   	error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		   	}
+	   	});	    
+	} // end of function goGoodAdd(seq){}
+	
+	
+	function goLikeCount(){
+		
+		$.ajax({
+	   		url:"<%= ctxPath%>/board/likeCount.sam",
+		   	data:{"seq":"${boardvo.seq}"},
+		   	dataType:"json",
+		   	success:function(json){
+			 	$("span#goodCount").html(json.likecnt);
+		   	},
+		   	error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		   	}
+	   	});
+	} 
 </script>										
 						
 										
@@ -570,7 +584,7 @@ a {
 			</div>	
 			<div id="contentfooter">
 				<img src="<%=ctxPath%>/resources/images/good.PNG"  id="goodbtn" style="width:45px; height:43px;" onclick="goGoodAdd(${boardvo.seq})">
-					<span style="color:red; font-weight:bold;">${requestScope.boardvo.good}</span>
+					<span id ="goodCount" style="color:red; font-weight:bold;">${requestScope.boardvo.good}</span>
 				<img src="<%=ctxPath%>/resources/images/comment.PNG" style="width:44px; height:38px;">
 					<span style="color:blue; font-weight:bold;">${requestScope.boardvo.commentCount}</span>
 			</div>	
