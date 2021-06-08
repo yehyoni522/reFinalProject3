@@ -137,6 +137,7 @@
 	 	update tbl_person set rcheck = 1
 		where perno =#{perno}
 	</update>
+
 	
 	<resultMap type="HashMap" id="pernoMap">
 		<result property="perno" 			column="perno" 			javaType="String" />

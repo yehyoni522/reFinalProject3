@@ -25,6 +25,7 @@ public class BoardVO {
    
     private String name; // sql 문에서 가져온 tbl_person의 이름
     private String newhit; // 최신순,인기순 sleect
+    private String identity; //sql 문에서 가져온 tbl_person의 identity
     
     private String groupno; // 게시글 답글에서 사용
     private String fk_seq;
@@ -37,12 +38,14 @@ public class BoardVO {
     private String fileSize;    // 파일크기
     
     
-	public BoardVO(){}   
-	
-    public BoardVO(String seq, String fk_perno, String subject, String content, String categoryno, String good,
+	public BoardVO(){}   	
+
+    
+	public BoardVO(String seq, String fk_perno, String subject, String content, String categoryno, String good,
 			String readCount, String regDate, String status, String commentCount, String namecheck, String previousseq,
-			String previoussubject, String nextseq, String nextsubject, String name, String newhit, String groupno,
-			String fk_seq, String depthno, MultipartFile attach, String fileName, String orgFilename, String fileSize) {
+			String previoussubject, String nextseq, String nextsubject, String name, String newhit, String identity,
+			String groupno, String fk_seq, String depthno, MultipartFile attach, String fileName, String orgFilename,
+			String fileSize) {
 		super();
 		this.seq = seq;
 		this.fk_perno = fk_perno;
@@ -61,6 +64,7 @@ public class BoardVO {
 		this.nextsubject = nextsubject;
 		this.name = name;
 		this.newhit = newhit;
+		this.identity = identity;
 		this.groupno = groupno;
 		this.fk_seq = fk_seq;
 		this.depthno = depthno;
@@ -68,6 +72,16 @@ public class BoardVO {
 		this.fileName = fileName;
 		this.orgFilename = orgFilename;
 		this.fileSize = fileSize;
+	}
+
+
+
+	public String getIdentity() {
+		return identity;
+	}
+
+	public void setIdentity(String identity) {
+		this.identity = identity;
 	}
 
 	public String getGroupno() {

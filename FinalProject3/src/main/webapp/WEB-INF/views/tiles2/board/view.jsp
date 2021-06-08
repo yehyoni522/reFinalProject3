@@ -17,8 +17,7 @@
 }
 .putcomment{
 	border-bottom: 1px solid #ccc;
-	margin-top: 5px;
-	margin-bottom: 2px;
+	margin: 10px 0 10px 0;
 }
 .move {cursor: pointer;}
 .moveColor {color: blue; font-weight: bold; }
@@ -50,16 +49,19 @@ a {
 }
 #boardcontent{
 	width:80%; 
-	height: 100px; 
+	/* height: 500px;  */
+	word-break: break-all;
 	border: 0px solid blue; 
 	padding: 2px; 
 	margin: 15px 5px 5px 10px;
 }
 #comname{
 	font-weight: bold;
+	margin: 5px 0 5px 0;
 }
 #comdate{
 	font-size: 8pt;
+	margin: 5px 0 5px 0;
 }
 #boardcomment{
 	margin-bottom: 10px;
@@ -85,26 +87,32 @@ a {
 }
 #commentfunc{
 	border: 0px #ccc solid;
-	font-size: 8pt;
-	cursor:pointer;
-	padding: 5px auto;
-	margin-left: 80%;
-}
-.logidentity{
-	border: 2px solid green;
-	padding: 2px ;
-	border-radius: 20%;
-	margin-left: 5px;
-	
-}
-#comcont{
-	margin: 2px;
+	font-size: 10pt;
+	cursor:pointer;	
+	margin-left: 10px;
 }
 #fileDown{
 	 text-align: right;
 }
 #goodbtn{
 	cursor:pointer;
+}
+#whoWrite{
+	margin: 0 5px 0px 5px;
+	padding: 0.5px ;
+	border: 2px green solid;
+	border-radius: 20%;	
+}
+.combtn{
+	background-color: white;
+	border-radius: 20%;	
+	border: 1px solid #ccc;
+	padding: 2px;
+	position:relative;
+	left: 87%;
+}
+#comcontreply{
+	margin-top: 5px;
 }
 </style>
 
@@ -113,7 +121,6 @@ a {
 	$(document).ready(function(){
 		
 		$("#comEditFrm").hide();
-		
 		goViewComment(1); // 페이징처리 한 댓글 읽어오기 
 
 		
@@ -171,39 +178,57 @@ a {
 				var html = "";
 				
 				if(json.length > 0) {
-					
-					
+							
 					$.each(json, function(index, item){		
 						
-						var content = '"'+item.content+'"';
+						var content = '"'+item.content+'"';						
 						
 						
 						html += "<div class='putcomment'>";
-						html += "<input type='text' value='"+item.comseq+"'/>"
-						html += "<div id='comname'>&nbsp;"+ item.name;	
+						html += "<input type='hidden' value='"+item.comseq+"'/>"
 						
-						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
+						if(item.fk_perno == ${boardvo.fk_perno}){
+							html += "<div id='comname'>&nbsp;"+ item.name+"<span id='whoWrite'>작성자</span>";						
+						}
+						else if(item.identity == 2){
+							html += "<div id='comname'>&nbsp;"+ item.name+"<span id='whoWrite'>관리자</span>";
+						}
+						else{
+							html += "<div id='comname'>&nbsp;"+ item.name
+						}
+						
+						
 						html += "<span id='commentfunc'>";
-						html += "<span id='commentreply' ><button type='button' onclick='commentreply()'>답글</button></span>";
-						
-					
-						html += "<span id='commentedit'><button type='button' onclick='commentedit("+item.comseq+","+content+")'>수정</button></span>";
-						html += "<span id='commentdel'><button type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
-						
+						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
+															
+						if(${sessionScope.loginuser.perno} == item.fk_perno){
+							html += "<span id='commentedit'><button class='combtn' type='button' onclick='commentedit("+item.comseq+","+content+")'>수정</button></span>";
+							html += "<span id='commentdel'><button class='combtn' type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
+						}
+						else{
+							html += "<span id='commentreply' ><button class='combtn' type='button' onclick='commentreply("+item.comseq+")'>답글</button></span>";
+						}
 						
 						html += "</span></c:if></div>";	
 						
-						html += "<div>&nbsp;"+item.identity+"</div>";
+						
 						html += "<div id='comcont"+item.comseq+"'>&nbsp;"+item.content+"</div>";
 						
 						html += "<div id='comEditFrm"+item.comseq+"' style='display:none;'>"
-						html += "<textarea id='comcontEdit' row='10' style='width: 95%; height:80px;''>"+item.content+"</textarea>";
-						html += "<button id='comEditEnd' style='height:50px;' onclick='comEditEnd("+item.comseq+")'>수정 완료</button>"
-						html += "</div>"
-						
+						html += "<textarea id='comcontEdit' row='10' style='width: 90%; height:80px;'>"+item.content+"</textarea><br>";
+						html += "<button id='comEditEnd' style='height:50px; width:80px;' onclick='comEditEnd("+item.comseq+")'>수정 완료</button>"
+						html += "</div>"						
+							
 						html += "<div id='comdate'>&nbsp;"+item.reregDate+"</div>";
 						
 						html += "</div>";
+						
+						html += "<div id='comreplyFrm"+item.comseq+"' style='display:none;'>"
+						html += "<label>익명</label> <input type='checkbox' name='namecheck' id='namecheck' value='1'/><br>";
+						html += "<textarea id='commentreply' row='10' style='width: 90%; height:80px;'>"+''+"</textarea><br>";
+						html += "<button id='comreplyEnd' style='height:50px; width:70px;' onclick='comreplyEnd("+item.comseq+","+item.co_groupno+","+item.co_depthno+")'>등록</button>"
+						html += "</div>"
+						
 						html += "<div id='coeditInput'></div>"
 					});
 				}
@@ -281,6 +306,7 @@ a {
 		
 	}// end of function makeCommentPageBar(currentShowPageNo) {}-----------------
 	
+	// 글 삭제하기
 	function removeCheck() {
 
 		if (confirm("정말 삭제하시겠습니까??") == true){    //확인
@@ -296,9 +322,42 @@ a {
 
 	} // end of function removeCheck() {} 글삭제하기
 	
-	function commentreply(){
+	// 댓글 답댓글 달기
+	function commentreply(comseq){
+		$("div#comreplyFrm"+comseq).show();	
+	} // end of function commentreply(){} 댓글 답댓글달기
+	
+	// 댓글 답댓글 등록 버튼 클릭
+	function comreplyEnd(comseq, co_groupno, co_depthno){
 		
-	} // end of function commentreply(){} 댓글 답글달기
+		var comreplyVal = $("textarea#commentreply").val().trim();
+		
+		alert("결과 : "+comreplyVal);
+		
+		<%--if(comreplyVal == "") {
+           alert("댓글내용을 입력하세요!!");
+           return;
+        } 
+		
+		  alert(" co_groupno : "+co_groupno+", co_depthno : "+co_depthno+"답댓글내용 : "+comreplyVal);
+		 
+		$.ajax({
+			   url:"<%= ctxPath%>/board/comreplyEnd.sam",
+			   type:"post",
+			   data:{"fk_comseq":comseq,
+				   	 "co_groupno":co_groupno,
+				   	 "co_depthno":co_depthno,
+				     comreplyVal},
+			   dataType:"json",
+			   success:function(json){
+				   goViewComment(1);		   
+			   },
+			   error: function(request, status, error){
+					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			   }
+		   });	  --%> 		    
+		
+	} // end of function comreplyEnd(comseq){}
 	
 	// 댓글 수정 버튼 클릭
 	function commentedit(comseq, content){
@@ -343,6 +402,8 @@ a {
 
 		  //alert(${requestScope.boardvo.seq});
 		
+		if (confirm("정말 삭제하시겠습니까??") == true){    //확인
+					  
 		 $.ajax({
 			   url:"<%= ctxPath%>/board/commentdel.sam",
 			   type:"get",
@@ -351,20 +412,16 @@ a {
 			   dataType:"json",
 			   success:function(json){
 				   
-				   if(json.m == 1){
-					   alert("댓글이 삭제되었습니다.");
-					   goViewComment(1);
-					   return;
-				   }
-				   else{
-					   alert("댓글 삭제가 실패했습니다.");
-					   return;
-				   }			   
+				   goViewComment(1);		   
 			   },
 			   error: function(request, status, error){
 					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			   }
-		   });	   				
+		   });
+		
+		}else{   //취소	
+			return false;	
+		}
 	} // end of function commentdel(){} 댓글 삭제하기
 	
 <%-- 	function goGoodAdd(seq){
@@ -416,7 +473,7 @@ a {
 	<hr class="styhr">
 	
 	<c:if test="${not empty requestScope.boardvo}">
-		<div id="viewcontent">
+		<div id="viewcontent" >
 			<div id="contnentsubj">
 				${requestScope.boardvo.subject}
 			</div>
@@ -432,8 +489,8 @@ a {
 			</div>
 
 			<br>
-			<div id="boardcontent" >
-				<p style="word-break: break-all;">${requestScope.boardvo.content} >>?? ${requestScope.boardvo.categoryno}</p>
+			<div id="boardcontent">
+				<p>${requestScope.boardvo.content}</p>
 			</div>	
 			<div id="contentfooter">
 				<img src="<%=ctxPath%>/resources/images/good.PNG"  id="goodbtn" style="width:45px; height:43px;" onclick="goGoodAdd(${boardvo.seq})">
@@ -456,7 +513,7 @@ a {
 				<!-- 댓글 페이지바-->
     			<div id="pageBar" style="border:solid 0px gray; width: 90%; margin: 10px auto; text-align: center;"></div> 
 	 
-				<%-- 댓글쓰기 폼 추가--%> 
+				<%-- 댓글쓰기 --%> 
 				<c:if test="${not empty sessionScope.loginuser}">
 					<form name="addWriteFrm" style="margin-top: 20px;">
 						<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />  

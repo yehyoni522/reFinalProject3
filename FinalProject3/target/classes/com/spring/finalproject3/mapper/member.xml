@@ -1,3 +1,141 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+	<!-- 로그인 처리-->
+	<select id="getLogin" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
+		select perno,fk_majseq,name,gender,birthday,address,email,
+				mobile,regDate,pwd,idle,identity
+		from tbl_person
+		where perno =#{userid} and pwd=#{pwd}
+	</select>
+	<!-- 아이디찾기-->
+	<select id="idFind" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
+		select perno
+		from tbl_person
+		where name =#{name} and email=#{email}
+	</select>
+	<!-- 비번찾기-->
+	<select id="pwdFind" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
+		select perno
+		from tbl_person
+		where perno =#{userid} and email=#{email}
+	</select>
+	<!-- 회원정보확인 -->
+	<select id="isUserExist" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_person
+		where perno =#{userid} and email=#{email}
+	</select>
+	<!-- 비번 변경 -->
+	<update id="pwdUpdate" parameterType="HashMap">
+		 update tbl_person set pwd = #{pwd}
+ 		where perno = #{userid}
+	</update>
+	<!-- 회원등록 -->
+	<select id="personRegister" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_person
+		where perno =#{userid} and name=#{name} and email=#{email} 
+	</select>
+	<!-- 인기게시판 불러오기 -->
+	<select id ="MainboardView" resultType="com.spring.finalproject3.joseungjin.model.Main_index_BoardVO">
+	      select B.seq, B.categoryno AS categoryno, P.name, B.subject, B.good, B.readCount,B.namecheck AS namecheck, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+		from tbl_board B join tbl_person P
+		on B.fk_perno=P.perno
+		where status=1 and good>=10
+	</select>
+	<!-- 총페이지수 알아오기-->
+	<select id ="getboardTotalPage" parameterType="HashMap" resultType="int">
+		select ceil(count (*) / #{sizePerPage})
+		from tbl_board
+        where status=1 and good>=10
+	</select>
+	<!--게시판 페이징 처리 -->
+	<select id ="getboardistPaging" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.Main_index_BoardVO">
+		  select good,seq, categoryno,name,subject,readCount,commentCount,regDate,namecheck
+				from
+				(
+			      select row_number() over (order by  good desc) as rno,B.seq, B.categoryno, P.name AS name, B.subject, B.good, B.namecheck,B.readCount, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+                    from tbl_board B join tbl_person P
+                    on B.fk_perno=P.perno
+				where good>=10 and status = 1  
+				)V
+			where rno between #{startRno} and #{endRno}
+	</select>
+	<!-- 수강중인 과목 불러오기 -->
+	<select id="Mainsubject" parameterType="int" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
+		select subname,name,day
+		from
+		(
+			select s.subname,s.day,s.fk_perno
+			from tbl_class B join tbl_subject S
+			on B.fk_subno=S.subno
+			where b.fk_perno=#{userid}
+		)V
+		join tbl_person P
+		on V.fk_perno =P.perno
+	</select>
+	
+	<!-- 일정 추가-->
+	<insert id="scheduleAdd" parameterType="com.spring.finalproject3.joseungjin.model.ScheduleVO">
+		insert into tbl_schedule(schno,calsubject,fk_perno,startDate,endDate,memo,color)
+		values(schnoSeq.nextval,#{calsubject},#{fk_perno},#{startDate},#{endDate},#{memo},#{color})
+	</insert>
+	
+	<!-- 일정 데이터 가져오기-->
+	<resultMap type="HashMap" id="scheduleViewMap">
+	<result property="schno" column="schno" javaType="String"/>
+		<result property="perno" column="fk_perno" javaType="String"/>
+		<result property="calsubject" column="calsubject" javaType="String"/>
+		<result  property="startDate" column="startDate" javaType="String" />
+		<result property="endDate" column="endDate" javaType="String"/>
+		<result property="memo" column="memo" javaType="String"/>
+		<result property="color" column="color" javaType="String"/>
+	</resultMap>
+	
+	
+	<select id="scheduleView" resultMap="scheduleViewMap">
+	select 
+			schno,
+			fk_perno,
+			calsubject,
+			to_char(startDate, 'yyyy-mm-dd') as startDate,
+			to_char(endDate+1, 'yyyy-mm-dd') as endDate,
+			memo,color
+	from tbl_schedule
+
+	where fk_perno=#{perno} OR fk_perno='20191234'
+	</select>
+	
+	<!-- 일정 수정할 데이터 가져오기-->
+	<select id="scheduleEdit" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.ScheduleVO">
+	select 
+			schno,
+			fk_perno,
+			calsubject,
+			to_char(startDate, 'yyyy-mm-dd') as startDate,
+			to_char(endDate+1, 'yyyy-mm-dd') as endDate,
+			memo,color
+	from tbl_schedule
+
+	where schno=#{schno} and fk_perno=#{perno}
+	</select>
+	
+	
+	<!-- 일정 업데이트-->
+	<update id="scheduleEditEnd" parameterType="com.spring.finalproject3.joseungjin.model.ScheduleVO">
+		update tbl_schedule set calsubject = #{calsubject}
+		                   , startDate = #{startDate}
+		                   , endDate =#{endDate}
+		                   , memo =#{memo}
+		                   , color =#{color}
+		                   
+		where schno=#{schno} and fk_perno=#{fk_perno}
+	</update>
+	
+
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -134,4 +272,5 @@
 		where schno=#{schno} and fk_perno=#{fk_perno}
 	</update>
 	
+
 </mapper>
