@@ -26,8 +26,8 @@ div#adminside {
 	<br>
 	<span>게시글 관리</span>
 	<ul>
-		<li>게시글 관리</li>
-		<li>댓글 관리</li>
+		<li><a href="<%=ctxPath%>/admin/boardlist.sam">게시글 관리</a></li>
+		<li><a href="<%=ctxPath%>/admin/commentList.sam">댓글 관리</li>
 	</ul>
 	<br>
 	<a href="<%=ctxPath%>/admin/readingRoomBook.sam"><span>열람실 관리</span></a>	

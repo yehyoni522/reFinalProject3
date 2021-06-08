@@ -7,6 +7,33 @@
 
 <style type="text/css">
 
+div#adminhome {
+	min-height: 700px;
+	padding-top: 20px;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+div#adminside {
+	border-right:1px solid #b0b0b5;
+	float: left;
+	width: 20%;
+	padding-left: 50px;
+	min-height: 600px;
+}
+    
+div#admincontent {
+	float: left;
+	padding: 0 50px 0 50px;
+	width: 80%;
+}         
+.admsubtitle {
+	border-left:solid 5px black; 
+ 	clear: both;
+ 	font-size: 18pt;
+ 	font-weight:bold;	
+ 	padding-left: 5px;
+ 
+}
      
     .subjectStyle {font-weight: bold;
                    cursor: pointer;} 
@@ -393,138 +420,142 @@
 	   
 </script>   
 
-<div style="padding-left: 3%;padding-right: 3%;">
-   <h2 style="margin-bottom: 30px;">| 게시글 관리</h2>
-   <div style="text-align:right; vertical-align:middle; margin:5px;  ">
-	   <%-- === #101. 글검색 폼 추가하기 : 글제목, 글쓴이로 검색을 하도록 한다. === --%>
-		<form name="searchFrm" style="margin-top: 20px;">
-			<select name="viewBoard" id="viewBoard" class="select" onChange="goBoard()">
-			      <option>게시판 전체</option>
-			      <option value="1">자유게시판</option>
-			      <option value="2">중고거래</option>
-			      <option value="3">동아리/공모전</option>
-			</select>
-	      <select name="searchType" id="searchType"  class="select">	
-	        <!--  <option value="total">제목+내용</option> -->
-	         <option value="subject">제목</option>
-	         <option value="content">내용</option>
-	         <option value="name">글쓴이</option>
-	      </select>
-	      <input type="text" name="searchWord" class="search" id="searchWord" size="15" autocomplete="off" /> 
-	      <button type="button" onclick="goSearch()" class=" btn-board">검색</button>
-	   </form>
-	   <div style="height:70px; " >
-		   <%-- === 검색어 입력시 자동글 완성하기  === --%>
-			<div id="displayList" style="border:solid 1px gray; border-top:0px; width:320px; height:70px; margin-right:118px; 
-					overflow:auto; float:right; padding:5px; text-align: left;  border-radius: 5px;  box-shadow: 0.5px 0.5px 0.5px 0.5px gray;">	
+<div id="adminhome">
+	
+	<div id="admincontent">
+	
+		
+	<div style="padding-left: 3%;padding-right: 3%;">
+		<div class="admsubtitle">게시글 관리</div>
+	  
+	   <div style="text-align:right; vertical-align:middle; margin:5px;  ">
+		   <%-- === #101. 글검색 폼 추가하기 : 글제목, 글쓴이로 검색을 하도록 한다. === --%>
+			<form name="searchFrm" style="margin-top: 20px;">
+				<select name="viewBoard" id="viewBoard" class="select" onChange="goBoard()">
+				      <option>게시판 전체</option>
+				      <option value="1">자유게시판</option>
+				      <option value="2">중고거래</option>
+				      <option value="3">동아리/공모전</option>
+				</select>
+		      <select name="searchType" id="searchType"  class="select">	
+		        <!--  <option value="total">제목+내용</option> -->
+		         <option value="subject">제목</option>
+		         <option value="content">내용</option>
+		         <option value="name">글쓴이</option>
+		      </select>
+		      <input type="text" name="searchWord" class="search" id="searchWord" size="15" autocomplete="off" /> 
+		      <button type="button" onclick="goSearch()" class=" btn-board">검색</button>
+		   </form>
+		   <div style="height:70px; " >
+			   <%-- === 검색어 입력시 자동글 완성하기  === --%>
+				<div id="displayList" style="border:solid 1px gray; border-top:0px; width:320px; height:70px; margin-right:118px; 
+						overflow:auto; float:right; padding:5px; text-align: left;  border-radius: 5px;  box-shadow: 0.5px 0.5px 0.5px 0.5px gray;">	
+				</div>
 			</div>
+	   </div>
+	   
+	 
+	   <table id="table" style="width:100%; ">
+	   	  <tr style="border-top: none; border-bottom: none;">
+	   		<td colspan="3" style="text-align: left; font-size: 13pt; font-weight: bolder;">
+	   			게시글 <span style="color:#53c68c;">${requestScope.totalCount}</span></td>
+	   		<td colspan="5" style="text-align: right;">
+		      	<form name="selectPage">
+			    <select name="page" id="page" style="width:100px; margin-right:5px;" class="select" onChange="goPage()">
+			      <option>게시글 수</option>
+			      <option value="5">5개씩</option>
+			      <option value="15">15개씩</option>
+			      <option value="30">30개씩</option>
+			    </select>
+			    </form>
+			</td>
+	   	  </tr>
+	      <tr style="border-top:solid 1.5px #b3b3b3;">
+	         <td style="text-align: center;">
+	         	<input type="checkbox"  name="checkAll" />
+			 </td>
+			 <td></td>
+	         <td style="text-align: center;">
+	 <!--        <form name="viewBoard">
+				    <select name="selectBoard" id="selectBoard" class="select" onChange="goBoard()">
+				      <option selected="selected">게시판 전체</option>
+				      <option value="1">자유게시판</option>
+				      <option value="2">중고거래</option>
+				      <option value="3">동아리/공모전</option>
+				    </select>
+			 </form>
+			  --> 
+	         </td>
+	         
+	         <td colspan="5" style="text-align:right; vertical-align: middle;">
+	         	<form name="moveCategory">
+	         	<span style="font-weight: bold; font-size: 13pt;">선택한 글</span>
+				    <select name="selectBoard" id="selectBoard" class="select">
+				      <option selected="selected" value="0">게시판 선택</option>
+				      <option value="1">자유게시판</option>			     
+				      <option value="2">중고거래</option>
+				      <option value="3">동아리/공모전</option>
+				    </select>
+				<input type="button" value="이동" class=" btn-board" name="move" onclick="goMove()"/>
+				<input type="button" value="삭제" class=" btn-board" name="delete" onclick="goDelete()"/>
+				</form>
+			</td>
+					
+	      </tr>
+	      <tr>
+	      	 <th style="width: 3%;  text-align: center;"></th>
+	      	 <th style="width: 5%;  text-align: center;">No.</th>
+	         <th style="width: 10%;  text-align: center;">게시판 명</th>
+	         <th style="width: 35%;  text-align: center;">제목</th>
+	         <th style="width: 15%;">글쓴이</th>
+	         <th style="width: 20%;  text-align: center;">작성일</th>
+	         <th style="width: 5%;  text-align: center;">추천수</th>
+	         <th style="width: 5%;  text-align: center;">조회수</th>
+	      
+	      </tr>
+	      
+	      <c:forEach var="boardvo" items="${requestScope.boardList}" varStatus="status"> 
+	         <tr class="list">  	
+	         	<td style="text-align: center;">
+	         		<input type="checkbox" name="checkOne" value="${boardvo.seq}" />
+			 	</td>
+	         	<td align="center">${boardvo.seq}</td>
+	             <td align="center">
+	             	<c:if test="${boardvo.categoryno==1}">
+	             		자유게시판
+	             	</c:if>
+	             	<c:if test="${boardvo.categoryno==2}">
+	             		중고거래
+	             	</c:if>
+	             	<c:if test="${boardvo.categoryno==3}">
+	             		동아리 / 공모전
+	             	</c:if>
+	             </td>
+	             <td align="left">
+		             <%-- === 댓글쓰기가 있는 게시판 === --%>
+		             <c:if test="${boardvo.commentCount>0}">
+		             	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span class="comment">${boardvo.commentCount}</span></span> 
+		           	</c:if>
+		           	<c:if test="${boardvo.commentCount==0}">
+	             	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
+	             	</c:if>
+	             </td>
+	            <td>${boardvo.name}</td>
+	            <td align="center">${boardvo.regDate}</td>
+	            <td align="center">${boardvo.good}</td>
+	             <td align="center">${boardvo.readCount}</td>
+	             
+	         </tr>
+	      </c:forEach>
+	   </table>   
+	
+	       <%-- === #122. 페이지바 보여주기 --%>
+		<div align="center" style="width: 70%; border:solid 0px gray; margin:20px auto;">
+			${requestScope.pageBar}
 		</div>
-   </div>
-   
- 
-   <table id="table" style="width:100%; ">
-   	  <tr style="border-top: none; border-bottom: none;">
-   		<td colspan="3" style="text-align: left; font-size: 13pt; font-weight: bolder;">
-   			게시글 <span style="color:#53c68c;">${requestScope.totalCount}</span></td>
-   		<td colspan="5" style="text-align: right;">
-	      	<form name="selectPage">
-		    <select name="page" id="page" style="width:100px; margin-right:5px;" class="select" onChange="goPage()">
-		      <option>게시글 수</option>
-		      <option value="5">5개씩</option>
-		      <option value="15">15개씩</option>
-		      <option value="30">30개씩</option>
-		    </select>
-		    </form>
-		</td>
-   	  </tr>
-      <tr style="border-top:solid 1.5px #b3b3b3;">
-         <td style="text-align: center;">
-         	<input type="checkbox"  name="checkAll" />
-		 </td>
-		 <td></td>
-         <td style="text-align: center;">
- <!--        <form name="viewBoard">
-			    <select name="selectBoard" id="selectBoard" class="select" onChange="goBoard()">
-			      <option selected="selected">게시판 전체</option>
-			      <option value="1">자유게시판</option>
-			      <option value="2">중고거래</option>
-			      <option value="3">동아리/공모전</option>
-			    </select>
-		 </form>
-		  --> 
-         </td>
-         
-         <td colspan="5" style="text-align:right; vertical-align: middle;">
-         	<form name="moveCategory">
-         	<span style="font-weight: bold; font-size: 13pt;">선택한 글</span>
-			    <select name="selectBoard" id="selectBoard" class="select">
-			      <option selected="selected" value="0">게시판 선택</option>
-			      <option value="1">자유게시판</option>			     
-			      <option value="2">중고거래</option>
-			      <option value="3">동아리/공모전</option>
-			    </select>
-			<input type="button" value="이동" class=" btn-board" name="move" onclick="goMove()"/>
-			<input type="button" value="삭제" class=" btn-board" name="delete" onclick="goDelete()"/>
-			</form>
-		</td>
-				
-      </tr>
-      <tr>
-      	 <th style="width: 3%;  text-align: center;"></th>
-      	 <th style="width: 5%;  text-align: center;">No.</th>
-         <th style="width: 10%;  text-align: center;">게시판 명</th>
-         <th style="width: 35%;  text-align: center;">제목</th>
-         <th style="width: 15%;">글쓴이</th>
-         <th style="width: 20%;  text-align: center;">작성일</th>
-         <th style="width: 5%;  text-align: center;">추천수</th>
-         <th style="width: 5%;  text-align: center;">조회수</th>
-      
-      </tr>
-      
-      <c:forEach var="boardvo" items="${requestScope.boardList}" varStatus="status"> 
-         <tr class="list">  	
-         	<td style="text-align: center;">
-         		<input type="checkbox" name="checkOne" value="${boardvo.seq}" />
-		 	</td>
-         	<td align="center">${boardvo.seq}</td>
-             <td align="center">
-             	<c:if test="${boardvo.categoryno==1}">
-             		자유게시판
-             	</c:if>
-             	<c:if test="${boardvo.categoryno==2}">
-             		중고거래
-             	</c:if>
-             	<c:if test="${boardvo.categoryno==3}">
-             		동아리 / 공모전
-             	</c:if>
-             </td>
-             <td align="left">
-	             <%-- === 댓글쓰기가 있는 게시판 === --%>
-	             <c:if test="${boardvo.commentCount>0}">
-	             	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span class="comment">${boardvo.commentCount}</span></span> 
-	           	</c:if>
-	           	<c:if test="${boardvo.commentCount==0}">
-             	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
-             	</c:if>
-             </td>
-            <td>${boardvo.name}</td>
-            <td align="center">${boardvo.regDate}</td>
-            <td align="center">${boardvo.good}</td>
-             <td align="center">${boardvo.readCount}</td>
-             
-         </tr>
-      </c:forEach>
-   </table>   
-
-       <%-- === #122. 페이지바 보여주기 --%>
-	<div align="center" style="width: 70%; border:solid 0px gray; margin:20px auto;">
-		${requestScope.pageBar}
 	</div>
-   
-   
-   
 </div>
-
+</div>
 
 
     
