@@ -151,7 +151,7 @@ public class BoardController {
 		String categoryno = request.getParameter("categoryno");	
 		mav.addObject("categoryno", categoryno); // jsp에서 카테고리 번호 호출하기 위함
 		
-		System.out.println("카테고리번호"+categoryno);
+		// System.out.println("카테고리번호"+categoryno);
 		
 		String searchType = request.getParameter("searchType"); 
 		String searchWord = request.getParameter("searchWord");
@@ -204,9 +204,10 @@ public class BoardController {
 		
 		// 최신순, 인기순 select태그 옵션선택
 		String newhit = request.getParameter("newhit");
+		if(newhit == null) {
+			newhit = "1";
+		}
 		paraMap.put("newhit", newhit);
-		
-		// System.out.println("최신순?인기순? : "+newhit);
 		
 		boardList = service.boardListSearchWithPaging(paraMap);
 		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
@@ -236,7 +237,7 @@ public class BoardController {
 				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
 			}
 			else {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a class='boarda' href='"+url+"?categoryno="+categoryno+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
+				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a class='boarda' href='"+url+"?newhit="+newhit+"&categoryno="+categoryno+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
 			}
 			
 			loop++;
@@ -262,6 +263,9 @@ public class BoardController {
 		
 		mav.addObject("gobackURL", gobackURL);				
 		mav.addObject("boardList", boardList);
+		
+		mav.addObject("newhit", newhit);
+		
 		mav.setViewName("board/list.tiles2");
 		
 		return mav;
@@ -373,7 +377,19 @@ public class BoardController {
 	// 댓글쓰기(Ajax로 처리)  
 	@ResponseBody
 	@RequestMapping(value="/board/addComment.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public String addComment(CommentVO commentvo) {
+	public String addComment(CommentVO commentvo, HttpServletRequest request) {
+		
+		String fk_comseq = request.getParameter("fk_comseq");
+		String co_groupno = request.getParameter("co_groupno");
+		String co_depthno = request.getParameter("co_depthno");	 
+		String content = request.getParameter("content");
+		
+		commentvo.setFk_comseq(fk_comseq);
+		commentvo.setCo_groupno(co_groupno);
+		commentvo.setCo_depthno(co_depthno);
+		commentvo.setContent(content);
+		
+		System.out.println();
 		
 		int n = 0;
 		
@@ -430,6 +446,8 @@ public class BoardController {
 				jsonObj.put("co_groupno", cmtvo.getCo_groupno());
 				jsonObj.put("co_depthno", cmtvo.getCo_depthno());
 				jsonObj.put("fk_perno", cmtvo.getFk_perno());
+				jsonObj.put("fk_seq", cmtvo.getFk_seq());
+				jsonObj.put("noopen", cmtvo.getNoopen());
 				
 				jsonArr.put(jsonObj);
 			}
@@ -641,16 +659,17 @@ public class BoardController {
 	public String comreplyEnd(HttpServletRequest request, CommentVO commentvo) {
 	
 		String comseq = request.getParameter("comseq");
-		String content = request.getParameter("comreplyVal");
-		
+		String content = request.getParameter("comreplyVal");	
 		
 		commentvo.setComseq(comseq);
 		commentvo.setContent(content);
 		
 		int n = 0;
+		System.out.println(n);
 		
 		try {
 			n = service.addComment(commentvo);
+			System.out.println("결과: "+ n);	
 		}catch (Throwable e) {
 			
 		}
@@ -760,19 +779,40 @@ public class BoardController {
 	// 게시물 좋아요(ajax)
 	@ResponseBody
 	@RequestMapping(value="/board/goGoodAdd.sam", method= {RequestMethod.GET})
-	public void goodAdd(HttpServletRequest request) {
+	public String goodAdd(HttpServletRequest request) {
 		
 		String seq = request.getParameter("seq");		
 		
 		int n  = service.goodAdd(seq);
+		System.out.println("좋아요 결과: "+n);
 		
-		String loc = "javascript:history.back()";
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n); 
 		
-		System.out.println(n);		
-		
+		return jsonObj.toString();
 	
 	}
-   
+	
+	
+	// 게시물 좋아요 수 알아오기
+	@ResponseBody
+	@RequestMapping(value="/board/likeCount.sam")
+	public String likeCount(HttpServletRequest request) {
+		
+		String seq = request.getParameter("seq");		
+		System.out.println("게시물 좋아요 수 알아오기넘어온 seq값: "+seq);
+		
+		int likecnt  = service.likeCount(seq);
+		
+		System.out.println("좋아요 수 알아오기 결과: "+likecnt);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("likecnt", likecnt); 
+		
+		return jsonObj.toString();
+	
+	}
+	
 	
 	// 스마트에디터  /image/photoUpload.sam
 	// 스마트에디터. 드래그앤드롭을 사용한 다중사진 파일업로드 ====
