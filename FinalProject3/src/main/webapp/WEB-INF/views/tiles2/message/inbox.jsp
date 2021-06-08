@@ -337,6 +337,10 @@ a:visited {
             alert("답장은 한개의 쪽지만 선택이 가능합니다!");
             return;
         }
+        else if(cnt == 0){
+        	 alert("답장할 쪽지를 선택하세요!");
+             return;
+        }
         else{
         	 var name = $("input[name=name]").val();
         	 var fk_userid = $("input[name=fk_userid]").val();

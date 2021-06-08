@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 
 
+
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -55,15 +56,37 @@ public class joseungjin_Controller {
 		if(session.getAttribute("loginuser") != null) {
 			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
 			int userid = loginuser.getPerno();
+		
 			MainsubjectList = service.Mainsubject(userid);
+			
+			int ident = loginuser.getIdentity();
+			if(ident ==2) {
+				mav.setViewName("admin/index.tiles3");
+			}
+			else {
+				MainboardList =service.MainboardView();
+				
+				
+				mav.addObject("MainsubjectList",MainsubjectList);
+				mav.addObject("MainboardList",MainboardList);
+				mav.setViewName("main/index.tiles1");
+			}
 		}
+		else {
+			
+			MainboardList =service.MainboardView();
+			
+			
+			mav.addObject("MainsubjectList",MainsubjectList);
+			mav.addObject("MainboardList",MainboardList);
+			mav.setViewName("main/index.tiles1");
+			
+			
+		}
+	
+	
 		
-		MainboardList =service.MainboardView();
-		
-		
-		mav.addObject("MainsubjectList",MainsubjectList);
-		mav.addObject("MainboardList",MainboardList);
-		mav.setViewName("main/index.tiles1");
+	
 		// /WEB-INF/views/tiles1/main/index.jsp 파일을 생성한다.
 		
 		return mav;
@@ -76,6 +99,23 @@ public class joseungjin_Controller {
 		mav.setViewName("login/loginform.tiles2");
 		return mav;
 	}
+	//===== 등록 작업======
+	
+	@RequestMapping(value="/admin/memberRegister.sam")
+	public ModelAndView memberRegister(ModelAndView mav) {
+		mav.setViewName("admin/memberRegister.tiles3");
+		return mav;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 // === #41. 로그인 처리하기 === // 
 	@RequestMapping(value="/loginEnd.sam", method= {RequestMethod.POST})
@@ -392,6 +432,8 @@ public class joseungjin_Controller {
 			
 				return mav;
 			}
+			
+			//============   인기게시물 작업  시작 ==============
 			// === #128. 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) === //
 
 			@ResponseBody
@@ -457,6 +499,10 @@ public class joseungjin_Controller {
 			      //System.out.println("~~~~확인용:"+jsonObj.toString());
 				return jsonObj.toString();
 			}
+			//============   인기게시물 작업  끝==============
+			
+			
+			//============   캘린더 작업 ==============
 			
 			//일정 추가하기 페이지 요청
 			@RequestMapping(value="/schedulePopup.sam")
@@ -476,12 +522,6 @@ public class joseungjin_Controller {
 				if(n==1) {
 					mav.addObject("message", "일정이 등록되었습니다.");
 				}
-				
-				else {
-					mav.setViewName("board/error/add_error.tiles1");
-					//   /WEB-INF/views/tiles1/board/error/add_error.jsp 파일을 생성한다.
-				}
-				
 				mav.setViewName("msg");
 				return mav;
 			}
@@ -509,7 +549,7 @@ public class joseungjin_Controller {
 					jsonArr.add(jsonObj);
 				}//end of for(Map<String,String>map:deptnamePercentageList){}-----
 				
-				System.out.println(jsonArr);
+				//System.out.println(jsonArr);
 				return jsonArr.toString();
 			
 			}
@@ -550,7 +590,7 @@ public class joseungjin_Controller {
 			public ModelAndView requiredLogin_scheduleEditPopup(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 				String perno = request.getParameter("perno"); 	
 				String schno = request.getParameter("schno");
-			System.out.println(schno);
+				
 				Map<String,String>paraMap = new HashedMap<>();
 				 paraMap.put("perno", perno);
 				 paraMap.put("schno", schno);
@@ -589,5 +629,36 @@ public class joseungjin_Controller {
 				
 				return mav;
 			}
-	
+			// === #76. 글삭제 페이지 요청 === //
+			@RequestMapping(value="/schDelEnd.sam",method= {RequestMethod.POST})
+			public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+			
+				String perno = request.getParameter("fk_perno"); 	
+				String schno = request.getParameter("schno");
+				System.out.println("확인용~~~~~"+perno);
+				Map<String,String>paraMap = new HashedMap<>();
+				 paraMap.put("perno", perno);
+				 paraMap.put("schno", schno);
+				 
+				
+				 int n = service.scheduledel(paraMap);
+				 if(n == 0) {
+						mav.addObject("message", "글 삭제 실패!");
+					}
+					else {
+						mav.addObject("message", "글삭제성공!!");
+					}
+					
+					mav.setViewName("msg");
+				
+				
+				return mav;
+			}
+			//============   캘린더 작업  끝==============
+			
+			
+			
+			
+			
+			
 }

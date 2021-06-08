@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spring.finalproject3.joseungjin.model.PersonVO;
+import com.spring.finalproject3.yehyeon.model.BookListVO;
 
 public interface InterMessageDAO {
 
@@ -55,6 +56,11 @@ public interface InterMessageDAO {
 
 	 // 세부읽기에서 한개만 쪽지 삭제하기<<outbox>>
 	int outDelOne(int parseInt);
+
+	//단대이름 알아오기
+	String getNameCol(int majseq);
+
+
 	
 
 }

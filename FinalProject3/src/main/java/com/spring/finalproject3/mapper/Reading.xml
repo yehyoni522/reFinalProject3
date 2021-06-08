@@ -137,5 +137,23 @@
 	 	update tbl_person set rcheck = 1
 		where perno =#{perno}
 	</update>
+	
+	<resultMap type="HashMap" id="pernoMap">
+		<result property="perno" 			column="perno" 			javaType="String" />
+		<result property="name" 			column="name" 			javaType="String" />
+	</resultMap>	
+	
+	<select id="searchProfessor" resultMap="pernoMap">
+		select perno, name
+		from tbl_person join tbl_major
+		on fk_majseq = majseq
+		where identity = 1 and majseq=#{majseq}
+	</select>
+	
+	<insert id="insertSubject" parameterType="HashMap">
+		insert into tbl_subject(subno, fk_perno, fk_majseq, subname, credit, semeter, day, time)
+		values (subno.nextval, #{profnum}, #{majseq}, #{subname}, #{credit}, #{semeter}, #{week}||'요일', #{time1}||'~'||#{time2})
+	</insert>
+
 
 </mapper>

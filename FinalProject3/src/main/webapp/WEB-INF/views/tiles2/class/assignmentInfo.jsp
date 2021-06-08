@@ -83,9 +83,9 @@ div#btn-board{
 
 	$(document).ready(function(){
 		var perno = ${sessionScope.loginuser.perno};
-
+		
 		var loginuser = ${sessionScope.loginuser.identity};
-
+		alert(loginuser);
 		if(loginuser=='1'||loginuser=='2'){ 		// 교수가 로그인 했을 경우
 			goViewSubject(1);
 			$("#student").hide();			
@@ -96,12 +96,12 @@ div#btn-board{
 			$("#student").hide();
 			$("#professor").hide();
 		}
-		/* 	
-		else if(loginuser == 'undefin){					// 로그인 안한 경우
+			
+		else if{					// 로그인 안한 경우
 			$("#student").hide();
 			$("#professor").hide();
 		}  
- */
+ 
 		
 		// 과제글 삭제버튼
 		$("button#assgnDelete").click(function(){
@@ -159,37 +159,87 @@ div#btn-board{
 			alert("댓글 내용을 입력하세요!!");
 			return; // 종료
 		}
-		
- 		var bool=confirm("과제 제출 후엔 수정이나 삭제가 불가합니다.\n그래도 과제 제출을 완료하시겠습니까?");
 	 	
-		if(bool){ 
-			var form_data = $("form[name=submitFrm]").serialize();
-			
-			$.ajax({
-				url:"<%= ctxPath%>/class/addSubmit.sam",
-				data:form_data,
-				type:"post",
-				dataType:"json",
-				success:function(json){ 
-				   var n = json.n;
-				   			 		   
-				   if(n==1){
-					   $("#student").hide();
-					   goViewMySubject(perno);
-				   }
-			
-				},
-				error: function(request, status, error){
-					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			 	}
-			}); 
-					
-		}	
-	
+	 	var bool=confirm("과제 제출 후엔 수정이나 삭제가 불가합니다.\n그래도 과제 제출을 완료하시겠습니까?");
+		if(bool){
+			if($("input#attach").val() == "") {
+			//	alert("첨부파일 없음");
+				goAddSubmit_noAttach();
+			}
+			else {
+			//	alert("첨부파일 있음");
+				goAddSubmit_withAttach();
+			}
+		}		
  		else{
 			alert("과제 제출을 취소하셨습니다.");
 		}
-	} 
+	}
+ 		
+	 	
+		function goAddSubmit_noAttach() { 		 
+
+			var perno = ${sessionScope.loginuser.perno};
+			
+		$.ajax({
+			url:"<%= ctxPath%>/class/addSubmit.sam",
+			data:{ "fk_perno": perno
+				, "fk_subno": $("#fk_subno").val()
+				, "content": $("input#submitContent").val()
+				, "fk_assgnno": $("[name=fk_assgnno]").val()
+				},				
+			type:"post",
+			dataType:"json",
+			success:function(json){ 
+			   var n = json.n;
+			   			 		    
+			   if(n==1){
+				   $("#student").hide();
+				   goViewMySubject(perno);
+			   }
+		
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		 	}
+		}); 
+				
+	}	
+	
+
+		// 파일첨부가 있는 댓글 쓰기
+	function goAddSubmit_withAttach() {
+	 		
+		var form_data = $("form[name=submitFrm]").serialize();
+	
+
+		
+		$("form[name=submitFrm]").ajaxForm({
+			url:"<%= ctxPath%>/class/addSubmit_withAttach.sam",
+			data:form_data,
+			type:"post",
+			enctype:"multipart/form-data",
+			dataType:"json",
+			success:function(json){ 
+			   var n = json.n;
+				alert("giq");  
+			   if(n==1){
+				   $("#student").hide();
+				   goViewMySubject(perno);
+			   }
+			   else {
+				   alert("실패");
+			   }
+		
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		 	}
+		}); 
+		
+		$("form[name=submitFrm]").submit();
+				
+	}	
 		
 	// 학생이 내 과제만 볼 수 있도록 하는 리스트
 	function goViewMySubject(perno){
@@ -208,6 +258,12 @@ div#btn-board{
 						html += "<tr>";
 						html += "<td class='comment'>"+(index+1)+"</td>";
 						html += "<td>"+ item.content +"</td>";
+						if(item.orgFilename != " ") {	
+							html += "<td><a href='/class/submitdownload.sam?submitno="+item.submitno+"'>"+item.orgFilename+"</a>("+item.fileSize +")</td>";
+						}
+						else{
+							html += "<td></td>";
+						}
 						html += "<td class='comment'>"+ item.submitName +"</td>";
 						html += "<td class='comment'>"+ item.submitDate +"</td>";
 						html += "</tr>";
@@ -215,7 +271,7 @@ div#btn-board{
 				}
 				else {
 					html += "<tr>";
-					html += "<td colspan='4' class='comment'>제출한 과제가 없습니다</td>";
+					html += "<td colspan='5' class='comment'>제출한 과제가 없습니다</td>";
 					html += "</tr>";
 				}
 				
@@ -248,6 +304,13 @@ div#btn-board{
 						html += "<tr>";
 						html += "<td class='comment'>"+(index+1)+"</td>";
 						html += "<td>"+ item.content +"</td>";
+						
+						if(item.orgFilename != " ") {	
+							html += "<td><a href='/class/submitdownload.sam?submitno="+item.submitno+"'>"+item.orgFilename+"</a>("+item.fileSize +")</td>";
+						}
+						else{
+							html += "<td></td>";
+						}
 						html += "<td class='comment'>"+ item.submitName +"</td>";
 						html += "<td class='comment'>"+ item.submitDate +"</td>";
 						html += "</tr>";
@@ -255,7 +318,7 @@ div#btn-board{
 				}
 				else {
 					html += "<tr>";
-					html += "<td colspan='4' class='comment'>제출된 과제가 없습니다</td>";
+					html += "<td colspan='5' class='comment'>제출된 과제가 없습니다</td>";
 					html += "</tr>";
 				}
 				
@@ -405,12 +468,20 @@ div#btn-board{
 					   </td>
 					</tr>
 					<%-- === #150. 파일첨부 타입 추가하기 === --%>
-					<tr>	
-						<th>첨부파일</th>		  
-					   <td>			 
-					     			     	
-					   </td>
+					<tr>
+						<th>첨부파일</th>
+						<td>
+							<c:if test="${requestScope.assignmentVO.fileSize != null}">
+								<a href="<%= ctxPath%>/class/assgndownload.sam?assgnno=${requestScope.assignmentVO.assgnno}">
+									${requestScope.assignmentVO.orgFilename}
+								</a>
+									<span style="font-size: 9pt;">(<fmt:formatNumber value="${requestScope.assignmentVO.fileSize}" pattern="#,###" />bytes)</span>						
+							</c:if>
+							<c:if test="${requestScope.assignmentVO.fileSize == null}">								
+							</c:if>
+						</td>
 					</tr>
+					
 			</table>
 		<%--	<div style="display:inline-block; margin-left:250px;">
 				<c:choose>
@@ -451,9 +522,9 @@ div#btn-board{
 			</c:if>
 	</c:when>
 	</c:choose>
-
+<%-- 
 	<c:choose>
-		<c:when test="${(sessionScope.loginuser.identity eq '1')||(sessionScope.loginuser.identity eq '2')}">
+		<c:when test="${(sessionScope.loginuser.identity eq '1')||(sessionScope.loginuser.identity eq '2')}"> --%>
 			<div id="btn-board">
 				<span id="professor">
 					<button type="button" class="btn-board" id="assgnEdit" onclick="javascript:location.href='<%= ctxPath%>/class/assignmentEdit.sam?assgnno=${requestScope.assignmentVO.assgnno}'">수정</button>
@@ -461,8 +532,8 @@ div#btn-board{
 				</span>
 					<button type="button"class="btn-board" onclick="javascript:location.href='<%= ctxPath%>/class/assignmentBoard.sam'">목록</button>		
 			</div>
-		</c:when>
-	</c:choose>
+<%-- 		</c:when>
+	</c:choose> --%>
 	
     <br><br>
     
@@ -476,9 +547,10 @@ div#btn-board{
 		
 			<form name="submitFrm">
 			
-				<%--=== 과목번호 fk_subno 넣어주는 곳  --%>
-				<input type="hidden" name="fk_subno" value="1000"/>
-				<%--=== 과목번호 fk_subno 넣어주는 곳  --%>
+				<%--------------------------=== 과목번호 fk_subno 넣어주는 곳  -------------------------------------%>
+				<input type="hidden" name="fk_subno" id="fk_subno" value="1000"/>
+				<%-----------------------------=== 과목번호 fk_subno 넣어주는 곳  ------------------------------------%>
+				
 			<c:choose>
 			<c:when test="${sessionScope.loginuser.identity eq '0'}">
 				<div id="student">
@@ -489,12 +561,12 @@ div#btn-board{
 					     <input style="width:100%; height: 100px;" name="content" id="submitContent"/>
 					   </td>
 					</tr>
-					<tr>	
-						<th>첨부파일</th>		  
-					   <td>
-					      첨부파일
-					   </td>
-					</tr>			
+					<tr>
+			            <th>파일첨부</th>
+			            <td>
+			               <input type="file" name="attach" id="attach" />
+			            </td>
+			         </tr>
 				</table>
 				<div id="btn-board">
 					<button type="button" class="btn-board" id="submit" onclick="goAddSubmit()">제출</button>			
@@ -510,7 +582,8 @@ div#btn-board{
 			<thead>
 			<tr>
 			    <th style="width: 10%; text-align: center;">번호</th>
-				<th style="width: 60%; text-align: center;">내용</th>
+				<th style="width: 50%; text-align: center;">내용</th>
+				<th style="width: 10%; text-align: center;">첨부파일(bytes)</th>
 				<th style="width: 10%; text-align: center;">작성자</th>
 				<th style="width: 20%; text-align: center;">작성일자</th>
 			</tr>

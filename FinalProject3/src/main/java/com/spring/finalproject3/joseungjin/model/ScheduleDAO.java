@@ -31,9 +31,16 @@ public class ScheduleDAO implements InterScheduleDAO {
 		ScheduleVO scvo = sqlsession.selectOne("member.scheduleEdit",paraMap);
 		return scvo;
 	}
+	//일정 수정
 	@Override
 	public int scheduleEditEnd(ScheduleVO scvo) {
 		int n = sqlsession.update("member.scheduleEditEnd", scvo);
+		return n;
+	}
+	//일정 삭제
+	@Override
+	public int scheduledel(Map<String, String> paraMap) {
+		int n = sqlsession.delete("member.scheduledel", paraMap);
 		return n;
 	} 
 	

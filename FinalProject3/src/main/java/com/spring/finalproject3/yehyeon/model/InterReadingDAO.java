@@ -27,4 +27,8 @@ public interface InterReadingDAO {
 
 	int updateRcheck(String perno); //예약한 사람의 rcheck 컬럼값을 0->1로 변경한다.
 
+	List<Map<String, String>> searchProfessor(String majseq); // 학과 번호로 교수 목록 읽어온다.
+
+	int insertSubject(SubjectVO subvo);  // 과목 정보 insert한다.
+
 }

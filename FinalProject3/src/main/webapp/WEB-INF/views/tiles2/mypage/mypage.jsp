@@ -42,8 +42,8 @@ a#msgNew{
 	 width: 30px;
 	 height: 30px;
 	 display: inline-block;
-	 margin-left: 50px;
-	 margin-top: -20px;
+	 margin-left: 55px;
+	 margin-top: -30px;
 	 float:right;
 	 font-size: 17px;
 	 text-align: center;
@@ -160,6 +160,20 @@ dfn:hover::before {top: 50px;}
 	function goEdit(){
 		location.href="<%= ctxPath%>/mypage/edit.sam";
 	}
+	function goBook(){
+		location.href="<%= ctxPath%>/reading/index.sam";
+	}
+	function updateUsecheck(){
+		var bool = confirm("${bookToday.bDate} ${bookToday.tname} <br>입실처리를 완료하시겠습니까?");
+		var bno = $("input#bno").val();
+		
+		if(bool){
+			location.href="<%= ctxPath%>/mypage/updateUsecheck.sam?bno="+bno;
+		}
+		else{
+			return;
+		}
+	}
 </script>
 
 <div class="msgHead">
@@ -168,12 +182,12 @@ dfn:hover::before {top: 50px;}
 	
 	
 	<c:if test="${requestScope.nonReadCount == 0}">
-		<button onclick="goInbox()" style="font-weight: bold; font-size: 20px;">쪽지함</button><%-- <img src="<%= ctxPath%>/resources/images/mypage/message.png" onclick="goInbox()" style="width:60px; height:60px; cursor: pointer; "> --%>
+		<button onclick="goInbox()" style="font-weight: bold; font-size: 20px; margin-top: -10px;" type="button" class="btn btn-success">쪽지함</button><%-- <img src="<%= ctxPath%>/resources/images/mypage/message.png" onclick="goInbox()" style="width:60px; height:60px; cursor: pointer; "> --%>
 	</c:if>
 	
 	<c:if test="${requestScope.nonReadCount > 0}">
 		<div class="image">
-		<button onclick="goInbox()" style="font-weight: bold; font-size: 20px;">쪽지함</button><%-- <img src="<%= ctxPath%>/resources/images/mypage/message.png" onclick="goInbox()" style="width:60px; height:60px; "> --%>
+		<button onclick="goInbox()" style="font-weight: bold; font-size: 20px; margin-top: -10px;" type="button" class="btn btn-success">쪽지함</button><%-- <img src="<%= ctxPath%>/resources/images/mypage/message.png" onclick="goInbox()" style="width:60px; height:60px; "> --%>
 		<dfn data-info="쪽지함을 클릭하여 &nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;메세지를 확인하세요!">
 		<a class="text"  id="msgNew" onclick="goInbox()">
 			${requestScope.nonReadCount}
@@ -191,7 +205,7 @@ dfn:hover::before {top: 50px;}
 	
 		
 		<div class="admsubtitle" >
-			<span >나의회원정보</span><button style="margin-left: 350px; font-size: 15px; " onclick="goEdit()">회원정보수정</button>
+			<span >나의회원정보</span><a style="margin-left: 350px; font-size: 15px; cursor: pointer;" onclick="goEdit()">회원정보수정 →</a>
 		</div>
 
 	
@@ -205,19 +219,19 @@ dfn:hover::before {top: 50px;}
 			    <td rowspan="5" style="padding-left:30px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:150px; height:150px;"></td>
 			  </tr>
 			  <tr>
-			    <th scope="row">● 성명</th>
+			    <th scope="row">▶ 성명</th>
 			    <td>${requestScope.name}</td>
 			  </tr>
 			  <tr>
-			    <th scope="row">● 학과</th>
+			    <th scope="row">▶ 학과</th>
 			    <td>${requestScope.nameMaj}</td>
 			  </tr>
 			  <tr>
-			    <th scope="row">● 학번</th>
+			    <th scope="row">▶ 학번</th>
 			    <td>${requestScope.perno}</td>
 			  </tr>
 			  <tr>
-			    <th scope="row">● 이메일</th>
+			    <th scope="row">▶ 이메일</th>
 			    <td>${requestScope.email}</td>
 			  </tr>
 			</table>
@@ -231,19 +245,19 @@ dfn:hover::before {top: 50px;}
 			    <th rowspan="5" style="padding-left:30px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:160px; height:160px;"></th>
 			  </tr>
 			  <tr>
-			    <th scope="row">● 성명</th>
+			    <th scope="row">▶ 성명</th>
 			    <td>${requestScope.name}</td>
 			  </tr>
 			  <tr>
-			    <th scope="row">● 담당학과</th>
+			    <th scope="row">▶ 담당학과</th>
 			    <td>${requestScope.nameMaj}</td>
 			  </tr>
 			  <tr>
-			    <th scope="row">● 교번</th>
+			    <th scope="row">▶ 교번</th>
 			    <td>${requestScope.perno}</td>
 			  </tr>
 			  <tr>
-			    <th scope="row">● 이메일</th>
+			    <th scope="row">▶ 이메일</th>
 			    <td>${requestScope.email}</td>
 			  </tr>
 			</table>
@@ -256,9 +270,50 @@ dfn:hover::before {top: 50px;}
 
 <div class="belongHead">
 	<div class="admsubtitle" >
-			<span >열람실예약내역</span>
-		</div>
+		<span>열람실예약내역</span><span><a style="margin-left: 310px; font-size: 15px; cursor: pointer;" onclick="goEdit()">열람실이용내역 →</a></span>
+	</div>
 	<div class="belongHead2">
+		<c:if test='${requestScope.rcheck == 0 }'>
+		<!-- 예약중인 좌석이 없습니다. -->
+		<table class="type04">
+			  <tr>
+			    <th style="width:200px;" scope="row" >예약중인 좌석이 없습니다</th>
+			    <td ><button style="font-weight: bold; margin-top: -10px;" onclick="goBook()">열람실 좌석 예약하기</button></td>
+			  </tr>
+			</table>
+		</c:if>
+		
+		<c:if test='${requestScope.rcheck == 1 }'>
+			
+			 	<table class="type04">
+			  <tr>
+			    <th scope="row">▶ 예약 날짜</th>
+			    <td>${bookToday.bDate}</td>
+			  </tr>
+			  <tr>
+			    <th scope="row">▶ 예약 시간</th>
+			    <td>${bookToday.tname}</td>
+			  </tr>
+			  <tr>
+			    <th scope="row">▶ 예약 열람실</th>
+			    <td>${bookToday.rname}</td>
+			  </tr>
+			  <c:if test="${bookToday.usecheck == 0}">
+			  	<tr>
+				    <th scope="row">▶ 예약 확정</th>
+				    <td><button style="font-weight: bold;" onclick="updateUsecheck()">입실처리하기</button><input id="bno" type="hidden" value="${bookToday.bno}"></input></td>
+			   </tr>
+			    
+			  </c:if>
+			  <c:if test="${bookToday.usecheck == 1}">
+			  	<tr>
+				    <th scope="row">▶ 예약 확정</th>
+				    <td style="color: red; font-weight: bold;">열람실 입실함</td>
+			   </tr>
+			  </c:if>
+			</table>
+			
+		</c:if>
 	</div>
 </div>
 
