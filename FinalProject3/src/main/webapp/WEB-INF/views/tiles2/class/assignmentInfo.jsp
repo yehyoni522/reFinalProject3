@@ -83,9 +83,9 @@ div#btn-board{
 
 	$(document).ready(function(){
 		var perno = ${sessionScope.loginuser.perno};
-
+		
 		var loginuser = ${sessionScope.loginuser.identity};
-
+		alert(loginuser);
 		if(loginuser=='1'||loginuser=='2'){ 		// 교수가 로그인 했을 경우
 			goViewSubject(1);
 			$("#student").hide();			
@@ -96,12 +96,12 @@ div#btn-board{
 			$("#student").hide();
 			$("#professor").hide();
 		}
-		/* 	
-		else if(loginuser == 'undefin){					// 로그인 안한 경우
+			
+		else if{					// 로그인 안한 경우
 			$("#student").hide();
 			$("#professor").hide();
 		}  
- */
+ 
 		
 		// 과제글 삭제버튼
 		$("button#assgnDelete").click(function(){
