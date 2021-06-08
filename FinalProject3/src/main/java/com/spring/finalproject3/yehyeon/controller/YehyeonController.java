@@ -354,6 +354,15 @@ public class YehyeonController {
 		return mav;
 	}
 	
+	@RequestMapping(value="/admin/subjectList.sam")
+	public ModelAndView subjectList(ModelAndView mav) {
+		
+		
+		mav.setViewName("admin/subjectList.tiles3");
+		
+		return mav;
+	}
+	
 	@ResponseBody
 	@RequestMapping(value="/admin/searchProfessor.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public String searchProfessor(HttpServletRequest request) {

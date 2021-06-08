@@ -241,21 +241,14 @@ tr {
 		
 		<div class="admtitleoptions">
 			<div class="adminsbopt">
-				<select class="adminsearchoption">
-					<option>단과대학</option>
-				</select>
-				<select class="adminsearchoption">
-					<option>학과</option>
-				</select>
-				<select class="adminsearchoption">
-					<option>학번</option>
-				</select>
+				<input type="radio" value="단과대학" id="department" name="select"/><span>단과대학</span>
+				<input type="radio" value="학과" id="major" name="select"/><span>학과</span>
+				<input type="radio" value="학번" id="perno" name="select"/><span>학번</span>
 			</div>
 			<span class="admsubtsp">선택된 학생</span>
 			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">게시판 활동 중지</button>
 			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">열람실 이용 중지</button>
 			<button style="background-color: #99ccff; border-radius: 10%; color: white;">이메일 보내기</button>
-			<button style="background-color: #99ccff; border-radius: 10%; color: white;">메세지 보내기</button>
 		</div>
 				
 		<div style="clear: both;">
