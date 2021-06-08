@@ -21,7 +21,7 @@
   <%-- *** ajax로 파일을 업로드할때 가장 널리 사용하는 방법 ==> ajaxForm *** --%>
   <script type="text/javascript" src="<%= ctxPath%>/resources/js/jquery.form.min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="<%=ctxPath %>/resources/css/style2.css" />
+<link rel="stylesheet" type="text/css" href="<%=ctxPath %>/resources/css/style4.css" />
 </head>
 <body>
 <div id="mycontainer">
