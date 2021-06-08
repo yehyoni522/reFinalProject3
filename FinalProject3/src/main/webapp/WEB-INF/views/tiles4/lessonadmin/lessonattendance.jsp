@@ -18,8 +18,15 @@
   	}
 	th, td {
     border: 1px solid #444444;
-    width: 50px;
+    width: 30px;
     height: 100px;
+  	}
+  	div.weeks {
+  	height: 60%; font-size: 15pt; padding: 10px 0 0 10px;
+  	}
+  	div.date {
+  	padding: 0 10px 10px 0;
+  	font-size: 15pt;
   	}
 
 </style>
@@ -51,7 +58,10 @@
 		<table>
 			<tbody>
 				<tr>
-					<td></td>
+					<td style="width: 25%;">
+						<div class="weeks" align="left">1주차	</div>
+						<div class="date" align="right">21-05-20 09:00:47</div>
+					</td>
 					<td>.</td>
 					<td></td>
 					<td></td>

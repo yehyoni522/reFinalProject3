@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.common.MyUtil;
@@ -143,7 +144,7 @@ public class AdminMemberController {
 		
 		mav.addObject("personList", personList);
 		
-		mav.setViewName("adminmember/adminstudent.tiles2");
+		mav.setViewName("adminmember/adminstudent.tiles3");
 		
 		return mav;
 	}
@@ -176,7 +177,7 @@ public class AdminMemberController {
 			
 		}	
 		
-		mav.setViewName("adminmember/adminstudentinfo.tiles2");
+		mav.setViewName("adminmember/adminstudentinfo.tiles3");
 		
 		return mav;
 	}
@@ -292,7 +293,7 @@ public class AdminMemberController {
 		
 		mav.addObject("personList", personList);
 			
-		mav.setViewName("adminmember/adminprofessor.tiles2");
+		mav.setViewName("adminmember/adminprofessor.tiles3");
 		
 		return mav;
 	}
@@ -408,7 +409,7 @@ public class AdminMemberController {
 		
 		mav.addObject("personList", personList);
 		
-		mav.setViewName("adminmember/adminblacklist.tiles2");
+		mav.setViewName("adminmember/adminblacklist.tiles3");
 		
 		return mav;
 		
@@ -419,10 +420,60 @@ public class AdminMemberController {
 	public ModelAndView lesson_attendance(ModelAndView mav, HttpServletRequest request) {
 		
 		
-		mav.setViewName("lessonadmin/lessonattendance.tiles2");
+		mav.setViewName("lessonadmin/lessonattendance.tiles3");
 		
 		return mav;
-	}	
+	}
+	
+	@RequestMapping(value="/lesson/attendanceadmin.sam")
+	public ModelAndView lesson_attendanceadmin(ModelAndView mav, HttpServletRequest request) {	
+		
+		List<PersonVO> studentList = null;
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+		
+		String subno = request.getParameter("subno");
+		subno="1000";	////////////////////*** 과목번호 임의로 넣음 ***////////////////////////////
+		paraMap.put("subno", subno);
+		
+		// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
+		studentList = service.getStudentList(paraMap);
+		
+		// 
+		
+		mav.addObject("subno", subno);
+		mav.addObject("studentList", studentList);
+		
+		mav.setViewName("lessonadmin/lessonatdcadmin.tiles3");
+		
+		return mav;
+	}
+	
+		
+	@ResponseBody
+	@RequestMapping(value="/lesson/attendancesign.sam", method= {RequestMethod.GET})
+	public String attendancesign(HttpServletRequest request) {
+		
+		String fk_subno = request.getParameter("fk_subno");
+		String fk_perno = request.getParameter("fk_perno");
+		String fRandom = request.getParameter("fRandom");
+		
+		fk_subno = "1000"; 
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+		
+		paraMap.put("fk_subno", fk_subno);
+		paraMap.put("fk_perno", fk_perno);
+		paraMap.put("fRandom", fRandom);
+		
+		// 출석신호 테이블 insert
+		int n = service.addattendancesign(paraMap);
+		
+		
+		
+		
+		return "";
+	}
 	
 	@RequestMapping(value="/lesson/quizlist.sam")
 	public ModelAndView lesson_quizlist(ModelAndView mav, HttpServletRequest request) {	
@@ -524,7 +575,7 @@ public class AdminMemberController {
     	mav.addObject("quizvoList", quizvoList);
 		
 		
-		mav.setViewName("lessonadmin/lessonquizlist.tiles2");
+		mav.setViewName("lessonadmin/lessonquizlist.tiles3");
 		
 		return mav;
 	}
@@ -551,7 +602,7 @@ public class AdminMemberController {
 		mav.addObject("subjectvo", subjectvo);
 		mav.addObject("quizname", quizname);
 			
-		mav.setViewName("lessonadmin/lessonquizView.tiles2");
+		mav.setViewName("lessonadmin/lessonquizView.tiles3");
 		
 		return mav;
 	}
@@ -606,7 +657,7 @@ public class AdminMemberController {
 	public ModelAndView lesson_addquiz2(ModelAndView mav, HttpServletRequest request) {
 		
 		
-		mav.setViewName("lessonadmin/lessonaddquiz.tiles2");
+		mav.setViewName("lessonadmin/lessonaddquiz.tiles3");
 		
 		return mav;
 	}

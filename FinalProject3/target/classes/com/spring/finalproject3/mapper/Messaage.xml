@@ -123,5 +123,16 @@
 		    from tbl_outbox
 		    where outboxSeq = #{outboxSeq}
    </select>
-
+	
+	<!-- //단대이름알아오기 -->
+	<select id="getNameCol"  parameterType="int" resultType="String">
+		SELECT colname
+		FROM tbl_college C JOIN
+		(
+			select  fk_colno
+			from tbl_major
+			where majseq = #{majseq} 
+		) M
+		ON C.colno = M.fk_colno
+	</select>
 </mapper>
