@@ -147,7 +147,7 @@
 	    
 	}// end of function goView(seq) {}-----------------------
 	
-	
+	// 검색하기
 	function goSearch(){
 		var frm = document.searchFrm;
 		frm.method="get";
@@ -156,7 +156,13 @@
 		
 	} // end of function goSearch(){}
 	
-
+	// 최신순, 인기순 선택
+	function gonewhit(){
+		var frm = document.newhitFrm;
+	   	frm.method = "get";
+	   	frm.action = "<%=ctxPath%>/board/list.sam";
+	   	frm.submit();
+	} // end of function gonewhit(){}
 	
 	
 </script>
@@ -186,10 +192,11 @@
 
 	<c:if test="${!(categoryno == 4 || categoryno == 5)}">
 	 	<form name="newhitFrm">
-			<select id="newhit">
+			<select id="newhit" name="newhit" onChange="gonewhit()">
 				<option value="1">최신순</option>
 				<option value="2">인기순</option>
 			</select>
+			<input type="hidden" name="categoryno" value="${categoryno}">
 		</form>
 	</c:if>
 	<table id="table" style="width: 1300px;">

@@ -49,25 +49,37 @@
 		       , fileName, orgFilename, fileSize
 		from
 		(
-	   		select rownum AS rno, B.seq as seq, B.subject as subject, B.good as good, B.readCount as readCount, B.regDate as regDate, P.name as name
-	   				, B.commentCount as commentCount, B.namecheck as namecheck
-	   				, groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
+			select rownum AS rno, seq, subject, good, readCount, regDate, name
+	   				, commentCount, namecheck
+	   				, groupno, fk_seq, depthno,fileName, orgFilename, fileSize
 			from
 			(
-			    select seq, subject, good, readCount, commentCount, fk_perno  
-					   , to_char(regDate, 'yyyy-mm-dd') as regDate, categoryno, namecheck
-					   , groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
-			    from tbl_board
-			    where status = 1 and categoryno = #{categoryno}
-			    <if test='searchWord != ""'>
-			    and lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
-			    </if>
-			    start with fk_seq = 0
-	        	connect by prior seq = fk_seq  
-				order siblings by groupno desc, seq asc 
-			)B
-			join tbl_person P
-			on P.perno = B.fk_perno	
+		   		select B.seq as seq, B.subject as subject, B.good as good, B.readCount as readCount, B.regDate as regDate, P.name as name
+		   				, B.commentCount as commentCount, B.namecheck as namecheck
+		   				, groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
+				from
+				(
+				    select seq, subject, good, readCount, commentCount, fk_perno  
+						   , to_char(regDate, 'yyyy-mm-dd') as regDate, categoryno, namecheck
+						   , groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
+				    from tbl_board
+				    where status = 1 and categoryno = #{categoryno}
+				    <if test='searchWord != ""'>
+				    and lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
+				    </if>
+				    start with fk_seq = 0
+		        	connect by prior seq = fk_seq  
+					order siblings by groupno desc, seq asc 
+				)B
+				join tbl_person P
+				on P.perno = B.fk_perno	
+				<if test="newhit == '1'">
+                order by B.regDate desc
+                </if>
+				<if test="newhit == '2'">
+				order by good desc 인기순
+				</if>
+			)V	
 		)		
 		where rno between #{startRno} and #{endRno}
 		

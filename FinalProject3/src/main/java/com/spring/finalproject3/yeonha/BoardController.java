@@ -140,7 +140,7 @@ public class BoardController {
 	// 글 목록보기
 	@RequestMapping(value="/board/list.sam")
 	public ModelAndView list(ModelAndView mav, HttpServletRequest request) {		
-					
+									
 		List<BoardVO> boardList = null;
 		
 		HttpSession session = request.getSession();
@@ -150,6 +150,8 @@ public class BoardController {
 		
 		String categoryno = request.getParameter("categoryno");	
 		mav.addObject("categoryno", categoryno); // jsp에서 카테고리 번호 호출하기 위함
+		
+		System.out.println("카테고리번호"+categoryno);
 		
 		String searchType = request.getParameter("searchType"); 
 		String searchWord = request.getParameter("searchWord");
@@ -199,6 +201,12 @@ public class BoardController {
 		
 		paraMap.put("startRno", String.valueOf(startRno));
 		paraMap.put("endRno", String.valueOf(endRno));
+		
+		// 최신순, 인기순 select태그 옵션선택
+		String newhit = request.getParameter("newhit");
+		paraMap.put("newhit", newhit);
+		
+		// System.out.println("최신순?인기순? : "+newhit);
 		
 		boardList = service.boardListSearchWithPaging(paraMap);
 		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
@@ -626,6 +634,36 @@ public class BoardController {
 			
 	}	
 	
+	
+	// 댓글 답댓글쓰기 완료하기
+	@ResponseBody
+	@RequestMapping(value="/board/comreplyEnd.sam", method= {RequestMethod.POST})
+	public String comreplyEnd(HttpServletRequest request, CommentVO commentvo) {
+	
+		String comseq = request.getParameter("comseq");
+		String content = request.getParameter("comreplyVal");
+		
+		
+		commentvo.setComseq(comseq);
+		commentvo.setContent(content);
+		
+		int n = 0;
+		
+		try {
+			n = service.addComment(commentvo);
+		}catch (Throwable e) {
+			
+		}
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n); 
+		jsonObj.put("name", commentvo.getName());
+		
+		return jsonObj.toString();
+			
+	}	
+	
+	
 	// 첨부파일 다운로드 받기
 	@RequestMapping(value="/board/download.sam")
 	public void requiredLogin_download(HttpServletRequest request, HttpServletResponse response) {
@@ -803,8 +841,10 @@ public class BoardController {
 	         
 		} catch(Exception e){
 			e.printStackTrace();
-		}
-	   
+		}	   
   	}   
+	
+	
+
 
 }

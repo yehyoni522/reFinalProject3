@@ -21,7 +21,7 @@
 	.mainline{
 		background-color: #e6e6e6;
 		height: 3px;
-		width: 95%;
+		width: 95%; 
 	}
 	button {
 		background-color: white;

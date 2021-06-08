@@ -111,6 +111,9 @@ a {
 	position:relative;
 	left: 87%;
 }
+#comcontreply{
+	margin-top: 5px;
+}
 </style>
 
 <script type="text/javascript">
@@ -118,7 +121,6 @@ a {
 	$(document).ready(function(){
 		
 		$("#comEditFrm").hide();
-		
 		goViewComment(1); // 페이징처리 한 댓글 읽어오기 
 
 		
@@ -181,6 +183,7 @@ a {
 						
 						var content = '"'+item.content+'"';						
 						
+						
 						html += "<div class='putcomment'>";
 						html += "<input type='hidden' value='"+item.comseq+"'/>"
 						
@@ -197,11 +200,13 @@ a {
 						
 						html += "<span id='commentfunc'>";
 						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
-						html += "<span id='commentreply' ><button class='combtn' type='button' onclick='commentreply()'>답글</button></span>";
-						
+															
 						if(${sessionScope.loginuser.perno} == item.fk_perno){
 							html += "<span id='commentedit'><button class='combtn' type='button' onclick='commentedit("+item.comseq+","+content+")'>수정</button></span>";
 							html += "<span id='commentdel'><button class='combtn' type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
+						}
+						else{
+							html += "<span id='commentreply' ><button class='combtn' type='button' onclick='commentreply("+item.comseq+")'>답글</button></span>";
 						}
 						
 						html += "</span></c:if></div>";	
@@ -210,13 +215,20 @@ a {
 						html += "<div id='comcont"+item.comseq+"'>&nbsp;"+item.content+"</div>";
 						
 						html += "<div id='comEditFrm"+item.comseq+"' style='display:none;'>"
-						html += "<textarea id='comcontEdit' row='10' style='width: 95%; height:80px;''>"+item.content+"</textarea>";
-						html += "<button id='comEditEnd' style='height:50px;' onclick='comEditEnd("+item.comseq+")'>수정 완료</button>"
-						html += "</div>"
-						
+						html += "<textarea id='comcontEdit' row='10' style='width: 90%; height:80px;'>"+item.content+"</textarea><br>";
+						html += "<button id='comEditEnd' style='height:50px; width:80px;' onclick='comEditEnd("+item.comseq+")'>수정 완료</button>"
+						html += "</div>"						
+							
 						html += "<div id='comdate'>&nbsp;"+item.reregDate+"</div>";
 						
 						html += "</div>";
+						
+						html += "<div id='comreplyFrm"+item.comseq+"' style='display:none;'>"
+						html += "<label>익명</label> <input type='checkbox' name='namecheck' id='namecheck' value='1'/><br>";
+						html += "<textarea id='commentreply' row='10' style='width: 90%; height:80px;'>"+''+"</textarea><br>";
+						html += "<button id='comreplyEnd' style='height:50px; width:70px;' onclick='comreplyEnd("+item.comseq+","+item.co_groupno+","+item.co_depthno+")'>등록</button>"
+						html += "</div>"
+						
 						html += "<div id='coeditInput'></div>"
 					});
 				}
@@ -310,9 +322,42 @@ a {
 
 	} // end of function removeCheck() {} 글삭제하기
 	
-	function commentreply(){
+	// 댓글 답댓글 달기
+	function commentreply(comseq){
+		$("div#comreplyFrm"+comseq).show();	
+	} // end of function commentreply(){} 댓글 답댓글달기
+	
+	// 댓글 답댓글 등록 버튼 클릭
+	function comreplyEnd(comseq, co_groupno, co_depthno){
 		
-	} // end of function commentreply(){} 댓글 답글달기
+		var comreplyVal = $("textarea#commentreply").val().trim();
+		
+		alert("결과 : "+comreplyVal);
+		
+		<%--if(comreplyVal == "") {
+           alert("댓글내용을 입력하세요!!");
+           return;
+        } 
+		
+		  alert(" co_groupno : "+co_groupno+", co_depthno : "+co_depthno+"답댓글내용 : "+comreplyVal);
+		 
+		$.ajax({
+			   url:"<%= ctxPath%>/board/comreplyEnd.sam",
+			   type:"post",
+			   data:{"fk_comseq":comseq,
+				   	 "co_groupno":co_groupno,
+				   	 "co_depthno":co_depthno,
+				     comreplyVal},
+			   dataType:"json",
+			   success:function(json){
+				   goViewComment(1);		   
+			   },
+			   error: function(request, status, error){
+					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			   }
+		   });	  --%> 		    
+		
+	} // end of function comreplyEnd(comseq){}
 	
 	// 댓글 수정 버튼 클릭
 	function commentedit(comseq, content){
@@ -468,7 +513,7 @@ a {
 				<!-- 댓글 페이지바-->
     			<div id="pageBar" style="border:solid 0px gray; width: 90%; margin: 10px auto; text-align: center;"></div> 
 	 
-				<%-- : 폼 추가--%> 
+				<%-- 댓글쓰기 --%> 
 				<c:if test="${not empty sessionScope.loginuser}">
 					<form name="addWriteFrm" style="margin-top: 20px;">
 						<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />  
