@@ -152,7 +152,7 @@
 	
 	<insert id="insertSubject" parameterType="HashMap">
 		insert into tbl_subject(subno, fk_perno, fk_majseq, subname, credit, semeter, day, time)
-		values (subno.nextval, #{profnum}, #{majseq}, #{subname}, #{credit}, #{semeter}, #{week}||'요일', #{time1}||'~'||#{time2})
+		values (subno.nextval, #{profnum}, #{majseq}, #{subname}, #{credit}, #{semeter}+1, #{week}||'요일', #{time1}||'~'||#{time2})
 	</insert>
 
 
