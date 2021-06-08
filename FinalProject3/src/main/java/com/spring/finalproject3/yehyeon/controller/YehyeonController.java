@@ -388,6 +388,7 @@ public class YehyeonController {
 	@RequestMapping(value="/admin/addSubjectEnd.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public String addSubjectEnd(HttpServletRequest request, SubjectVO subvo) {
 		
+		System.out.println("sgsg : " + subvo.getSemeter());
 		
 		int n = service.insertSubject(subvo);
 		
