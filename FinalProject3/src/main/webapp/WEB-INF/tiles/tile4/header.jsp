@@ -9,10 +9,6 @@
 %>
 <style>
 
-
-hr{
-	border-bottom: solid 1px black; 
-}
 </style>
 
 <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -55,5 +51,4 @@ hr{
 </c:if>
 
 <c:if test="${empty sessionScope.loginuser}">
-	<hr>
 </c:if>

@@ -13,7 +13,7 @@ div#adminside {
 	min-height: 600px;
 }
 
-li {
+li.tiles4 {
 	list-style: none;
 	margin-top:30px;
 	font-size: 17pt;
@@ -24,12 +24,12 @@ li {
 	<br> 
 	<br>
 	<ul>
-		<li><a href="">공지사항</a></li>
-		<li><a href="">수업계획서</a></li>
-		<li><a href="">수업자료</a></li>
-		<li><a href="">과제게시판</a></li>
-		<li><a href="">질문게시판</a></li>
-		<li><a href="">쪽지시험</a></li>
-		<li><a href="">출석</a></li>
+		<li class="tiles4"><a href="">공지사항</a></li>
+		<li class="tiles4"><a href="">수업계획서</a></li>
+		<li class="tiles4"><a href="">수업자료</a></li>
+		<li class="tiles4"><a href="">과제게시판</a></li>
+		<li class="tiles4"><a href="">질문게시판</a></li>
+		<li class="tiles4"><a href="">쪽지시험</a></li>
+		<li class="tiles4"><a href="">출석</a></li>
 	</ul>	
 </div>
