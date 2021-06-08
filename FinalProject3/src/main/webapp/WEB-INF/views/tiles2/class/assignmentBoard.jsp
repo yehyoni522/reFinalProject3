@@ -128,6 +128,7 @@ div#btn-board{
 		</tr>
 		
 		<c:forEach var="assgnVO" items="${requestScope.assignmentList}" varStatus="status"> 
+		
 			<tr class="list">
 				<td>${assgnVO.assgnno}</td>
 				<td style="text-align:left;">
@@ -148,11 +149,11 @@ div#btn-board{
 				<c:choose>
 					<%-- 학생일 경우 제출상태, 점수 컬럼 --%>
 					<c:when test="${sessionScope.loginuser.identity eq '0'}">					
-						<c:if test="${assgnVO.status eq null}"><td>X</td></c:if>
+						<c:if test="${assgnVO.status eq null || assgnVO.status eq '0'}"><td>X</td></c:if>
 						<c:if test="${assgnVO.status eq '1'}"><td>O</td></c:if>		
 						
 						<c:choose>
-							<c:when test="${assgnVO.score eq null}">
+							<c:when test="${assgnVO.score eq null || assgnVO.score eq '0'}">
 								<td>비공개</td>
 							</c:when>							
 							<c:otherwise>

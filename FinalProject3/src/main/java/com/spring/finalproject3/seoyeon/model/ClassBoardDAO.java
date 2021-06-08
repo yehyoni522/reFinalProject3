@@ -34,6 +34,28 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		int n = sqlsession.insert("classBoard.assignmentAdd",assgnVO);
 		return n;
 	}
+	
+	// 현재 시퀀스 알아오기
+	@Override
+	public String getAssignno() {
+		String assgnno = sqlsession.selectOne("classBoard.getAssignno");
+		return assgnno;
+	}
+	
+	// 해당 수업 듣는 학생들의 총 perno 리스트
+	@Override
+	public List<String> pernoList(String fk_subno) {
+		List<String> pernoList = sqlsession.selectList("classBoard.pernoList", fk_subno);
+		System.out.println(pernoList);
+		return pernoList;
+	}
+
+	// === 과제 게시판 글쓰면 학생들한테 과제 부여하기
+	@Override
+	public int assgnStudent(Map<String, String> paraMap) {
+		int n = sqlsession.	insert("classBoard.assgnStudent",paraMap);
+		return n;
+	}
 
 	// 어떤 과목인지 과목번호 알아오기 
 	@Override
@@ -182,11 +204,22 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		return n;
 	}
 
+	//댓글 1개 조회
 	@Override
 	public SubmitVO getSubmitOne(String submitno) {
 		SubmitVO submitvo = sqlsession.selectOne("classBoard.getSubmitOne",submitno);
 		return submitvo;
 	}
+
+	// 점수 변경하기
+	@Override
+	public int changeScore(Map<String, String> paraMap) {
+		int n = sqlsession.update("classBoard.changeScore",paraMap);
+		return n;
+	}
+
+
+
 	
 	
 }

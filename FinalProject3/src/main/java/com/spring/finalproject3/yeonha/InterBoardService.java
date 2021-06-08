@@ -60,6 +60,9 @@ public interface InterBoardService {
 	// 댓글 수정완료하기
 	int comEditEnd(Map<String, String> paraMap);
 
+	// 게시물 좋아요 수 알아오기
+	int likeCount(String seq);
+
 
 
 

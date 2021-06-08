@@ -14,6 +14,15 @@ public interface InterClassBoardDAO {
 	// === 과제 게시판 글쓰기 완료 요청 === // 
 	int assignmentAdd(assignmentBoardVO assgnVO);
 
+	// 현재 시퀀스 알아오기
+	String getAssignno();
+	
+	// 수업듣는 학생 명단
+	List<String> pernoList(String fk_subno);
+	
+	// 학생들에게 과제제출 행 만들어주기
+	int assgnStudent(Map<String, String> paraMap);
+	
 	// 어떤 과목인지 과목번호 알아오기 
 	String getSubjectname(String subno);
 
@@ -79,6 +88,13 @@ public interface InterClassBoardDAO {
 
 	// 댓글 1개 조회만을 해주는 것이다.
 	SubmitVO getSubmitOne(String submitno);
+
+	// 점수 변경하기
+	int changeScore(Map<String, String> paraMap);
+
+
+	
+
 
 
 }

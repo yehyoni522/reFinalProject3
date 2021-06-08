@@ -164,6 +164,13 @@ public class BoardDAO implements InterBoardDAO {
 		return n;
 	}
 
+	// 게시물 좋아요 수 알아오기
+	@Override
+	public int likeCount(String seq) {
+		int likecnt = sqlsession.selectOne("board.likeCount", seq);
+		return likecnt;
+	}
+
 
 
 
