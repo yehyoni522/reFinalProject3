@@ -377,7 +377,19 @@ public class BoardController {
 	// 댓글쓰기(Ajax로 처리)  
 	@ResponseBody
 	@RequestMapping(value="/board/addComment.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public String addComment(CommentVO commentvo) {
+	public String addComment(CommentVO commentvo, HttpServletRequest request) {
+		
+		String fk_comseq = request.getParameter("fk_comseq");
+		String co_groupno = request.getParameter("co_groupno");
+		String co_depthno = request.getParameter("co_depthno");	 
+		String content = request.getParameter("content");
+		
+		commentvo.setFk_comseq(fk_comseq);
+		commentvo.setCo_groupno(co_groupno);
+		commentvo.setCo_depthno(co_depthno);
+		commentvo.setContent(content);
+		
+		System.out.println();
 		
 		int n = 0;
 		
@@ -434,6 +446,8 @@ public class BoardController {
 				jsonObj.put("co_groupno", cmtvo.getCo_groupno());
 				jsonObj.put("co_depthno", cmtvo.getCo_depthno());
 				jsonObj.put("fk_perno", cmtvo.getFk_perno());
+				jsonObj.put("fk_seq", cmtvo.getFk_seq());
+				jsonObj.put("noopen", cmtvo.getNoopen());
 				
 				jsonArr.put(jsonObj);
 			}
@@ -645,16 +659,17 @@ public class BoardController {
 	public String comreplyEnd(HttpServletRequest request, CommentVO commentvo) {
 	
 		String comseq = request.getParameter("comseq");
-		String content = request.getParameter("comreplyVal");
-		
+		String content = request.getParameter("comreplyVal");	
 		
 		commentvo.setComseq(comseq);
 		commentvo.setContent(content);
 		
 		int n = 0;
+		System.out.println(n);
 		
 		try {
 			n = service.addComment(commentvo);
+			System.out.println("결과: "+ n);	
 		}catch (Throwable e) {
 			
 		}

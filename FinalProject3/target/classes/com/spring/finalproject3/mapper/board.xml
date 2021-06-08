@@ -146,13 +146,13 @@
 	
 	<!-- 댓글쓰기 -->
 	<insert id="addComment" parameterType="com.spring.finalproject3.yeonha.CommentVO">
-		<if test='fk_comseq eq null'> <!-- 원 댓글이라면..  -->
-			insert into tbl_comment(comseq, fk_seq, fk_perno, content, reregDate, status, co_groupno, fk_comseq, co_depthno)
-			values(commentSeq.nextval, #{fk_seq}, #{fk_perno}, #{content}, default, default, #{co_groupno}, default, default)
+		<if test='fk_comseq eq null'> <!-- 원 댓글이라면  -->
+			insert into tbl_comment(comseq, fk_seq, fk_perno, content, reregDate, status, co_groupno, fk_comseq, co_depthno, noopen)
+			values(commentSeq.nextval, #{fk_seq}, #{fk_perno}, #{content}, default, default, #{co_groupno}, default, default, #{noopen})
 		</if>
-		<if test='fk_comseq neq null'> <!-- 답댓글이라면..  -->
-			insert into tbl_comment(comseq, fk_seq, fk_perno, content, reregDate, status, co_groupno, fk_comseq, co_depthno)
-			values(commentSeq.nextval, #{fk_seq}, #{fk_perno}, #{content}, default, default, #{co_groupno}, #{fk_comseq}, #{co_depthno}+1)
+		<if test='fk_comseq neq null'> <!-- 답댓글이라면  -->
+			insert into tbl_comment(comseq, fk_seq, fk_perno, content, reregDate, status, co_groupno, fk_comseq, co_depthno, noopen)
+			values(commentSeq.nextval, #{fk_seq}, #{fk_perno}, #{content}, default, default, #{co_groupno}, #{fk_comseq}, #{co_depthno}+1, #{noopen})
 		</if>
 	</insert>
 	
@@ -165,21 +165,29 @@
 	
 	<!-- 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) -->
    	<select id="getCommentListPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha.CommentVO">
-   		select name, identity, content, reregDate, comseq, fk_comseq, co_groupno, co_depthno, fk_perno
+   		select fk_perno, name, content, reregDate, comseq, fk_comseq, co_groupno, co_depthno, fk_seq, identity, noopen
 		from
 		(
-		    select rno, name, identity, content, reregDate, comseq, fk_comseq, co_groupno, co_depthno, fk_perno
+		    select rownum AS rno, fk_perno, content, reregDate, name, identity 
+		           , comseq, fk_comseq, co_groupno, co_depthno, fk_seq, noopen
 		    from
 		    (
-		        select row_number() over(order by comseq desc) as rno, fk_perno, content, to_char(reregDate, 'yyyy-mm-dd') AS reregDate
-		        	   , comseq, fk_comseq, co_groupno, co_depthno  
-		        from tbl_comment
-		        where status = 1 and fk_seq = #{fk_seq}
-		        order by comseq desc
-		    )C
-		    join tbl_person P
-		    on P.perno = C.fk_perno
-		) V
+		        select fk_perno, content, reregDate, name, identity 
+		                , comseq, fk_comseq, co_groupno, co_depthno, fk_seq, noopen
+		        from 
+		        (
+		            select fk_perno, content, to_char(reregDate, 'yyyy-mm-dd hh24:mi:ss') AS reregDate 
+		                   , comseq, fk_comseq, co_groupno, co_depthno, fk_seq, noopen
+		            from tbl_comment
+		            where status = 1 and fk_seq = #{fk_seq}
+		            start with fk_comseq = 0
+		            connect by prior comseq = fk_comseq  
+		            order siblings by co_groupno desc, comseq asc 
+		        )C    
+		        join tbl_person P
+		        on P.perno = C.fk_perno
+		    )T
+		)
 		where rno between #{startRno} and #{endRno}
    	</select>
    	
