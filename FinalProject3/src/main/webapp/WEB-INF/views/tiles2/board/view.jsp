@@ -109,10 +109,15 @@ a {
 	border: 1px solid #ccc;
 	padding: 2px;
 	position:relative;
-	left: 87%;
+	left: 84%;
 }
 #comcontreply{
 	margin-top: 5px;
+}
+#noSpan{
+	border: 0px green solid;
+	margin: 0 32px 0px 5px;
+	padding: 0.5px ;
 }
 </style>
 
@@ -194,7 +199,7 @@ a {
 							html += "<div id='comname'>&nbsp;"+ item.name+"<span id='whoWrite'>관리자</span>";
 						}
 						else{
-							html += "<div id='comname'>&nbsp;"+ item.name
+							html += "<div id='comname'>&nbsp;"+ item.name+"<span id='noSpan'>&nbsp;</span>";
 						}
 						
 						
@@ -202,6 +207,7 @@ a {
 						html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
 															
 						if(${sessionScope.loginuser.perno} == item.fk_perno){
+							html += "<span id='commentreply' ><button class='combtn' type='button' onclick='commentreply("+item.comseq+")'>답글</button></span>";
 							html += "<span id='commentedit'><button class='combtn' type='button' onclick='commentedit("+item.comseq+","+content+")'>수정</button></span>";
 							html += "<span id='commentdel'><button class='combtn' type='button' onclick='commentdel("+item.comseq+")'>삭제</button></span>";
 						}
@@ -225,7 +231,7 @@ a {
 						
 						html += "<div id='comreplyFrm"+item.comseq+"' style='display:none;'>"
 						html += "<label>익명</label> <input type='checkbox' name='namecheck' id='namecheck' value='1'/><br>";
-						html += "<textarea id='commentreply' row='10' style='width: 90%; height:80px;'>"+''+"</textarea><br>";
+						html += "<textarea id='commentreply' row='10' style='width: 90%; height:80px;'></textarea><br>";
 						html += "<button id='comreplyEnd' style='height:50px; width:70px;' onclick='comreplyEnd("+item.comseq+","+item.co_groupno+","+item.co_depthno+")'>등록</button>"
 						html += "</div>"
 						
@@ -334,14 +340,13 @@ a {
 		
 		alert("결과 : "+comreplyVal);
 		
-		<%--if(comreplyVal == "") {
+		if(comreplyVal == "") {
            alert("댓글내용을 입력하세요!!");
            return;
         } 
 		
-		  alert(" co_groupno : "+co_groupno+", co_depthno : "+co_depthno+"답댓글내용 : "+comreplyVal);
 		 
-		$.ajax({
+		<%-- $.ajax({
 			   url:"<%= ctxPath%>/board/comreplyEnd.sam",
 			   type:"post",
 			   data:{"fk_comseq":comseq,
@@ -355,7 +360,7 @@ a {
 			   error: function(request, status, error){
 					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			   }
-		   });	  --%> 		    
+		   });	   --%>		    
 		
 	} // end of function comreplyEnd(comseq){}
 	

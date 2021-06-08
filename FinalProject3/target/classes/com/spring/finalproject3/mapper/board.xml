@@ -72,12 +72,12 @@
 					order siblings by groupno desc, seq asc 
 				)B
 				join tbl_person P
-				on P.perno = B.fk_perno	
-				<if test="newhit == '1'">
-                order by B.regDate desc
+				on P.perno = B.fk_perno			
+				<if test='newhit eq "1"'>
+                
                 </if>
-				<if test="newhit == '2'">
-				order by good desc 인기순
+				<if test='newhit eq "2"'>
+				order by good desc
 				</if>
 			)V	
 		)		

@@ -151,7 +151,7 @@ public class BoardController {
 		String categoryno = request.getParameter("categoryno");	
 		mav.addObject("categoryno", categoryno); // jsp에서 카테고리 번호 호출하기 위함
 		
-		System.out.println("카테고리번호"+categoryno);
+		// System.out.println("카테고리번호"+categoryno);
 		
 		String searchType = request.getParameter("searchType"); 
 		String searchWord = request.getParameter("searchWord");
@@ -204,9 +204,10 @@ public class BoardController {
 		
 		// 최신순, 인기순 select태그 옵션선택
 		String newhit = request.getParameter("newhit");
+		if(newhit == null) {
+			newhit = "1";
+		}
 		paraMap.put("newhit", newhit);
-		
-		// System.out.println("최신순?인기순? : "+newhit);
 		
 		boardList = service.boardListSearchWithPaging(paraMap);
 		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
@@ -236,7 +237,7 @@ public class BoardController {
 				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
 			}
 			else {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a class='boarda' href='"+url+"?categoryno="+categoryno+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
+				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a class='boarda' href='"+url+"?newhit="+newhit+"&categoryno="+categoryno+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
 			}
 			
 			loop++;
@@ -262,6 +263,9 @@ public class BoardController {
 		
 		mav.addObject("gobackURL", gobackURL);				
 		mav.addObject("boardList", boardList);
+		
+		mav.addObject("newhit", newhit);
+		
 		mav.setViewName("board/list.tiles2");
 		
 		return mav;
