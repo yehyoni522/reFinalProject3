@@ -15,13 +15,6 @@ div#adminhome {
 	font-family: 'Noto Sans KR', sans-serif;
 }
 
-div#adminside {
-	border-right:1px solid #b0b0b5;
-	float: left;
-	width: 20%;
-	padding-left: 50px;
-	min-height: 600px;
-}
 
 div#admincontent {
 	float: left;
@@ -71,32 +64,7 @@ th {
 </script>
 
 <div id="adminhome">
-	
-	<div id="adminside" >
-		<span style="font-family: 'Noto Sans KR', sans-serif;">관리자 페이지 홈</span>
-		<br>
-		<br>
-		<span>회원/교수진 관리</span>
-		<ul>
-			<li>학생 관리</li>
-			<li>교수진 관리</li>
-			<li>활둥중지 회원</li>
-		</ul>
-		<br>
-		<span>게시글 관리</span>
-		<ul>
-			<li>게시글 관리</li>
-			<li>댓글 관리</li>
-			<li>스팸글 관리</li>
-		</ul>
-		<br>
-		<span>열람실 관리</span>		
-		<br>
-		<span>수업 관리</span>	
-		<ul>
-			<li>수업 개설</li>
-		</ul> 	
-	</div>
+
 	
 	<div id="admincontent">
 	
@@ -133,10 +101,7 @@ th {
 					</tr>
 				</tbody>
 			</table>
-			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">게시판 활동 중지</button>
-			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">열람실 이용 중지</button>
 			<button style="background-color: #99ccff; border-radius: 10%; color: white;">이메일 보내기</button>
-			<button style="background-color: #99ccff; border-radius: 10%; color: white;">메세지 보내기</button>
 		</div>
 		
 		<h4> 수강 내역 </h4>

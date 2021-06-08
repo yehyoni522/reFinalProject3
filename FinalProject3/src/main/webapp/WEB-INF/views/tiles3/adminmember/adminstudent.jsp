@@ -15,13 +15,6 @@ div#adminhome {
 	font-family: 'Noto Sans KR', sans-serif;
 }
 
-div#adminside {
-	border-right:1px solid #b0b0b5;
-	float: left;
-	width: 20%;
-	padding-left: 50px;
-	min-height: 600px;
-}
     
 div#admincontent {
 	float: left;
@@ -187,36 +180,22 @@ tr {
 		$("input.CheckStudent").prop("checked",bool);
 		
 	}// end of function allCheckStart()-------------------
+	
+	function goSendEmail() {
+		var checkCnt = $("input:checkbox[name=allCheckStudent]:checked").length;
+		
+		if(checkCnt < 1) {
+	    	alert("학생을 선택하세요.");
+	    	return; 
+	    }	
+		else{
+			
+		}
+	}
 
 </script>
 
 <div id="adminhome">
-	
-	<div id="adminside" >
-		<span style="font-family: 'Noto Sans KR', sans-serif;">관리자 페이지 홈</span>
-		<br>
-		<br>
-		<span>회원/교수진 관리</span>
-		<ul>
-			<li>학생 관리</li>
-			<li>교수진 관리</li>
-			<li>활둥중지 회원</li>
-		</ul>
-		<br>
-		<span>게시글 관리</span>
-		<ul>
-			<li>게시글 관리</li>
-			<li>댓글 관리</li>
-			<li>스팸글 관리</li>
-		</ul>
-		<br>
-		<span>열람실 관리</span>		
-		<br>
-		<span>수업 관리</span>	
-		<ul>
-			<li>수업 개설</li>
-		</ul> 	
-	</div>
 	
 	<div id="admincontent">
 	
@@ -240,29 +219,18 @@ tr {
 		<div style="clear: both;"></div>
 		
 		<div class="admtitleoptions">
-			<div class="adminsbopt">
-				<select class="adminsearchoption">
-					<option>단과대학</option>
-				</select>
-				<select class="adminsearchoption">
-					<option>학과</option>
-				</select>
-				<select class="adminsearchoption">
-					<option>학번</option>
-				</select>
+			<div  style="float:right"> 
+				<span class="admsubtsp" >선택된 학생</span>
+				<button style="background-color: #99ccff; border-radius: 10%; color: white; " onclick="goSendEmail();">이메일 보내기</button>
 			</div>
-			<span class="admsubtsp">선택된 학생</span>
-			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">게시판 활동 중지</button>
-			<button style="background-color: #cdcbcb; border-radius: 10%; color: white;">열람실 이용 중지</button>
-			<button style="background-color: #99ccff; border-radius: 10%; color: white;">이메일 보내기</button>
-			<button style="background-color: #99ccff; border-radius: 10%; color: white;">메세지 보내기</button>
+			
 		</div>
 				
 		<div style="clear: both;">
 			<table>
 				<thead>
 					<tr style="font-weight: bold;">
-						<th class="admthtd"><input type="checkbox" id="allCheckStudent" onClick="allCheckStart();"><label for="allCheckStudent"></label></th>  
+						<th class="admthtd"><input type="checkbox" name="checkOne" id="allCheckStudent" onClick="allCheckStart();"><label for="allCheckStudent"></label></th>  
 						<th class="thall" style="margin-right: 70px; width: 30px;">No</th>
 						<th class="admthtdall thall">학과코드</th>
 						<th class="admthtdall thall">학과</th>
