@@ -43,5 +43,7 @@ public interface InterMemberService {
 	ScheduleVO scheduleEdit(Map<String, String> paraMap);
 	//일정 수정하기
 	int scheduleEditEnd(ScheduleVO scvo);
+	//일정 삭제하기
+	int scheduledel(Map<String, String> paraMap);
 
 }
