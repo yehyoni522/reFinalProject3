@@ -72,6 +72,9 @@ public interface InterClassBoardService {
 	// 댓글 1개 조회만을 해주는 것이다.
 	SubmitVO getSubmitOne(String seq);
 
+	// 점수 변경하기
+	int changeScore(Map<String, String> paraMap);
+
 
 
 }

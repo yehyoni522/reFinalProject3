@@ -15,17 +15,46 @@
 	
 	<!-- === 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
 	<select id="assignListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
-		select assgnno, subject, deadline, submitcount,status, fileName
+		<!-- select assgnno, subject, deadline, submitcount, fileName
 			from
 			(
 				select row_number() over(order by assgnno desc) as rno,
-	                    assgnno,subject, submitcount,status, A.fileName as fileName,
+	                    assgnno,subject, submitcount, A.fileName as fileName,
 				        to_char(deadline, 'yyyy-mm-dd hh24:mi:ss') as deadline
 				from tbl_assgn A left join tbl_submit S
 	            on assgnno = fk_assgnno
 	        where A. fk_subno=#{subno}
 			)V
+			where rno between #{startRno} and #{endRno} -->
+			
+		<if test="identity eq 0">
+			select assgnno,subject, deadline, status, score, fileName
+			from
+			(
+			    select row_number() over(order by assgnno desc) as rno,assgnno, subject, fileName, deadline, S.status, S.score
+			    from tbl_assgn A left outer join 
+			    (select fk_assgnno, score, status from tbl_submit where fk_perno=#{perno}) S
+			    on A.assgnno = S.fk_assgnno
+			    where fk_subno=#{subno}
+			) V
 			where rno between #{startRno} and #{endRno}
+		</if>
+		<if test="identity != 0">
+			select assgnno, subject, deadline, submitcount, fileName
+			from
+			(
+	            select row_number() over(order by assgnno desc) as rno, assgnno, subject,fileName,
+	                to_char(deadline, 'yyyy-mm-dd hh24:mi:ss') as deadline, submitcount
+	            from tbl_assgn
+	            where fk_subno=#{subno}
+			)V
+			where rno between #{startRno} and #{endRno}
+		</if>	
+	</select>
+	
+	<!-- 현재 글 시퀀스 알아오기 -->
+	<select id="getAssignno" resultType="String">
+		SELECT assgnno_seq.CURRVAL FROM DUAL
 	</select>
 	
 
@@ -35,6 +64,22 @@
 		values(assgnno_seq.nextval, 1004, 1000,#{subject}, #{content},#{deadline})
    </insert>
 
+
+	<!-- 해당 수업 듣는 학생들의 총 perno 리스트  -->
+	<select id="pernoList" parameterType="String" resultType="String">
+		select fk_perno
+		from tbl_class
+		where fk_subno = #{fk_subno}
+	</select>
+	
+	
+	<!-- 과제 게시판 글쓰면 학생들한테 과제 부여하기 -->
+	<select id="assgnStudent" parameterType="HashMap" resultType="int" >
+		insert into tbl_submit 
+		(submitno, fk_perno, fk_subno, fk_assgnno, score, status)
+		values(submitno_seq.nextval, #{fk_perno}, #{fk_subno}, #{fk_assgnno}, default, default)
+	</select>
+		
 
 	<!-- === 어떤 과목인지 과목번호 알아오기  === -->
 	<select id="getSubjectname" parameterType="String" resultType="String">
@@ -96,13 +141,13 @@
 		<!-- 첨부파일이 없는 경우 -->
 		<if test="fileName == null">
 		insert into tbl_submit(submitno, fk_perno, fk_subno, fk_assgnno, content, status)
-		values(subno.nextval, #{fk_perno}, #{fk_subno}, #{fk_assgnno}, #{content}, 1)
+		values(submitno_seq.nextval, #{fk_perno}, #{fk_subno}, #{fk_assgnno}, #{content}, 1)
 		</if>
 		
 		<!-- 첨부파일이 있는 경우 -->
 		<if test="fileName != null">
 		insert into tbl_submit(submitno, fk_perno, fk_subno, fk_assgnno, content, status, fileName, orgFilename, fileSize)
-		values(subno.nextval, #{fk_perno}, #{fk_subno}, #{fk_assgnno}, #{content}, 1, #{fileName}, #{orgFilename}, #{fileSize})
+		values(submitno_seq.nextval, #{fk_perno}, #{fk_subno}, #{fk_assgnno}, #{content}, 1, #{fileName}, #{orgFilename}, #{fileSize})
 		</if>
 	</insert>
 	
@@ -114,10 +159,10 @@
 	
 	<!-- === 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) ===  --> 
 	<select id="getSubmitListPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.SubmitVO">
-		select name as submitName, content, submitdate, fileName, orgFilename, fileSize
+		select submitno, name as submitName, content, submitdate, fileName, orgFilename, fileSize, score
 		from 
 		(
-		    select row_number() over(order by submitno desc) as submitno, name, content, to_char(submitdate, 'yyyy-mm-dd hh24:mi:ss') as submitdate 
+		    select row_number() over(order by submitno desc) as rno,submitno,score, name, content, to_char(submitdate, 'yyyy-mm-dd hh24:mi:ss') as submitdate 
 		    , nvl(fileName,' ') AS fileName
 		     , nvl(orgFilename, ' ') AS orgFilename
 		     , nvl(to_char(fileSize), ' ') AS fileSize     
@@ -125,7 +170,7 @@
 		    on fk_perno = perno
 		    where fk_assgnno = #{fk_assgnno}
 		) V 
-		where submitno between #{startRno} and #{endRno}
+		where rno between #{startRno} and #{endRno}
 	</select>
 	
 	<!--  === 원게시물에 딸린 댓글 totalPage 알아오기 (Ajax 로 처리) === -->
@@ -259,5 +304,19 @@
 		delete from tbl_QnA 
 		where qnano = #{qnano}
 	</delete>
+
+	<!-- 댓글 1개 조회 -->
+	<select id="getSubmitOne" parameterType="String" resultType="com.spring.finalproject3.seoyeon.model.SubmitVO">
+		select fileName, orgFilename
+		from tbl_submit
+		where submitno = #{submitno}
+	</select>
+
+	<!-- 점수 변경하기 -->
+	<update id="changeScore" parameterType="HashMap">
+		update tbl_submit set score = #{score}
+		where submitno = #{submitno}
+	</update>
+
 
 </mapper>

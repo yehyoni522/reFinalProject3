@@ -61,12 +61,13 @@ public class ClassBoardController {
 		String totalPerson = service.getTotalPerson(subno);
 		request.setAttribute("totalPerson", totalPerson);
 		
-		// **필요없음** 로그인한 사람 알아오기 ==> 학생이면 (제출,점수) 컬럼 더 보여주기 위해, 교수면 글쓰기 버튼+(제출개수/총수강인원) 컬럼보여주기
-	//	HttpSession session = request.getSession();
-	//	PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
-	//	String identity = service.getIdentity(loginuser);
+		// 로그인한 사람 알아오기 ==> 학생이면 (제출,점수) 컬럼 더 보여주기 위해, 교수면 글쓰기 버튼+(제출개수/총수강인원) 컬럼보여주기
+		HttpSession session = request.getSession();
+		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
 		
-		
+		paraMap.put("identity", Integer.toString(loginuser.getIdentity()));
+		paraMap.put("perno", Integer.toString(loginuser.getPerno()));
+				
 		
 		//페이징처리
 		int totalCount = 0;         // 총 게시물 건수
@@ -107,7 +108,6 @@ public class ClassBoardController {
 		
 		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
 		assignmentList = service.assignListSearchWithPaging(paraMap);
-	    
 		
 		// === 페이지바 만들기 === //
 		int blockSize = 3;
@@ -156,7 +156,8 @@ public class ClassBoardController {
 		return mav;
 	}
 	
-	
+
+
 	// 과제 게시판 글쓰기 폼
 		@RequestMapping(value="/class/assignmentAdd.sam")
 		public ModelAndView assignmentAdd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
@@ -304,6 +305,7 @@ public class ClassBoardController {
 			
 			return mav;
 		}
+		
 		
 		// == 과제 게시글 수정 페이지 요청 
 		@RequestMapping(value="/class/assignmentEdit.sam")
@@ -564,13 +566,15 @@ public class ClassBoardController {
 			    if(submitList != null) {
 			    	for(SubmitVO cmtvo : submitList) {
 			    		JSONObject jsonObj = new JSONObject();
+			    		jsonObj.put("submitno", cmtvo.getSubmitno());
 			    		jsonObj.put("submitName", cmtvo.getSubmitName());
 			    		jsonObj.put("content", cmtvo.getContent());
 			    		jsonObj.put("submitDate", cmtvo.getSubmitDate());
 			    		jsonObj.put("fileName", cmtvo.getFileName());
 			            jsonObj.put("orgFilename", cmtvo.getOrgFilename());
 			            jsonObj.put("fileSize", cmtvo.getFileSize());
-		            
+			            jsonObj.put("score", cmtvo.getScore());
+		           
 			    		jsonArr.put(jsonObj);
 			    	}
 			    }
@@ -595,6 +599,7 @@ public class ClassBoardController {
 		    if(submitList != null) {
 		    	for(SubmitVO cmtvo : submitList) {
 		    		JSONObject jsonObj = new JSONObject();
+		    		jsonObj.put("submitno", cmtvo.getSubmitno());
 		    		jsonObj.put("submitName", cmtvo.getSubmitName());
 		    		jsonObj.put("content", cmtvo.getContent());
 		    		jsonObj.put("fileName", cmtvo.getFileName());
@@ -1101,5 +1106,33 @@ public class ClassBoardController {
 		      e.printStackTrace();
 		   }
 		   
-		  }   
+		  }
+		   
+		   
+		   
+		// === 과제 ) 점수 변경하기 === // 
+		@ResponseBody
+		@RequestMapping(value="/class/changeScore.sam", method= {RequestMethod.GET})
+		public String changeScore(HttpServletRequest request) {
+			
+			String score = request.getParameter("score");
+			String submitno = request.getParameter("submitno");
+		
+			System.out.println(score+","+submitno);
+
+			Map<String, String> paraMap = new HashMap<String, String>();
+			paraMap.put("score", score);
+			paraMap.put("submitno", submitno);
+			
+			int n = service.changeScore(paraMap);
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put("n",n);
+            
+		    return jsonObj.toString();  
+		}
+		   
+		
+		   
+		   
+		   
 }	
