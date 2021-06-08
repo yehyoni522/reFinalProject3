@@ -275,7 +275,13 @@ div#admincontent {
 
 	function goView(seq){
 		   
-		   location.href="<%=ctxPath%>/view.action?seq="+seq;
+		var frm = document.goViewFrm;
+		frm.seq.value=seq;
+		frm.searchType.value = "${requestScope.paraMap.searchType}";
+	    frm.searchWord.value = "${requestScope.paraMap.searchWord}"; 
+		frm.method="get";
+		frm.action="<%= ctxPath%>/board/view.sam";
+		frm.submit();
 		   
 	} // end of function goView(seq)-----------------------------
 	
@@ -464,6 +470,14 @@ div#admincontent {
 		</div>
 	</div>
 </div>
+
+<form name="goViewFrm">
+	<input type="hidden" name="seq" />
+	<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
+	<input type="hidden" name="categoryno" value="${categoryno}">
+	<input type="hidden" name="searchType" />
+    <input type="hidden" name="searchWord" />
+</form>
 
 
     
