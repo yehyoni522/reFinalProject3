@@ -29,90 +29,88 @@
 <title>채팅</title>
 
 <style type="text/css">
-	#other{
-		font-size: 12px;
+	*{
+		font-family: 나눔고딕;
+	}
+	#messageWindow{
+		background: black;
+		color: greenyellow;
+	}
+	#inputMessage{
+		width:500px;
+		height:20px
+	}
+	#btn-submit{
+		background: white;
+		background: #F7E600;
+		width:60px;
+		height:30px;
+		color:#607080;
+		border:none;
+	}
+	
+	#main-container{
+		width:600px;
+		height:680px;
+		border:1px solid black;
+		margin:10px;
+		display: inline-block;
 		
 	}
-	span#loginuserName{
-		font-size: 12px;
-	}
-	#message{
-		width:300px;
-		height:60px;
-		overflow: auto;
-		border: solid 1px #E8E9EE;
-	}
-
 	.chat-container{
 		vertical-align: bottom;
-		/* border: 1px solid gray; */
+		border: 1px solid black;
 		margin:10px;
-		min-height: 430px;
-		max-height: 4700px;
+		min-height: 600px;
+		max-height: 600px;
 		overflow: scroll;
 		overflow-x:hidden;
+		background: #9bbbd4;
 	}
 	
 	.chat{
-		font-size: 13px;
+		font-size: 20px;
 		color:black;
 		margin: 5px;
 		min-height: 20px;
-		padding: 10px;
+		padding: 5px;
 		min-width: 50px;
 		text-align: left;
         height:auto;
         word-break : break-all;
-        background: #F3F3F3;
-        width:auto;
-        display:inline-block;
-        border-radius: 10px 10px 10px 10px;
-	}
-	
-	.chat_1{
-		font-size: 13px;
-		color:red;
-		margin: 5px;
-		min-height: 20px;
-		padding: 10px;
-		min-width: 50px;
-		text-align: left;
-        height:auto;
-        word-break : break-all;
-        background: #F3F3F3;
+        background: #ffffff;
         width:auto;
         display:inline-block;
         border-radius: 10px 10px 10px 10px;
 	}
 	
 	.notice{
-		color:#556677;
+		color:#607080;
 		font-weight: bold;
 		border : none;
 		text-align: center;
+		background-color: #9bbbd4;
 		display: block;
-		font-size: 12px;
 	}
 
 	.my-chat{
 		text-align: right;
-		background: #ECF6FF;
+		background: #F7E600;
 		border-radius: 10px 10px 10px 10px;
-		font-size: 13px;
-		color:black;
-		margin: 5px;
-		min-height: 20px;
-		padding: 10px;
-		min-width: 50px;
-		height:auto;
-		word-break : break-all;
 	}
 	
 	#bottom-container{
 		margin:10px;
 	}
 	
+	.chat-info{
+		color:#556677;
+		font-size: 10px;
+		text-align: right;
+		padding: 5px;
+		padding-top: 0px;
 
+	}
 	
 	.chat-box{
 		text-align:left;
@@ -120,10 +118,7 @@
 	.my-chat-box{
 		text-align: right;
 	}
-	#btnSendMessage{
-		padding: 12px 10px 12px 10px;
-		cursor: pointer;
-	}
+	
 	
 	
 </style>
@@ -135,11 +130,6 @@
 	
    $(document).ready(function(){
 	   
-	   $("div#onlineList").hide();
-	   $("div#ovo").hide();
-	   
-	  
-	   
 	   var url = window.location.host; // 웹브라우저의 주소창의 포트까지 가져옴 
 
 	   var pathname = window.location.pathname; // '/'부터 오른쪽에 있는 모든 경로
@@ -150,7 +140,7 @@
   
        var wsUrl = "ws://"+root+"/multichatstart.sam";  
    
-       // alert(wsUrl);
+       alert(wsUrl);
        // ws://192.168.219.176:9090/finalproject3/chatting/multichatstart.sam
   
        var websocket = new WebSocket(wsUrl);
@@ -171,13 +161,13 @@
        // === 웹소켓에 최초로 연결이 되었을 경우에 실행되어지는 콜백함수 정의하기 ===  
        websocket.onopen = function(){
     	  //  alert("웹소켓 연결됨!!");
-    	  $("div#chatStatus").text("쌍용대학교 단체채팅방에 입장하였습니다");
+    	  $("div#chatStatus").text("정보 : 웹소켓에 연결이 성공됨!!");
     	  
-    	/*   messageObj = {  message : "<div id='notice'>채팅방에 <span style='color: red;'>입장</span>했습니다</div>"
+    	  messageObj = {  message : "채팅방에 <span style='color: red;'>입장</span>했습니다"
 		     	        , type : "all"
 		     	        , to : "all" }; // 자바스크립트에서 객체의 데이터값 초기화
 		     	        
-    	  websocket.send(JSON.stringify(messageObj));   	   */      
+    	  websocket.send(JSON.stringify(messageObj));   	        
     	  			
        };
        
@@ -234,7 +224,7 @@
                 websocket.send(JSON.stringify(messageObj));
                 // JSON.stringify() 는 값을 그 값을 나타내는 JSON 표기법의 문자열로 변환한다
                 
-                $("div#chatMessage").append("<div class='my-chat-box'><span class='my-chat'>" + messageVal + "</span><div><br/>");
+                $("div#chatMessage").append("<div class='my-chat-box'><span class='my-chat' style='color:navy; font-weight:bold;'>[나] ▷ " + messageVal + "</span><div><br/>");
                 $("div#chatMessage").scrollTop(99999999);
                  
                 $("input#message").val("");
@@ -253,7 +243,6 @@
               protected void handleTextMessage(WebSocketSession wsession, TextMessage message) 메소드내에
               133번 라인에 기재해두었음.
            */
-           $("div#ovo").show();
            var ip = $(this).prev().text();
         //   alert(ip);
             $("input#to").val(ip); 
@@ -268,49 +257,35 @@
               $("input#to").val("");
               $("span#privateWho").text("");
               $(this).hide();
-              $("div#ovo").hide();
         });
-        
-        $("button#onlineListBtn").click(function(){
-        	$("div#onlineList").show();
-            $(this).hide();
-     	 });
-        $("button#cBtn").click(function(){
-        	$("div#onlineList").hide();
-            $("button#onlineListBtn").show();
-     	 });
    });
    
 </script>
 
 
-<div id="onlineList">
-	현재접속자명단----------<div id="connectingUserList" style="overFlow: auto; max-height: 500px;"></div>
-	<button id="cBtn">닫기</button>
-</div>
-<button id="onlineListBtn">접속자명단</button> <input type="button" onClick="window.close()" value="채팅방나가기" />
 
-<div id="chatStatus" class="notice"></div><br/> 
-
+<br/>현재접속자명단:<br/>
+<div id="connectingUserList" style="overFlow: auto; max-height: 500px;"></div>
+<div id="chatStatus"></div><br/> 
+<div class="main-contatiner">
 <div id="chatMessage" class="chat-container" style="overFlow: auto; max-height: 500px;">
-<div class="notice" >
-	- 1:1 채팅(귓속말)을 하시려면 상대의 이름을 클릭하세요.
-</div><br>	 
+	 <div class="notice">
+	- 상대방의 대화내용이 검정색으로 보이면 채팅에 참여한 모두에게 보여지는 것입니다.<br>
+	- 상대방의 대화내용이 <span style="color: red;">붉은색</span>으로 보이면 나에게만 보여지는 1:1 귓속말 입니다.<br>
+	- 1:1 채팅(귓속말)을 하시려면 예를 들어, 채팅시 보이는 172.30.1.45[이순신] ▶ ㅎㅎㅎ 에서 이순신을 클릭하시면 됩니다.
+	</div>
 </div> 
 <br/>
-
-
-
-
-
-<div id="obo" style="font-size: 14px;">
-	<input type="hidden" id="to" placeholder="귓속말대상IP주소"/><br/>
-	귓속말대상 : <span id="privateWho" style="font-weight: bold; color: red;"></span>
-	&nbsp;&nbsp;<button type="button" id="btnAllDialog">귀속말대화끊기</button>
 </div>
+
+
+
+<input type="text" id="to" placeholder="귓속말대상IP주소"/><br/>
+귓속말대상 : <span id="privateWho" style="font-weight: bold; color: red;"></span>
+&nbsp;&nbsp;<button type="button" id="btnAllDialog">귀속말대화끊기</button><br/>
 <input type="text" id="message" size="50" placeholder="메시지 내용"/>
 <input type="button" id="btnSendMessage" value="보내기" />
-
+<input type="button" onClick="window.close()" value="채팅방나가기" />
 
 
 

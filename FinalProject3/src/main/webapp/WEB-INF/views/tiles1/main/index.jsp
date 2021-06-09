@@ -372,13 +372,13 @@ function closeNav() {
 
 function click_add(){
 	
-    window.open("<%= ctxPath%>/schedulePopup.sam", "스케줄입력", " left=430px , top=80px,width=400, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
+    window.open("<%= ctxPath%>/schedulePopup.sam", "스케줄입력", " left=430px , top=80px,width=430, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
 
 
 }
 function go_pop(){
 	
-	 window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=400, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=yes");
+	javascript:void( window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=400, height=650, toolbar=no, menubar=no, scrollbars=yes, resizable=yes"));
 	
 	
 	}

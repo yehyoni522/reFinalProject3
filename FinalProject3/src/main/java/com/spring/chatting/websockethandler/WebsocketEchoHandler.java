@@ -138,8 +138,10 @@ public class WebsocketEchoHandler extends TextWebSocketHandler{
                    // wsession 은 메시지를 보낸 클라이언트임.
                    // webSocketSession 은 웹소켓서버에 연결된 모든 클라이언트중 하나임.
                    // wsession.getId() 와  webSocketSession.getId() 는 자동증가되는 고유한 숫자로 나옴 
+                	//wsession.getRemoteAddress().getAddress().getHostAddress()
                     webSocketSession.sendMessage(
-                            new TextMessage("<div class='chat-box'><span class='chat'>"+wsession.getRemoteAddress().getAddress().getHostAddress()+"</span>&nbsp;[<span style='font-weight:bold; cursor:pointer;' class='loginuserName'>" +loginuser.getName()+ "</span>]" + " ▶ " + messageVO.getMessage()+"</div>"));  
+                            new TextMessage("<div id='other'><span style='font-weight:bold; cursor:pointer;' class='loginuserName'>" +loginuser.getName()+"("+loginuser.getPerno()+")"
+                            				+ "</span></div>" + "<div class='chat-box'> <span class='chat'>"+ messageVO.getMessage()+"</span></div>"));  
                 }
             } 
             else { // 채팅할 대상이 "전체"가 아닌 특정대상(지금은 귓속말대상 IP address 임) 일 경우 
@@ -150,8 +152,8 @@ public class WebsocketEchoHandler extends TextWebSocketHandler{
                    // messageVO.getTo() 는 클라이언트가 보내온 귓속말대상 IP address 임.
                     webSocketSession.sendMessage(
                             new TextMessage(
-                                    "<div class='chat-box'><span class='chat' style='color:red; font-weight: bold;'>"
-                                    +"<span>"+ wsession.getRemoteAddress().getAddress().getHostAddress() +"</span>&nbsp;[<span style='font-weight:bold; cursor:pointer;' class='loginuserName'>" +loginuser.getName()+ "</span>]" + "▶ " + messageVO.getMessage()
+                                    "<div class='chat-box'><span class='chat_1' style='color:red; font-weight: bold;'>"
+                                    +"[<span style='font-weight:bold; cursor:pointer; ' class='loginuserName'>" +loginuser.getName()+"("+loginuser.getPerno()+")"+ "</span>]" + "▶ " + messageVO.getMessage()
                                     +"</span></div>") 
                     );
                     break; // 지금의 특정대상(지금은 귓속말대상 IP address 임)은 1개이므로 
@@ -190,7 +192,7 @@ public class WebsocketEchoHandler extends TextWebSocketHandler{
            // 퇴장했다라는 메시지를 자기자신을 뺀 나머지 모든 사용자들에게 메시지를 보내도록 한다.
            if (!wsession.getId().equals(webSocketSession.getId())) { 
                 webSocketSession.sendMessage(
-                   new TextMessage(wsession.getRemoteAddress().getAddress().getHostAddress() +" [<span style='font-weight:bold;'>" +loginuser.getName()+ "</span>]" + "님이 <span style='color: red;'>퇴장</span>했습니다.")
+                   new TextMessage("<div class='notice' >[<span style='font-weight:bold;'>" +loginuser.getName()+"("+loginuser.getPerno()+")"+ "</span>]" + "님이 <span style='color: red;'>퇴장</span>했습니다.</div>")
                 ); 
             }
         }
