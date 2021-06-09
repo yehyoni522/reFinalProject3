@@ -32,7 +32,6 @@ public class HyeminJang_Controller {
    
    @Autowired   // Type에 따라 알아서 Bean 을 주입해준다.
    private InterMessageService service;
-   private AES256 aes;
    
    // 마이페이지 보기
    @RequestMapping(value="/mypage/mypage.sam")
@@ -733,5 +732,15 @@ public class HyeminJang_Controller {
          
          return mav;
       }
+     
+ 	// ==== #173. 웹채팅관련  4 ====
+	@RequestMapping(value="/chatting/multichat.sam", method= {RequestMethod.GET})
+	public ModelAndView requiredLogin_multichat(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+		   
+		mav.setViewName("chatting/multichat");
+		return mav;
+	   }
+	
+	
    
 }

@@ -49,10 +49,11 @@
     	<result property="tname" 				column="tname" 				javaType="String" />
     	<result property="rname" 				column="rname" 				javaType="String" />
     	<result property="bno" 					column="bno" 				javaType="String" /> 
+    	<result property="dsname" 				column="dsname" 			javaType="String" /> 
 	</resultMap>
    
    <select id="getBookingToday" parameterType="int" resultMap="booklisttoday">
-		select bno,  to_char(bDate, 'yyyy-mm-dd') as bDate, bookcheck, usecheck, fk_perno , dsno, tname, rname
+		select bno,  to_char(bDate, 'yyyy-mm-dd') as bDate, bookcheck, usecheck, fk_perno , dsno, tname, rname, dsname
 		from
 		(
 			select bno, bookcheck, usecheck, fk_perno, fk_dsno, tname, bDate
@@ -61,7 +62,7 @@
 		) A
 		JOIN
 		(
-			select rname, rno, dsno, dscheck
+			select rname, rno, dsno, dscheck, dsname
 			from tbl_detailseatinfo D join tbl_RroomNum R
 			on D.fk_rno = R.rno
 		)V
