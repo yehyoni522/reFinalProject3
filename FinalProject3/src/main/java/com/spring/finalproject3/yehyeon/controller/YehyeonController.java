@@ -5,7 +5,6 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -416,8 +415,6 @@ public class YehyeonController {
 		String emailAddress = request.getParameter("emailAddress");
 		
 		String[] emailArr = emailAddress.split(",");
-	
-		System.out.println("후밍밍" + emailArr[0]);
 		
 		GoogleMail_ToPerson mail = new GoogleMail_ToPerson();
 		
