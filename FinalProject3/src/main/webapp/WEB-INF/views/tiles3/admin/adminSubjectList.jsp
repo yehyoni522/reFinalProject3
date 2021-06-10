@@ -228,14 +228,20 @@ $(document).ready(function(){
 			</select>
 	      <input type="text" name="searchWord" class="search" id="searchWord" size="15" autocomplete="off" /> 
 	      <button type="button" onclick="goSearch()" class=" btn-board">검색</button>
+	  
 	   </form>
 		   <%-- === 검색어 입력시 자동글 완성하기  === --%>
 			<div id="displayList" style="border:solid 1px gray; border-top:0px; width:320px; height:55px; margin-right:118px;
 					overflow:auto; float:right; padding:5px; text-align: left;  border-radius: 5px;  box-shadow: 0.5px 0.5px 0.5px 0.5px gray;">	
 		</div>
+		<div>
+		      <button type="button" onclick="#" class=" btn-board">excel 다운로드</button>
+		
+		</div>
    </div>
 	   
 	   <table id="table" style="width:100%;margin-top: 50px; ">
+	 
 	      <tr>
 	       <th style="width: 3%;  text-align: center;">학기</th>
 	      	 <th style="width: 7%;  text-align: center;">학과</th>
