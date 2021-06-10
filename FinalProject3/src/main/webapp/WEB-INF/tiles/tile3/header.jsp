@@ -20,7 +20,7 @@
 			</c:if>
 		</div>
 		<div id="logo">
-			<a href="<%=ctxPath%>/index.sam"><img src="<%= ctxPath%>/resources/images/logo.png"  style="width:100%; cursor:pointer;"></a>
+			<a href="<%=ctxPath%>/admin/index.sam"><img src="<%= ctxPath%>/resources/images/logo.png"  style="width:100%; cursor:pointer;"></a>
 		</div>
 		
 </div>

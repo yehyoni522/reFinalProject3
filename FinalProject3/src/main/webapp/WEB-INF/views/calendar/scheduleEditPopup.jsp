@@ -67,7 +67,11 @@ $(document).ready(function(){
 	    var sel = document.getElementById('color');
 	    sel.style.backgroundColor = sel.value;
 	};
+
+	$('#color option[value="${color}"]').prop('selected', 'selected').change();
+
 });
+
 
  $(function() { 
 		$.datepicker.setDefaults({
@@ -133,10 +137,7 @@ function schdelete(){
 			<h1 style="	margin-left: 5px;"> 일정 수정 </h1>  
 			<hr>
 		</div> 
-		
 		<div class = "group-body"> 
-				 	
-			
 				<form name = "scheduleData">
 					<div class = "domain"> 
 				 		<h3> 색상 <span style="margin-left: 330px;"><a href="#" onclick="checkdelete();"><img src="<%= ctxPath%>/resources/images/trash.png" style="height:27px; width:28px;"></a></span></h3> 
@@ -150,10 +151,10 @@ function schdelete(){
 									<option value="#FFCD42"style=" background-color:#FFCD42;"></option>
 								</c:when>
 								<c:otherwise>
-								<option value="#9775FA"style=" background-color:#9775FA;"></option>
-								<option value="#F06595"style=" background-color:#F06595;"></option>
-								<option value="#919191"style=" background-color:#919191;"></option>
-								<option value="#46E086"style=" background-color:#46E086;"></option>
+								<option value="#9775FA" style=" background-color:#9775FA;"></option>
+								<option value="#F06595" style=" background-color:#F06595;"></option>
+								<option value="#919191" style=" background-color:#919191;"></option>
+								<option value="#46E086" style=" background-color:#46E086;"></option>
 								<option value="#3788D8" style=" background-color:#3788D8;"></option>
 								</c:otherwise>
 								</c:choose>
