@@ -23,6 +23,15 @@
 <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
 <script src="https://unpkg.com/tippy.js@6"></script>
 <link rel="stylesheet" type="text/css" href="<%=ctxPath %>/resources/css/style3.css" />
+<script type="text/javascript">
+	$(function() {
+		if(${sessionScope.loginuser.perno ne '20191234'}) {
+			$("div#adminhome").hide();
+			alert("관리자만 접근할 수 있습니다.");
+			location.href="<%=ctxPath%>/index.sam";
+		}
+	})
+</script>
 </head>
 <body>
 <div id="mycontainer">
