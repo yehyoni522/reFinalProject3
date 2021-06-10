@@ -46,4 +46,70 @@ public class LessonDAO implements InterLessonDAO {
 		return notice;
 	}
 
+	// 조회수 증가 후 글 조회
+	@Override
+	public LessonNoticeVO getView(Map<String, String> paraMap) {
+		LessonNoticeVO lenotivo = sqlsession.selectOne("lesson.getView", paraMap);
+		return lenotivo;
+	}
+
+	// 글조회수 1증가 하기
+	@Override
+	public void setAddReadCount(String seq) {
+		sqlsession.update("lesson.setAddReadCount", seq);	
+		
+	}
+
+	// 자동검색어완성
+	@Override
+	public List<String> wordSearchShow(Map<String, String> paraMap) {
+		List<String> wordList = sqlsession.selectList("lesson.wordSearchShow", paraMap);
+		return wordList;
+	}
+
+	// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
+	@Override
+	public LessonNoticeVO getViewNo(String seq) {
+		LessonNoticeVO lenotivo = sqlsession.selectOne("lesson.getViewNo", seq);
+		return lenotivo;
+	}
+
+	// 게시글에 첨부파일이 있는지 확인하기(수정)
+	@Override
+	public String isFilename(LessonNoticeVO lenotivo) {
+		String filename = sqlsession.selectOne("lesson.isFilename", lenotivo);
+		return filename;
+	}
+
+	// 첨부파일 삭제 체크시 첨부파일 삭제 (수정)
+	@Override
+	public int delFile(LessonNoticeVO lenotivo) {
+		int delFile = sqlsession.update("lesson.delFile", lenotivo);
+		return delFile;
+	}
+
+	// 첨부파일이 없는 글수정 페이지 완료하기 
+	@Override
+	public int edit_withFile(LessonNoticeVO lenotivo) {
+		int n = sqlsession.update("lesson.edit_withFile", lenotivo);
+		return n;
+	}
+
+	// 첨부파일이 있는 글수정 페이지 완료하기
+	@Override
+	public int edit(LessonNoticeVO lenotivo) {
+		int n = sqlsession.update("lesson.edit", lenotivo);
+		return n;
+	}
+
+	// 공지사항 삭제하기
+	@Override
+	public int del(int seqno) {
+		int n = sqlsession.delete("lesson.del", seqno);
+		return n;
+	}
+
+
+
+
 }

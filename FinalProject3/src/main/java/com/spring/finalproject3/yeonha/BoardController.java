@@ -304,7 +304,7 @@ public class BoardController {
 		return jsonArr.toString(); 
 	}
 	
-	// 글 한개를 보여주는 페이지 요청  (댓글 목록 포함)
+	// 글 한개를 보여주는 페이지 요청  
 	@RequestMapping(value="/board/view.sam")
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		

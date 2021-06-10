@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <% String ctxPath = request.getContextPath(); %>    
 
@@ -78,8 +79,8 @@ div#btn-board{
       
       <%-- === 스마트 에디터 구현 끝 === --%>
       
-      // 쓰기버튼
-      $("button#btnWrite").click(function(){
+      // 완료버튼
+      $("button#btnUpdate").click(function(){
       
          <%-- === 스마트 에디터 구현 시작 === --%>
          //id가 content인 textarea에 에디터에서 대입
@@ -140,7 +141,7 @@ div#btn-board{
          // 폼(form) 을 전송(submit)
          var frm = document.addFrm;
          frm.method = "POST";
-         frm.action = "noticeAddEnd.sam";
+         frm.action = "<%= ctxPath%>/lesson/noticeEditEnd.sam";
          frm.submit();   
       });
            
@@ -158,11 +159,12 @@ div#btn-board{
 	<br>
 	
  <form name="addFrm" enctype="multipart/form-data">
+ 		<input type="hidden" name="fk_subno" value="${lenotivo.fk_subno}" />
        <table id="table" style="width:100%; border-top: 1.5px #b3b3b3 solid; border-bottom: 1.5px #b3b3b3 solid;">
          <tr>
             <th style="width:200px;">제목</th>
             <td>
-               <input type="text" name="subject" id="subject" class="long" />   
+               <input type="text" name="subject" id="subject" class="long" value="${requestScope.lenotivo.subject}"/>   
               
             </td>
          </tr>
@@ -171,19 +173,24 @@ div#btn-board{
             <th>파일첨부</th>
             <td>
             	<input type="file" name="attach" />	
+            	<div><img id="btnFileAdd"src="<%=ctxPath %>/resources/images/fileAdd.PNG" /> 파일 첨부하기 <input type="file" id="fileAddin" name="attach" value="<c:out value="${lenotivo.fileName}"/>"/> </div>
+				<c:if test="${requestScope.lenotivo.fileName != null}">
+				<label>삭제&nbsp;&nbsp;</label><input type="checkbox" name="delfileName" value="<c:out value="${requestScope.lenotivo.fileName}"/>">   
+				&nbsp;&nbsp;<a href="<%=ctxPath%>/lesson/download.sam?seq=${requestScope.lenotivo.seq}&categoryno=${lenotivo.categoryno}"> ${requestScope.lenotivo.orgFilename}</a>
+				</c:if>
             </td>
          </tr>
          
          <tr>
             <th>내용</th>
             <td>
-               <textarea rows="10" cols="100" style="width: 80%; height: 612px;" name="content" id="content"></textarea>       
+               <textarea rows="10" cols="100" style="width: 80%; height: 612px;" name="content" id="content">${requestScope.lenotivo.content}</textarea>       
             </td>
          </tr>                
       </table>
   
 		<div id="btn-board">
-			<button type="button" class="btn-board" id="btnWrite">완료</button>
+			<button type="button" class="btn-board" id="btnUpdate">완료</button>
 		<button type="button"class="btn-board" onclick="javascript:history.back()">취소</button>
 	</div>
     <input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}"/>

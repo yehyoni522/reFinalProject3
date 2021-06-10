@@ -8,20 +8,21 @@
 
 	<!-- 공지사항 글쓰기완료(파일첨부X) -->
 	<insert id="add" parameterType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
-		insert into tbl_classnoti(seq, fk_perno, subject, content, readCount, regDate)
-		values(classnotiSeq.nextval, #{fk_perno}, #{subject}, #{content}, default, default)
+		insert into tbl_classnoti(seq, fk_perno, subject, content, readCount, regDate, fk_subno)
+		values(classnotiSeq.nextval, #{fk_perno}, #{subject}, #{content}, default, default, #{fk_subno})
 	</insert>
 
 	<!-- 공지사항 글쓰기완료(파일첨부O) -->
 	<insert id="add_withFile" parameterType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
-		insert into tbl_classnoti(seq, fk_perno, subject, content, readCount, regDate, fileName, orgFilename, fileSize)
-		values(classnotiSeq.nextval, #{fk_perno}, #{subject}, #{content}, default, default, #{fileName}, #{orgFilename}, #{fileSize})
+		insert into tbl_classnoti(seq, fk_perno, subject, content, readCount, regDate, fileName, orgFilename, fileSize, fk_subno)
+		values(classnotiSeq.nextval, #{fk_perno}, #{subject}, #{content}, default, default, #{fileName}, #{orgFilename}, #{fileSize}, #{fk_subno})
 	</insert>
 
 	<!-- 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. -->
    	<select id="getTotalCount" parameterType="HashMap" resultType="int">
    		select count(*)
    		from tbl_classnoti
+   		where fk_subno = #{fk_subno}
    		<if test='searchWord != ""'>
    			where lower(${searchType}) like '%'||lower(#{searchWord}) || '%'	
    		</if>
@@ -30,17 +31,18 @@
 	<!-- 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한것) -->
    	<select id="noticeSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha2.LessonNoticeVO">  		
    		select seq, subject, readCount, fk_perno, name, regDate
-               ,fileName, orgFilename, fileSize	
+               ,fileName, orgFilename, fileSize, fk_subno	
 		from
 		(
 		    select rno, seq, subject, readCount, fk_perno, P.name as name, B.regDate as regDate
-		               ,fileName, orgFilename, fileSize		
+		               ,fileName, orgFilename, fileSize, fk_subno		
 		    from
 		    (
 		        select row_number() over(order by seq desc) AS rno, seq, subject, readCount, fk_perno  
 		               , to_char(regDate, 'yyyy-mm-dd') as regDate
-		               ,fileName, orgFilename, fileSize	
+		               ,fileName, orgFilename, fileSize, fk_subno	
 		        from tbl_classnoti
+		        where fk_subno = #{fk_subno}
 		        <if test='searchWord != ""'>
 		        and lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
 		        </if>
@@ -48,9 +50,125 @@
 		    join tbl_person P
 		    on P.perno = B.fk_perno			
 		)		
-		where rno between #{startRno} and #{endRno}	
-		
+		where rno between #{startRno} and #{endRno}			
    	</select>
 
+	<!-- 글 1개 보여주기 -->
+	<select id="getView" parameterType="String" resultType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
+		select previousseq, previoussubject
+		     , seq, fk_perno, subject, name, content, readcount, B.regDate as regDate
+		     , nextseq , nextsubject
+		     , fileName, orgFilename, fileSize, fk_subno
+		from 
+		(
+		    select lag(seq,1) over(order by seq desc) AS previousseq
+		         , lag(subject,1) over(order by seq desc) AS previoussubject
+		         
+		         , seq, fk_perno, subject, content, readcount
+		         , to_char(regDate, 'yyyy-mm-dd') as regDate
+		         
+		         , lead(seq,1) over(order by seq desc) AS nextseq
+		         , lead(subject,1) over(order by seq desc) AS nextsubject
+		         
+		         ,fileName, orgFilename, fileSize, fk_subno 
+		    from tbl_classnoti
+		    where fk_subno = #{fk_subno}
+		    <if test='searchType != "" and searchWord != ""'>
+            and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+          	</if>
+		)B
+		join tbl_person P
+		on P.perno = B.fk_perno
+		where B.seq = #{seq}
+	</select>
+	
+	<!-- 글조회수 1증가 하기 -->
+	<update id="setAddReadCount" parameterType="String">
+		update tbl_classnoti set readCount = readCount + 1 
+		where seq = #{seq}
+	</update>
+	
+	<!-- 검색어 입력시 자동글 완성하기 -->
+	<select id="wordSearchShow" parameterType="HashMap" resultType="String">
+		<choose> 
+    		<when test="searchType eq 'name'">
+    			select  distinct ${searchType} as name
+    		</when>
+    		<otherwise>
+    			select  ${searchType}    
+    		</otherwise>     		
+    	</choose>   		        
+		 from
+		(
+		    select subject,fk_perno, seq
+		    from tbl_classnoti
+		    where fk_subno = #{fk_subno}
+		)B
+		join tbl_person P
+		on P.perno = B.fk_perno
+		where lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+	    <if test="searchType neq 'name'">
+  		order by seq desc
+  		</if>   		    	  	    	
+	</select>
+	
+	<!-- (수정에서사용)글 1개 보여주기 -->
+	<select id="getViewNo" parameterType="String" resultType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
+		select previousseq, previoussubject
+		     , seq, fk_perno, subject, name, content, readcount, B.regDate as regDate
+		     , nextseq , nextsubject
+		     , fileName, orgFilename, fileSize, fk_subno
+		from 
+		(
+		    select lag(seq,1) over(order by seq desc) AS previousseq
+		         , lag(subject,1) over(order by seq desc) AS previoussubject
+		         
+		         , seq, fk_perno, subject, content, readcount
+		         , to_char(regDate, 'yyyy-mm-dd') as regDate
+		         
+		         , lead(seq,1) over(order by seq desc) AS nextseq
+		         , lead(subject,1) over(order by seq desc) AS nextsubject
+		         
+		         ,fileName, orgFilename, fileSize, fk_subno 
+		    from tbl_classnoti
+		    where fk_subno = #{fk_subno}
+		    <if test='searchType != "" and searchWord != ""'>
+            and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+          	</if>
+		)B
+		join tbl_person P
+		on P.perno = B.fk_perno
+		where B.seq = #{seq}
+	</select>
+
+	<!-- 게시글에 첨부파일이 있는지 확인하기(수정) -->
+	<select id="isFilename" resultType="String">
+		select fileName
+		from tbl_classnoti
+		where seq = #{seq}
+	</select>
+	
+	<!-- 첨부파일 삭제 체크시 첨부파일 삭제 -->
+	<update id="delFile" parameterType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
+		update tbl_classnoti set fileName = null, orgFilename = null, fileSize = null where seq = #{seq}
+	</update>
+	
+	<!-- 파일첨부 없는 게시글 수정하기 -->
+	<update id="edit_withFile" parameterType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
+		update tbl_classnoti set subject = #{subject}, content = #{content}
+		where seq = #{seq}
+	</update>
+	
+	<!-- 파일첨부 있는 게시글 수정하기 -->
+	<update id="edit" parameterType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
+		update tbl_classnoti set subject = #{subject}, content = #{content}, fileName = #{fileName}, orgFilename = #{orgFilename}, fileSize = #{fileSize} 
+		where seq = #{seq}
+	</update>
+   	
+   	<!-- 게시글 삭제하기 -->
+	<delete id="del" parameterType="int">
+		delete from tbl_classnoti 
+		where seq = #{seqno}
+	</delete>	
 
 </mapper>

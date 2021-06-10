@@ -1,6 +1,8 @@
 package com.spring.finalproject3.yeonha2;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,17 +11,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.common.FileManager;
 import com.spring.finalproject3.common.MyUtil;
+import com.spring.finalproject3.joseungjin.model.PersonVO;
+import com.spring.finalproject3.yeonha.BoardVO;
 
 @Component
 @Controller
@@ -38,6 +45,9 @@ public class LessonBoard2Controller {
 	@RequestMapping(value="/lesson/noticeAdd.sam")
 	public ModelAndView noticeAdd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {									
 		
+		String fk_subno = request.getParameter("fk_subno");
+		
+		mav.addObject("fk_subno", fk_subno);
 		mav.setViewName("lesson/noticeAdd.tiles4");		
 		return mav;
 	}
@@ -53,7 +63,7 @@ public class LessonBoard2Controller {
 			HttpSession session = mrequest.getSession();
 			String root = session.getServletContext().getRealPath("/");
 			
-			System.out.println("~~~~~~ webapp 의 절대경로 => " + root);
+			// System.out.println("~~~~~~ webapp 의 절대경로 => " + root);
 			
 			String path = root+"resources"+File.separator+"files";
 			
@@ -108,6 +118,8 @@ public class LessonBoard2Controller {
 		}
 				
 		if(n==1) {
+			String fk_subno = lenotivo.getFk_subno();
+			mav.addObject("fk_subno",fk_subno);
 			mav.setViewName("redirect:/lesson/notice.sam");
 		    //   list.action 페이지로 redirect(페이지이동)해라는 말이다.
 		}
@@ -126,11 +138,15 @@ public class LessonBoard2Controller {
 	// 공지사항 글 목록보기
 	@RequestMapping(value="/lesson/notice.sam")
 	public ModelAndView notice(ModelAndView mav, HttpServletRequest request) {		
-									
+				
 		List<LessonNoticeVO> lenotivo = null;
 		
 		HttpSession session = request.getSession();
 		session.setAttribute("readCountPermission", "yes");		
+		
+		String fk_subno = request.getParameter("fk_subno");
+		fk_subno="1000";
+		mav.addObject("fk_subno", fk_subno);
 		
 		String searchType = request.getParameter("searchType"); 
 		String searchWord = request.getParameter("searchWord");
@@ -147,6 +163,7 @@ public class LessonBoard2Controller {
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
 		paraMap.put("searchWord", searchWord);
+		paraMap.put("fk_subno", fk_subno);
 		
 		int totalCount = 0;         // 총 게시물 건수
 		int sizePerPage = 10;       // 한 페이지당 보여줄 게시물 건수
@@ -240,5 +257,399 @@ public class LessonBoard2Controller {
 		return mav;
 	}
 
+	// 검색어 입력시 자동글 완성하기
+	@ResponseBody
+	@RequestMapping(value="/lesson/wordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public String wordSearchShow(HttpServletRequest request) {
+		
+		String searchType = request.getParameter("searchType");
+		String searchWord = request.getParameter("searchWord");
+		String fk_subno = request.getParameter("fk_subno");	
+		
+		// System.out.println(searchType);
+		
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);
+		paraMap.put("fk_subno", fk_subno);
+		
+		List<String> wordList = service.wordSearchShow(paraMap);
+		
+		JSONArray jsonArr = new JSONArray(); 
+		
+		if(wordList != null) {
+			for(String word : wordList) {
+				JSONObject jsonObj = new JSONObject(); 
+				jsonObj.put("word", word); 
+				
+				jsonArr.put(jsonObj);
+			}
+		}
+		
+		return jsonArr.toString(); 
+	}
+		
+	// 글 한개를 보여주는 페이지 요청  (댓글 목록 포함)
+	@RequestMapping(value="/lesson/noticeView.sam")
+	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
+		
+		String fk_subno = request.getParameter("fk_subno");
+		String seq = request.getParameter("seq");		
+	    String searchType = request.getParameter("searchType");
+	    String searchWord = request.getParameter("searchWord");
+	    
+	    if(searchType == null) {
+			searchType = "";	
+		}
+		if(searchWord == null) {
+			searchWord = "";	
+		}
+		
+	    Map<String,String> paraMap = new HashMap<>();
+	    paraMap.put("seq", seq);
+	    paraMap.put("searchType", searchType);
+	    paraMap.put("searchWord", searchWord);
+	    paraMap.put("fk_subno", fk_subno);
+	    
+	    mav.addObject("searchType", searchType);
+	    mav.addObject("searchWord", searchWord);
+	    
+	    
+		String gobackURL = request.getParameter("gobackURL");		
+	
+		if(gobackURL != null && gobackURL.contains(" ")) {
+			gobackURL = gobackURL.replaceAll(" ", "&");	
+		}
+		
+		mav.addObject("gobackURL", gobackURL);		
+		mav.addObject("fk_subno",fk_subno);
+		
+		try {
+			Integer.parseInt(seq);
+			
+			String login_userid = null;
+			
+			HttpSession session = request.getSession();
+			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+			
+			if(loginuser != null) {
+				login_userid = String.valueOf(loginuser.getPerno());				
+			}
+						
+			LessonNoticeVO lenotivo = null;
+			
+			if("yes".equals(session.getAttribute("readCountPermission"))) {
+				
+				lenotivo = service.getView(paraMap, login_userid); // 조회수 증가 후 글 조회
+				
+				session.removeAttribute("readCountPermission");
+			}
+			else {				
+				lenotivo = service.getViewWithNoAddCount(paraMap); // 조회수 증가 없이 글 조회				
+			}			
+			
+			mav.addObject("lenotivo", lenotivo);			
+	   
+		}catch(NumberFormatException e) {
+	    	
+	    }			
+		mav.setViewName("lesson/noticeView.tiles4");
+		
+		return mav;
+	}
+		
+	// 첨부파일 다운로드 받기
+	@RequestMapping(value="/lesson/download.sam")
+	public void requiredLogin_download(HttpServletRequest request, HttpServletResponse response) {
+		
+		String seq = request.getParameter("seq");
+		// 첨부파일이 있는 글번호
+		
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("seq", seq);
+		paraMap.put("searchType", "");
+		paraMap.put("searchWord", "");
+		
+		/*
+			첨부파일이 있는 글번호에서
+			202106040930484198194255200.png 처럼
+			이러한 fileName 값을 DB에서 가져와야한다
+			또한 orgFilename 값도 DB에서 가져와야 한다
+		*/
+		
+		response.setContentType("text/html; charset=UTF-8");
+		PrintWriter out = null;
+		
+		try {
+			Integer.parseInt(seq);
+			
+			LessonNoticeVO lenotivo = service.getViewWithNoAddCount(paraMap);
+			
+			if(lenotivo == null || (lenotivo != null && lenotivo.getFileName() == null)) {
+				out = response.getWriter();
+				// 웹브라우저상에 메시지를 쓰기 위한 객체생성
+				
+				out.println("<script type='text/javascript'>alert('존재하지 않는 글번호 또는 첨부파일이 없으므로 파일 다운로드가 불가합니다!!'); history.back();</script>");
+				return; // 종료
+			}
+			else {
+				String fileName = lenotivo.getFileName();
+				// 202106040930484198194255200.png : 이것이 바로 WAS(톰캣) 디스크에 저장된 파일명이다. 
+				
+				String orgFilename = lenotivo.getOrgFilename();
+				// 강아지.png 다운로드 시 보여줄 파일명
+				
+				// 첨부파일이 저장되어 있는 WAS(톰캣)의 디스크 경로명을 알아와야만 다운로드를 해줄수 있다. 
+		        // 이 경로는 우리가 파일첨부를 위해서 /addEnd.action 에서 설정해두었던 경로와 똑같아야 한다.
+		        // WAS 의 webapp 의 절대경로를 알아와야 한다.
+				HttpSession session = request.getSession();
+				String root = session.getServletContext().getRealPath("/"); 
+				
+				// System.out.println("~~~~~~ webapp 의 절대경로 => " + root);
+				// ~~~~~~ webapp 의 절대경로 => C:\NCS\workspace(spring)\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Board\ 
+				
+				String path = root+"resources"+File.separator+"files";
+				/* File.separator 는 운영체제에서 사용하는 폴더와 파일의 구분자이다.
+			             운영체제가 Windows 이라면 File.separator 는  "\" 이고,
+			             운영체제가 UNIX, Linux 이라면  File.separator 는 "/" 이다. 
+			    */
+				
+				// path 가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다.
+				// System.out.println("~~~~~~ path => " + path);
+				// ~~~~~~ path => C:\NCS\workspace(spring)\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Board\resources\files 
+			
+				 
+				// **** file 다운로드 하기 **** //
+				boolean flag = false; // file 다운로드의 성공,실패를 알려주는 용도 
+				flag = fileManager.doFileDownload(fileName, orgFilename, path, response);
+		        // file 다운로드 성공시 flag 는 true, 
+		        // file 다운로드 실패시 flag 는 false 를 가진다.
+				
+				if(!flag) {
+					// 다운로드가 실패할 경우 메시지를 띄워준다.		          
+	            	
+					out = response.getWriter();
+	            	// 웹브라우저상에 메시지를 쓰기 위한 객체생성.
+		               
+	            	out.println("<script type='text/javascript'>alert('파일 다운로드가 실패되었습니다!!'); history.back();</script>"); 		         
+				}
+			}
+			
+		}catch(NumberFormatException e) {
+			
+			try {
+				out = response.getWriter();
+				// 웹브라우저상에 메시지를 쓰기 위한 객체생성
+				
+				out.println("<script type='text/javascript'>alert('파일 다운로드가 불가합니다!!'); history.back();</script>");
+			} catch(IOException e1) {
+				
+			}
+		} catch(IOException e2) {
+			
+		}		
+	}
 
+	// 공지사항 수정하기
+	@RequestMapping(value="/lesson/noticeEdit.sam")
+	public ModelAndView requiredLogin_edit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+      
+		String seq = request.getParameter("seq");
+	  
+		String searchType = request.getParameter("searchType");
+		// System.out.println("써치타입: "+searchType);
+		if(searchType == null) {
+			searchType = "";
+		}
+		mav.addObject(searchType);
+		
+		String searchWord = request.getParameter("searchWord");
+		// System.out.println("써치워드: "+searchWord);
+		if(searchWord == null) {
+			searchWord = "";
+		}
+		mav.addObject(searchWord);
+		 
+		// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
+		LessonNoticeVO lenotivo = service.getViewNo(seq);
+	  
+		HttpSession session = request.getSession();
+		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+	  
+		String loginuserPerno = String.valueOf(loginuser.getPerno());
+		
+		if( !loginuserPerno.equals(lenotivo.getFk_perno()) ) {
+			String message = "다른 사용자의 글은 수정이 불가합니다.";
+			String loc = "javascript:history.back()";
+	 
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+			mav.setViewName("msg");
+		}
+		else {
+			mav.addObject("lenotivo", lenotivo);
+			mav.setViewName("lesson/noticeEdit.tiles4");
+		}
+	      
+		return mav;
+	}
+	
+	
+	// 글수정 페이지 완료하기 
+	@RequestMapping(value="/lesson/noticeEditEnd.sam", method= {RequestMethod.POST})
+	public ModelAndView editEnd(ModelAndView mav, LessonNoticeVO lenotivo, HttpServletRequest request, MultipartHttpServletRequest mrequest) {   
+	   
+		// System.out.println("삭제체크여부"+(request.getParameter("delfileName")));
+		
+		String delFileCheck = request.getParameter("delfileName");
+		
+		String searchType = request.getParameter("searchType");
+		String searchWord = request.getParameter("searchWord");
+		
+		MultipartFile attach = lenotivo.getAttach();
+		
+		// 게시글에 첨부파일이 있는지 확인하기(수정)
+		String filename = service.isFilename(lenotivo);
+		lenotivo.setFileName(filename);
+		// System.out.println("파일삭제 작업전 파일이름: "+boardvo.getFileName());
+		
+		if(delFileCheck != null && filename != null) {
+			// 게시글에 파일이 있는데 파일삭제에 체크가 되어있다면
+			service.delFile(lenotivo); // 첨부파일 삭제 체크시 첨부파일 삭제
+			lenotivo.setFileName(null);
+		}
+		filename = service.isFilename(lenotivo);
+		lenotivo.setFileName(filename);
+		// System.out.println("파일삭제 작업후 파일이름: "+boardvo.getFileName());
+		
+		if(!attach.isEmpty() && filename == null) {
+			// 게시글이 파일이 없고 파일첨부가 되었다면
+			
+			HttpSession session = mrequest.getSession();
+			String root = session.getServletContext().getRealPath("/"); 
+			
+			String path = root+"resources"+File.separator+"files";
+			
+			String newFileName = "";
+			// WAS(톰캣)의 디스크에 저장될 파일명 
+			
+			byte[] bytes = null;
+			// 첨부파일의 내용을 담는 것
+			
+			long fileSize = 0;
+			// 첨부파일의 크기 
+			
+			try {
+				bytes = attach.getBytes();
+				// 첨부파일의 내용물을 읽어오는 것 
+				
+				String originalFilename = attach.getOriginalFilename();
+				// originalFilename ==> "강아지.png"
+				
+				newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
+				
+	//			System.out.println(">>> 확인용 newFileName => " + newFileName);
+				// >>> 확인용 newFileName => 20210603123820876795424460900.png 
+				// >>> 확인용 newFileName => 20210603124015876910815673500.png
+				
+			/*
+			    3. BoardVO boardvo 에 fileName 값과 orgFilename 값과 fileSize 값을 넣어주기   
+			*/
+				lenotivo.setFileName(newFileName);
+				// WAS(톰캣)에 저장될 파일명(20210603123820876795424460900.png)
+				
+				lenotivo.setOrgFilename(originalFilename);
+				// 게시판 페이지에서 첨부된 파일(강아지.png)을 보여줄 때 사용.
+				// 또한 사용자가 파일을 다운로드 할때 사용되어지는 파일명으로 사용.
+				
+				fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
+				lenotivo.setFileSize(String.valueOf(fileSize));
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		else if(!attach.isEmpty() && filename != null){
+			// 게시글에 파일이 있는데 파일첨부를 했다면
+			mav.addObject("message", "파일은 하나만 첨부가능합니다");
+			mav.setViewName("msg");
+			
+			return mav;
+		}
+		
+		int n = 0;
+		
+		if(attach.isEmpty()) { 
+			// 첨부파일이 없는 경우라면
+			n = service.edit_withFile(lenotivo);			
+		}
+		else {
+			// 첨부파일이 있는 경우
+			n = service.edit(lenotivo);
+		}
+		
+		if(n == 0) {
+			mav.addObject("message", "수정이 실패했습니다.");
+		}
+		else {
+			mav.addObject("message", "글수정 성공!!");      
+		}
+	  
+		mav.addObject("loc", request.getContextPath()+"/lesson/noticeView.sam?seq="+lenotivo.getSeq()+
+							"&searchType="+searchType+
+							"&searchWord="+searchWord);
+		mav.setViewName("msg");
+       
+		return mav;
+	}
+	
+	
+	// 글 삭제하기
+	@RequestMapping(value="/lesson/noticeDeleteEnd.sam", method= {RequestMethod.POST})
+	public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+   
+		String seq = request.getParameter("seq");
+		String fk_subno = request.getParameter("fk_subno");	
+		 	//System.out.println(categoryno);
+		
+		String gobackURL = request.getParameter("gobackURL");
+		mav.addObject("gobackURL", gobackURL);
+      
+		LessonNoticeVO lenotivo = service.getViewNo(seq);
+		
+		HttpSession session = request.getSession();
+		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+      
+		String loginuserPerno = String.valueOf(loginuser.getPerno());
+		
+		String loc = "javascript:history.back()";
+		
+		
+		if( !loginuserPerno.equals(lenotivo.getFk_perno()) ) {
+			String message = "다른 사용자의 글은 삭제가 불가합니다.";
+			       
+			mav.addObject("message", message);
+			mav.addObject("loc", loc);
+			mav.setViewName("msg");
+      	}
+      	else {
+    	    
+    	    int n = service.del(Integer.parseInt(seq));    	
+    		
+    	    if(n == 0) {
+    	         mav.addObject("message", "글 삭제가 불가합니다.");
+    	         mav.addObject("loc", loc);
+    	         mav.setViewName("msg");
+    	    }     
+    	    else {
+    	         mav.addObject("message", "글삭제 성공!!");
+    	         mav.addObject("loc", request.getContextPath()+"/lesson/notice.sam?fk_subno="+fk_subno);
+    	         mav.setViewName("msg");
+    	    }      		
+      	}     
+		return mav;
+	}
+	
+	
+	
 }

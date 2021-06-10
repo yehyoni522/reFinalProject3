@@ -25,14 +25,14 @@ public class LessonNoticeVO {
     private String orgFilename; // 진짜 파일명(강아지.png)  // 사용자가 파일을 업로드 하거나 파일을 다운로드 할때 사용되어지는 파일명
     private String fileSize;    // 파일크기
 	
+    private String fk_subno; // 과목번호
     
     public LessonNoticeVO(){}   
 
 
-
 	public LessonNoticeVO(String seq, String fk_perno, String subject, String content, String readCount, String regDate,
-			String name, String previousseq, String previoussubject, String nextseq,
-			String nextsubject, MultipartFile attach, String fileName, String orgFilename, String fileSize) {
+			String name, String previousseq, String previoussubject, String nextseq, String nextsubject,
+			MultipartFile attach, String fileName, String orgFilename, String fileSize, String fk_subno) {
 		super();
 		this.seq = seq;
 		this.fk_perno = fk_perno;
@@ -49,9 +49,16 @@ public class LessonNoticeVO {
 		this.fileName = fileName;
 		this.orgFilename = orgFilename;
 		this.fileSize = fileSize;
+		this.fk_subno = fk_subno;
 	}
 
 
+	public String getFk_subno() {
+		return fk_subno;
+	}
+	public void setFk_subno(String fk_subno) {
+		this.fk_subno = fk_subno;
+	}
 	public String getName() {
 		return name;
 	}

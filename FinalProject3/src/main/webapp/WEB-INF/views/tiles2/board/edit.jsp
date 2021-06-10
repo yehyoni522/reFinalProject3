@@ -143,7 +143,7 @@
 	<hr class="mainline" align="left" >
 	
 	<form name="editFrm" enctype="multipart/form-data"> 
- 		<input type="hidden" name="categoryno" value="1" /> 
+ 		<input type="hidden" name="categoryno" value="${boardvo.categoryno}" /> 
  		<input type="hidden" name="seq" value="${requestScope.boardvo.seq}" />                  
 		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
 		<input type="hidden" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />
