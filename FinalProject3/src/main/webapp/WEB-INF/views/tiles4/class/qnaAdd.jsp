@@ -155,7 +155,7 @@ div#btn-board{
 	&nbsp;>&nbsp;질문게시판
 	</div>
 
-	<h1 class="headerName">${requestScope.subject}</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<h3 style="text-align: left; font-weight: bold;">| 질문게시판</h3>
 	<br>
@@ -190,8 +190,8 @@ div#btn-board{
       <input type="hidden" name="fk_qnano" value="${requestScope.fk_qnano}" />
       <input type="hidden" name="groupno" value="${requestScope.groupno}" />
       <input type="hidden" name="depthno" value="${requestScope.depthno}" />
-      
-		<div id="btn-board">
+      <input type="hidden" name=fk_subno value="${sessionScope.subno}" />
+      		<div id="btn-board">
 			<button type="button" class="btn-board" id="btnWrite">완료</button>
 		<button type="button"class="btn-board" onclick="javascript:history.back()">취소</button>
 	</div>

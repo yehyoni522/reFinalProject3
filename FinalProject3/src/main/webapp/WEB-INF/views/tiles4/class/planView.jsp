@@ -126,38 +126,38 @@ div#btn-board{
 
 	<div class="headerCategoty">
 	<i class="fas fa-university "></i>
-	&nbsp;>&nbsp;수업자료
+	&nbsp;>&nbsp;수업계획서
 	</div>
 	
 	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
-	<h3 style="text-align: left; font-weight: bold;">| 수업자료 상세</h3>
+	<h3 style="text-align: left; font-weight: bold;">| 수업계획서 상세</h3>
 
 	<hr>
-	<c:if test="${empty requestScope.mtrvo}">
+	<c:if test="${empty requestScope.planVO}">
 		<div style="padding: 50px 0; font-size: 16pt; color: red;">존재하지 않습니다</div>
 	</c:if>
 	
 	<c:choose>
 		<c:when test="${(sessionScope.loginuser.identity == '0')||(sessionScope.loginuser.identity == '1')||(sessionScope.loginuser.identity == '2')}">
-			<c:if test="${not empty requestScope.mtrvo}">
+			<c:if test="${not empty requestScope.planVO}">
 				<table id="table" style="width:100%; border-top: 1.5px #b3b3b3 solid; border-bottom: 1.5px #b3b3b3 solid;">
 					<tr>
 					   <th style="width:200px;">제목</th>
 					   <td style="font-weight: bolder;">
-					   		${requestScope.mtrvo.subject}
+					   		${requestScope.planVO.subject}
 					   </td>
 					</tr>
 					<tr>
 					   <th>게시일시</th>
 					   <td>
-					     	${requestScope.mtrvo.regDate}
+					     	${requestScope.planVO.regDate}
 					   </td>
 					</tr>					
 					<tr>			  
 					   <td colspan="2">
 					      	<p style="word-break: break-all; padding:15px;">
-					      		${requestScope.mtrvo.content}
+					      		${requestScope.planVO.content}
 					      	</p>
 					   </td>
 					</tr>
