@@ -283,7 +283,7 @@
 					while( !(loop > blockSize || pageNo > totalPage) ) {
 					
 						if(pageNo == currentShowPageNo) {
-							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
+							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; color:black; padding:2px 4px;'>"+pageNo+"</li>";
 						}
 						else {
 							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='javascript:goViewBoard(\""+pageNo+"\")'>"+pageNo+"</a></li>";
