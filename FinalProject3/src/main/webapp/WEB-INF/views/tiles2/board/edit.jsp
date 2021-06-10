@@ -32,7 +32,12 @@
 	#btnWrite{
 		margin-right: 4px;
 	}
-	
+	#btnFileAdd{
+		cursor: pointer;
+		width:25px; 
+		height:25px;
+		margin-left: 5px;
+	}
 </style>
 
 <script type="text/javascript">
@@ -137,8 +142,8 @@
 	</h1>
 	<hr class="mainline" align="left" >
 	
-	<form name="editFrm"> 
- 		<input type="hidden" name="categoryno" value="1" /> 
+	<form name="editFrm" enctype="multipart/form-data"> 
+ 		<input type="hidden" name="categoryno" value="${boardvo.categoryno}" /> 
  		<input type="hidden" name="seq" value="${requestScope.boardvo.seq}" />                  
 		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
 		<input type="hidden" name="name" value="${sessionScope.loginuser.name}" class="short" readonly />
@@ -147,6 +152,14 @@
 		
 		작성자 : ${sessionScope.loginuser.name}&nbsp;${sessionScope.loginuser.perno}
 		<label>익명</label> <input type="checkbox" name="namecheck" id="namecheck" value="1"/>    
+		<br>
+		
+		<%-- 파일첨부--%>
+		<div><img id="btnFileAdd"src="<%=ctxPath %>/resources/images/fileAdd.PNG" /> 파일 첨부하기 <input type="file" id="fileAddin" name="attach" value="<c:out value="${boardvo.fileName}"/>"/> </div>
+		<c:if test="${requestScope.boardvo.fileName != null}">
+			<label>삭제&nbsp;&nbsp;</label><input type="checkbox" name="delfileName" value="<c:out value="${requestScope.boardvo.fileName}"/>">   
+			&nbsp;&nbsp;<a href="<%=ctxPath%>/board/download.sam?seq=${requestScope.boardvo.seq}&categoryno=${boardvo.categoryno}"> ${requestScope.boardvo.orgFilename}</a>
+		</c:if>
 		
 		<div>
 			<input type="text" name="subject" id="subject" value="${requestScope.boardvo.subject}"/>       

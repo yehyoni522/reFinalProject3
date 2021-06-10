@@ -65,16 +65,23 @@
 	</select>
 	<!-- 수강중인 과목 불러오기 -->
 	<select id="Mainsubject" parameterType="int" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
-		select subname,name,day,time
+		select subno,subname,name,day,time
 		from
 		(
-			select s.subname,s.day,s.time,s.fk_perno
+			select s.subno,s.subname,s.day,s.time,s.fk_perno
 			from tbl_class B join tbl_subject S
 			on B.fk_subno=S.subno
 			where b.fk_perno=#{userid}
 		)V
 		join tbl_person P
 		on V.fk_perno =P.perno
+	</select>
+		<!-- 교수 수강중인 과목 불러오기 -->
+	<select id="MainProsubject" parameterType="int" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
+		select subno,subname,day,time
+		from tbl_subject
+		where fk_perno=#{userid}
+	
 	</select>
 	
 	<!-- 일정 추가-->
@@ -139,4 +146,100 @@
 		delete from tbl_schedule
 		where fk_perno=#{perno} and schno=#{schno}
 	</delete>	
+	
+	
+	
+	<select id ="adminsubject" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
+		select subno,name,fk_perno,subname,credit,semeter,day,time,content,majseq
+		from
+		(
+		    select row_number() over(order by semeter,majseq desc) as rno,subno,name,fk_perno,subname,credit,semeter,day,time,M.content,majseq
+		    from
+		    (
+		        select S.subno,S.fk_perno,S.subname,S.credit,S.semeter,S.day,S.time,p.name,s.fk_majseq
+		        from tbl_subject S join tbl_person P
+		        on s.fk_perno=P.perno 
+                 
+		    )V
+		    join tbl_major M
+		    on v.fk_majseq =M.majseq
+		    <if test='searchType != "" and searchWord != "" '>
+				and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+			</if>
+		)T
+		where rno between #{startRno} and #{endRno}
+	</select>
+	
+	<select id="getSubjectTotal" parameterType="HashMap" resultType="int">
+	   select count(*)
+		from
+		(
+		    select subno,name,fk_perno,subname,credit,semeter,day,time,M.content,majseq
+		    from
+		    (
+		        select S.subno,S.fk_perno,S.subname,S.credit,S.semeter,S.day,S.time,p.name,s.fk_majseq
+		        from tbl_subject S join tbl_person P
+		        on s.fk_perno=P.perno 
+		    )V
+		    join tbl_major M
+		    on v.fk_majseq =M.majseq
+           	    <if test='searchType != "" and searchWord != "" '>
+				and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+			</if>
+		)T     
+       
+        
+	</select>
+	
+	
+	<!-- === #111. 검색어 입력시 자동글 완성하기 6 ===  -->
+	<select id="wordSearchShow" parameterType="HashMap" resultType="String">
+		select distinct ${searchType}
+		   from
+   		 (
+        select S.subno,S.fk_perno,S.subname,S.credit,S.semeter,S.day,S.time,p.name,s.fk_majseq
+        from tbl_subject S join tbl_person P
+        on s.fk_perno=P.perno 
+	    )V
+	    join tbl_major M
+	    on v.fk_majseq =M.majseq
+		and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+		<!-- select 문에서 distinct 와 order by 절을 함께 사용할때는 조심해야 한다.
+   			 order by 절에는 select 문에서 사용된 컬럼만 들어올 수가 있다.
+   			 또는 order by 절을 사용하지 않아야 한다. 
+   		-->
+	</select>
+	<resultMap type="HashMap" id="subjectMap">
+		<result property="subno" 	column="subno" 		javaType="String" />
+		<result property="name" 	column="name" 	javaType="String" />
+		<result property="fk_perno" column="fk_perno" 		javaType="String" />
+		<result property="subname" 		column="subname" 			javaType="String" />
+		<result property="credit" 		column="credit" 			javaType="String" />
+		<result property="semeter" 		column="semeter" 			javaType="String" />
+		<result property="day" 			column="day" 			javaType="String" />
+		<result property="time" 	column="time" 				javaType="String" />
+		<result property="content" 	column="content" 				javaType="String" />
+		<result property="majseq" 	column="majseq" 				javaType="String" />
+	</resultMap>
+	
+
+	<select id="getExcelsubjectList" resultMap="subjectMap">
+		select subno,name,fk_perno,subname,credit,semeter,day,time,content,majseq
+			from
+			(
+			    select subno,name,fk_perno,subname,credit,semeter,day,time,M.content,majseq
+			    from
+			    (
+			        select S.subno,S.fk_perno,S.subname,S.credit,S.semeter,S.day,S.time,p.name,s.fk_majseq
+			        from tbl_subject S join tbl_person P
+			        on s.fk_perno=P.perno 
+			    )V
+			    join tbl_major M
+			    on v.fk_majseq =M.majseq
+			)T
+			order by semeter,majseq desc
+		
+	</select>
+	
+	
 </mapper>
