@@ -182,14 +182,25 @@ tr {
 	}// end of function allCheckStart()-------------------
 	
 	function goSendEmail() {
-		var checkCnt = $("input:checkbox[name=allCheckStudent]:checked").length;
+		var checkCnt = $("input:checkbox[name=PERNO]:checked").length;
 		
 		if(checkCnt < 1) {
 	    	alert("학생을 선택하세요.");
 	    	return; 
 	    }	
 		else{
-			
+			var emailArr = new Array();
+       		$("input[name=PERNO]:checked").each(function() {
+       			var chk = $(this).val();
+       			emailArr.push(chk);
+       		});
+       		
+       		$("input#parentEmail").val(emailArr);
+       		var openWin;
+       		openWin = window.open("<%= ctxPath%>/admin/sendEmail.sam",
+                    								"이메일 전송", "left=430px , top=80px,width=400, height=300, toolbar=no, menubar=no, scrollbars=no, resizable=yes"); 	
+        	
+			//window.open("<%= ctxPath%>/admin/sendEmail.sam", "이메일 전송", " left=430px , top=80px,width=400, height=300, toolbar=no, menubar=no, scrollbars=no, resizable=yes" ); 
 		}
 	}
 
@@ -230,7 +241,7 @@ tr {
 			<table>
 				<thead>
 					<tr style="font-weight: bold;">
-						<th class="admthtd"><input type="checkbox" name="checkOne" id="allCheckStudent" onClick="allCheckStart();"><label for="allCheckStudent"></label></th>  
+						<th class="admthtd"><input type="checkbox" id="allCheckStudent" onClick="allCheckStart();"><label for="allCheckStudent"></label></th>  
 						<th class="thall" style="margin-right: 70px; width: 30px;">No</th>
 						<th class="admthtdall thall">학과코드</th>
 						<th class="admthtdall thall">학과</th>
@@ -245,14 +256,14 @@ tr {
 					<c:forEach var="personMap" items="${requestScope.personList}" varStatus="status">			
 						<form name="studentinfoFrm">
 						<tr>		
-							<td><input type="checkbox" class="CheckStudent student" name="PERNO" id="CheckStudent${status.index}" value="${personMap.PERNO}"><label for="CheckStudent${status.index}"></label></td>
+							<td><input type="checkbox" class="CheckStudent student" name="PERNO" id="CheckStudent${status.index}" value="${personMap.EMAIL}"><label for="CheckStudent${status.index}"></label></td>
 							<td style="margin-right: 70px; width: 30px;">${status.count}</td>
 							<td class="admthtdall goinfo">${personMap.FK_MAJSEQ}</td>
 							<td class="admthtdall goinfo">${personMap.CONTENT}</td>
 							<td class="admthtdall goinfo" onclick="goView('${personMap.PERNO}')">${personMap.PERNO}</td>
 							<td class="admthtdall goinfo">${personMap.NAME}</td>
 							<td class="admthtdall goinfo">${personMap.MOBILE}</td>
-							<td class="admthtdall goinfo">${personMap.EMAIL}</td>
+							<td class="admthtdall goinfo" id="email">${personMap.EMAIL}</td>
 							<input type="hidden" name="PERNO" />
 							<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />							
 						</tr>
@@ -270,6 +281,9 @@ tr {
 	<form name="goViewFrm">
 		<input type="hidden" name="PERNO" />
 		<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
+	</form>
+	<form name="goEmail">
+		<input type="hidden" id="parentEmail" />
 	</form>
 
 </div>

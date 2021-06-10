@@ -71,7 +71,7 @@ public interface InterMessageService {
 	 //단대이름 알아오기
 	String getNameCol(int majseq);
 
-
+	
 
 	
 

@@ -5,7 +5,6 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.spring.finalproject3.yehyeon.mail.GoogleMail_ToPerson;
 import com.spring.finalproject3.yehyeon.mail.GoogleMail_yehyeon;
 import com.spring.finalproject3.yehyeon.model.BookListVO;
 import com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO;
@@ -398,6 +398,49 @@ public class YehyeonController {
 		String json = jsonObj.toString(); 
 		
 		return json;   // "{"n":1}"
+	}
+	
+	@RequestMapping(value="/admin/sendEmail.sam", produces="text/plain;charset=UTF-8")
+	public ModelAndView sendEmail(HttpServletRequest request, ModelAndView mav) {
+		
+		mav.setViewName("sendEmail/sendEmail");
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="/admin/sendEmailEnd.sam", produces="text/plain;charset=UTF-8")
+	public ModelAndView sendEmailEnd(HttpServletRequest request, ModelAndView mav) {
+		
+		String memo = request.getParameter("memo");
+		String emailAddress = request.getParameter("emailAddress");
+		
+		String[] emailArr = emailAddress.split(",");
+		
+		GoogleMail_ToPerson mail = new GoogleMail_ToPerson();
+		
+		for(int i = 0; i < emailArr.length; i++) {
+			// 메일이 정상적으로 전송되었는지 유무를 알아오기 위한 용도
+			try {
+				mail.sendmail(emailArr[i], memo);
+				String message = "메일 전송 성공";
+				String loc = "javascript:history.back()";
+				
+				mav.addObject("message", message);
+				mav.addObject("loc", loc);
+			} catch (Exception e) {
+				// 메일 전송이 실패한 경우
+				String message = "메일 전송 실패";
+				String loc = "javascript:history.back()";
+				
+				mav.addObject("message", message);
+				mav.addObject("loc", loc);
+				
+				e.printStackTrace();
+			}
+		} // end of for ----------------
+		mav.setViewName("msg");
+		
+		return mav;
 	}
 	
 	////////////////////////////관리자 전용 메인 페이지 시작///////////////////////////////////	

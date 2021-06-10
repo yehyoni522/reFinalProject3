@@ -164,7 +164,7 @@ dfn:hover::before {top: 50px;}
 		location.href="<%= ctxPath%>/reading/index.sam";
 	}
 	function updateUsecheck(){
-		var bool = confirm("${bookToday.bDate} ${bookToday.tname} <br>입실처리를 완료하시겠습니까?");
+		var bool = confirm("날짜 : ${bookToday.bDate} 시간 : ${bookToday.tname} 열람실 입실처리를 완료하시겠습니까?");
 		var bno = $("input#bno").val();
 		
 		if(bool){
@@ -270,7 +270,7 @@ dfn:hover::before {top: 50px;}
 
 <div class="belongHead">
 	<div class="admsubtitle" >
-		<span>열람실예약내역</span><span><a style="margin-left: 310px; font-size: 15px; cursor: pointer;" onclick="goEdit()">열람실이용내역 →</a></span>
+		<span>열람실예약내역</span><!-- <span><a style="margin-left: 310px; font-size: 15px; cursor: pointer;" onclick="goEdit()">열람실이용내역 →</a></span> -->
 	</div>
 	<div class="belongHead2">
 		<c:if test='${requestScope.rcheck == 0 }'>
@@ -295,8 +295,8 @@ dfn:hover::before {top: 50px;}
 			    <td>${bookToday.tname}</td>
 			  </tr>
 			  <tr>
-			    <th scope="row">▶ 예약 열람실</th>
-			    <td>${bookToday.rname}</td>
+			    <th scope="row">▶ 예약 좌석</th>
+			    <td>${bookToday.rname}&nbsp;&nbsp;${bookToday.dsname}</td>
 			  </tr>
 			  <c:if test="${bookToday.usecheck == 0}">
 			  	<tr>

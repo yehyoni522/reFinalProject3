@@ -1,10 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+
+<%@ page import="java.net.InetAddress"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 
 <%
 	String ctxPath = request.getContextPath();
-    //     /MyMVC 
+
+	// === #172. (웹채팅관련3) === 
+	// === 서버 IP 주소 알아오기(사용중인 IP주소가 유동IP 이라면 IP주소를 알아와야 한다.) ===//
+	InetAddress inet = InetAddress.getLocalHost(); 
+	String serverIP = inet.getHostAddress();
+	
+ //System.out.println("serverIP : " + serverIP);
+ // serverIP :192.168.35.133
+	
+	// String serverIP = "211.238.142.72"; 만약에 사용중인 IP주소가 고정IP 이라면 IP주소를 직접입력해주면 된다.
+	
+	// === 서버 포트번호 알아오기   ===
+	int portnumber = request.getServerPort();
+ // System.out.println("portnumber : " + portnumber);
+ // portnumber : 9090
+	
+	String serverName = "http://"+serverIP+":"+portnumber; 
+ // System.out.println("serverName : " + serverName);
+ // serverName : http://211.238.142.72:9090 
 %>
 
 <script src="<%= ctxPath%>/resources/js/jquery.min.js"></script>
@@ -131,7 +151,16 @@
 	  }
 	.fc-sun {color:#e31b23}
 	.fc-col-header-cell fc-day fc-day-sat {color:#007dc3}
-
+	
+	img#popup{
+	position: fixed;
+  	top: 650px;
+  	right: 60px;
+  	cursor:pointer;
+  	 width: 80px; 
+  	 height: 80px;
+	
+	}
 
 </style>
 
@@ -343,10 +372,16 @@ function closeNav() {
 
 function click_add(){
 	
-    window.open("<%= ctxPath%>/schedulePopup.sam", "스케줄입력", " left=430px , top=80px,width=400, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
+    window.open("<%= ctxPath%>/schedulePopup.sam", "스케줄입력", " left=430px , top=80px,width=430, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
 
 
 }
+function go_pop(){
+	
+	javascript:void( window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=400, height=650, toolbar=no, menubar=no, scrollbars=yes, resizable=yes"));
+	
+	
+	}
 
 </script>
    
@@ -434,3 +469,6 @@ function click_add(){
 
 </div>
 
+<c:if test="${ not empty sessionScope.loginuser}">
+<img src="<%= ctxPath%>/resources/images/chat.png" onclick="go_pop()" id="popup" >
+</c:if>
