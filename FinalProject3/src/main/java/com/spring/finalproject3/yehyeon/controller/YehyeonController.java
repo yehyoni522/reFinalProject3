@@ -448,7 +448,7 @@ public class YehyeonController {
 	public ModelAndView classHome(HttpServletRequest request, ModelAndView mav) {
 		
 		String subno = request.getParameter("subno");
-		subno = "1000";
+		
 		HttpSession session = request.getSession();
 		session.setAttribute("subno", subno);
 		
