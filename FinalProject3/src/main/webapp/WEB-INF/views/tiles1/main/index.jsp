@@ -262,7 +262,7 @@
 					
 					var totalPage = json.totalPage;
 					
-					var pageBarHTML = "<ul style='list-style: none;'>";
+					var pageBarHTML = "<ul style='list-style: none; color:black;'>";
 					
 					var blockSize = 3;
 		
@@ -283,10 +283,10 @@
 					while( !(loop > blockSize || pageNo > totalPage) ) {
 					
 						if(pageNo == currentShowPageNo) {
-							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
+							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; color:black; padding:2px 4px;'>"+pageNo+"</li>";
 						}
 						else {
-							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='javascript:goViewBoard(\""+pageNo+"\")'>"+pageNo+"</a></li>";
+							pageBarHTML += "<li style='display:inline-block; width:30px; color:gray; font-size:12pt;'><a href='javascript:goViewBoard(\""+pageNo+"\")'>"+pageNo+"</a></li>";
 						}
 						
 						loop++;
@@ -327,6 +327,7 @@
 		    		},
 		    	locale : "ko",
 		    	initialView: 'dayGridMonth',
+		    	 disableDragging: true,
 				dayMaxEvents: true,
 				editable : true,
 			
@@ -453,7 +454,6 @@ function go_pop(){
 </div>
 
 
-
 <div id="logincheck"  >
 	<c:if test="${empty sessionScope.loginuser}">
 	<span style="display:inline-block; padding:250px 0px 0px 150px;  font-size: 20pt; font-weight: bold;">${sessionScope.loginuser.userid}로그인을 해주세요.</span>
@@ -465,7 +465,7 @@ function go_pop(){
 		내 강의
 		</div>
 		<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
-			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href='"<%=ctxPath%>/class/index.sam?subno="+ ${subjectvo.subno}'>${subjectvo.subname}</a></span>
 			<br>
 			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}교수님</span>
 		</c:forEach>
