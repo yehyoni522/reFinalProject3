@@ -415,9 +415,9 @@ function click_add(){
 }
 function go_pop(){
 	
-	javascript:void( window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=400, height=650, toolbar=no, menubar=no, scrollbars=yes, resizable=yes"));
+	javascript:void( window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=400, height=650, toolbar=no, menubar=no, scrollbars=yes, resizable=yes")); 
 	
-	
+		<%-- location.href="<%= serverName%><%=ctxPath%>/chatting/multichat.sam"; --%>
 	}
 
 </script>

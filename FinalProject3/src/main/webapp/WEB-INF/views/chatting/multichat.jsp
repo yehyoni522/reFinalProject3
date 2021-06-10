@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
  <%@ page import="java.net.InetAddress"%>   
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+
 <%
 	String ctxPath = request.getContextPath();
 
@@ -33,6 +34,9 @@
 		font-size: 12px;
 		
 	}
+	div#onlineList{
+		font-size: 12px;
+	}
 	span#loginuserName{
 		font-size: 12px;
 	}
@@ -40,16 +44,16 @@
 		width:300px;
 		height:60px;
 		overflow: auto;
-		border: solid 1px #E8E9EE;
+		border: solid 1px #ccc;
+		margin: 0;
 	}
 
 	.chat-container{
 		vertical-align: bottom;
-		/* border: 1px solid gray; */
-		margin:10px;
-		min-height: 430px;
-		max-height: 4700px;
-		overflow: scroll;
+		border: 1px solid #ccc; 
+		margin:5px;
+		min-height: 470px;
+		overflow: auto;
 		overflow-x:hidden;
 	}
 	
@@ -124,6 +128,9 @@
 		padding: 12px 10px 12px 10px;
 		cursor: pointer;
 	}
+	#date{
+		font-size: 10px;
+	}
 	
 	
 </style>
@@ -136,7 +143,7 @@
    $(document).ready(function(){
 	   
 	   $("div#onlineList").hide();
-	   $("div#ovo").hide();
+	   
 	   
 	  
 	   
@@ -165,19 +172,36 @@
    	        onclose       WebSocket 연결 해제
      */	
        
+     let today = new Date();   
+
+     let hours = today.getHours(); // 시
+     let minutes = today.getMinutes();  // 분
+     let year = today.getFullYear(); // 년도
+     let month = today.getMonth() + 1;  // 월
+     let date = today.getDate();  // 날짜
+
+     var ampm = '오전';
+     if(hours >11){
+    	 ampm = '오후';
+     }
+     
+
+     var dateall = year+'년'+month+'월'+date+'일';
+     var time = ampm + hours + ':' + minutes ;
+     
      
        var messageObj = {}; // 자바스크립트 객체 생성함.
        
        // === 웹소켓에 최초로 연결이 되었을 경우에 실행되어지는 콜백함수 정의하기 ===  
        websocket.onopen = function(){
     	  //  alert("웹소켓 연결됨!!");
-    	  $("div#chatStatus").text("쌍용대학교 단체채팅방에 입장하였습니다");
+    	  $("div#chatStatus").text("--------------"+dateall+"--------------");
     	  
-    	/*   messageObj = {  message : "<div id='notice'>채팅방에 <span style='color: red;'>입장</span>했습니다</div>"
-		     	        , type : "all"
+     	messageObj = {  message : ""
+		     	        , type : "first"
 		     	        , to : "all" }; // 자바스크립트에서 객체의 데이터값 초기화
 		     	        
-    	  websocket.send(JSON.stringify(messageObj));   	   */      
+    	  websocket.send(JSON.stringify(messageObj));   	    
     	  			
        };
        
@@ -207,7 +231,8 @@
              }
           });
      
-     
+        
+        
      // 메시지 보내기
         $("input#btnSendMessage").click(function() {
             if( $("input#message").val() != "") {
@@ -234,7 +259,7 @@
                 websocket.send(JSON.stringify(messageObj));
                 // JSON.stringify() 는 값을 그 값을 나타내는 JSON 표기법의 문자열로 변환한다
                 
-                $("div#chatMessage").append("<div class='my-chat-box'><span class='my-chat'>" + messageVal + "</span><div><br/>");
+                $("div#chatMessage").append("<div class='my-chat-box'><span id='date'>"+time+"</span><span class='my-chat'>" + messageVal + "</span><div><br/>");
                 $("div#chatMessage").scrollTop(99999999);
                  
                 $("input#message").val("");
@@ -253,8 +278,8 @@
               protected void handleTextMessage(WebSocketSession wsession, TextMessage message) 메소드내에
               133번 라인에 기재해두었음.
            */
-           $("div#ovo").show();
-           var ip = $(this).prev().text();
+           
+           var ip = $(this).next().val();
         //   alert(ip);
             $("input#to").val(ip); 
             
@@ -268,7 +293,6 @@
               $("input#to").val("");
               $("span#privateWho").text("");
               $(this).hide();
-              $("div#ovo").hide();
         });
         
         $("button#onlineListBtn").click(function(){
@@ -285,33 +309,28 @@
 
 
 <div id="onlineList">
-	현재접속자명단----------<div id="connectingUserList" style="overFlow: auto; max-height: 500px;"></div>
+	현재접속자명단<div id="connectingUserList" style="overFlow: auto; height: 50px; border: 1px solid #ccc;"></div>
 	<button id="cBtn">닫기</button>
 </div>
-<button id="onlineListBtn">접속자명단</button> <input type="button" onClick="window.close()" value="채팅방나가기" />
-
-<div id="chatStatus" class="notice"></div><br/> 
+<button id="onlineListBtn">접속자명단</button> 
 
 <div id="chatMessage" class="chat-container" style="overFlow: auto; max-height: 500px;">
+<div id="chatStatus" class="notice"></div><br/> 
 <div class="notice" >
 	- 1:1 채팅(귓속말)을 하시려면 상대의 이름을 클릭하세요.
 </div><br>	 
 </div> 
-<br/>
-
-
-
-
-
+<input type="hidden" id="to" placeholder="귓속말대상IP주소"/>
 <div id="obo" style="font-size: 14px;">
-	<input type="hidden" id="to" placeholder="귓속말대상IP주소"/><br/>
 	귓속말대상 : <span id="privateWho" style="font-weight: bold; color: red;"></span>
 	&nbsp;&nbsp;<button type="button" id="btnAllDialog">귀속말대화끊기</button>
 </div>
 <input type="text" id="message" size="50" placeholder="메시지 내용"/>
 <input type="button" id="btnSendMessage" value="보내기" />
-
-
+<br><br>
+<div align="center">
+	<input type="button" onClick="window.close()" value="채팅방나가기" />
+</div>
 
 
 

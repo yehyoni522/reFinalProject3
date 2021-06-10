@@ -735,7 +735,7 @@ public class HyeminJang_Controller {
      
  	// ==== #173. 웹채팅관련  4 ====
 	@RequestMapping(value="/chatting/multichat.sam", method= {RequestMethod.GET})
-	public ModelAndView requiredLogin_multichat(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+	public ModelAndView multichat(ModelAndView mav) {
 		   
 		mav.setViewName("chatting/multichat");
 		return mav;
