@@ -66,7 +66,7 @@ public class joseungjin_Controller {
 		
 		List<Main_index_BoardVO> MainboardList = null;
 		List<MainSubjectVO> MainsubjectList = null;
-		
+		List<MainSubjectVO> MainProsubjectList=null;
 		HttpSession session = request.getSession();
 		session.setAttribute("readCountPermission", "yes");
 		
@@ -75,7 +75,7 @@ public class joseungjin_Controller {
 			int userid = loginuser.getPerno();
 		
 			MainsubjectList = service.Mainsubject(userid);
-			
+			MainProsubjectList =service.MainProsubject(userid);
 			int ident = loginuser.getIdentity();
 			if(ident ==2) {
 				mav.setViewName("admin/index.tiles3");
@@ -83,7 +83,7 @@ public class joseungjin_Controller {
 			else {
 				MainboardList =service.MainboardView();
 				
-				
+				mav.addObject("MainProsubjectList",MainProsubjectList);
 				mav.addObject("MainsubjectList",MainsubjectList);
 				mav.addObject("MainboardList",MainboardList);
 				mav.setViewName("main/index.tiles1");
@@ -93,7 +93,7 @@ public class joseungjin_Controller {
 			
 			MainboardList =service.MainboardView();
 			
-			
+			mav.addObject("MainProsubjectList",MainProsubjectList);
 			mav.addObject("MainsubjectList",MainsubjectList);
 			mav.addObject("MainboardList",MainboardList);
 			mav.setViewName("main/index.tiles1");
