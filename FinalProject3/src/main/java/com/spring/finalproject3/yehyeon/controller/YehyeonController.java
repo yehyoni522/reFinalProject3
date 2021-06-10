@@ -444,7 +444,7 @@ public class YehyeonController {
 		return mav;
 	}
 	
-	@RequestMapping(value="/class/index.sam", produces="text/plain;charset=UTF-8")
+	@RequestMapping(value="/class/index.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
 	public ModelAndView classHome(HttpServletRequest request, ModelAndView mav) {
 		
 		String subno = request.getParameter("subno");
@@ -454,6 +454,39 @@ public class YehyeonController {
 		
 		String subject = service.getSubjectname(subno);
 		session.setAttribute("subject", subject);
+		
+		List<Map<String,String>> noticeList = service.getNoticeList(subno);
+		
+		System.out.println("확인용 사이즈 : " + noticeList.size());
+		
+		for(int i = 0; i < noticeList.size(); i++) {
+			System.out.println("~~확인용 : " + noticeList.get(i).get("subject"));
+			System.out.println("~~확인용 : " + noticeList.get(i).get("regdate"));
+		}
+		
+		mav.addObject("noticeList", noticeList);
+		
+		List<Map<String,String>> qnaList = service.getQnAList(subno);
+		
+		System.out.println("확인용 사이즈 : " + qnaList.size());
+		
+		for(int i = 0; i < qnaList.size(); i++) {
+			System.out.println("~~확인용 : " + qnaList.get(i).get("subject"));
+			System.out.println("~~확인용 : " + qnaList.get(i).get("regdate"));
+		}
+		
+		mav.addObject("qnaList", qnaList);
+		
+		List<Map<String,String>> materialList = service.getMaterialList(subno);
+		
+		System.out.println("확인용 사이즈 : " + materialList.size());
+		
+		for(int i = 0; i < materialList.size(); i++) {
+			System.out.println("~~확인용 : " + materialList.get(i).get("subject"));
+			System.out.println("~~확인용 : " + materialList.get(i).get("regdate"));
+		}
+		
+		mav.addObject("materialList", materialList);
 		
 		
 		mav.setViewName("class/index.tiles4");

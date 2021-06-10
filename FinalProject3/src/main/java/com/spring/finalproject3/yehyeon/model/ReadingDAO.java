@@ -108,5 +108,23 @@ public class ReadingDAO implements InterReadingDAO {
 		return subject;
 	}
 
+	@Override
+	public List<Map<String, String>> getNoticeList(String subno) {
+		List<Map<String, String>> noticeList = sqlsession.selectList("Reading.getNoticeList", subno);
+		return noticeList;
+	}
+
+	@Override
+	public List<Map<String, String>> getQnAList(String subno) {
+		List<Map<String, String>> qnaList = sqlsession.selectList("Reading.getQnAList", subno);
+		return qnaList;
+	}
+
+	@Override
+	public List<Map<String, String>> getMaterialList(String subno) {
+		List<Map<String, String>> materialList = sqlsession.selectList("Reading.getMaterialList", subno);
+		return materialList;
+	}
+
 
 }
