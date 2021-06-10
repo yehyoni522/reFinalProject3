@@ -46,7 +46,7 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 	@Override
 	public List<String> pernoList(String fk_subno) {
 		List<String> pernoList = sqlsession.selectList("classBoard.pernoList", fk_subno);
-		System.out.println(pernoList);
+		
 		return pernoList;
 	}
 
@@ -216,6 +216,78 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 	public int changeScore(Map<String, String> paraMap) {
 		int n = sqlsession.update("classBoard.changeScore",paraMap);
 		return n;
+	}
+	
+	
+	////////////////////////////////////수업자료////////////////////////////////////
+	
+	// 자료) 총 갯수 알아오기
+	@Override
+	public int getTotalMaterial(Map<String, String> paraMap) {
+		int n = sqlsession.selectOne("classBoard.getTotalMaterial", paraMap);
+		return n;
+	}
+	
+	// 자료) 페이징처리한 목록 가져오기
+	@Override
+	public List<materialVO> materialListSearchWithPaging(Map<String, String> paraMap) {
+		List<materialVO> mtrList = sqlsession.selectList("classBoard.materialListSearchWithPaging", paraMap);
+	      return mtrList;
+	}
+	
+	// 자료) 첨부파일 없는 글쓰기
+	@Override
+	public int materialAdd(materialVO mtrvo) {
+		int n = sqlsession.insert("classBoard.materialAdd", mtrvo);
+	    return n;
+	}
+	
+	// 자료) 첨부파일 있는 글쓰기
+	@Override
+	public int materialAdd_withFile(materialVO mtrvo) {
+		int n = sqlsession.insert("classBoard.materialAdd_withFile",mtrvo);
+		return n;
+	}
+	
+	// 자료) 글 상세 보기
+	@Override
+	public materialVO materialView(Map<String, String> paraMap) {
+		materialVO mtrvo = sqlsession.selectOne("classBoard.materialView", paraMap);
+	    return mtrvo;
+	}
+	
+	// 자료) 조회수 증가 
+	@Override
+	public void materialAddReadCount(String mtrno) {
+	      sqlsession.update("classBoard.materialAddReadCount", mtrno);		
+	}
+	
+	// 자료) 글 수정하기
+	@Override
+	public int materialEdit(materialVO mtrvo) {
+		 int n = sqlsession.update("classBoard.materialEdit", mtrvo);
+	     return n;
+	}
+	
+	// 자료) 글 삭제하기
+	@Override
+	public int materialDelete(Map<String, String> paraMap) {
+		 int n = sqlsession.delete("classBoard.materialDelete", paraMap);
+	     return n;
+	}
+
+	// 자료) 글 검색어 입력시 자동글 완성하기
+	@Override
+	public List<String> materialWordSearchShow(Map<String, String> paraMap) {
+		List<String> wordList = sqlsession.selectList("classBoard.materialWordSearchShow", paraMap);
+		return wordList;
+	}
+
+	// 질문) 원글 글쓴이 perno 받아오기
+	@Override
+	public String getOrgPerno(String qnano) {
+		String org_perno = sqlsession.selectOne("classBoard.getOrgPerno",qnano);
+		return org_perno;
 	}
 
 

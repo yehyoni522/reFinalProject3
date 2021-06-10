@@ -35,8 +35,11 @@ div#admincontent {
  
 }
      
-    .subjectStyle {font-weight: bold;
-                   cursor: pointer;} 
+    .subjectStyle {
+    	font-weight: bold;
+		cursor: pointer;
+	} 
+                   
     #table th, #table td {padding: 5px;}       
 	table{
 		width:100%;
@@ -89,7 +92,7 @@ div#admincontent {
 		display: inline-block;
 		border:0.5px solid #a6a6a6;	
 		border-radius: 7px;
-		width: 20px;
+		min-width: 20px;
 		text-align: center;
 		color:red;
 		font-weight: bold;
@@ -106,12 +109,12 @@ div#admincontent {
 	   
 	  	$("select#page").val("${requestScope.page}");
 
-		$("span.subject").bind("mouseover",function(event){
+		$(".subject").bind("mouseover",function(event){
 			var $target=$(event.target);
 			$target.addClass("subjectStyle");
 		});
 	   
-		$("span.subject").bind("mouseout",function(event){
+		$(".subject").bind("mouseout",function(event){
 			var $target=$(event.target);
 			$target.removeClass("subjectStyle");			
 		});
@@ -214,7 +217,7 @@ div#admincontent {
 	        	       
 	       //검색시 검색조건 및 검색어 값 유지시키기
 	       if( ${not empty requestScope.paraMap} ){
-	    	   if(${requestScope.paraMap.viewBoard eq ""}){
+	    	   if(${requestScope.paraMap.viewBoard eq ""} ){
 	    		   $("select#viewBoard").val("게시판 전체");
 	    		   $("select#searchType").val("${requestScope.paraMap.searchType}");
 	          		$("input#searchWord").val("${requestScope.paraMap.searchWord}");	  
@@ -513,8 +516,8 @@ div#admincontent {
 	      	 <th style="width: 5%;  text-align: center;">No.</th>
 	         <th style="width: 10%;  text-align: center;">게시판 명</th>
 	         <th style="width: 35%;  text-align: center;">제목</th>
-	         <th style="width: 15%;">글쓴이</th>
-	         <th style="width: 20%;  text-align: center;">작성일</th>
+	         <th style="width: 15%; text-align: center;">글쓴이(학번)</th>
+	         <th style="width: 20%;  text-align: center;">작성일시</th>
 	         <th style="width: 5%;  text-align: center;">추천수</th>
 	         <th style="width: 5%;  text-align: center;">조회수</th>
 	      
@@ -528,25 +531,87 @@ div#admincontent {
 	         	<td align="center">${boardvo.seq}</td>
 	             <td align="center">
 	             	<c:if test="${boardvo.categoryno==1}">
-	             		자유게시판
+	             		<a class="subject" style=" text-align:center; width: 280px;" href="/finalproject3/board/list.sam?categoryno=1">자유게시판</a>
 	             	</c:if>
 	             	<c:if test="${boardvo.categoryno==2}">
-	             		중고거래
+	             		<a class="subject"  style=" text-align:center; width: 280px;" href="/finalproject3/board/list.sam?categoryno=2">중고거래</a>
 	             	</c:if>
 	             	<c:if test="${boardvo.categoryno==3}">
-	             		동아리 / 공모전
+	             		<a class="subject" style=" text-align:center; width: 280px;" href="/finalproject3/board/list.sam?categoryno=3">동아리 / 공모전</a>
 	             	</c:if>
 	             </td>
-	             <td align="left">
-		             <%-- === 댓글쓰기가 있는 게시판 === --%>
-		             <c:if test="${boardvo.commentCount>0}">
-		             	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject} <span class="comment">${boardvo.commentCount}</span></span> 
-		           	</c:if>
-		           	<c:if test="${boardvo.commentCount==0}">
-	             	<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
-	             	</c:if>
-	             </td>
-	            <td>${boardvo.name}</td>
+	             <td align="left">	           			             	
+	             	
+	             	<%-- === 댓글쓰기 및 답변형 및 파일첨부가 있는 게시판 시작 === --%>
+					<%-- 첨부파일이 없는 경우 시작 --%>
+						<%-- 답변글이 아닌 원글인 경우 --%>
+						 <c:if test="${empty boardvo.fileName}">
+			                <c:if test="${boardvo.depthno == 0}">
+			                  	<c:if test="${boardvo.commentCount > 0}">
+			                         <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>       
+			                   	</c:if>
+			                      
+			                  	<c:if test="${boardvo.commentCount == 0}">
+			                         <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
+			                    </c:if>
+			              	</c:if> 
+		                 
+		                 
+		               		<%-- 답변글인 경우 --%>
+		               		<c:if test="${boardvo.depthno > 0}">
+		                   		<c:if test="${boardvo.commentCount > 0}">
+		                       	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color:red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">ㄴ&nbsp;</span>${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>       
+		                    		</c:if>
+		                    
+		                    		<c:if test="${boardvo.commentCount == 0}">
+		                       	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color:red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">ㄴ&nbsp;</span>${boardvo.subject}</span>
+		                  		</c:if>
+		               		</c:if> 
+	               		</c:if>
+               		<%-- 첨부파일이 없는 경우 끝 --%>
+               		
+               		
+               		<%-- 첨부파일이 있는 경우 시작 --%>
+               		<c:if test="${not empty boardvo.fileName}">
+						답변글이 아닌 원글인 경우
+		                <c:if test="${boardvo.depthno == 0}">
+		                  	<c:if test="${boardvo.commentCount > 0}">
+		                         <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>&nbsp;<img src="<%=ctxPath %>/resources/images/disk.gif"/>
+		                   	</c:if>
+		                      
+		                  	<c:if test="${boardvo.commentCount == 0}">
+		                         <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>&nbsp;<img src="<%=ctxPath %>/resources/images/disk.gif"/>
+		                    </c:if>
+		              	</c:if>
+	                 
+	                 
+	               		<c:if test="${boardvo.depthno > 0}">
+	                   		<c:if test="${boardvo.commentCount > 0}">
+	                       	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color:red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">ㄴRe :&nbsp;</span>${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>&nbsp;<img src="<%=ctxPath %>/resources/images/disk.gif"/>     
+	                    		</c:if>
+	                    
+	                    		<c:if test="${boardvo.commentCount == 0}">
+	                       	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color:red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">ㄴRe :&nbsp;</span>${boardvo.subject}</span>&nbsp;<img src="<%=ctxPath %>/resources/images/disk.gif"/>
+	                  		</c:if>
+	               		</c:if>
+	               	</c:if>
+               		<%-- 첨부파일이 있는 경우 끝 --%>
+                 <%-- === 댓글쓰기 및 답변형 및 파일첨부가 있는 게시판 끝 === --%>
+	             	
+	             	
+	             	
+	             	
+	            </td>	             
+	            
+	            <td align="center">
+	            	<c:if test="${boardvo.namecheck eq 0}">
+	            		${boardvo.name}(${boardvo.fk_perno})
+	            	</c:if>
+	            	<c:if test="${boardvo.namecheck eq 1}">
+	            		<span style="color:gray; font-style: italic;">익명&nbsp;(${boardvo.name}(${boardvo.fk_perno}))</span>
+	            	</c:if>
+	            </td>
+	            
 	            <td align="center">${boardvo.regDate}</td>
 	            <td align="center">${boardvo.good}</td>
 	             <td align="center">${boardvo.readCount}</td>

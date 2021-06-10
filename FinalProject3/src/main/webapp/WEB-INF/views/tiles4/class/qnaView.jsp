@@ -228,13 +228,21 @@ div#btn-board{
 					   </td>
 					</tr>
 					<tr>
+					<c:if test="${requestScope.qnavo.depthno != 0}"> 
+						<th>글쓴이</th>
+						<td>
+					     	${requestScope.qnavo.name}&nbsp;교수님
+					   </td>
+					</c:if>
+					<c:if test="${requestScope.qnavo.depthno eq 0}"> 
 					   <th>글쓴이(학번)</th>
 					   <td>
-					     	${requestScope.qnavo.name}( ${requestScope.qnavo.fk_perno} )
+					     	${requestScope.qnavo.name}&nbsp;(${requestScope.qnavo.fk_perno})
 					   </td>
+					</c:if>
 					</tr>	
 					<tr>
-					   <th>게시일</th>
+					   <th>작성일시</th>
 					   <td>
 					     	${requestScope.qnavo.regDate}
 					   </td>

@@ -7,6 +7,7 @@
 
 <style type="text/css">
 
+
 .subjectStyle {
 	font-weight: bolder;
 	cursor: pointer;
@@ -126,6 +127,12 @@ div#btn-board{
 			
 			<th style="width: 20%;">마감일</th>			
 		</tr>
+		
+		<c:if test="${empty requestScope.assignmentList}">
+			<tr>
+				<td colspan="100%" style="text-align: center;">과제 게시글이 없습니다.</td>
+			</tr> 
+		</c:if>
 		
 		<c:forEach var="assgnVO" items="${requestScope.assignmentList}" varStatus="status"> 
 		
