@@ -241,8 +241,8 @@ div#add{
 			val = fk_name +"("+fk_userid+")";
 			
 			 $("div#add").html(val);
-			 $("input[name=receiver_es]").val(loginuser_id);
-			 $("input[name=name_es]").val(loginuser_name);
+			 $("input[name=receiver_es]").val(fk_userid);
+			 $("input[name=name_es]").val(fk_name);
 		}
 		else{
 			$("div#add").html("");
