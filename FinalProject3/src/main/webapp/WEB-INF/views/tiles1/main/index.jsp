@@ -168,10 +168,10 @@
 <script>
 	$(document).ready(function(){
 		goViewBoard(1);
-		$("tr#tr_MainBoard").click(function(){
-		var seq = $(this).children("seq").text();
+		$(document).on('click', 'tr#tr_MainBoard', function(){
+		var seq = $(this).children(".seq").text();
 	
-		location.href ="<%= request.getContextPath()%>/baord/view.sam?seq="+seq+"&goBackURL=${requestScope.goBackURL}";
+		location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+seq+"&goBackURL=${requestScope.goBackURL}";
 		});// end of click
 		 
 	});// end of $(document).ready(function(){})--------------
@@ -192,7 +192,7 @@
 				if(json.length > 0) {
 					$.each(json, function(index, item){
 						html += "<tr id='tr_MainBoard'>";
-						html += "<td class='comment'>"+item.seq+"</td>";
+						html += "<td class='seq'>"+item.seq+"</td>";
 						
 						var categoryno = item.categoryno;
 						switch (categoryno) {
@@ -317,17 +317,19 @@
 	
 	   document.addEventListener('DOMContentLoaded', function() {
 		 
-	        var calendarEl = document.getElementById('calendar');
-	        var calendar = new FullCalendar.Calendar(calendarEl, {
-	        	headerToolbar: {
-	        		  start: "today",
-	        		  center: "prev title next",
-	        		  end: "",
-	        		},
-	        	locale : "ko",
-	        	initialView: 'dayGridMonth',
+			 
+		    var calendarEl = document.getElementById('calendar');
+		    var calendar = new FullCalendar.Calendar(calendarEl, {
+		    	headerToolbar: {
+		    		  start: "today",
+		    		  center: "prev title next",
+		    		  end: "",
+		    		},
+		    	locale : "ko",
+		    	initialView: 'dayGridMonth',
 				dayMaxEvents: true,
 				editable : true,
+			
 				events: 
 					function(info, successCallback, failureCallback) {
 					$.ajax({
@@ -339,14 +341,17 @@
 						
 					      $.each(json, function(index, item){
 							  events.push({
+								  id:item.schno,
 								  title:item.calsubject,
 								  start:item.startDate,
-								  end:item.endDate
+								  end:item.endDate,
+								  color:item.color,
+								  description:item.memo
 								});
 							 
 		                 });// end of $.each(json1, function(index, item){}) ------------
 		    					
-					      console.log(events);
+					      //console.log(events);
 					      //$("#calendar").fullCalendar(events);
 					      successCallback(events); 
 						},
@@ -354,11 +359,43 @@
 			                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		           	}
 					})//end of ajax--------
+				   
+
+				},//end of event----
+		    	eventDidMount: function(info) {
+		            tippy(info.el, {
+		            	
+		                  content: 
+		                     info.event.extendedProps.description
+		                 
+		            });
+		        },
+		        eventClick: function(info) {
+					$.ajax({
+						url:"<%= ctxPath%>/scheduleEdit.sam",
+						data:{"perno":"${sessionScope.loginuser.perno}",
+							"title":info.event.title,
+							"schno":info.event.id
+							},
+						dataType:"json",
+						success:  function(data){
 				
-				}
-	        	
-	        });
-	        calendar.render();
+							window.open("<%= ctxPath%>/scheduleEditPopup.sam?schno="+data.schno+"&perno="+data.perno, "스케줄입력", " left=430px , top=80px,width=400, height=580, toolbar=no, menubar=no, scrollbars=no, resizable=yes" ) 
+						
+							
+						}
+
+					})//end of ajax--------
+		    		
+		    	}
+
+
+			
+		    });
+
+		  
+		    
+		    calendar.render();
 	      });
   
 
@@ -372,7 +409,7 @@ function closeNav() {
 
 function click_add(){
 	
-    window.open("<%= ctxPath%>/schedulePopup.sam", "스케줄입력", " left=430px , top=80px,width=430, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
+    window.open("<%= ctxPath%>/schedulePopup.sam", "스케줄입력", " left=430px , top=80px,width=430, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
 
 
 }
@@ -430,7 +467,7 @@ function go_pop(){
 		<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
 			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
 			<br>
-			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;&nbsp; ${subjectvo.name}교수님</span>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}교수님</span>
 		</c:forEach>
 	</c:if>
 	<c:if test="${sessionScope.loginuser.identity == 1}">
@@ -440,7 +477,7 @@ function go_pop(){
 				<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
 			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
 			<br>
-			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}</span>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}교수님</span>
 		</c:forEach>
 	</c:if>
 	
