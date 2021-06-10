@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	String ctxPath = request.getContextPath();
 %>
@@ -24,12 +25,14 @@ li.tiles4 {
 	<br> 
 	<br>
 	<ul>
-		<li class="tiles4"><a href="">공지사항</a></li>
-		<li class="tiles4"><a href="">수업계획서</a></li>
-		<li class="tiles4"><a href="">수업자료</a></li>
-		<li class="tiles4"><a href="">과제게시판</a></li>
-		<li class="tiles4"><a href="">질문게시판</a></li>
-		<li class="tiles4"><a href="">쪽지시험</a></li>
-		<li class="tiles4"><a href="">출석</a></li>
+		<c:if test="${sessionScope.subno ne null}}">
+			<li class="tiles4"><a href="">공지사항</a></li>
+			<li class="tiles4"><a href="">수업계획서</a></li>
+			<li class="tiles4"><a href="">수업자료</a></li>
+			<li class="tiles4"><a href="">과제게시판</a></li>
+			<li class="tiles4"><a href="">질문게시판</a></li>
+			<li class="tiles4"><a href="">쪽지시험</a></li>
+			<li class="tiles4"><a href="">출석</a></li>
+		</c:if>
 	</ul>	
 </div>

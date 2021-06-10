@@ -135,4 +135,12 @@ public class ReadingService implements InterReadingService {
 		return n;
 	}
 
+
+
+	@Override
+	public String getSubjectname(String subno) {
+		String subject = dao.getSubjectname(subno);
+		return subject;
+	}
+
 }
