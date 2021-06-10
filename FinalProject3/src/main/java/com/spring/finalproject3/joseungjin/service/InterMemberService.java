@@ -53,5 +53,7 @@ public interface InterMemberService {
 	int getSubjectTotal(Map<String, String> paraMap);
 	//검색 자동글
 	List<String> wordSearchShow(Map<String, String> paraMap);
+	//엑셀 가져오기
+	List<Map<String, String>> getExcelsubjectList();
 
 }
