@@ -63,7 +63,7 @@ public class BoardController {
 		return mav;
 	}
 	
-	// === #54. 게시판 글쓰기 완료 요청 === // 
+	// 게시판 글쓰기 완료 요청 
 	@RequestMapping(value="/board/addEnd.sam", method= {RequestMethod.POST})
 	public ModelAndView addEnd(HttpServletRequest request, Map<String,String> paraMap, ModelAndView mav, BoardVO boardvo, MultipartHttpServletRequest mrequest) { 
 

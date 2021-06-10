@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="lesson">
+
+	<!-- 공지사항 글쓰기완료(파일첨부X) -->
+	<insert id="add" parameterType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
+		insert into tbl_classnoti(seq, fk_perno, subject, content, readCount, regDate)
+		values(classnotiSeq.nextval, #{fk_perno}, #{subject}, #{content}, default, default)
+	</insert>
+
+	<!-- 공지사항 글쓰기완료(파일첨부O) -->
+	<insert id="add_withFile" parameterType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
+		insert into tbl_classnoti(seq, fk_perno, subject, content, readCount, regDate, fileName, orgFilename, fileSize)
+		values(classnotiSeq.nextval, #{fk_perno}, #{subject}, #{content}, default, default, #{fileName}, #{orgFilename}, #{fileSize})
+	</insert>
+
+	<!-- 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. -->
+   	<select id="getTotalCount" parameterType="HashMap" resultType="int">
+   		select count(*)
+   		from tbl_classnoti
+   		<if test='searchWord != ""'>
+   			where lower(${searchType}) like '%'||lower(#{searchWord}) || '%'	
+   		</if>
+   	</select>
+
+	<!-- 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한것) -->
+   	<select id="noticeSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.yeonha2.LessonNoticeVO">  		
+   		select seq, subject, readCount, fk_perno, name, regDate
+               ,fileName, orgFilename, fileSize	
+		from
+		(
+		    select rno, seq, subject, readCount, fk_perno, P.name as name, B.regDate as regDate
+		               ,fileName, orgFilename, fileSize		
+		    from
+		    (
+		        select row_number() over(order by seq desc) AS rno, seq, subject, readCount, fk_perno  
+		               , to_char(regDate, 'yyyy-mm-dd') as regDate
+		               ,fileName, orgFilename, fileSize	
+		        from tbl_classnoti
+		        <if test='searchWord != ""'>
+		        and lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
+		        </if>
+		    )B
+		    join tbl_person P
+		    on P.perno = B.fk_perno			
+		)		
+		where rno between #{startRno} and #{endRno}	
+		
+   	</select>
+
+
+</mapper>

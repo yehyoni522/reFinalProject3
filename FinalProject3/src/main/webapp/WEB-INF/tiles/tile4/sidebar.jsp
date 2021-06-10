@@ -24,7 +24,7 @@ li.tiles4 {
 	<br> 
 	<br>
 	<ul>
-		<li class="tiles4"><a href="">공지사항</a></li>
+		<li class="tiles4"><a href="<%=ctxPath%>/lesson/notice.sam">공지사항</a></li>
 		<li class="tiles4"><a href="">수업계획서</a></li>
 		<li class="tiles4"><a href="">수업자료</a></li>
 		<li class="tiles4"><a href="">과제게시판</a></li>

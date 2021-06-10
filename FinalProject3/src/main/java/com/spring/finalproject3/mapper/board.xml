@@ -32,7 +32,7 @@
 		</if>
 	</insert>
 	
-	<!-- === #116. 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === -->
+	<!-- 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. -->
    	<select id="getTotalCount" parameterType="HashMap" resultType="int">
    		select count(*)
    		from tbl_board
