@@ -24,6 +24,7 @@ body{
 .myrank 		{font-weight:bold; color:red; font-size:13pt;}
 .myaligncenter 	{text-align:center;}
 
+a{color:gray;}
 
 
 /* footer css */
