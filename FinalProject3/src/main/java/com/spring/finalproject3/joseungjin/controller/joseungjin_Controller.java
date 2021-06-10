@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 
 
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -43,6 +44,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.joseungjin.mail.GoogleMail;
 import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
@@ -116,7 +118,7 @@ public class joseungjin_Controller {
 		mav.setViewName("login/loginform.tiles2");
 		return mav;
 	}
-	//===== 등록 작업======
+	//===== 관리자 등록 작업 시작 ======
 	
 	@RequestMapping(value="/admin/memberRegister.sam")
 	public ModelAndView memberRegister(ModelAndView mav) {
@@ -124,6 +126,50 @@ public class joseungjin_Controller {
 		return mav;
 	}
 	
+	
+	@RequestMapping(value="/admin/memberRegisterend.sam")
+	public ModelAndView memberRegisterend(ModelAndView mav, HttpServletRequest request) {
+		String perno = request.getParameter("perno");
+		String fk_majseq = request.getParameter("fk_majseq");
+		String gender = request.getParameter("gender");
+		String name = request.getParameter("name");
+		String birthday = request.getParameter("birthday");
+		String email = request.getParameter("email");
+		String address = request.getParameter("address");
+		String identity = request.getParameter("identity");
+		String hp1 = request.getParameter("hp1"); 
+		String hp2 = request.getParameter("hp2"); 
+		String hp3 = request.getParameter("hp3"); 
+		String mobile = hp1 + hp2 + hp3;
+	
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("perno", perno);
+		paraMap.put("fk_majseq", fk_majseq);
+		paraMap.put("gender", gender);
+		paraMap.put("name", name);
+		paraMap.put("birthday", birthday);
+		paraMap.put("email", email);
+		paraMap.put("mobile", mobile);
+		paraMap.put("address", address);
+		paraMap.put("identity", identity);
+		
+		
+		int n = service.registerMember(paraMap);
+		
+		if(n == 0) {
+			mav.addObject("message", "회원정보등록 실패 ");
+			mav.setViewName("msg");
+			
+		}
+		else {
+			mav.addObject("message", "회원정보등록 성공!!");
+			String loc = "javascript:history.back()";
+			mav.addObject("loc", loc);
+		}
+		mav.setViewName("msg");
+		return mav;
+	}
+	//===== 관리자 등록 작업 끝 ======
 	
 // === #41. 로그인 처리하기 === // 
 	@RequestMapping(value="/loginEnd.sam", method= {RequestMethod.POST})
@@ -388,6 +434,15 @@ public class joseungjin_Controller {
 				paraMap.put("userid", userid);
 				paraMap.put("name", name);
 				paraMap.put("email", email);
+				
+				
+				System.out.println(paraMap);
+				PersonVO pwdFind = service.idFind(paraMap);
+				if(!pwdFind.getPwd().equals("1234")) {
+					mav.addObject("message", "이미 등록한 회원입니다.");
+					mav.setViewName("msg");
+				}
+				else {
 				int regn =  service.isUserExist2(paraMap);
 				
 				boolean sendMailSuccess = true; // 메일이 정상적으로 전송되었는지 유무를 알아오기 위한 용도
@@ -433,11 +488,12 @@ public class joseungjin_Controller {
 						mav.setViewName("member/personRegister");
 					}
 					else {
-						mav.addObject("check", 1);
-						mav.setViewName("member/personRegister");
+						mav.addObject("message", "입력한 정보는 없습니다.");
+						mav.setViewName("msg");
 					}
+					
 		
-			
+				}
 				return mav;
 			}
 			
@@ -605,6 +661,18 @@ public class joseungjin_Controller {
 				 
 				ScheduleVO scvo = service.scheduleEdit(paraMap);
 				
+				HttpSession session = request.getSession();
+				PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+				
+				if(!Integer.toString(loginuser.getPerno()).equals(scvo.getFk_perno()) )  {
+					String message = "다른 사용자의 글은 수정이 불가합니다.";
+					String loc = "javascript:history.back()";
+					
+					mav.addObject("message", message);
+					mav.addObject("loc", loc);
+					mav.setViewName("msg");
+				}
+				else {
 				mav.addObject("schno",scvo.getSchno());
 				mav.addObject("title",scvo.getCalsubject());
 				mav.addObject("perno", scvo.getFk_perno());
@@ -614,7 +682,7 @@ public class joseungjin_Controller {
 				mav.addObject("memo", scvo.getMemo());
 				
 				mav.setViewName("calendar/scheduleEditPopup");
-				
+				}
 				return mav;
 			}
 	

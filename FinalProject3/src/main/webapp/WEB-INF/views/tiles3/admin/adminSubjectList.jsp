@@ -131,8 +131,7 @@ $(document).ready(function(){
 	          
 	          var wordLength = $(this).val().trim().length;
 	          // 검색어의 길이를 알아온다.
-	      
-	          console.log("~~~~ 확인용 sDeptIdes => " + sDeptIdes);
+	    
 	          if(wordLength == 0 ) {
 	             $("div#displayList").hide();
 	             // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안 나오도록 해야 한다. 
@@ -198,10 +197,7 @@ $(document).ready(function(){
 		
 	       ///// === Excel 파일로 다운받기 시작 === /////
 		   $("button#btnExcel").click(function(){
-
-		
-			    location.href ="<%= request.getContextPath()%>/admin/downloadExcelFile.sam"; 
-			  		   
+			    location.href ="<%= request.getContextPath()%>/admin/downloadExcelFile.sam";   		   
 		   });
 		   ///// === Excel 파일로 다운받기 끝 === /////
 		    

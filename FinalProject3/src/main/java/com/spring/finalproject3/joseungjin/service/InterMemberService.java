@@ -25,7 +25,8 @@ public interface InterMemberService {
 	
 	//회원 등록 정보 확인
 	int isUserExist2(Map<String, String> paraMap);
-
+	//관리자 회원 등록 처리
+	int registerMember(Map<String, String> paraMap);
 	
 	
 	//메인 인기 게시글 가져오기
@@ -57,6 +58,7 @@ public interface InterMemberService {
 	List<String> wordSearchShow(Map<String, String> paraMap);
 	//엑셀 가져오기
 	List<Map<String, String>> getExcelsubjectList();
+
 
 
 }

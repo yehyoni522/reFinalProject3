@@ -129,7 +129,8 @@ div#registerSuccessContainer button{
 <script type="text/javascript">
 $(document).ready(function(){
 $("span.error").hide();
-});
+
+
 
 $("input#email").blur(function(){
 	
@@ -156,7 +157,16 @@ $("input#email").blur(function(){
 		
 	}); // 아이디가 email 인 것은 포커스를 잃어버렸을 경우(blur) 이벤트를 처리해주는 것이다.
 
+});
+
+function goRegister(){
 	
+	var frm = document.registerFrm;
+	frm.action = "<%=ctxPath%>/admin/memberRegisterend.sam";
+	frm.method = "post";
+	frm.submit();
+	
+}
 
 </script>
 <div id="adminhome">
@@ -179,7 +189,7 @@ $("input#email").blur(function(){
       <tbody>
         <tr>
          <td style="width: 20%; font-weight: bold;">구분&nbsp;<span class="star">*</span></td>
-           <td><select>
+           <td><select name="identity" id="identity">
            		<option value = "0">학생 </option>
 	           <option value = "1">교수 </option>
 	           <option value = "2">관리자 </option>
@@ -188,7 +198,7 @@ $("input#email").blur(function(){
       </tr>
           <tr>
          <td style="width: 20%; font-weight: bold;">학과&nbsp;<span class="star">*</span></td>
-           <td><select>
+           <td><select name="fk_majseq" id="fk_majseq">
            		<option value = "100">컴퓨터공학과 </option>
 	           <option value = "200">정보통신공학과 </option>
 	           <option value = "300">전기공학과</option>
@@ -201,8 +211,8 @@ $("input#email").blur(function(){
       <tr>
          <td style="width: 20%; font-weight: bold;">회원번호&nbsp;<span class="star">*</span></td>
            <td><input type="text" name="perno" id="perno" class="requiredInfo" />
-           <input type ="radio" value ="1" />남 
-           <input type ="radio" value ="2" />여
+           <input type ="radio" id="gender" name="gender" value ="1" />남 
+           <input type ="radio" id="gender" name="gender" value ="2" />여
            </td>
       </tr>
       <tr>
@@ -214,7 +224,7 @@ $("input#email").blur(function(){
         <tr>
          <td style="width: 20%; font-weight: bold;">생년원일&nbsp;<span class="star">*</span></td>
          <td style="width: 80%; text-align: left;">
-             <input type="text" name="brith" id="brith" class="requiredInfo" /> 
+             <input type="text" name="birthday" id="birthday" class="requiredInfo" /> 
          </td>
       </tr>
       <tr>

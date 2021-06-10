@@ -9,24 +9,34 @@
 		from tbl_person
 		where perno =#{userid} and pwd=#{pwd}
 	</select>
+	
 	<!-- 아이디찾기-->
 	<select id="idFind" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
-		select perno
+		select perno,pwd
 		from tbl_person
 		where name =#{name} and email=#{email}
 	</select>
+	
 	<!-- 비번찾기-->
 	<select id="pwdFind" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.PersonVO">
 		select perno
 		from tbl_person
 		where perno =#{userid} and email=#{email}
 	</select>
+	
 	<!-- 회원정보확인 -->
 	<select id="isUserExist" parameterType="HashMap" resultType="int">
 		select count(*)
 		from tbl_person
 		where perno =#{userid} and email=#{email}
 	</select>
+	
+		<!-- 관리자 회원 정보 등록 -->
+	<select id="registerMember" parameterType="HashMap" resultType="int">
+		insert into tbl_person(perno, fk_majseq,name,gender,birthday,address,email,mobile,pwd,identity)
+  		values(#{perno},#{fk_majseq},#{name},#{gender},#{birthday},#{address},#{email},#{mobile},'1234',#{identity})
+	</select>
+	
 	<!-- 비번 변경 -->
 	<update id="pwdUpdate" parameterType="HashMap">
 		 update tbl_person set pwd = #{pwd}
