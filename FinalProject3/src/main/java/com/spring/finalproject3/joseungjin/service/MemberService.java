@@ -97,6 +97,14 @@ public class MemberService implements InterMemberService {
 		List<MainSubjectVO> MainsubjectList =sudao.Mainsubject(userid);
 		return MainsubjectList;
 	}
+	
+	//교수 수강목록 가져오기
+	@Override
+	public List<MainSubjectVO> MainProsubject(int userid) {
+		List<MainSubjectVO> MainProsubject =sudao.MainProsubject(userid);
+		return MainProsubject;
+	}
+
 	//일정추가하기
 	@Override
 	public int scheduleAdd(ScheduleVO svo) {

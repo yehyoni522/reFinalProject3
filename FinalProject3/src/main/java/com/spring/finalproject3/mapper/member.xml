@@ -76,6 +76,13 @@
 		join tbl_person P
 		on V.fk_perno =P.perno
 	</select>
+		<!-- 교수 수강중인 과목 불러오기 -->
+	<select id="MainProsubject" parameterType="int" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
+		select subno,subname,day,time
+		from tbl_subject
+		where fk_perno=#{userid}
+	
+	</select>
 	
 	<!-- 일정 추가-->
 	<insert id="scheduleAdd" parameterType="com.spring.finalproject3.joseungjin.model.ScheduleVO">

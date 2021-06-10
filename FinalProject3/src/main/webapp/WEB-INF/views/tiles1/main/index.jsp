@@ -465,19 +465,23 @@ function go_pop(){
 		내 강의
 		</div>
 		<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status">
+			<div style="margin-top: 20px;">
 			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="<%=ctxPath%>/class/index.sam?subno=${subjectvo.subno}">${subjectvo.subname}</a></span>
 			<br>
 			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}교수님</span>
+			</div>
 		</c:forEach>
 	</c:if>
 	<c:if test="${sessionScope.loginuser.identity == 1}">
 			<div style="font-size: 25pt; font-weight: bold; margin-top:50px; margin-bottom: 50px;">
 				${sessionScope.loginuser.name} 교수님 강의 목록
 				</div>
-				<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
-			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
+				<c:forEach var="Prosubjectvo" items="${requestScope.MainProsubjectList}" varStatus="status"> 
+			<div style="margin-top: 20px;">
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="<%=ctxPath%>/class/index.sam?subno=${Prosubjectvo.subno}">${Prosubjectvo.subname}</a></span>
 			<br>
-			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}교수님</span>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${Prosubjectvo.day}&nbsp;${Prosubjectvo.time}&nbsp;</span>
+			</div>
 		</c:forEach>
 	</c:if>
 	

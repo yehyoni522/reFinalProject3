@@ -22,6 +22,13 @@ public class MainSubjectDAO implements InterSubjectDAO {
 		List<MainSubjectVO> MainsubjectList = sqlsession.selectList("member.Mainsubject",userid);
 		return MainsubjectList;
 	}
+	//교수 수강중인 목록 가져오기
+	@Override
+	public List<MainSubjectVO> MainProsubject(int userid) {
+		List<MainSubjectVO> MainProsubject = sqlsession.selectList("member.MainProsubject",userid);
+		return MainProsubject;
+	}
+
 	//관리자 수업 목록 가져오기
 	@Override
 	public List<MainSubjectVO> getsubjectList(Map<String, String> paraMap) {
@@ -45,7 +52,7 @@ public class MainSubjectDAO implements InterSubjectDAO {
 		List<Map<String, String>> adminExcelsubjectList =sqlsession.selectList("member.getExcelsubjectList");
 		return adminExcelsubjectList;
 	}
-
+	
 	
 	
 	

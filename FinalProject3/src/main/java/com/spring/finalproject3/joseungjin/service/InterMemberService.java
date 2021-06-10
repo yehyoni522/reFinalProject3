@@ -36,6 +36,8 @@ public interface InterMemberService {
 	List<Main_index_BoardVO> getboardistPaging(Map<String, String> paraMap);
 	//수강 중인 목록
 	List<MainSubjectVO> Mainsubject(int userid);
+	//교수 수강 과목 가져오기
+	List<MainSubjectVO> MainProsubject(int userid);
 	//일정추가하기
 	int scheduleAdd(ScheduleVO svo);
 	//일정 가져오기
@@ -55,5 +57,6 @@ public interface InterMemberService {
 	List<String> wordSearchShow(Map<String, String> paraMap);
 	//엑셀 가져오기
 	List<Map<String, String>> getExcelsubjectList();
+
 
 }
