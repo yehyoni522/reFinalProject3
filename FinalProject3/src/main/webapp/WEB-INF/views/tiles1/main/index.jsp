@@ -161,6 +161,16 @@
   	 height: 80px;
 	
 	}
+	a#name{
+	 padding: 8px 20px 8px 32px;
+	  text-decoration: none;
+	  font-size: 23px;
+	  color: #f1f1f1;
+	  display: block;
+	  transition: 0.3s;
+	  text-align: right;
+	
+	}
 
 </style>
 
@@ -427,13 +437,13 @@ function go_pop(){
   <div id="loginInfo">
   	<c:if test="${empty sessionScope.loginuser}"><a href="<%=ctxPath%>/login.sam">로그인을 해주세요</a></c:if>
   		<c:if test="${sessionScope.loginuser.identity == 0}">
-			<a>${sessionScope.loginuser.name} 학생</a>
+			<a id="name">${sessionScope.loginuser.name}님</a>
 	</c:if>
 		<c:if test="${sessionScope.loginuser.identity == 1}">
-			<a>${sessionScope.loginuser.name} 교수</a>
+			<a id="name">${sessionScope.loginuser.name}님</a>
 	</c:if>
   </div>
-  <a href="#">내 수업 목록</a>
+  <a href="<%=ctxPath%>/mypage/mypage.sam">마이페이지</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=4">공지사항</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=5">Q&A</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=1">게시판</a>

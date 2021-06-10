@@ -71,6 +71,12 @@ public class MemberService implements InterMemberService {
 		int isUserExist2= dao.isUserExist2(paraMap);
 		return isUserExist2;
 	}
+	//관리자 회원 등록 처리
+	@Override
+	public int registerMember(Map<String, String> paraMap) {
+		 int registerMember=dao.registerMember(paraMap);
+		return registerMember;
+	}
 
 	@Override
 	public List<Main_index_BoardVO> MainboardView() {
@@ -161,6 +167,8 @@ public class MemberService implements InterMemberService {
 		List<Map<String, String>> adminExcelsubjectList =sudao.getExcelsubjectList();
 		return adminExcelsubjectList;
 	}
+
+
 
 
 
