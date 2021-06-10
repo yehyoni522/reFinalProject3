@@ -104,7 +104,7 @@ public class ReadingDAO implements InterReadingDAO {
 
 	@Override
 	public String getSubjectname(String subno) {
-		String subject = sqlsession.selectOne(subno);
+		String subject = sqlsession.selectOne("Reading.getSubjectname",subno);
 		return subject;
 	}
 

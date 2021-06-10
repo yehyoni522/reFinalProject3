@@ -104,9 +104,8 @@ div#btn-board{
 	&nbsp;>&nbsp;홈
 	</div>
 
-	<h1 class="headerName">${requestScope.subject}</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
-	<h3 style="text-align: left; font-weight: bold;">| 수업</h3>
 	<br>
 
 
