@@ -465,7 +465,7 @@ function go_pop(){
 		내 강의
 		</div>
 		<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status">
-			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="<%=ctxPath%>/class/index.sam?subno="+${subjectvo.subno}>${subjectvo.subname}</a></span>
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="<%=ctxPath%>/class/index.sam?subno=${subjectvo.subno}">${subjectvo.subname}</a></span>
 			<br>
 			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}교수님</span>
 		</c:forEach>
