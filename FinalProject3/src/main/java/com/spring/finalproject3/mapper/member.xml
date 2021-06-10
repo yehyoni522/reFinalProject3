@@ -139,4 +139,68 @@
 		delete from tbl_schedule
 		where fk_perno=#{perno} and schno=#{schno}
 	</delete>	
+	
+	
+	
+	<select id ="adminsubject" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
+		select subno,name,fk_perno,subname,credit,semeter,day,time,content,majseq
+		from
+		(
+		    select row_number() over(order by semeter,majseq desc) as rno,subno,name,fk_perno,subname,credit,semeter,day,time,M.content,majseq
+		    from
+		    (
+		        select S.subno,S.fk_perno,S.subname,S.credit,S.semeter,S.day,S.time,p.name,s.fk_majseq
+		        from tbl_subject S join tbl_person P
+		        on s.fk_perno=P.perno 
+                 
+		    )V
+		    join tbl_major M
+		    on v.fk_majseq =M.majseq
+		    <if test='searchType != "" and searchWord != "" '>
+				and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+			</if>
+		)T
+		where rno between #{startRno} and #{endRno}
+	</select>
+	
+	<select id="getSubjectTotal" parameterType="HashMap" resultType="int">
+	   select count(*)
+		from
+		(
+		    select subno,name,fk_perno,subname,credit,semeter,day,time,M.content,majseq
+		    from
+		    (
+		        select S.subno,S.fk_perno,S.subname,S.credit,S.semeter,S.day,S.time,p.name,s.fk_majseq
+		        from tbl_subject S join tbl_person P
+		        on s.fk_perno=P.perno 
+		    )V
+		    join tbl_major M
+		    on v.fk_majseq =M.majseq
+           	    <if test='searchType != "" and searchWord != "" '>
+				and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+			</if>
+		)T     
+       
+        
+	</select>
+	
+	
+	<!-- === #111. 검색어 입력시 자동글 완성하기 6 ===  -->
+	<select id="wordSearchShow" parameterType="HashMap" resultType="String">
+		select distinct ${searchType}
+		   from
+   		 (
+        select S.subno,S.fk_perno,S.subname,S.credit,S.semeter,S.day,S.time,p.name,s.fk_majseq
+        from tbl_subject S join tbl_person P
+        on s.fk_perno=P.perno 
+	    )V
+	    join tbl_major M
+	    on v.fk_majseq =M.majseq
+		and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+		<!-- select 문에서 distinct 와 order by 절을 함께 사용할때는 조심해야 한다.
+   			 order by 절에는 select 문에서 사용된 컬럼만 들어올 수가 있다.
+   			 또는 order by 절을 사용하지 않아야 한다. 
+   		-->
+	</select>
+	
 </mapper>

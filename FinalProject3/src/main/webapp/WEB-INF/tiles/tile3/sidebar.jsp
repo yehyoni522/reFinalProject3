@@ -34,7 +34,7 @@ div#adminside {
 	<br><br>
 	<span>수업 관리</span>	
 	<ul>
-		<li>수업 목록</li>
+		<li><a href="<%=ctxPath%>/admin/adminSubjectList.sam">수업 목록</li>
 		<li><a href="<%=ctxPath%>/admin/addSubject.sam">수업 개설</a></li>
 	</ul> 	
 </div>

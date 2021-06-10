@@ -15,6 +15,7 @@ import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
 import com.spring.finalproject3.joseungjin.model.Main_index_BoardVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 import com.spring.finalproject3.joseungjin.model.ScheduleVO;
+import com.spring.finalproject3.yehyeon.model.SubjectVO;
 
 
 @Component
@@ -127,6 +128,27 @@ public class MemberService implements InterMemberService {
 		int n = scdao.scheduledel(paraMap);
 		return n;
 	}
+	//관리자 수업 목록 가져오기
+	@Override
+	public List<MainSubjectVO> getsubjectList(Map<String, String> paraMap) {
+		List<MainSubjectVO>  adminsubjectList =sudao.getsubjectList(paraMap);
+		return adminsubjectList;
+	}
+	//총페이지 수 알아오기
+	@Override
+	public int getSubjectTotal(Map<String, String> paraMap) {
+		int totalCount = sudao.getSubjectTotal(paraMap);
+		return totalCount;
+	}
+	//검색어 자동
+	@Override
+	public List<String> wordSearchShow(Map<String, String> paraMap) {
+		List<String> wordList = sudao.wordSearchShow(paraMap);
+	
+		return wordList;
+	}
+
+
 
 
 
