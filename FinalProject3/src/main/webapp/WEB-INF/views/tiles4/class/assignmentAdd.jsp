@@ -92,7 +92,7 @@ div#btn-board{
 	&nbsp;>&nbsp;과제게시판
 	</div>
 
-	<h1 class="headerName">컴퓨터 네트워크</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<h3 style="text-align: left; font-weight: bold;">| 과제 글쓰기</h3>
 
@@ -137,7 +137,8 @@ div#btn-board{
 		<button type="button" class="btn-board" id="btnWrite">완료</button>
 		<button type="button"class="btn-board" onclick="javascript:history.back()">취소</button>
 	</div>
-      
+      <input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
+      <input type="hidden" name="fk_subno" value="${sessionScope.subno}" />
          
    </form>
 

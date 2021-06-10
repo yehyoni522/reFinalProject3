@@ -95,7 +95,7 @@ div#btn-board{
 	&nbsp;>&nbsp;수업자료
 	</div>
 	
-	<h1 class="headerName"> 과목이름 </h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	
 
 	<h3 style="text-align: left; font-weight: bold;">| 수정</h3>

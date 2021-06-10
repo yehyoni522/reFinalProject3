@@ -49,33 +49,9 @@ public class ClassBoardService implements InterClassBoardService {
 		// 과제테이블에 추가
 		int n = dao.assignmentAdd(assgnVO);
 		
-		/*
-		 * // 해당 과제의 번호 알아오기 String assgnno = dao.getAssignno();
-		 * assgnVO.setAssgnno(assgnno);
-		 * 
-		 * assgnVO.setFk_subno("1000"); // 임의로 과목번호 넣어줌
-		 * 
-		 * // 해당 수업 듣는 학생들의 총 perno 리스트 List<String> pernolist =
-		 * dao.pernoList(assgnVO.getFk_subno());
-		 * 
-		 * 
-		 * int m=0; // === 과제 게시판 글쓰면 학생들한테 과제 부여하기 for(String fk_perno : pernolist) {
-		 * 
-		 * Map<String,String> paraMap = new HashMap<>();
-		 * paraMap.put("fk_assgnno",assgnVO.getAssgnno());
-		 * paraMap.put("fk_subno",assgnVO.getFk_subno());
-		 * paraMap.put("fk_perno",fk_perno);
-		 * 
-		 * m=dao.assgnStudent(paraMap); }
-		 * 
-		 * int l = n*m;
-		 */
-		
 		return n;
 	}
 
-
-	
 	// 어떤 과목인지 과목번호 알아오기 
 	@Override
 	public String getSubjectname(String subno) {

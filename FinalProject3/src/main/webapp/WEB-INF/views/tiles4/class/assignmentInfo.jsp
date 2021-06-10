@@ -455,7 +455,7 @@ div#btn-board{
 	&nbsp;>&nbsp;과제게시판
 	</div>
 	
-	<h1 class="headerName">컴퓨터 네트워크</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<h3 style="text-align: left; font-weight: bold;">| 과제 상세</h3>
 
@@ -580,7 +580,7 @@ div#btn-board{
 			<form name="submitFrm">
 			
 				<%--------------------------=== 과목번호 fk_subno 넣어주는 곳  -------------------------------------%>
-				<input type="hidden" name="fk_subno" id="fk_subno" value="1000"/>
+				<input type="hidden" name="fk_subno" id="fk_subno" value="${sessionScope.subno}"/>
 				<%-----------------------------=== 과목번호 fk_subno 넣어주는 곳  ------------------------------------%>
 				
 			<c:choose>

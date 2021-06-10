@@ -62,7 +62,7 @@
 	<!-- === 과제 게시판 글쓰기(파일첨부가 없는 글쓰기) === -->
    <insert id="assignmentAdd" parameterType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
 		insert into tbl_assgn(assgnno, fk_perno,fk_subno,subject ,content, deadline)
-		values(assgnno_seq.nextval, 1004, 1000,#{subject}, #{content},#{deadline})
+		values(assgnno_seq.nextval, #{fk_perno}, #{fk_subno},#{subject}, #{content},#{deadline})
    </insert>
 
 
@@ -200,7 +200,7 @@
 	<!-- === 원글 또는 답변글 글쓰기(파일첨부가 있는 글쓰기) === -->
 	<insert id="assignmentAdd_withFile" parameterType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">	   
 	    insert into tbl_assgn(assgnno, fk_perno,fk_subno,subject ,content, deadline, fileName, orgFilename, fileSize)
-		values(assgnno_seq.nextval, 1004, 1000,#{subject}, #{content},#{deadline}, #{fileName}, #{orgFilename}, #{fileSize})
+		values(assgnno_seq.nextval, #{fk_perno}, #{fk_subno},#{subject}, #{content},#{deadline}, #{fileName}, #{orgFilename}, #{fileSize})
 	</insert>
 	
 	<!-- 과제 제출 댓글쓰기(tbl_submit 테이블에 insert) === -->
@@ -260,12 +260,12 @@
    	<insert id="qnaAdd" parameterType="com.spring.finalproject3.seoyeon.model.QnAVO">
 		<if test='fk_qnano.equals("")'>
 	    	insert into tbl_QnA(qnano,fk_subno,fk_perno,subject,content,regDate,status,groupno,fk_qnano,depthno)
-			values(qnano.nextval, 1000, #{fk_perno}, #{subject},#{content},default,default,#{groupno},default,default)
+			values(qnano.nextval, #{fk_subno}, #{fk_perno}, #{subject},#{content},default,default,#{groupno},default,default)
 		</if>
 		
 		<if test='!fk_qnano.equals("")'>
 	    	insert into tbl_QnA(qnano,fk_subno,fk_perno,subject,content,regDate,status,groupno,fk_qnano,depthno)
-			values(qnano.nextval, 1000, #{fk_perno}, #{subject},#{content},default,default,#{groupno},#{fk_qnano},#{depthno}+1)
+			values(qnano.nextval, #{fk_subno}, #{fk_perno}, #{subject},#{content},default,default,#{groupno},#{fk_qnano},#{depthno}+1)
 		</if>	
 	</insert>
 	

@@ -206,7 +206,7 @@ div#btn-board{
 	&nbsp;>&nbsp;질문게시판
 	</div>
 	
-	<h1 class="headerName">컴퓨터 네트워크</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<c:if test="${requestScope.qnavo.depthno eq 0}"> 
 		<h3 style="text-align: left; font-weight: bold;">| 질문</h3>
@@ -281,7 +281,7 @@ div#btn-board{
 			<form name="answerFrm" method="post" enctype="multipart/form-data">
 			
 				<%--------------------------=== 과목번호 fk_subno 넣어주는 곳  -------------------------------------%>
-				<input type="hidden" name="fk_subno" value="1000"/>
+				<input type="hidden" name="fk_subno" value="${sessionScope.subno}"/>
 				<%-----------------------------=== 과목번호 fk_subno 넣어주는 곳  ------------------------------------%>
 				
 			

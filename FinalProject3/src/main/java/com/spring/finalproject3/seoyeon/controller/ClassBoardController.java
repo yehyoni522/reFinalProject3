@@ -49,21 +49,16 @@ public class ClassBoardController {
 		List<assignmentBoardVO> assignmentList = null;
 		Map<String, String> paraMap = new HashMap<String, String>();
 		
-		// *** 근데 과목번호 어케 알아옴?? <==페이지 폼 내에서 전달...?
-		String subno = request.getParameter("subno");
-		subno="1000";//////////////////////////////////////////////////////////////////*** 과목번호 임의로 넣음 ***/////////////////////////////////////////////////////
-		paraMap.put("subno", subno);
-		
-		// 어떤 과목인지 과목이름 알아오기 => 과목이름 맨위에 띄워주기 위해 / 리스트 where절 사용
-		String subject = service.getSubjectname(subno);
-		request.setAttribute("subject", subject);
+		// 과목번호 알아오기 session으로!
+		HttpSession session = request.getSession();			
+		String subno = (String) session.getAttribute("subno");
+		paraMap.put("subno", subno);	
 		
 		// 해당 수업을 듣는 학생의 총 인원수 알아오기(교수 총 수강인원 나타낼때 필요)
 		String totalPerson = service.getTotalPerson(subno);
 		request.setAttribute("totalPerson", totalPerson);
 		
 		// 로그인한 사람 알아오기 ==> 학생이면 (제출,점수) 컬럼 더 보여주기 위해, 교수면 글쓰기 버튼+(제출개수/총수강인원) 컬럼보여주기
-		HttpSession session = request.getSession();
 		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
 		
 		paraMap.put("identity", Integer.toString(loginuser.getIdentity()));
@@ -277,34 +272,7 @@ public class ClassBoardController {
 			assignmentVO = service.assignmentView(assgnno);
 			
 			mav.addObject("assignmentVO", assignmentVO);
-				
-			/*
-			try {
-		         
-		         
-		         int login_perno=0;
-		         
-		         HttpSession session = request.getSession();
-		         PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
-		         
-		         
-		         if(loginuser != null) {
-		        	 login_perno = loginuser.getPerno();
-		            // login_userid 는 로그인 되어진 사용자의 userid 이다.
-		         }
-		         
-		         assignmentBoardVO assignmentVO = null;
-		         
-	             // 과제 게시글1개 조회
-	        	 assignmentVO = service.assignmentView(assgnno);
-
-		         mav.addObject("assignmentVO", assignmentVO);
-		         
-		      } catch(NumberFormatException e) {
-		         
-		      }
-		      */
-		      mav.setViewName("class/assignmentInfo.tiles4");
+			mav.setViewName("class/assignmentInfo.tiles4");
 			
 			return mav;
 		}
@@ -798,15 +766,10 @@ public class ClassBoardController {
 			
 			Map<String, String> paraMap = new HashMap<String, String>();
 			
-			// *** 근데 과목번호 어케 알아옴?? <==페이지 폼 내에서 전달...?
-			String subno = request.getParameter("subno");
-			subno="1000";//////////////////////////////////////////////////////////////////*** 과목번호 임의로 넣음 ***/////////////////////////////////////////////////////
+			// 과목번호 알아오기 session으로!
+			HttpSession session = request.getSession();			
+			String subno = (String) session.getAttribute("subno");
 			paraMap.put("subno", subno);
-			
-			// 어떤 과목인지 과목이름 알아오기 => 과목이름 맨위에 띄워주기 위해 / 리스트 where절 사용
-			String subject = service.getSubjectname(subno);
-			request.setAttribute("subject", subject);
-			
 			
 			// 검색기능 시작 ----------------------------------------------
 			String searchType = request.getParameter("searchType"); 
@@ -1204,15 +1167,10 @@ public class ClassBoardController {
 		    paraMap.put("searchType", searchType);
 		    paraMap.put("searchWord", searchWord);
 			
-			// *** 근데 과목번호 어케 알아옴?? <==페이지 폼 내에서 전달...?
-			String subno = request.getParameter("subno");
-			subno="1000";//////////////////////////////////////////////////////////////////*** 과목번호 임의로 넣음 ***/////////////////////////////////////////////////////
-			paraMap.put("subno", subno);
+		    // 과목번호 알아오기 session으로!
+ 			String subno = (String) session.getAttribute("subno");
+ 			paraMap.put("subno", subno);
 			
-			// 어떤 과목인지 과목이름 알아오기 => 과목이름 맨위에 띄워주기 위해 / 리스트 where절 사용
-			String subject = service.getSubjectname(subno);
-			request.setAttribute("subject", subject);						
-					
 			
 			//페이징처리
 			int totalCount = 0;         // 총 게시물 건수
@@ -1309,14 +1267,7 @@ public class ClassBoardController {
 
 		// 수업자료 게시판 글쓰기 폼
 			@RequestMapping(value="/class/materialAdd.sam")
-			public ModelAndView materialAdd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
-				String subno = request.getParameter("subno");
-				subno="1000";//////////////////////////////////////////////////////////////////*** 과목번호 임의로 넣음 ***/////////////////////////////////////////////////////				
-				
-				// 어떤 과목인지 과목이름 알아오기 => 과목이름 맨위에 띄워주기 위해 / 리스트 where절 사용
-				String subject = service.getSubjectname(subno);
-				request.setAttribute("subject", subject);					       
-				
+			public ModelAndView materialAdd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {				
 				mav.setViewName("class/materialAdd.tiles4");		
 				return mav;
 			}
@@ -1326,9 +1277,9 @@ public class ClassBoardController {
 			public ModelAndView materialAddEnd(Map<String,String> paraMap, ModelAndView mav, materialVO mtrvo, MultipartHttpServletRequest mrequest) {            
 				
 				// 과목번호 얻어와서 mtrvo에 넣어주기
-				String fk_subno = mrequest.getParameter("subno");
-				fk_subno = "1000";
-				mtrvo.setFk_subno(fk_subno);
+				HttpSession session = mrequest.getSession();			
+				String subno = (String) session.getAttribute("subno");
+				mtrvo.setFk_subno(subno);
 				
 				// === #153. !!! 첨부파일이 있는 경우 작업 시작 !!! ===
 			      MultipartFile attach = mtrvo.getAttach();
@@ -1342,7 +1293,6 @@ public class ClassBoardController {
 			                          조심할 것은  Package Explorer 에서  files 라는 폴더를 만드는 것이 아니다.       
 			          */
 			         // WAS의 webapp 의 절대경로를 알아와야 한다.
-			         HttpSession session = mrequest.getSession();
 			         String root = session.getServletContext().getRealPath("/");
 			         
 			         String path = root +"resources"+File.separator+"files";// path가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다. 
@@ -1420,16 +1370,7 @@ public class ClassBoardController {
 		//	수업자료 상세 페이지 보기
 			@RequestMapping(value="/class/materialView.sam")
 			public ModelAndView materialView(HttpServletRequest request, ModelAndView mav) {
-				
-				// *** 근데 과목번호 어케 알아옴?? <==페이지 폼 내에서 전달...?
-				String subno = request.getParameter("subno");
-				subno="1000";//////////////////////////////////////////////////////////////////*** 과목번호 임의로 넣음 ***/////////////////////////////////////////////////////
-
-				// 어떤 과목인지 과목이름 알아오기 => 과목이름 맨위에 띄워주기 위해 / 리스트 where절 사용
-				String subject = service.getSubjectname(subno);
-				request.setAttribute("subject", subject);	
-				
-				
+						
 			// 	조회하고자 하는 과제번호 받아오기
 				String mtrno = request.getParameter("mtrno");
 				
@@ -1504,9 +1445,6 @@ public class ClassBoardController {
 			// == 과제 게시글 수정 페이지 요청 
 			@RequestMapping(value="/class/materialEdit.sam")
 			public ModelAndView materialEdit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
-				
-
-	
 				
 				// 글 수정해야 할 글번호 가져오기
 				String mtrno = request.getParameter("mtrno");
@@ -1721,5 +1659,38 @@ public class ClassBoardController {
 		
 		
 		
-		   
+
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		//																			강의 계획서 게시판
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			   
+			
+
+	//	강의 계획서 상세 페이지 보기
+		@RequestMapping(value="/class/planView.sam")
+		public ModelAndView planView(HttpServletRequest request, ModelAndView mav) {
+			
+			// 과목번호 알아오기 session으로!
+			HttpSession session = request.getSession();			
+			String subno = (String) session.getAttribute("subno");
+			/*
+			planVO planVO = null;
+
+			// 과제 게시글1개 조회
+			planVO = service.assignmentView(planno);
+			
+			mav.addObject("planVO", planVO);
+			*/
+			mav.setViewName("class/planView.tiles4");
+			
+			return mav;
+		}
+		
+			
+			
+			
+			
 }	

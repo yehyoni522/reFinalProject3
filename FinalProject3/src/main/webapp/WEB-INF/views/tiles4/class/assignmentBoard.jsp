@@ -102,7 +102,7 @@ div#btn-board{
 	&nbsp;>&nbsp;과제게시판
 	</div>
 
-	<h1 class="headerName">${requestScope.subject}</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<h3 style="text-align: left; font-weight: bold;">| 과제게시판</h3>
 	<br>
