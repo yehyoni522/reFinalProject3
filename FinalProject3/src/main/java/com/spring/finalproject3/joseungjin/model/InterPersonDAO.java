@@ -18,5 +18,6 @@ public interface InterPersonDAO {
 	//회원등록 정보확인
 	int isUserExist2(Map<String, String> paraMap);
 
+
 	
 }

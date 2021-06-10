@@ -7,6 +7,7 @@
 
 <style type="text/css">
 
+
 .subjectStyle {
 	font-weight: bolder;
 	cursor: pointer;
@@ -101,7 +102,7 @@ div#btn-board{
 	&nbsp;>&nbsp;과제게시판
 	</div>
 
-	<h1 class="headerName">${requestScope.subject}</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<h3 style="text-align: left; font-weight: bold;">| 과제게시판</h3>
 	<br>
@@ -126,6 +127,12 @@ div#btn-board{
 			
 			<th style="width: 20%;">마감일</th>			
 		</tr>
+		
+		<c:if test="${empty requestScope.assignmentList}">
+			<tr>
+				<td colspan="100%" style="text-align: center;">과제 게시글이 없습니다.</td>
+			</tr> 
+		</c:if>
 		
 		<c:forEach var="assgnVO" items="${requestScope.assignmentList}" varStatus="status"> 
 		

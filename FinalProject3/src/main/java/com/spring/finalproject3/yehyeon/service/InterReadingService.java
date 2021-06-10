@@ -37,4 +37,6 @@ public interface InterReadingService {
 
 	int insertSubject(SubjectVO subvo); // 과목 정보 insert한다.
 
+	String getSubjectname(String subno); // 과목 이름을 불러온다.
+
 }

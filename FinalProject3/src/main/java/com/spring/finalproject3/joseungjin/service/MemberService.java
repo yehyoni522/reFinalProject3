@@ -15,6 +15,7 @@ import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
 import com.spring.finalproject3.joseungjin.model.Main_index_BoardVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 import com.spring.finalproject3.joseungjin.model.ScheduleVO;
+import com.spring.finalproject3.yehyeon.model.SubjectVO;
 
 
 @Component
@@ -96,6 +97,14 @@ public class MemberService implements InterMemberService {
 		List<MainSubjectVO> MainsubjectList =sudao.Mainsubject(userid);
 		return MainsubjectList;
 	}
+	
+	//교수 수강목록 가져오기
+	@Override
+	public List<MainSubjectVO> MainProsubject(int userid) {
+		List<MainSubjectVO> MainProsubject =sudao.MainProsubject(userid);
+		return MainProsubject;
+	}
+
 	//일정추가하기
 	@Override
 	public int scheduleAdd(ScheduleVO svo) {
@@ -127,6 +136,33 @@ public class MemberService implements InterMemberService {
 		int n = scdao.scheduledel(paraMap);
 		return n;
 	}
+	//관리자 수업 목록 가져오기
+	@Override
+	public List<MainSubjectVO> getsubjectList(Map<String, String> paraMap) {
+		List<MainSubjectVO>  adminsubjectList =sudao.getsubjectList(paraMap);
+		return adminsubjectList;
+	}
+	//총페이지 수 알아오기
+	@Override
+	public int getSubjectTotal(Map<String, String> paraMap) {
+		int totalCount = sudao.getSubjectTotal(paraMap);
+		return totalCount;
+	}
+	//검색어 자동
+	@Override
+	public List<String> wordSearchShow(Map<String, String> paraMap) {
+		List<String> wordList = sudao.wordSearchShow(paraMap);
+	
+		return wordList;
+	}
+	//엑셀가져오기
+	@Override
+	public List<Map<String, String>> getExcelsubjectList() {
+		List<Map<String, String>> adminExcelsubjectList =sudao.getExcelsubjectList();
+		return adminExcelsubjectList;
+	}
+
+
 
 
 

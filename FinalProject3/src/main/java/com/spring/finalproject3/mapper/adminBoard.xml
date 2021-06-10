@@ -9,6 +9,7 @@
 	<!-- // === 페이징 처리를 안한 검색어가 있는 전체 글목록 보여주기 === -->
 	<select id="boardListSearch" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.AdminBoardVO">
 	   	select B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+				,fk_perno, B.filename, groupno, fk_seq, depthno, namecheck 
 		from tbl_board B join tbl_person P
 		on B.fk_perno=P.perno
 		where status=1
@@ -21,6 +22,8 @@
 	      	)
 	   </if>
 	   order by seq desc
+	   
+	   
 	</select>
    
 	<!-- === #111. 검색어 입력시 자동글 완성하기 6 ===  -->
@@ -71,7 +74,7 @@
 	
 	<!-- === 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
 	<select id="boardListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.AdminBoardVO">
-		select seq, categoryno, name, subject, good, readCount, commentCount, regDate
+		<!-- select seq, categoryno, name, subject, good, readCount, commentCount, regDate
 		from
 		(
 			select row_number() over(order by seq desc) as rno,
@@ -88,6 +91,35 @@
         	and categoryno = ${viewBoard}
         	</if>
 		)V
+		where rno between #{startRno} and #{endRno} -->
+		
+		
+		
+		select rno,seq,categoryno,name,subject,good,readCount,commentCount, regDate
+		        ,fk_perno, fileName, groupno, fk_seq, depthno, namecheck 
+		from
+		(
+		    select rownum as rno, 
+		            seq,categoryno,name,subject,good,readCount,commentCount, regDate
+		            ,fk_perno, fileName, groupno, fk_seq, depthno, namecheck 
+				from
+				(
+					select B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+		                    ,fk_perno, B.fileName, groupno, fk_seq, depthno, namecheck 
+		            from tbl_board B join tbl_person P
+		            on B.fk_perno=P.perno
+		            where status=1
+		            <if test='searchWord != "" '>
+				    and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+				    </if>
+				    <if test='viewBoard != "" '>
+		        	and categoryno = ${viewBoard}
+		        	</if>
+		            start with fk_seq=0
+		            connect by prior seq=fk_seq
+		            order siblings by groupno desc, seq asc
+				)V
+		    )T
 		where rno between #{startRno} and #{endRno}
 	</select>
 	
@@ -103,11 +135,11 @@
    
    	<!-- === 페이징 처리한 댓글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
 	<select id="commentListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.AdminCommentVO">
-		select comseq, categoryno, subject, content, name, reregdate 
+		select comseq, categoryno, subject, content, name, reregdate, fk_seq, fk_perno
 		from
 		(
-			select row_number() over(order by comseq desc) as rno,
-			        comseq, categoryno, subject, C.content, name, reregdate 
+			select row_number() over(order by comseq desc) as rno,C.fk_seq,
+			        comseq, categoryno, subject, C.content, name, to_char(reregdate, 'yyyy-mm-dd hh24:mi:ss') as reregdate, C.fk_perno 
 					from tbl_person P join tbl_comment C
 					on C.fk_perno=P.perno
 					join tbl_board B

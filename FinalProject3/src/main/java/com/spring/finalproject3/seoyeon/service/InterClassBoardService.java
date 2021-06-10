@@ -6,6 +6,7 @@ import java.util.Map;
 import com.spring.finalproject3.seoyeon.model.QnAVO;
 import com.spring.finalproject3.seoyeon.model.SubmitVO;
 import com.spring.finalproject3.seoyeon.model.assignmentBoardVO;
+import com.spring.finalproject3.seoyeon.model.materialVO;
 
 public interface InterClassBoardService {
 
@@ -75,6 +76,35 @@ public interface InterClassBoardService {
 	// 점수 변경하기
 	int changeScore(Map<String, String> paraMap);
 
+	// 자료) 총 갯수 알아오기
+	int getTotalMaterial(Map<String, String> paraMap);
+
+	// 자료) 페이징처리한 목록 가져오기
+	List<materialVO> materialListSearchWithPaging(Map<String, String> paraMap);
+
+	// 자료) 첨부파일 없는 글쓰기
+	int materialAdd(materialVO mtrvo);
+
+	// 자료) 첨부파일 있는 글쓰기
+	int materialAdd_withFile(materialVO mtrvo);
+
+	// 자료) 조회수 증가 + 글 상세 보기
+	materialVO materialView(Map<String, String> paraMap, int login_perno);
+
+	// 자료) 조회수 증가 없이 글 상세 보기
+	materialVO materialViewNoAddCount(Map<String, String> paraMap);
+
+	// 자료) 글 수정하기
+	int materialEdit(materialVO mtrvo);
+
+	// 자료) 글 삭제하기
+	int materialDelete(Map<String, String> paraMap);
+
+	// 자료) 검색어 자동글
+	List<String> materialWordSearchShow(Map<String, String> paraMap);
+
+	// 질문) 원글 글쓴이 perno 받아오기
+	String getOrgPerno(String qnano);
 
 
 }

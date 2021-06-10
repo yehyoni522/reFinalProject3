@@ -31,7 +31,8 @@
 			select assgnno,subject, deadline, status, score, fileName
 			from
 			(
-			    select row_number() over(order by assgnno desc) as rno,assgnno, subject, fileName, deadline, S.status, S.score
+			    select row_number() over(order by assgnno desc) as rno,assgnno, subject, fileName, 
+			    		to_char(deadline, 'yyyy-mm-dd hh24:mi:ss') as deadline, S.status, S.score
 			    from tbl_assgn A left outer join 
 			    (select fk_assgnno, score, status from tbl_submit where fk_perno=#{perno}) S
 			    on A.assgnno = S.fk_assgnno
@@ -61,7 +62,7 @@
 	<!-- === 과제 게시판 글쓰기(파일첨부가 없는 글쓰기) === -->
    <insert id="assignmentAdd" parameterType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
 		insert into tbl_assgn(assgnno, fk_perno,fk_subno,subject ,content, deadline)
-		values(assgnno_seq.nextval, 1004, 1000,#{subject}, #{content},#{deadline})
+		values(assgnno_seq.nextval, #{fk_perno}, #{fk_subno},#{subject}, #{content},#{deadline})
    </insert>
 
 
@@ -124,10 +125,7 @@
 	<update id="assignmentEdit" parameterType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
 		update tbl_assgn set subject = #{subject}, deadline=#{deadline}
 		                   , content = #{content}
-		<if test="files neq null">
-			, files=#{files}
-		</if>
-		where assgnno = #{assgnno} 
+		where assgnno = #{assgnno}
 	</update>
 	
 	<!-- === 1개글 삭제하기 === -->
@@ -159,13 +157,13 @@
 	
 	<!-- === 원게시물에 딸린 댓글들을 페이징처리해서 조회해오기(Ajax 로 처리) ===  --> 
 	<select id="getSubmitListPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.SubmitVO">
-		select submitno, name as submitName, content, submitdate, fileName, orgFilename, fileSize, score
+		select submitno, name as submitName,fk_perno, content, submitdate,fileName, orgFilename, fileSize,score
 		from 
 		(
-		    select row_number() over(order by submitno desc) as rno,submitno,score, name, content, to_char(submitdate, 'yyyy-mm-dd hh24:mi:ss') as submitdate 
-		    , nvl(fileName,' ') AS fileName
-		     , nvl(orgFilename, ' ') AS orgFilename
-		     , nvl(to_char(fileSize), ' ') AS fileSize     
+		    select row_number() over(order by submitno desc) as rno,score,submitno, name, content, to_char(submitdate, 'yyyy-mm-dd hh24:mi:ss') as submitdate 
+		     , nvl(fileName,' ') AS fileName, fk_perno
+				     , nvl(orgFilename, ' ') AS orgFilename
+				     , nvl(to_char(fileSize), ' ') AS fileSize  
 		    from tbl_submit S join tbl_person p
 		    on fk_perno = perno
 		    where fk_assgnno = #{fk_assgnno}
@@ -190,7 +188,7 @@
 	
 	<!-- === 학생)댓글  조회하기 (Ajax 로 처리) === // -->
 	<select id="mysubmitList" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.SubmitVO">
-	    select submitno, name as submitName, content, to_char(submitdate, 'yyyy-mm-dd hh24:mi:ss') as submitdate 
+	    select submitno,fk_perno, name as submitName, content, to_char(submitdate, 'yyyy-mm-dd hh24:mi:ss') as submitdate 
 	    	, nvl(fileName,' ') AS fileName
 		     , nvl(orgFilename, ' ') AS orgFilename
 		     , nvl(to_char(fileSize), ' ') AS fileSize     
@@ -202,7 +200,7 @@
 	<!-- === 원글 또는 답변글 글쓰기(파일첨부가 있는 글쓰기) === -->
 	<insert id="assignmentAdd_withFile" parameterType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">	   
 	    insert into tbl_assgn(assgnno, fk_perno,fk_subno,subject ,content, deadline, fileName, orgFilename, fileSize)
-		values(assgnno_seq.nextval, 1004, 1000,#{subject}, #{content},#{deadline}, #{fileName}, #{orgFilename}, #{fileSize})
+		values(assgnno_seq.nextval, #{fk_perno}, #{fk_subno},#{subject}, #{content},#{deadline}, #{fileName}, #{orgFilename}, #{fileSize})
 	</insert>
 	
 	<!-- 과제 제출 댓글쓰기(tbl_submit 테이블에 insert) === -->
@@ -222,8 +220,12 @@
 	<!-- === 질문게시판) 총 게시물 건수(totalCount) 구하기 - 검색이 있을때와 검색이 없을때로 나뉜다. === -->
 	<select id="getTotalQna" parameterType="HashMap" resultType="int">
 		select count(*)
-		from tbl_QnA 
+		from tbl_QnA join tbl_person
+		on fk_perno = perno
 		where fk_subno=#{subno}
+		<if test='searchWord != "" '>
+			and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+		</if>
 	</select>
 	
 	
@@ -242,6 +244,9 @@
 					from tbl_QnA Q left join tbl_person P
 		            on fk_perno = perno
 		            where Q.fk_subno=#{subno}
+		            <if test='searchWord != "" '>
+					    and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+					</if>
 		            start with fk_qnano=0
 		            connect by prior qnano=fk_qnano
 		            order siblings by groupno desc, qnano asc
@@ -255,12 +260,12 @@
    	<insert id="qnaAdd" parameterType="com.spring.finalproject3.seoyeon.model.QnAVO">
 		<if test='fk_qnano.equals("")'>
 	    	insert into tbl_QnA(qnano,fk_subno,fk_perno,subject,content,regDate,status,groupno,fk_qnano,depthno)
-			values(qnano.nextval, 1000, #{fk_perno}, #{subject},#{content},default,default,#{groupno},default,default)
+			values(qnano.nextval, #{fk_subno}, #{fk_perno}, #{subject},#{content},default,default,#{groupno},default,default)
 		</if>
 		
 		<if test='!fk_qnano.equals("")'>
 	    	insert into tbl_QnA(qnano,fk_subno,fk_perno,subject,content,regDate,status,groupno,fk_qnano,depthno)
-			values(qnano.nextval, 1000, #{fk_perno}, #{subject},#{content},default,default,#{groupno},#{fk_qnano},#{depthno}+1)
+			values(qnano.nextval, #{fk_subno}, #{fk_perno}, #{subject},#{content},default,default,#{groupno},#{fk_qnano},#{depthno}+1)
 		</if>	
 	</insert>
 	
@@ -278,7 +283,7 @@
 		     , groupno, fk_qnano, depthno
 		from tbl_QnA Q join tbl_person P
 		on fk_perno = perno
-		where Q.status = 1 and qnano = #{qnano}
+		where Q.status = 1 and qnano = #{qnano}	
    	</select> 
 	
 	<!-- 질문답변하면 질문글에 answer +1 하기 -->
@@ -317,6 +322,109 @@
 		update tbl_submit set score = #{score}
 		where submitno = #{submitno}
 	</update>
+	
+	<!-- 질문) 원글 글쓴이 perno 받아오기 -->
+	<select id="getOrgPerno" parameterType="String" resultType="String">
+		select fk_perno
+		from tbl_qna
+		where qnano=(select fk_qnano from tbl_qna where qnano=#{qnano})
+	</select>
+
+	<!-- 자료) 총 갯수 -->
+	<select id="getTotalMaterial" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_material
+		<if test='searchWord != "" '>
+			where lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+		</if>
+	</select>
+	
+	<!-- 자료) 페이징처리한 목록 가져오기 -->
+	<select id="materialListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.materialVO">
+	select mtrno, subject, regDate, readCount, fileName
+			from
+			(
+			    select row_number() over(order by mtrno desc) as rno, mtrno, subject, fileName, readCount,
+			    		to_char(regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+			    from tbl_material
+			    where fk_subno=#{subno}
+			    <if test='searchWord != "" '>
+				    and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+				</if>
+			) V
+			where rno between #{startRno} and #{endRno}
+	</select>
+	
+	<!-- 자료) 첨부파일 없는 글쓰기 -->
+	<insert id="materialAdd" parameterType="com.spring.finalproject3.seoyeon.model.materialVO">
+		insert into tbl_material(mtrno, fk_perno,fk_subno,subject ,content)
+		values(mtrno_seq.nextval, #{fk_perno}, #{fk_subno}, #{subject}, #{content})
+	</insert>
+	
+	<!-- 자료) 첨부파일 있는 글쓰기 -->
+	<insert id="materialAdd_withFile" parameterType="com.spring.finalproject3.seoyeon.model.materialVO">
+		insert into tbl_material(mtrno, fk_perno,fk_subno,subject ,content, fileName, orgFilename, fileSize)
+		values(mtrno_seq.nextval, #{fk_perno}, #{fk_subno}, #{subject}, #{content}, #{fileName}, #{orgFilename}, #{fileSize})
+	</insert>
+	
+	<!-- 자료) 글 상세 보기 -->
+	<select id="materialView" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.materialVO">
+		select previousseq, previoussubject
+		   , mtrno, fk_perno, subject, content, regDate
+		   , nextseq , nextsubject, fileName, orgFilename, fileSize
+		from 
+		(
+		  select lag(mtrno,1) over(order by mtrno desc) AS previousseq
+		       , lag(subject,1) over(order by mtrno desc) AS previoussubject
+		       
+		       , mtrno, fk_perno, subject, content
+		       , to_char(regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+		       
+		       , lead(mtrno,1) over(order by mtrno desc) AS nextseq
+		       , lead(subject,1) over(order by mtrno desc) AS nextsubject   
+		       
+		       , fileName, orgFilename, fileSize 
+		  from tbl_material
+		  <if test='searchType != "" and searchWord != ""'>
+             where lower(${searchType}) like '%'||lower(#{searchWord})||'%'
+          </if>
+		) V
+		where V.mtrno = #{mtrno}
+	</select>
+	
+	<!-- 자료) 조회수 증가 -->
+	<update id="materialAddReadCount" parameterType="String">
+	 	update tbl_material set readCount = readCount + 1 
+      	where mtrno = #{mtrno}
+	</update>
+	
+	<!-- 자료) 글 수정하기 -->
+	<update id="materialEdit" parameterType="com.spring.finalproject3.seoyeon.model.materialVO">
+		update tbl_material set subject = #{subject}
+			, content = #{content}	
+      	where mtrno = #{mtrno}
+    </update>
+	
+	<!-- 자료) 글 삭제하기 -->
+	<delete id="materialDelete" parameterType="HashMap">
+		delete from tbl_material 
+		where mtrno = #{mtrno}
+	</delete>
+	
+	<!-- 자료) 글 검색어 입력시 자동글 완성하기 -->
+	<select id="materialWordSearchShow" parameterType="HashMap" resultType="String">
+        	select ${searchType}
+			from tbl_material
+  			where lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+	</select>
+	
+
+	
+
+
+
+
+
 
 
 </mapper>

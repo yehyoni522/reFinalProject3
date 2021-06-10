@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -439,6 +440,23 @@ public class YehyeonController {
 			}
 		} // end of for ----------------
 		mav.setViewName("msg");
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="/class/index.sam", produces="text/plain;charset=UTF-8")
+	public ModelAndView classHome(HttpServletRequest request, ModelAndView mav) {
+		
+		String subno = request.getParameter("subno");
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("subno", subno);
+		
+		String subject = service.getSubjectname(subno);
+		session.setAttribute("subject", subject);
+		
+		
+		mav.setViewName("class/index.tiles4");
 		
 		return mav;
 	}

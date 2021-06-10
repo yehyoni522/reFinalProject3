@@ -60,43 +60,20 @@ div#btn-board{
 
 	$(document).ready(function(){
 		
-		 //전역변수
-	    var obj = [];
-	    
-	    //스마트에디터 프레임생성
-	    nhn.husky.EZCreator.createInIFrame({
-	        oAppRef: obj,
-	        elPlaceHolder: "content",
-	        sSkinURI: "<%= request.getContextPath() %>/resources/smarteditor/SmartEditor2Skin.html",
-	        htParams : {
-	            // 툴바 사용 여부 (true:사용/ false:사용하지 않음)
-	            bUseToolbar : true,            
-	            // 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음)
-	            bUseVerticalResizer : true,    
-	            // 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음)
-	            bUseModeChanger : true,
-	        }
-       });
-    
-
 
 		// 완료버튼
-		$("button#btnUpdate").click(function(){
+		$("button#btnWrite").click(function(){
 			// 글제목 유효성 검사
 			var subjectVal = $("input#subject").val().trim();
 			if(subjectVal == "") {
 			   alert("글제목을 입력하세요!!");
 			   return;
 			}
-			
-			//id가 content인 textarea에 에디터에서 대입
-	          obj.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-	        
       
 			// 폼(form) 을 전송(submit)
-			var frm = document.editFrm;
+			var frm = document.addFrm;
 			frm.method = "POST";
-			frm.action = "<%= ctxPath%>/class/qnaEditEnd.sam";
+			frm.action = "<%= ctxPath%>/class/materialAddEnd.sam";
 			frm.submit();
 			
 		});
@@ -109,44 +86,52 @@ div#btn-board{
 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
 
 <div class="container">
-
+	
 	<div class="headerCategoty">
 	<i class="fas fa-university "></i>
-	&nbsp;>&nbsp;질문게시판
+	&nbsp;>&nbsp;수업자료
 	</div>
-	
-	<h1 class="headerName">컴퓨터 네트워크</h1>
-	
 
-	<h3 style="text-align: left; font-weight: bold;">| 수정</h3>
+	<h1 class="headerName">${sessionScope.subject}</h1>
+	<br>
+	<h3 style="text-align: left; font-weight: bold;">| 수업자료 올리기</h3>
+
 	<hr>
 
 
-	<form name="editFrm"> 
+	<form name="addFrm" enctype="multipart/form-data">
  
 		<table id="table" style="width:100%; border-top: 1.5px #b3b3b3 solid; border-bottom: 1.5px #b3b3b3 solid;">
 			<tr>
 			   <th style="width:200px;">제목</th>
 			   <td>
-			      <input type="text" name="subject" id="subject" class="long" value="${requestScope.qnavo.subject}"/>       
+				  <input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
+			      <input type="text" name="subject" id="subject" class="long" />       
 			   </td>
-			</tr>	
+			</tr>			
 			<tr>
 			   <th>내용</th>
 			   <td>
-			      <textarea rows="10" cols="100" style="width:80%; height: 612px;" name="content" id="content" >${requestScope.qnavo.content}</textarea>       
+			      <textarea rows="10" cols="100" style="width:80%; height: 612px;" name="content" id="content"></textarea>       
 			   </td>
 			</tr>
+			
+			<%-- === #150. 파일첨부 타입 추가하기 === --%>
+			<tr>
+            <th>파일첨부</th>
+            <td style="padding-left:15px;">
+               <input type="file" name="attach" />
+            </td>
+         </tr>
 
-	
 	</table>
       
 	<div id="btn-board">
-		<button type="button" class="btn-board" id="btnUpdate">수정 완료</button>
+		<button type="button" class="btn-board" id="btnWrite">완료</button>
 		<button type="button"class="btn-board" onclick="javascript:history.back()">취소</button>
 	</div>
       
-	<input type="hidden" name="qnano" value="${requestScope.qnavo.qnano}"/>
+         
    </form>
 
 </div>

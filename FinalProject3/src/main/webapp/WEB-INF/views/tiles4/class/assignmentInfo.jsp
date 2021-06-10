@@ -272,7 +272,7 @@ div#btn-board{
 						else{
 							html += "<td></td>";
 						}
-						html += "<td class='comment'>"+ item.submitName +"</td>";
+						html += "<td class='comment'>"+ item.submitName +"("+item.fk_perno+")</td>";
 						html += "<td class='comment'>"+ item.submitDate +"</td>";
 						html += "</tr>";
 					});
@@ -319,9 +319,9 @@ div#btn-board{
 						else{
 							html += "<td></td>";
 						}
-						html += "<td class='comment'>"+ item.submitName +"</td>";
+						html += "<td class='comment'>"+ item.submitName +"("+item.fk_perno+")</td>";
 						html += "<td class='comment'>"+ item.submitDate +"</td>";
-						html += "<td class='comment'><input type='hidden' value='"+item.submitno+"'/><input type='text' style='width:40px;' value='"+item.score+"'/><input type='button' class='btn-board small' id='score' onclick='goScore(this)' value='변경'/></td>";
+						html += "<td class='comment'><input type='hidden' value='"+item.submitno+"'/><input type='text' style='width:40px;' value='"+item.score+"'/><input type='button' class='btn-board small' onclick='goScore(this)' value='변경'/></td>";
 						html += "</tr>";
 					});
 				}
@@ -455,7 +455,7 @@ div#btn-board{
 	&nbsp;>&nbsp;과제게시판
 	</div>
 	
-	<h1 class="headerName">컴퓨터 네트워크</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<h3 style="text-align: left; font-weight: bold;">| 과제 상세</h3>
 
@@ -475,13 +475,13 @@ div#btn-board{
 					   </td>
 					</tr>
 					<tr>
-					   <th>게시일</th>
+					   <th>게시일시</th>
 					   <td>
 					     	${requestScope.assignmentVO.regDate}
 					   </td>
 					</tr>
 					<tr>
-					   <th>마감일</th>
+					   <th>마감일시</th>
 					   <!-- 마감일 null(미정)일 경우 비공개 -->
 						<c:choose>
 							<c:when test="${requestScope.assignmentVO.deadline eq null}">
@@ -580,7 +580,7 @@ div#btn-board{
 			<form name="submitFrm">
 			
 				<%--------------------------=== 과목번호 fk_subno 넣어주는 곳  -------------------------------------%>
-				<input type="hidden" name="fk_subno" id="fk_subno" value="1000"/>
+				<input type="hidden" name="fk_subno" id="fk_subno" value="${sessionScope.subno}"/>
 				<%-----------------------------=== 과목번호 fk_subno 넣어주는 곳  ------------------------------------%>
 				
 			<c:choose>
@@ -614,10 +614,10 @@ div#btn-board{
 			<thead>
 			<tr>
 			    <th style="width: 7%; text-align: center;">번호</th>
-				<th style="width: 37%; text-align: center;">내용</th>
-				<th style="width: 17%; text-align: center;">첨부파일(bytes)</th>
-				<th style="width: 7%; text-align: center;">작성자</th>
-				<th style="width: 17%; text-align: center;">작성일자</th>
+				<th style="width: 25%; text-align: center;">내용</th>
+				<th style="width: 20%; text-align: center;">첨부파일(bytes)</th>
+				<th style="width: 15%; text-align: center;">이름(학번)</th>
+				<th style="width: 14%; text-align: center;">제출일시</th>
 				
 				<c:if test="${sessionScope.loginuser.identity eq '1'}">
 					<th style="width: 15%; text-align: center;">점수</th>
