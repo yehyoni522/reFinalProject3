@@ -123,6 +123,7 @@ $(document).ready(function(){
 	          }
 	    });
 		
+
 		<%-- === #107. 검색어 입력시 자동글 완성하기 2 === --%>
 	       $("div#displayList").hide();
 	       
@@ -130,7 +131,8 @@ $(document).ready(function(){
 	          
 	          var wordLength = $(this).val().trim().length;
 	          // 검색어의 길이를 알아온다.
-	          
+	      
+	          console.log("~~~~ 확인용 sDeptIdes => " + sDeptIdes);
 	          if(wordLength == 0 ) {
 	             $("div#displayList").hide();
 	             // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안 나오도록 해야 한다. 
@@ -176,7 +178,7 @@ $(document).ready(function(){
 	                 }
 	             });
 	          }
-	          
+		  
 	       });
 
 	       <%-- 끝 === 검색어 입력시 자동글 완성하기  === --%>
@@ -194,7 +196,18 @@ $(document).ready(function(){
 	      	 
 	       }
 		
+	       ///// === Excel 파일로 다운받기 시작 === /////
+		   $("button#btnExcel").click(function(){
+
 		
+			    location.href ="<%= request.getContextPath()%>/admin/downloadExcelFile.sam"; 
+			  		   
+		   });
+		   ///// === Excel 파일로 다운받기 끝 === /////
+		    
+	       
+	       
+	       
 });// end of $(document).ready(function(){}---------------------------------------
 
 		
@@ -207,6 +220,8 @@ $(document).ready(function(){
 		   frm.submit();
 		   
 	}// end of function goSearch()------------------------------------
+	
+	
 	
 </script>   
 
@@ -231,15 +246,15 @@ $(document).ready(function(){
 	  
 	   </form>
 		   <%-- === 검색어 입력시 자동글 완성하기  === --%>
-			<div id="displayList" style="border:solid 1px gray; border-top:0px; width:320px; height:55px; margin-right:118px;
+			<div id="displayList" style="border:solid 1px gray; border-top:0px; width:320px; height:50px; margin-right:118px;
 					overflow:auto; float:right; padding:5px; text-align: left;  border-radius: 5px;  box-shadow: 0.5px 0.5px 0.5px 0.5px gray;">	
 		</div>
 
    </div>
 	   
 	   <table id="table" style="width:100%;margin-top: 50px; ">
-	 		<tr style="display: inline-block; border: none;" ><td colspan="7" align="right">	
-		      <button type="button" onclick="#" class=" btn-board">excel 다운로드</button>
+	 		   <tr style="border: none;" align="right" ><td colspan="7" align="right">	
+		      <button type="button" id="btnExcel" class=" btn-board">excel 다운로드</button>
 		</td></tr>
 	      <tr>
 	      
@@ -253,7 +268,7 @@ $(document).ready(function(){
 	        
 	      
 	      </tr>
-	      
+	   
 	      <c:forEach var="subList" items="${requestScope.adminsubjectList}" varStatus="status"> 
 	         <tr class="list">  
 	         <c:if test="${subList.semeter==0}"><td align="center">21-1</td></c:if>

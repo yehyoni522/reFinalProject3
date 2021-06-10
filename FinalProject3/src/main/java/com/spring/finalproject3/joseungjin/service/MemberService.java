@@ -147,6 +147,12 @@ public class MemberService implements InterMemberService {
 	
 		return wordList;
 	}
+	//엑셀가져오기
+	@Override
+	public List<Map<String, String>> getExcelsubjectList() {
+		List<Map<String, String>> adminExcelsubjectList =sudao.getExcelsubjectList();
+		return adminExcelsubjectList;
+	}
 
 
 

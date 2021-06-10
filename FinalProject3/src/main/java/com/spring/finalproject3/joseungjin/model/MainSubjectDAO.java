@@ -39,6 +39,12 @@ public class MainSubjectDAO implements InterSubjectDAO {
 		List<String> wordList = sqlsession.selectList("member.wordSearchShow",paraMap);
 		return wordList;
 	}
+	//엑셀 가져오기
+	@Override
+	public List<Map<String, String>> getExcelsubjectList() {
+		List<Map<String, String>> adminExcelsubjectList =sqlsession.selectList("member.getExcelsubjectList");
+		return adminExcelsubjectList;
+	}
 
 	
 	
