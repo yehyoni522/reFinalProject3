@@ -8,6 +8,7 @@ import com.spring.finalproject3.joseungjin.model.MainSubjectVO;
 import com.spring.finalproject3.joseungjin.model.Main_index_BoardVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 import com.spring.finalproject3.joseungjin.model.ScheduleVO;
+import com.spring.finalproject3.yehyeon.model.SubjectVO;
 
 public interface InterMemberService {
 
@@ -44,6 +45,13 @@ public interface InterMemberService {
 	//일정 수정하기
 	int scheduleEditEnd(ScheduleVO scvo);
 	//일정 삭제하기
+	
 	int scheduledel(Map<String, String> paraMap);
+	//관리자 수업 목록 불러오기
+	List<MainSubjectVO> getsubjectList(Map<String, String> paraMap);
+	//총 페이지수 알아오기
+	int getSubjectTotal(Map<String, String> paraMap);
+	//검색 자동글
+	List<String> wordSearchShow(Map<String, String> paraMap);
 
 }
