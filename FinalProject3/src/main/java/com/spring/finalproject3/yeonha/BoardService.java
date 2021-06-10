@@ -126,7 +126,28 @@ public class BoardService implements InterBoardService {
 		return boardvo;
 	}
 	
-	// 글수정 페이지 완료하기 
+	// 게시글에 첨부파일이 있는지 확인하기(수정)
+	@Override
+	public String isFilename(BoardVO boardvo) {
+		String filename = dao.isFilename(boardvo);
+		return filename;
+	}
+	
+	// 첨부파일 삭제 체크시 첨부파일 삭제(수정)
+	@Override
+	public int delFile(BoardVO boardvo) {
+		int delFile = dao.delFile(boardvo);
+		return delFile;
+	}
+
+	// 첨부파일이 없는 글수정 페이지 완료하기 
+	@Override
+	public int edit_withFile(BoardVO boardvo) {
+		int n = dao.edit_withFile(boardvo);
+		return n;
+	}
+	
+	// 첨부파일이 있는 글수정 페이지 완료하기 
 	@Override
 	public int edit(BoardVO boardvo) {
 		int n = dao.edit(boardvo);
@@ -189,6 +210,10 @@ public class BoardService implements InterBoardService {
 		int likecnt = dao.likeCount(seq);
 		return likecnt;
 	}
+
+
+
+
 
 
 
