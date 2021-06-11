@@ -101,21 +101,7 @@ public class BoardDAO implements InterBoardDAO {
 		return boardvo;
 	}
 
-	// 첨부파일 삭제 체크시 첨부파일 삭제 (수정)
-	@Override
-	public int delFile(BoardVO boardvo) {
-		int delFile = sqlsession.update("board.delFile", boardvo);
-		return delFile;
-	}
-
-	// 첨부파일이 없는 글수정 페이지 완료하기 
-	@Override
-	public int edit_withFile(BoardVO boardvo) {
-		int n = sqlsession.update("board.edit_withFile", boardvo);
-		return n;
-	}
-	
-	// 첨부파일이 없는 글수정 페이지 완료하기 
+	// 글수정 페이지 완료하기 
 	@Override
 	public int edit(BoardVO boardvo) {
 		int n = sqlsession.update("board.edit", boardvo);
@@ -184,15 +170,6 @@ public class BoardDAO implements InterBoardDAO {
 		int likecnt = sqlsession.selectOne("board.likeCount", seq);
 		return likecnt;
 	}
-
-	// 게시글에 첨부파일이 있는지 확인하기(수정)
-	@Override
-	public String isFilename(BoardVO boardvo) {
-		String filename = sqlsession.selectOne("board.isFilename", boardvo);
-		return filename;
-	}
-
-
 
 
 

@@ -33,4 +33,10 @@ public interface InterReadingDAO {
 
 	String getSubjectname(String subno); // 과목 이름을 불러온다.
 
+	List<Map<String, String>> getNoticeList(String subno); // 과목별 공지사항 제목과 작성일자를 불러온다.
+
+	List<Map<String, String>> getQnAList(String subno); // 과목별 질문게시판 제목과 작성일자를 불러온다.
+
+	List<Map<String, String>> getMaterialList(String subno); // 과목별 수업자료 제목과 작성일자를 불러온다.
+
 }

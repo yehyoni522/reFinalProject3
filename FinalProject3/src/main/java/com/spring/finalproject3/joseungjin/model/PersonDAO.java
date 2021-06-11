@@ -52,6 +52,12 @@ public class PersonDAO implements InterPersonDAO {
 		int  isUserExist2= sqlsession.selectOne("member.personRegister", paraMap);
 		return isUserExist2;
 	}
+	//관리자 회원정보등록
+	@Override
+	public int registerMember(Map<String, String> paraMap) {
+		int  registerMember= sqlsession.insert("member.registerMember", paraMap);
+		return registerMember;
+	}
 
 	
 }

@@ -64,34 +64,11 @@ div#btn-board{
 
 <script type="text/javascript">
 
-	$(document).ready(function(){
-		
-		$("span.subject").bind("mouseover",function(event){
-			var $target=$(event.target);
-			$target.addClass("subjectStyle");
-		});
-		
-		$("span.subject").bind("mouseout",function(event){
-			var $target=$(event.target);
-			$target.removeClass("subjectStyle");			
-		});
-		
-		$("span.subject").click(function(){		
-			var qnano = $(this).parent().prev().text();
-			var fk_perno = $(this).prev().val();
-			
-			var frm = document.goViewFrm;
-			frm.qnano.value = qnano;
-			frm.fk_perno.value = fk_perno;
-			
-			frm.method = "get";
-	   	    frm.action = "<%= ctxPath%>/class/qnaView.sam";
-	   	    frm.submit();
-		});
-		
-		
-	});// end of function goView(assgnno) {}-----------------------
-	   	
+$(function(){
+	if(${requestScope.qnaList == null}) {
+		console.log("텅빔");
+	}
+});
 	   
 	
 </script>   
@@ -105,18 +82,56 @@ div#btn-board{
 	</div>
 
 	<h1 class="headerName">${sessionScope.subject}</h1>
-	<br>
-	<br>
-
-
-
-	<form name="goViewFrm">	
-		<input type="hidden" name="qnano" />
-		<input type="hidden" name="fk_perno" />
-	</form>
-
-
-
+	<br><br>
+	<div style='display:inline-block; float:left; width: 43%;'>
+	<h4 style="text-align: left; font-weight: bold;">| <a href="<%=ctxPath%>/lesson/notice.sam?subno=${sessionScope.subno}">공지사항</a></h4>
+			<table style="width:500px;">
+			<tr>
+				<th>글제목</th>
+				<th>작성일자</th>
+			</tr>
+			<c:forEach var="notice" items="${requestScope.noticeList}"> 
+				<tr>
+					<td>${notice.subject}</td>
+					<td>${notice.regdate}</td>
+				</tr>			
+			</c:forEach>
+			
+		</table>
+	</div>
+	
+	<div style='display:inline-block; float:right; width: 43%;'>
+			
+		<h4 style="text-align: left; font-weight: bold;">| <a href="<%=ctxPath%>/class/qnaBoard.sam?subno=${sessionScope.subno}">질문게시판</a></h4>
+		<table style="width:500px;">
+			<tr>
+				<th>글제목</th>
+				<th>작성일자</th>
+			</tr>
+			<c:forEach var="qna" items="${requestScope.qnaList}"> 
+				<tr>
+					<td>${qna.subject}</td>
+					<td>${qna.regdate}</td>
+				</tr>			
+			</c:forEach>
+		</table>
+		</div>		
+	
+	<div style="clear: both;">
+	<h4 style="text-align: left; font-weight: bold;  margin-top:-100px;" align="center" >| <a href="<%=ctxPath%>/class/qnaBoard.sam?subno=${sessionScope.subno}">수업자료</a></h4>
+	<table style="width:1000px;">
+			<tr>
+				<th>글제목</th>
+				<th>작성일자</th>
+			</tr>
+			<c:forEach var="material" items="${requestScope.materialList}"> 
+				<tr>
+					<td>${material.subject}</td>
+					<td>${material.regdate}</td>
+				</tr>			
+			</c:forEach>
+		</table>
+	</div>
 </div>
 
 

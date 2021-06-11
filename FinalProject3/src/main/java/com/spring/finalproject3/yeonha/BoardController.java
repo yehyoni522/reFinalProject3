@@ -63,7 +63,7 @@ public class BoardController {
 		return mav;
 	}
 	
-	// 게시판 글쓰기 완료 요청 
+	// === #54. 게시판 글쓰기 완료 요청 === // 
 	@RequestMapping(value="/board/addEnd.sam", method= {RequestMethod.POST})
 	public ModelAndView addEnd(HttpServletRequest request, Map<String,String> paraMap, ModelAndView mav, BoardVO boardvo, MultipartHttpServletRequest mrequest) { 
 
@@ -304,7 +304,7 @@ public class BoardController {
 		return jsonArr.toString(); 
 	}
 	
-	// 글 한개를 보여주는 페이지 요청  
+	// 글 한개를 보여주는 페이지 요청  (댓글 목록 포함)
 	@RequestMapping(value="/board/view.sam")
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		
@@ -528,97 +528,13 @@ public class BoardController {
 	
 	// 글수정 페이지 완료하기 
 	@RequestMapping(value="/board/editEnd.sam", method= {RequestMethod.POST})
-	public ModelAndView editEnd(ModelAndView mav, BoardVO boardvo, HttpServletRequest request, MultipartHttpServletRequest mrequest) {   
+	public ModelAndView editEnd(ModelAndView mav, BoardVO boardvo, HttpServletRequest request) {   
 	   
-		// System.out.println("삭제체크여부"+(request.getParameter("delfileName")));
-		
-		String delFileCheck = request.getParameter("delfileName");
-		
 		String searchType = request.getParameter("searchType");
 		String searchWord = request.getParameter("searchWord");
 		
-		MultipartFile attach = boardvo.getAttach();
-		
-		// 게시글에 첨부파일이 있는지 확인하기(수정)
-		String filename = service.isFilename(boardvo);
-		boardvo.setFileName(filename);
-		// System.out.println("파일삭제 작업전 파일이름: "+boardvo.getFileName());
-		
-		if(delFileCheck != null && filename != null) {
-			// 게시글에 파일이 있는데 파일삭제에 체크가 되어있다면
-			service.delFile(boardvo); // 첨부파일 삭제 체크시 첨부파일 삭제
-			boardvo.setFileName(null);
-		}
-		filename = service.isFilename(boardvo);
-		boardvo.setFileName(filename);
-		// System.out.println("파일삭제 작업후 파일이름: "+boardvo.getFileName());
-		
-		if(!attach.isEmpty() && filename == null) {
-			// 게시글이 파일이 없고 파일첨부가 되었다면
-			
-			HttpSession session = mrequest.getSession();
-			String root = session.getServletContext().getRealPath("/"); 
-			
-			String path = root+"resources"+File.separator+"files";
-			
-			String newFileName = "";
-			// WAS(톰캣)의 디스크에 저장될 파일명 
-			
-			byte[] bytes = null;
-			// 첨부파일의 내용을 담는 것
-			
-			long fileSize = 0;
-			// 첨부파일의 크기 
-			
-			try {
-				bytes = attach.getBytes();
-				// 첨부파일의 내용물을 읽어오는 것 
-				
-				String originalFilename = attach.getOriginalFilename();
-				// originalFilename ==> "강아지.png"
-				
-				newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
-				
-	//			System.out.println(">>> 확인용 newFileName => " + newFileName);
-				// >>> 확인용 newFileName => 20210603123820876795424460900.png 
-				// >>> 확인용 newFileName => 20210603124015876910815673500.png
-				
-			/*
-			    3. BoardVO boardvo 에 fileName 값과 orgFilename 값과 fileSize 값을 넣어주기   
-			*/
-				boardvo.setFileName(newFileName);
-				// WAS(톰캣)에 저장될 파일명(20210603123820876795424460900.png)
-				
-				boardvo.setOrgFilename(originalFilename);
-				// 게시판 페이지에서 첨부된 파일(강아지.png)을 보여줄 때 사용.
-				// 또한 사용자가 파일을 다운로드 할때 사용되어지는 파일명으로 사용.
-				
-				fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
-				boardvo.setFileSize(String.valueOf(fileSize));
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		else if(!attach.isEmpty() && filename != null){
-			// 게시글에 파일이 있는데 파일첨부를 했다면
-			mav.addObject("message", "파일은 하나만 첨부가능합니다");
-			mav.setViewName("msg");
-			
-			return mav;
-		}
-		
-		int n = 0;
-		
-		if(attach.isEmpty()) { 
-			// 첨부파일이 없는 경우라면
-			n = service.edit_withFile(boardvo);			
-		}
-		else {
-			// 첨부파일이 있는 경우
-			n = service.edit(boardvo);
-		}
-		
+		int n = service.edit(boardvo);
+	   
 		if(n == 0) {
 			mav.addObject("message", "수정이 실패했습니다.");
 		}
@@ -641,7 +557,7 @@ public class BoardController {
    
 		String seq = request.getParameter("seq");
 		String categoryno = request.getParameter("categoryno");	
-		 	//System.out.println(categoryno);
+		 	System.out.println(categoryno);
 		
 		String gobackURL = request.getParameter("gobackURL");
 		mav.addObject("gobackURL", gobackURL);
