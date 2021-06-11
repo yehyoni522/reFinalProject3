@@ -161,11 +161,50 @@ $("input#email").blur(function(){
 
 function goRegister(){
 	
-	var frm = document.registerFrm;
-	frm.action = "<%=ctxPath%>/admin/memberRegisterend.sam";
-	frm.method = "post";
-	frm.submit();
-	
+
+    	if($('#fk_majseq').val()==''){
+    		 alert('학과를 선택 해주세요.')
+             return;
+    	}
+    	    if ($('#perno').val() == '') {
+                alert('회원번호를 입력 해주세요.')
+                return;
+          }
+    		var radioCheckedLength = $("input:radio[name=gender]:checked").length;
+    		
+    		if(radioCheckedLength == 0) {
+    			alert("성별을 선택하셔야 합니다.");
+    			return; // 종료
+    		}
+    		
+    	    if ($('#name').val() == '') {
+                alert('이름을 입력 해주세요.')
+                return;
+          }
+    	    if ($('#birthday').val() == '') {
+                alert('생년월일을 입력 해주세요.')
+                return;
+          }
+    	     if ($('#email').val() == '') {
+                 alert('이메일을 입력 해주세요.')
+                 return;
+           }
+    	     if ($('#hp2').val()== '' ||$('#hp3').val()  == '') {
+                 alert('전화번호를 입력 해주세요.')
+                 return;
+           }
+    	     if ($('#memberaddress').val() == '') {
+                 alert('주소을 입력 해주세요.')
+                 return;
+           }
+     
+   
+   
+			var frm = document.registerFrm;
+			frm.action = "<%=ctxPath%>/admin/memberRegisterend.sam";
+			frm.method = "post";
+			frm.submit();
+     
 }
 
 </script>
@@ -188,7 +227,7 @@ function goRegister(){
       </thead>
       <tbody>
         <tr>
-         <td style="width: 20%; font-weight: bold;">구분&nbsp;<span class="star">*</span></td>
+         <td style="width: 20%; font-weight: bold;">구분&nbsp;</td>
            <td><select name="identity" id="identity">
            		<option value = "0">학생 </option>
 	           <option value = "1">교수 </option>
@@ -197,38 +236,45 @@ function goRegister(){
           </td>
       </tr>
           <tr>
-         <td style="width: 20%; font-weight: bold;">학과&nbsp;<span class="star">*</span></td>
+         <td style="width: 20%; font-weight: bold;">학과&nbsp;</td>
            <td><select name="fk_majseq" id="fk_majseq">
-           		<option value = "100">컴퓨터공학과 </option>
-	           <option value = "200">정보통신공학과 </option>
-	           <option value = "300">전기공학과</option>
-	           	<option value = "400">전자공학과 </option>
+           <option value= "">학과를 선택해주세요 </option>
+           	<optgroup label="공과대학">
+	           		<option value = "100">컴퓨터공학과 </option>
+		           <option value = "200">정보통신공학과 </option>
+		           <option value = "300">전기공학과</option>
+	           		<option value = "400">전자공학과 </option>
+	       </optgroup>
+	           
+	       	<optgroup label="사범대학">
+	       	 <option value = "500">국어교육과</option>
 	           <option value = "600">수학교육과</option>
 	           <option value = "700">영어교육과</option>
-           		</select>  	
+	           </optgroup>
+           </select>  	
           </td>
       </tr>
       <tr>
-         <td style="width: 20%; font-weight: bold;">회원번호&nbsp;<span class="star">*</span></td>
+         <td style="width: 20%; font-weight: bold;">회원번호&nbsp;</td>
            <td><input type="text" name="perno" id="perno" class="requiredInfo" />
            <input type ="radio" id="gender" name="gender" value ="1" />남 
            <input type ="radio" id="gender" name="gender" value ="2" />여
            </td>
       </tr>
       <tr>
-         <td style="width: 20%; font-weight: bold;">성명&nbsp;<span class="star">*</span></td>
+         <td style="width: 20%; font-weight: bold;">성명</td>
          <td style="width: 80%; text-align: left;">
              <input type="text" name="name" id="name" class="requiredInfo" /> 
          </td>
       </tr>
         <tr>
-         <td style="width: 20%; font-weight: bold;">생년원일&nbsp;<span class="star">*</span></td>
+         <td style="width: 20%; font-weight: bold;">생년월일&nbsp;</td>
          <td style="width: 80%; text-align: left;">
-             <input type="text" name="birthday" id="birthday" class="requiredInfo" /> 
+             <input type="text" name="birthday" id="birthday" class="requiredInfo"placeholder="1990-01-01" /> 
          </td>
       </tr>
       <tr>
-         <td style="width: 20%; font-weight: bold;">이메일&nbsp;<span class="star">*</span></td>
+         <td style="width: 20%; font-weight: bold;">이메일&nbsp;</td>
          <td style="width: 80%; text-align: left;"><input type="text" name="email" id="email" class="requiredInfo" placeholder="abc@def.com" /> 
              <span class="error">이메일 형식에 맞지 않습니다.</span>
          </td>
@@ -236,16 +282,16 @@ function goRegister(){
       <tr>
          <td style="width: 20%; font-weight: bold;">연락처</td>
          <td style="width: 80%; text-align: left;">
-             <input type="text" id="hp1" name="hp1" size="6" maxlength="3" value="010" readonly />&nbsp;-&nbsp;
-             <input type="text" id="hp2" name="hp2" size="6" maxlength="4" />&nbsp;-&nbsp;
-             <input type="text" id="hp3" name="hp3" size="6" maxlength="4" />
+             <input class="requiredInfo" type="text" id="hp1" name="hp1" size="6" maxlength="3" value="010" readonly />&nbsp;-&nbsp;
+             <input class="requiredInfo" type="text" id="hp2" name="hp2" size="6" maxlength="4" />&nbsp;-&nbsp;
+             <input class="requiredInfo" type="text" id="hp3" name="hp3" size="6" maxlength="4" />
              <span class="error">휴대폰 형식이 아닙니다.</span>
          </td>
       </tr>
       <tr>
          <td style="width: 20%; font-weight: bold;">주소</td>
          <td style="text-align: left;">
-            <input type="text" id="memberaddress" name="address" size="40" placeholder="주소" />
+            <input class="requiredInfo" type="text" id="memberaddress" name="address" size="40" placeholder="주소" />
             <span class="error">주소를 입력하세요</span>
          </td>
       </tr>

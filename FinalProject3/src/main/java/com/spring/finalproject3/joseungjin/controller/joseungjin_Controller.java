@@ -70,8 +70,6 @@ public class joseungjin_Controller {
 		List<MainSubjectVO> MainsubjectList = null;
 		List<MainSubjectVO> MainProsubjectList=null;
 		HttpSession session = request.getSession();
-		session.setAttribute("readCountPermission", "yes");
-		
 		if(session.getAttribute("loginuser") != null) {
 			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
 			int userid = loginuser.getPerno();
@@ -375,9 +373,7 @@ public class joseungjin_Controller {
 				mav.addObject("loc", loc);
 				mav.setViewName("msg");
 			}
-			
-			
-			
+
 			// !!!! 중요 !!!! //
 			// !!!! 세션에 저장된 인증코드 삭제하기 !!!! // 
 			session.removeAttribute("certificationCode");
@@ -425,7 +421,6 @@ public class joseungjin_Controller {
 			@RequestMapping(value="/personRegisterGo.sam",method=RequestMethod.POST)
 			public ModelAndView personRegisterGo(ModelAndView mav, HttpServletRequest request,PersonVO pvo) {
 				
-				
 				String userid = request.getParameter("userid");
 				String name = request.getParameter("name");
 				String email = request.getParameter("email");
@@ -436,16 +431,19 @@ public class joseungjin_Controller {
 				paraMap.put("email", email);
 				
 				
-				System.out.println(paraMap);
-				PersonVO pwdFind = service.idFind(paraMap);
+			
+				PersonVO pwdFind = service.pwdFind(paraMap);
+				if(pwdFind !=null) {
 				if(!pwdFind.getPwd().equals("1234")) {
 					mav.addObject("message", "이미 등록한 회원입니다.");
 					mav.setViewName("msg");
 				}
-				else {
-				int regn =  service.isUserExist2(paraMap);
 				
-				boolean sendMailSuccess = true; // 메일이 정상적으로 전송되었는지 유무를 알아오기 위한 용도
+				else {
+					System.out.println(pwdFind);
+				 int regn =  service.isUserExist2(paraMap);
+				
+				 boolean sendMailSuccess = true; // 메일이 정상적으로 전송되었는지 유무를 알아오기 위한 용도
 					if(regn==1) {
 
 						// 회원으로 존재하는 경우
@@ -487,12 +485,11 @@ public class joseungjin_Controller {
 						
 						mav.setViewName("member/personRegister");
 					}
-					else {
-						mav.addObject("message", "입력한 정보는 없습니다.");
-						mav.setViewName("msg");
 					}
-					
-		
+				}
+				else {
+					mav.addObject("check", 1);
+					mav.setViewName("member/personRegister");
 				}
 				return mav;
 			}
@@ -632,8 +629,9 @@ public class joseungjin_Controller {
 			  
 				
 				ScheduleVO scvo = service.scheduleEdit(paraMap);
-				
+								
 				JSONObject jsonObj = new JSONObject();
+				if(scvo != null) {
 						jsonObj.put("schno",scvo.getSchno());
 						jsonObj.put("title",scvo.getCalsubject());
 						jsonObj.put("perno", scvo.getFk_perno());
@@ -641,11 +639,14 @@ public class joseungjin_Controller {
 						jsonObj.put("endDate", scvo.getEndDate());
 						jsonObj.put("color", scvo.getColor());
 						jsonObj.put("memo", scvo.getMemo());
-					
+						jsonObj.put("loginYesNo","Yes");
+				}
+				else {
+					jsonObj.put("loginYesNo","No");
+				}
 				
 				return jsonObj.toString(); 
-
-			
+		
 			}
 			
 			
@@ -665,7 +666,7 @@ public class joseungjin_Controller {
 				PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
 				
 				if(!Integer.toString(loginuser.getPerno()).equals(scvo.getFk_perno()) )  {
-					String message = "다른 사용자의 글은 수정이 불가합니다.";
+					String message = "다른 사용자의 일정 수정이 불가합니다.";
 					String loc = "javascript:history.back()";
 					
 					mav.addObject("message", message);
@@ -695,10 +696,10 @@ public class joseungjin_Controller {
 				// n 이 0 이라면 글수정에 필요한 글암호가 틀린경우 
 				
 				if(n == 0) {
-					mav.addObject("message", "암호가 일치하지 않아 글 수정이 불가합니다.");
+					mav.addObject("message", "일정 수정 오류!!");
 				}
 				else {
-					mav.addObject("message", "글수정 성공!!");
+					mav.addObject("message", "일정 수정 성공!!");
 				}
 				
 				mav.setViewName("msg");
@@ -711,7 +712,7 @@ public class joseungjin_Controller {
 			
 				String perno = request.getParameter("fk_perno"); 	
 				String schno = request.getParameter("schno");
-				System.out.println("확인용~~~~~"+perno);
+				//System.out.println("확인용~~~~~"+perno);
 				Map<String,String>paraMap = new HashedMap<>();
 				 paraMap.put("perno", perno);
 				 paraMap.put("schno", schno);
