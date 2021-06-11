@@ -82,6 +82,20 @@ div#btn-board{
 <script type="text/javascript">
 
 	$(document).ready(function(){
+		
+		// 과제글 삭제버튼
+		$("button#noticeDelete").click(function(){
+			var bool = confirm("삭제하시겠습니까?");
+					
+			if(bool){
+				
+				var frm = document.DelFrm;				
+				frm.method = "post";
+		   	    frm.action = "<%= ctxPath%>/lesson/noticeDeleteEnd.sam";
+		   	    frm.submit();
+			}
+		});
+		   
 		var perno = ${sessionScope.loginuser.perno};
 
 		var loginuser = ${sessionScope.loginuser.identity};
@@ -109,23 +123,7 @@ div#btn-board{
 	         }
 	     });
 	     <%-- === 스마트 에디터 구현 끝 === --%>
-	      
- 	
-		
-		// 질문글 삭제버튼
-		$("button#noticeDelete").click(function(){
-			var bool = confirm("삭제하시겠습니까?");
-					
-			if(bool){
-				var frm = document.DelFrm;
-				
-				frm.method = "post";
-		   	    frm.action = "<%= ctxPath%>/lesson/noticeDeleteEnd.sam";
-		   	    frm.submit();
-			}
-		});
-		
-		
+
 	      $("button#write").click(function(){
 	    	  
 	    	  // 글제목 유효성 검사
@@ -191,6 +189,7 @@ div#btn-board{
 	          
 	      });
 		
+
 		
 	}); // end of $(document).ready(function(){}
 
@@ -256,7 +255,7 @@ div#btn-board{
  
  	<form name="DelFrm">	
 		<input type="hidden" name="seq" value="${requestScope.lenotivo.seq}"/>
-		<input type="hidden" name="fk_qnano" value="${requestScope.lenotivo.fk_qnano}"/>
+		<input type="hidden" name="fk_subno" value="${requestScope.lenotivo.fk_subno}"/>
 	</form> 
  
  

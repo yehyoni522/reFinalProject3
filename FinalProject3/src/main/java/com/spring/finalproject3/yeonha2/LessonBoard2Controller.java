@@ -145,24 +145,13 @@ public class LessonBoard2Controller {
 		session.setAttribute("readCountPermission", "yes");		
 		
 		String fk_subno = request.getParameter("fk_subno");
-		fk_subno="1000";
+		// System.out.println(fk_subno);
 		mav.addObject("fk_subno", fk_subno);
 		
-		String searchType = request.getParameter("searchType"); 
-		String searchWord = request.getParameter("searchWord");
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 		
-		if(searchType == null || (!"subject".equals(searchType) && !"name".equals(searchType)) ) {
-			searchType = "";
-		}
-		
-		if(searchWord == null || "".equals(searchWord) || searchWord.trim().isEmpty()) {
-			searchWord = "";
-		}
 		
 		Map<String, String> paraMap = new HashMap<>();
-		paraMap.put("searchType", searchType);
-		paraMap.put("searchWord", searchWord);
 		paraMap.put("fk_subno", fk_subno);
 		
 		int totalCount = 0;         // 총 게시물 건수
@@ -199,10 +188,7 @@ public class LessonBoard2Controller {
 		
 		lenotivo = service.noticeSearchWithPaging(paraMap);
 		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
-		
-		if(!"".equals(searchType) && !"".equals(searchWord)) {
-			mav.addObject("paraMap", paraMap);
-		}
+	
 				
 		int blockSize = 5;
 		
@@ -216,7 +202,7 @@ public class LessonBoard2Controller {
 		
 		// === [맨처음][이전] 만들기 === 
 		if(pageNo != 1) {
-			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a class='boarda' href='"+url+"?&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo-1)+"'>&laquo;</a></li>";
+			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a class='boarda' href='"+url+"?&currentShowPageNo="+(pageNo-1)+"'>&laquo;</a></li>";
 		}
 		
 		while( !(loop > blockSize || pageNo > totalPage) ) {
@@ -225,7 +211,7 @@ public class LessonBoard2Controller {
 				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
 			}
 			else {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a class='boarda' href='"+url+"?&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
+				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a class='boarda' href='"+url+"?&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
 			}
 			
 			loop++;
@@ -235,7 +221,7 @@ public class LessonBoard2Controller {
 		
 		// === [다음][마지막] 만들기 === 
 		if(pageNo <= totalPage) {
-			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a class='boarda' href='"+url+"?&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>&raquo;</a></li>";
+			pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a class='boarda' href='"+url+"?&currentShowPageNo="+pageNo+"'>&raquo;</a></li>";
 		}
 		
 		pageBar += "</ul>";
@@ -256,63 +242,16 @@ public class LessonBoard2Controller {
 		
 		return mav;
 	}
-
-	// 검색어 입력시 자동글 완성하기
-	@ResponseBody
-	@RequestMapping(value="/lesson/wordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
-	public String wordSearchShow(HttpServletRequest request) {
-		
-		String searchType = request.getParameter("searchType");
-		String searchWord = request.getParameter("searchWord");
-		String fk_subno = request.getParameter("fk_subno");	
-		
-		// System.out.println(searchType);
-		
-		Map<String,String> paraMap = new HashMap<>();
-		paraMap.put("searchType", searchType);
-		paraMap.put("searchWord", searchWord);
-		paraMap.put("fk_subno", fk_subno);
-		
-		List<String> wordList = service.wordSearchShow(paraMap);
-		
-		JSONArray jsonArr = new JSONArray(); 
-		
-		if(wordList != null) {
-			for(String word : wordList) {
-				JSONObject jsonObj = new JSONObject(); 
-				jsonObj.put("word", word); 
-				
-				jsonArr.put(jsonObj);
-			}
-		}
-		
-		return jsonArr.toString(); 
-	}
 		
 	// 글 한개를 보여주는 페이지 요청  (댓글 목록 포함)
 	@RequestMapping(value="/lesson/noticeView.sam")
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		
-		String fk_subno = request.getParameter("fk_subno");
 		String seq = request.getParameter("seq");		
-	    String searchType = request.getParameter("searchType");
-	    String searchWord = request.getParameter("searchWord");
 	    
-	    if(searchType == null) {
-			searchType = "";	
-		}
-		if(searchWord == null) {
-			searchWord = "";	
-		}
 		
 	    Map<String,String> paraMap = new HashMap<>();
 	    paraMap.put("seq", seq);
-	    paraMap.put("searchType", searchType);
-	    paraMap.put("searchWord", searchWord);
-	    paraMap.put("fk_subno", fk_subno);
-	    
-	    mav.addObject("searchType", searchType);
-	    mav.addObject("searchWord", searchWord);
 	    
 	    
 		String gobackURL = request.getParameter("gobackURL");		
@@ -322,7 +261,9 @@ public class LessonBoard2Controller {
 		}
 		
 		mav.addObject("gobackURL", gobackURL);		
-		mav.addObject("fk_subno",fk_subno);
+	
+		String fk_subno = request.getParameter("fk_subno");
+		mav.addObject("fk_subno", fk_subno);
 		
 		try {
 			Integer.parseInt(seq);
@@ -367,8 +308,6 @@ public class LessonBoard2Controller {
 		
 		Map<String,String> paraMap = new HashMap<>();
 		paraMap.put("seq", seq);
-		paraMap.put("searchType", "");
-		paraMap.put("searchWord", "");
 		
 		/*
 			첨부파일이 있는 글번호에서
@@ -455,21 +394,7 @@ public class LessonBoard2Controller {
 	public ModelAndView requiredLogin_edit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
       
 		String seq = request.getParameter("seq");
-	  
-		String searchType = request.getParameter("searchType");
-		// System.out.println("써치타입: "+searchType);
-		if(searchType == null) {
-			searchType = "";
-		}
-		mav.addObject(searchType);
 		
-		String searchWord = request.getParameter("searchWord");
-		// System.out.println("써치워드: "+searchWord);
-		if(searchWord == null) {
-			searchWord = "";
-		}
-		mav.addObject(searchWord);
-		 
 		// 이전글, 다음글 필요없이 조회수 증가없는 글 1개 받아오기
 		LessonNoticeVO lenotivo = service.getViewNo(seq);
 	  
@@ -503,8 +428,6 @@ public class LessonBoard2Controller {
 		
 		String delFileCheck = request.getParameter("delfileName");
 		
-		String searchType = request.getParameter("searchType");
-		String searchWord = request.getParameter("searchWord");
 		
 		MultipartFile attach = lenotivo.getAttach();
 		
@@ -595,9 +518,7 @@ public class LessonBoard2Controller {
 			mav.addObject("message", "글수정 성공!!");      
 		}
 	  
-		mav.addObject("loc", request.getContextPath()+"/lesson/noticeView.sam?seq="+lenotivo.getSeq()+
-							"&searchType="+searchType+
-							"&searchWord="+searchWord);
+		mav.addObject("loc", request.getContextPath()+"/lesson/noticeView.sam?seq="+lenotivo.getSeq());
 		mav.setViewName("msg");
        
 		return mav;
@@ -605,48 +526,23 @@ public class LessonBoard2Controller {
 	
 	
 	// 글 삭제하기
-	@RequestMapping(value="/lesson/noticeDeleteEnd.sam", method= {RequestMethod.POST})
-	public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+	@RequestMapping(value="/lesson/noticeDeleteEnd.sam")
+	public ModelAndView del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
    
+		System.out.println("글삭제 컨트롤");
+		
 		String seq = request.getParameter("seq");
 		String fk_subno = request.getParameter("fk_subno");	
-		 	//System.out.println(categoryno);
-		
-		String gobackURL = request.getParameter("gobackURL");
-		mav.addObject("gobackURL", gobackURL);
       
-		LessonNoticeVO lenotivo = service.getViewNo(seq);
+  	    
+	    int n = service.del(Integer.parseInt(seq));    	
 		
-		HttpSession session = request.getSession();
-		PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
-      
-		String loginuserPerno = String.valueOf(loginuser.getPerno());
-		
-		String loc = "javascript:history.back()";
-		
-		
-		if( !loginuserPerno.equals(lenotivo.getFk_perno()) ) {
-			String message = "다른 사용자의 글은 삭제가 불가합니다.";
-			       
-			mav.addObject("message", message);
-			mav.addObject("loc", loc);
-			mav.setViewName("msg");
-      	}
-      	else {
-    	    
-    	    int n = service.del(Integer.parseInt(seq));    	
-    		
-    	    if(n == 0) {
-    	         mav.addObject("message", "글 삭제가 불가합니다.");
-    	         mav.addObject("loc", loc);
-    	         mav.setViewName("msg");
-    	    }     
-    	    else {
-    	         mav.addObject("message", "글삭제 성공!!");
-    	         mav.addObject("loc", request.getContextPath()+"/lesson/notice.sam?fk_subno="+fk_subno);
-    	         mav.setViewName("msg");
-    	    }      		
-      	}     
+	    if(n == 1) {    
+	         mav.addObject("message", "글삭제 성공!!");
+	         mav.addObject("loc", request.getContextPath()+"/lesson/notice.sam?fk_subno="+fk_subno);
+	         mav.setViewName("msg");
+	      		
+	    }     
 		return mav;
 	}
 	

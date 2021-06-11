@@ -159,7 +159,6 @@ div#btn-board{
 	<br>
 	
  <form name="addFrm" enctype="multipart/form-data">
- 		<input type="hidden" name="fk_subno" value="${lenotivo.fk_subno}" />
        <table id="table" style="width:100%; border-top: 1.5px #b3b3b3 solid; border-bottom: 1.5px #b3b3b3 solid;">
          <tr>
             <th style="width:200px;">제목</th>
@@ -171,12 +170,11 @@ div#btn-board{
          
          <tr>
             <th>파일첨부</th>
-            <td>
-            	<input type="file" name="attach" />	
-            	<div><img id="btnFileAdd"src="<%=ctxPath %>/resources/images/fileAdd.PNG" /> 파일 첨부하기 <input type="file" id="fileAddin" name="attach" value="<c:out value="${lenotivo.fileName}"/>"/> </div>
+            <td style="text-align:left;">
+            	<input type="file" id="fileAddin" name="attach" value="<c:out value="${lenotivo.fileName}"/>"/> 
 				<c:if test="${requestScope.lenotivo.fileName != null}">
-				<label>삭제&nbsp;&nbsp;</label><input type="checkbox" name="delfileName" value="<c:out value="${requestScope.lenotivo.fileName}"/>">   
-				&nbsp;&nbsp;<a href="<%=ctxPath%>/lesson/download.sam?seq=${requestScope.lenotivo.seq}&categoryno=${lenotivo.categoryno}"> ${requestScope.lenotivo.orgFilename}</a>
+					<label>삭제&nbsp;&nbsp;</label><input type="checkbox" name="delfileName" value="<c:out value="${requestScope.lenotivo.fileName}"/>">   
+					&nbsp;&nbsp;<a href="<%=ctxPath%>/lesson/download.sam?seq=${requestScope.lenotivo.seq}&fk_subno=${lenotivo.fk_subno}"> ${requestScope.lenotivo.orgFilename}</a>
 				</c:if>
             </td>
          </tr>
@@ -194,6 +192,9 @@ div#btn-board{
 		<button type="button"class="btn-board" onclick="javascript:history.back()">취소</button>
 	</div>
     <input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}"/>
+    <input type="hidden" name="fk_subno" value="${lenotivo.fk_subno}" />
+    <input type="hidden" name="seq" value="${lenotivo.seq}" />
+     		
    </form>
    
 </div>    

@@ -78,64 +78,20 @@ tr.list:hover{
 		});
 		
 		$("span.subject").click(function(){		
-			var qnano = $(this).parent().prev().text();
+			var fk_subno = $(this).parent().prev().text();
 			var fk_perno = $(this).prev().val();
 			
 			var frm = document.goViewFrm;
-			frm.qnano.value = qnano;
+			frm.fk_subno.value = fk_subno;
 			frm.fk_perno.value = fk_perno;
 			
 			frm.method = "get";
-	   	    frm.action = "<%= ctxPath%>/class/noticeView.sam";
+	   	    frm.action = "<%= ctxPath%>/lesson/noticeView.sam";
 	   	    frm.submit();
 		});
 		
 		$("div#displayList").hide();
-	      
-      	$("input#searchWord").keyup(function(){
-         
-       		var wordLength = $(this).val().trim().length;
-         	// 검색어의 길이를 알아온다.
-         
-         	if(wordLength == 0) {
-            	$("div#displayList").hide();
-         	}
-         	else {
-            	$.ajax({
-               		url:"<%= ctxPath%>/lesson/wordSearchShow.sam",
-           		 	type:"get",
-               		data:{"searchType":$("select#searchType").val()
-                   		 ,"searchWord":$("input#searchWord").val()
-                   		 ,"categoryno":$("input#catnoSearch").val()},
-               		dataType:"json",
-               		success:function(json){ 
-                  		if(json.length > 0) {
-                     
-                     		var html = "";
-                     
-                     		$.each(json, function(index, item){
-                        		var word = item.word;
-		                        
-		                        var index = word.toLowerCase().indexOf($("input#searchWord").val().toLowerCase());
-		                        
-		                        var len = $("input#searchWord").val().length;
-		                        
-		                        word = word.substr(0,index) + "<span style='color:blue;'>"+word.substr(index,len)+"</span>" + word.substr(index+len);
-		                        
-		                        html += "<span style='cursor:pointer;' class='word'>"+word+"</span><br>";
-                     		});
-                     
-                   			$("div#displayList").html(html);
-                   			$("div#displayList").show();
-                 		}
-           	 		},
-               		error: function(request, status, error){
-                  		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-               		}
-            	});
-         	}
-         	
-	});// end of $("input#searchWord").keyup(function(){}
+
 	
 });	// end of $(document).ready(function(){}
 	   	
@@ -144,21 +100,12 @@ tr.list:hover{
 		
 		var frm = document.goViewFrm;
 		frm.seq.value=seq;
-		frm.searchType.value = "${requestScope.paraMap.searchType}";
-	    frm.searchWord.value = "${requestScope.paraMap.searchWord}"; 
+		frm.fk_subno.value = "${fk_subno}";
 		frm.method="get";
 		frm.action="<%= ctxPath%>/lesson/noticeView.sam";
 		frm.submit();
 	} // end of function noticeView(seq){}
 	   
-	// 검색하기
-	function goSearch(){
-		var frm = document.searchFrm;
-		frm.method="get";
-		frm.action="<%=ctxPath%>/lesson/notice.sam";
-		frm.submit();
-		
-	} // end of function goSearch(){}
 	
 </script>   
 
@@ -183,8 +130,13 @@ tr.list:hover{
 		<c:forEach var="lenotivo" items="${requestScope.lenotivo}" varStatus="status"> 
 			<tr class="list">
 				<td>${lenotivo.seq}</td>
-				<td style="text-align:center;">			           
-					<span class="subject" onclick="gonoticeView('${lenotivo.seq}')">${lenotivo.subject}</span>					
+				<td style="text-align:center;">			
+					<c:if test="${empty lenotivo.fileName}">
+						<span class="subject" onclick="gonoticeView('${lenotivo.seq}')">${lenotivo.subject}</span>				
+					</c:if>           
+					<c:if test="${not empty lenotivo.fileName}">
+						<span class="subject" onclick="gonoticeView('${lenotivo.seq}')">${lenotivo.subject}</span>&nbsp;<img src="<%=ctxPath%>/resources/images/disk.gif" /> 					
+					</c:if>
 				</td>	
 				<td>${lenotivo.regDate}</td>
 			</tr>
@@ -194,25 +146,9 @@ tr.list:hover{
 	
 	<c:if test="${sessionScope.loginuser.identity eq 1 }">
 	<div id="btn-board">
-			<input type="button" value="글쓰기" class="btn-board" name="write" onclick="location.href='<%=ctxPath%>/lesson/noticeAdd.sam'"/>
+			<input type="button" value="글쓰기" class="btn-board" name="write" onclick="location.href='<%=ctxPath%>/lesson/noticeAdd.sam?fk_subno=${fk_subno}'"/>
 	</div>
     </c:if>
-    
-    <%-- 검색창(글쓴이,글제목) --%>
-	<div id="bottomop" style="height: 30px;"> 
-		<form name="searchFrm" style="margin-top: 20px; ">
-			<input type="hidden" name="categoryno" id="catnoSearch" value="${categoryno}"/>
-	   		<select name="searchType" id="searchType" style="height: 26px;">
-	      		<option value="subject">글제목</option>
-	       		<option value="name">글쓴이</option>
-	     	</select>
-	    	<input type="text" name="searchWord" id="searchWord" size="40" autocomplete="off" /> 
-	   	 	<button type="button" onclick="goSearch()">검색</button>
-		</form>
-	
-		<%-- 검색어 입력시 자동글 완성하기 1--%>
-		<div id="displayList"></div>		
-	</div>	
 	
     <%-- === 페이지바 보여주기 --%>
 	<div align="center" style="width: 70%; border:solid 0px gray; margin:20px auto;">
@@ -222,8 +158,7 @@ tr.list:hover{
 	<form name="goViewFrm">
 		<input type="hidden" name="seq" />
 		<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
-		<input type="hidden" name="searchType" />
-	    <input type="hidden" name="searchWord" />
+		<input type="hidden" name="fk_subno" value="${fk_subno}"/>
 	</form>
 
 </div>

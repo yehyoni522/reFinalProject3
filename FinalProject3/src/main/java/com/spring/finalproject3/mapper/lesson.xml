@@ -23,9 +23,6 @@
    		select count(*)
    		from tbl_classnoti
    		where fk_subno = #{fk_subno}
-   		<if test='searchWord != ""'>
-   			where lower(${searchType}) like '%'||lower(#{searchWord}) || '%'	
-   		</if>
    	</select>
 
 	<!-- 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한것) -->
@@ -43,9 +40,6 @@
 		               ,fileName, orgFilename, fileSize, fk_subno	
 		        from tbl_classnoti
 		        where fk_subno = #{fk_subno}
-		        <if test='searchWord != ""'>
-		        and lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
-		        </if>
 		    )B
 		    join tbl_person P
 		    on P.perno = B.fk_perno			
@@ -72,10 +66,6 @@
 		         
 		         ,fileName, orgFilename, fileSize, fk_subno 
 		    from tbl_classnoti
-		    where fk_subno = #{fk_subno}
-		    <if test='searchType != "" and searchWord != ""'>
-            and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
-          	</if>
 		)B
 		join tbl_person P
 		on P.perno = B.fk_perno
@@ -88,29 +78,6 @@
 		where seq = #{seq}
 	</update>
 	
-	<!-- 검색어 입력시 자동글 완성하기 -->
-	<select id="wordSearchShow" parameterType="HashMap" resultType="String">
-		<choose> 
-    		<when test="searchType eq 'name'">
-    			select  distinct ${searchType} as name
-    		</when>
-    		<otherwise>
-    			select  ${searchType}    
-    		</otherwise>     		
-    	</choose>   		        
-		 from
-		(
-		    select subject,fk_perno, seq
-		    from tbl_classnoti
-		    where fk_subno = #{fk_subno}
-		)B
-		join tbl_person P
-		on P.perno = B.fk_perno
-		where lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
-	    <if test="searchType neq 'name'">
-  		order by seq desc
-  		</if>   		    	  	    	
-	</select>
 	
 	<!-- (수정에서사용)글 1개 보여주기 -->
 	<select id="getViewNo" parameterType="String" resultType="com.spring.finalproject3.yeonha2.LessonNoticeVO">
@@ -131,10 +98,6 @@
 		         
 		         ,fileName, orgFilename, fileSize, fk_subno 
 		    from tbl_classnoti
-		    where fk_subno = #{fk_subno}
-		    <if test='searchType != "" and searchWord != ""'>
-            and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
-          	</if>
 		)B
 		join tbl_person P
 		on P.perno = B.fk_perno

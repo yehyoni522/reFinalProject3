@@ -187,6 +187,7 @@ div#btn-board{
 		<button type="button"class="btn-board" onclick="javascript:history.back()">취소</button>
 	</div>
     <input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}"/>
+     <input type="hidden" name="fk_subno" value="${fk_subno}"/>
    </form>
    
 </div>    
