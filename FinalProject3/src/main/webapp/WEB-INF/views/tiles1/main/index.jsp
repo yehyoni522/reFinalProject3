@@ -338,8 +338,6 @@
 		    	locale : "ko",
 		    	initialView: 'dayGridMonth',
 				dayMaxEvents: true,
-				editable : true,
-			
 				events: 
 					function(info, successCallback, failureCallback) {
 					$.ajax({
@@ -347,23 +345,25 @@
 						data:{"perno":"${sessionScope.loginuser.perno}"},
 						dataType:"json",
 						success:function(json){
+							
+						if(json.length > 0) {
 							var events=[];
+						      $.each(json, function(index, item){
+								  events.push({
+									  id:item.schno,
+									  title:item.calsubject,
+									  start:item.startDate,
+									  end:item.endDate,
+									  color:item.color,
+									  description:item.memo
+									});
+			                 });// end of $.each(json1, function(index, item){}) ------------
 						
-					      $.each(json, function(index, item){
-							  events.push({
-								  id:item.schno,
-								  title:item.calsubject,
-								  start:item.startDate,
-								  end:item.endDate,
-								  color:item.color,
-								  description:item.memo
-								});
-							 
-		                 });// end of $.each(json1, function(index, item){}) ------------
-		    					
+						      successCallback(events); 
+						}	
 					      //console.log(events);
 					      //$("#calendar").fullCalendar(events);
-					      successCallback(events); 
+						  
 						},
 						error: function(request, status, error){
 			                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -390,8 +390,9 @@
 						dataType:"json",
 						success:  function(data){
 				
-							window.open("<%= ctxPath%>/scheduleEditPopup.sam?schno="+data.schno+"&perno="+data.perno, "스케줄입력", " left=430px , top=80px,width=400, height=580, toolbar=no, menubar=no, scrollbars=no, resizable=yes" ) 
-						
+							if(data.loginYesNo == "Yes") {							
+								window.open("<%= ctxPath%>/scheduleEditPopup.sam?schno="+data.schno+"&perno="+data.perno, "스케줄입력", " left=430px , top=80px,width=400, height=580, toolbar=no, menubar=no, scrollbars=no, resizable=yes" ) 
+							}
 							
 						}
 
