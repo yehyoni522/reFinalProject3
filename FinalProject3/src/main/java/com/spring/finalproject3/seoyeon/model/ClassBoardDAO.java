@@ -290,6 +290,34 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		return org_perno;
 	}
 
+	// 계획) 정보 추출해오기
+	@Override
+	public planVO getInfo(String subno) {
+		planVO InfoVO = sqlsession.selectOne("classBoard.getInfo",subno);
+		return InfoVO;
+	}
+
+	// 계획) 계획 추출해오기
+	@Override
+	public List<planVO> getPlan(String subno) {
+		List<planVO> planVO = sqlsession.selectList("classBoard.getPlan",subno);
+		return planVO;
+	}
+
+	// 계획) 강의 계획서 등록하기 완료
+	@Override
+	public int planAdd(Map<String, String> paraMap) {
+		int n=sqlsession.insert("classBoard.planAdd",paraMap);
+		return n;
+	}
+
+	// 계획) 강의 계획서 수정하기 완료
+	@Override
+	public int planEdit(Map<String, String> paraMap) {
+		int n=sqlsession.update("classBoard.planEdit",paraMap);
+		return n;
+	}
+
 
 
 	

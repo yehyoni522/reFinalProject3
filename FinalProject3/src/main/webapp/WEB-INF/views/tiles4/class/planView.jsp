@@ -23,17 +23,28 @@
 	font-weight: bold;
 }
 
-th{text-align:center;}   
+th{
+	text-align:center;
+	border:solid 0.5px #bfbfbf;}   
 
 td{
 	text-align:left;
 	padding:0 15px;
+	border:solid 0.5px #bfbfbf;
 }
 
 th{
-	background-color: #fafafa;
+	background-color: #f2f2f2;
 	
 }
+
+tr.top{
+	border-top: 2px #b3b3b3 solid;
+}
+tr.bottom{
+	border-bottom: 1.5px #b3b3b3 solid;
+}
+
 
 tr{
 	border-top: solid 0.5px #bfbfbf;
@@ -99,18 +110,6 @@ div#btn-board{
 	$(document).ready(function(){
  
 		
-		// 과제글 삭제버튼
-		$("button#mtrDelete").click(function(){
-			var bool = confirm("삭제하시겠습니까?");
-					
-			if(bool){
-				var frm = document.mtrDelFrm;
-				
-				frm.method = "post";
-		   	    frm.action = "<%= ctxPath%>/class/materialDelete.sam";
-		   	    frm.submit();
-			}
-		});
 		
 		
 	});
@@ -124,6 +123,7 @@ div#btn-board{
 
 <div class="container">
 
+
 	<div class="headerCategoty">
 	<i class="fas fa-university "></i>
 	&nbsp;>&nbsp;수업계획서
@@ -134,97 +134,98 @@ div#btn-board{
 	<h3 style="text-align: left; font-weight: bold;">| 수업계획서 상세</h3>
 
 	<hr>
-	<c:if test="${empty requestScope.planVO}">
-		<div style="padding: 50px 0; font-size: 16pt; color: red;">존재하지 않습니다</div>
-	</c:if>
-	
-	<c:choose>
-		<c:when test="${(sessionScope.loginuser.identity == '0')||(sessionScope.loginuser.identity == '1')||(sessionScope.loginuser.identity == '2')}">
-			<c:if test="${not empty requestScope.planVO}">
-				<table id="table" style="width:100%; border-top: 1.5px #b3b3b3 solid; border-bottom: 1.5px #b3b3b3 solid;">
-					<tr>
-					   <th style="width:200px;">제목</th>
-					   <td style="font-weight: bolder;">
-					   		${requestScope.planVO.subject}
-					   </td>
+			
+				<table id="table" style="width:100%; border:1.5px #b3b3b3 solid;">
+					<tr class="top">
+						<th rowspan="4" style="width:15%;">강의과목</th>
+						<th style="width:15%;">교과목코드</th>
+						<td style="width:27.5%;">${requestScope.InfoVO.subno}</td>
+						<th style="width:15%;">과목명</th>
+						<td style="width:27.5%;">${requestScope.InfoVO.subname}</td>
 					</tr>
 					<tr>
-					   <th>게시일시</th>
-					   <td>
-					     	${requestScope.planVO.regDate}
-					   </td>
-					</tr>					
-					<tr>			  
-					   <td colspan="2">
-					      	<p style="word-break: break-all; padding:15px;">
-					      		${requestScope.planVO.content}
-					      	</p>
-					   </td>
+						<th>개설대학</th>
+						<td>${requestScope.InfoVO.subcol}&nbsp;${requestScope.InfoVO.submajor}</td>
+						
+						<th>개설학기</th>
+						<td>${requestScope.InfoVO.semester}학기</td>
+					</tr>				
+					<tr class="bottom">
+						<th>강의시간</th>
+						<td>${requestScope.InfoVO.day}&nbsp;${requestScope.InfoVO.time}</td>
+						<th>학점</th>
+						<td>${requestScope.InfoVO.credit}</td>
 					</tr>
-					<%-- === #150. 파일첨부 타입 추가하기 === --%>
 					<tr>
-						<th>첨부파일</th>
-						<td>
-							<c:if test="${requestScope.mtrvo.fileSize != null}">
-								<a href="<%= ctxPath%>/class/materialDownload.sam?mtrno=${requestScope.mtrvo.mtrno}">
-									${requestScope.mtrvo.orgFilename}
-								</a>
-									<span style="font-size: 9pt;">(<fmt:formatNumber value="${requestScope.mtrvo.fileSize}" pattern="#,###" />bytes)</span>						
-							</c:if>
-							<c:if test="${requestScope.mtrvo.fileSize == null}">								
-							</c:if>
-						</td>
+						<th>성적평가</th>
+						<td colspan="3" class="comment">출석 10% 과제 30% 쪽지시험 10% 중간고사 30% 기말고사 40%</td>
 					</tr>
-			</table>
-			</c:if>
-	</c:when>
-	</c:choose>
+					
+					<tr class="top">
+						<th rowspan="2">담당교수</th>
+						<th>교수명</th>
+						<td>${requestScope.InfoVO.name}</td>
+						<th>소속</th>
+						<td>${requestScope.InfoVO.col}&nbsp;${requestScope.InfoVO.major}</td>
+					</tr>
+					<tr class="bottom">
+						<th>이메일</th>
+						<td>${requestScope.InfoVO.email}</td>
+						
+						<th>전화번호</th>
+						<td>${requestScope.InfoVO.mobile}</td>
+					</tr>						
+					</table>
+					<br>
 	
-	<br>
-	
-	<c:set var="gobackURL2" value='${fn:replace(requestScope.gobackURL, "&", " ")}'/>
-	<div style="display:inline-block; ">		
-		<div class="moveSubject left" >	
-			<c:if test="${requestScope.mtrvo.previousseq != null}">
-				<span class="move left"><i class="fas fa-chevron-left"></i>&nbsp;&nbsp;<span onclick="javascript:location.href='materialView.sam?mtrno=${requestScope.mtrvo.previousseq}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.mtrvo.previoussubject}</span></span>
-			</c:if>
-			<c:if test="${requestScope.mtrvo.previousseq == null}">
-				<span class=" left"><i class="fas fa-chevron-left"></i>&nbsp;&nbsp;...</span>
-			</c:if>
-		</div>
-	
-	
-		<div class="moveSubject right" >
-			<c:if test="${requestScope.mtrvo.nextseq != null}">
-				<span class="move right" ><span onclick="javascript:location.href='materialView.sam?mtrno=${requestScope.mtrvo.nextseq}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.mtrvo.nextsubject}</span>&nbsp;&nbsp;<i class="fas fa-chevron-right"></i></span>
-			</c:if>
-			<c:if test="${requestScope.mtrvo.nextseq == null}">
-				<span class=" right" >...&nbsp;&nbsp;<i class="fas fa-chevron-right"></i></span>
-			</c:if>
 				
-		</div>
-	</div>
+				<table id="table" style="width:100%; border:1.5px #b3b3b3 solid;">
+					<tr class="top bottom">
+						<th colspan="100%">주차별 강의계획 </th>
+					</tr>
+					
+					<tr>
+						<th style="width:15%;">주차</th> 
+						<th style="width:57.5%;">수업내용</th>
+						<th style="width:27.5%;">교재범위 및 과제물</th>
+					</tr>
+					
+					<c:if test="${empty requestScope.PlanVO}">
+						<tr><td colspan="100%" class="comment">등록된 주차별 강의 계획이 없습니다.</td></tr>
+					</c:if>
+					
+					<c:forEach var="PlanVO"  items="${requestScope.PlanVO}"  varStatus="status"> 
+						<tr>
+							<th>${PlanVO.planno}주차</th>
+							<td>${PlanVO.content}</td>
+							<td>${PlanVO.etc}</td>
+						</tr>	
+					</c:forEach> 
+					</table> 
+			
+				
+
 	
 	
 	
 	<div id="btn-board">
-		<c:if test="${(sessionScope.loginuser.identity == '1')||(sessionScope.loginuser.identity == '2')}">
-			<button type="button" class="btn-board" id="mtrEdit" onclick="javascript:location.href='<%= ctxPath%>/class/materialEdit.sam?mtrno=${requestScope.mtrvo.mtrno}'">수정</button>
-			<button type="button" class="btn-board" id="mtrDelete">삭제</button>
-		</c:if>
-			<button type="button"class="btn-board" onclick="javascript:location.href='<%= ctxPath%>/class/materialList.sam'">목록</button>		
-	</div>
 	
-    <br><br>
-    
+	<c:if test="${empty requestScope.PlanVO}">
+		<button type="button" class="btn-board" id="planEdit" onclick="javascript:location.href='<%= ctxPath%>/class/planAddEdit.sam?subno=${sessionScope.subno}'">등록</button>
+	</c:if>
+	<c:if test="${not empty requestScope.PlanVO}">
+		<button type="button" class="btn-board" id="planEdit" onclick="javascript:location.href='<%= ctxPath%>/class/planAddEdit.sam?subno=${sessionScope.subno}'">수정</button>
+	</c:if>	
+			
+
+	</div>
+
+	
+
     
     
     
 
- 
- 	<form name="mtrDelFrm">	
-		<input type="hidden" name="mtrno" value="${requestScope.mtrvo.mtrno}"/>
-	</form>
  
  
  
