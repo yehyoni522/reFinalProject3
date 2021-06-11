@@ -131,7 +131,7 @@
    	<!-- 게시글 삭제하기 -->
 	<delete id="del" parameterType="int">
 		delete from tbl_classnoti 
-		where seq = #{seqno}
+		where seq = #{seq}
 	</delete>	
 
 </mapper>

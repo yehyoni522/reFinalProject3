@@ -145,7 +145,7 @@ public class LessonBoard2Controller {
 		session.setAttribute("readCountPermission", "yes");		
 		
 		String fk_subno = request.getParameter("fk_subno");
-		// System.out.println(fk_subno);
+		 System.out.println(fk_subno);
 		mav.addObject("fk_subno", fk_subno);
 		
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
