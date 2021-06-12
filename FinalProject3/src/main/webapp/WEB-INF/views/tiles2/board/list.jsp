@@ -53,6 +53,7 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
+
 		
 		$("select#newhit").val(${requestScope.newhit});
 		
