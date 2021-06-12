@@ -224,7 +224,7 @@ div#btn-board{
 				<th>첨부파일</th>
 			   <td>
 	     	   		<c:if test="${requestScope.lenotivo.orgFilename != null}"> 
-					<a href="<%=ctxPath%>/lesson/download.sam?seq=${requestScope.lenotivo.seq}"> ${requestScope.lenotivo.orgFilename} 
+					<a href="<%=ctxPath%>/lesson/download.sam?seq=${requestScope.lenotivo.seq}&fk_subno=${lenotivo.fk_subno}"> ${requestScope.lenotivo.orgFilename} 
 			    	<span>(<fmt:formatNumber value="${requestScope.lenotivo.fileSize}" pattern="#,###"/>&nbsp;byte)</span></a>
 					</c:if>
 			   </td>

@@ -581,7 +581,7 @@ a {
 			</div>
 			<div id="fileDown"> 
 				<c:if test="${requestScope.boardvo.orgFilename != null}"> 
-				<a href="<%=ctxPath%>/board/download.sam?seq=${requestScope.boardvo.seq}&categoryno=${boardvo.categoryno}"> ${requestScope.boardvo.orgFilename} 
+				<a href="<%=ctxPath%>/board/download.sam?seq=${requestScope.boardvo.seq}&categoryno=${categoryno}"> ${requestScope.boardvo.orgFilename} 
 			    <span>(<fmt:formatNumber value="${requestScope.boardvo.fileSize}" pattern="#,###"/>&nbsp;byte)</span></a>
 				</c:if>
 			</div>
@@ -628,13 +628,13 @@ a {
 	 	<c:if test="${requestScope.boardvo.previoussubject ne null}">
 	 		<div style="margin-bottom: 1%;">
 	 			<span style="font-weight:bold;">이전글제목&nbsp;&nbsp;</span>
-	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&categoryno=${boardvo.categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
+	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&categoryno=${categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
 	 		</div>
 	 	</c:if>
 	 	<c:if test="${requestScope.boardvo.nextsubject ne null}">	
 			<div style="margin-bottom: 1%;">
 				<span style="font-weight:bold;">다음글제목&nbsp;&nbsp;</span>
-				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&categoryno=${boardvo.categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
+				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&categoryno=${categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
 			</div>
 		</c:if>
 	</c:if>
@@ -643,7 +643,7 @@ a {
 		<div style="padding: 50px 0; font-size: 16pt; color: red;">존재하지 않습니다</div>
 	</c:if>
 	
-	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/list.sam'">전체목록보기</button>
+	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/list.sam?categoryno=${categoryno}'">전체목록보기</button>
 	<button type="button" class="viewbtns" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
 	
 	<c:if test="${categoryno == 1}"> <!-- 자유게시판에서만 답글기능 사용  -->

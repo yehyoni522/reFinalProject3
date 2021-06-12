@@ -140,6 +140,7 @@
 	
 	function goView(seq) {
 		
+		
 		var frm = document.goViewFrm;
 		frm.seq.value=seq;
 		frm.searchType.value = "${requestScope.paraMap.searchType}";
