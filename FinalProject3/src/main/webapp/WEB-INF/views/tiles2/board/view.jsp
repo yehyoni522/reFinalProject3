@@ -203,17 +203,22 @@ a {
 							
 						<!-- 답변 댓글이 아닌 원 댓글인 경우 -->
 						if(item.co_depthno == 0){
-							html += "<div class='putcomment'>";
+							if(${sessionScope.loginuser.perno} == item.fk_perno){
+								html += "<div class='putcomment' style='background-color:#e6f2ff;' >";
+							}
+							else{
+								html += "<div class='putcomment'>";
+							}
 							html += "<input type='hidden' value='"+item.comseq+"'/>"
 							
-							if(item.fk_perno == ${boardvo.fk_perno}){
+							if( (item.fk_perno == ${boardvo.fk_perno}) && ${boardvo.namecheck == 0}){
 								html += "<div id='comname'>&nbsp;"+ item.name+"<span id='whoWrite'>작성자</span>";						
 							}
 							else if(item.identity == 2){
 								html += "<div id='comname'>&nbsp;"+ item.name+"<span id='whoWrite'>관리자</span>";
 							}
 							else{
-								html += "<div id='comname'>&nbsp;"+ item.name+"<span id='noSpan'>&nbsp;</span>";
+									html += "<div id='comname'>&nbsp;"+ item.name+"<span id='noSpan'>&nbsp;</span>";
 							}
 							
 							
@@ -254,7 +259,12 @@ a {
 						
 						<!-- 답변 댓글인 경우 -->
 						if(item.co_depthno > 0){
-							html += "<div class='putcomment'>";	
+							if(${sessionScope.loginuser.perno} == item.fk_perno){
+								html += "<div class='putcomment' style='background-color:#e6f2ff;' >";
+							}
+							else{
+								html += "<div class='putcomment'>";
+							}
 												
 							html += "<input type='hidden' value='"+item.comseq+"'/>"
 							
