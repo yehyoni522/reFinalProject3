@@ -32,4 +32,11 @@ public class Main_index_BoardDAO implements InterMain_index_BoardDAO {
 		List<Main_index_BoardVO> MainBoardList= sqlsession.selectList("member.getboardistPaging",paraMap);
 		return MainBoardList;
 	}
+	
+	//하이차트 활용
+	@Override
+	public List<Map<String, String>> getbestBoard() {
+		List<Map<String, String>> bestBoardList= sqlsession.selectList("member.getbestBoard");
+		return bestBoardList;
+	}
 }

@@ -34,6 +34,13 @@
 <script src='<%= ctxPath%>/resources/fullcalendar/ko.js'></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/wordcloud.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 
 <style type="text/css">
 	div#calendar{
@@ -171,19 +178,109 @@
 	  text-align: right;
 	
 	}
-
+	label{
+		height: 200px;
+	}
+	.highcharts-figure{
+		margin-top: 50px;
+	}
+	.switch {
+	  position: relative;
+	  display: inline-block;
+	  width: 50px;
+	  height: 20px;
+	  margin-left: 1100px;
+	}
+	a#subject{
+	
+		color:navy;
+	
+	}
+	.switch input {display:none;}
+	
+	.slider {
+	  position: absolute;
+	  cursor: pointer;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  background-color: #ccc;
+	  -webkit-transition: .4s;
+	  transition: .4s;
+	}
+	
+	.slider:before {
+	  position: absolute;
+	  content: "";
+	  height: 17px;
+	  width: 16px;
+	  left: 4px;
+	  bottom: 2px;
+	  background-color: white;
+	  -webkit-transition: .4s;
+	  transition: .4s;
+	}
+	
+	input:checked + .slider {
+	  background-color: #29CC97;
+	}
+	
+	input:focus + .slider {
+	  box-shadow: 0 0 1px #29CC97;
+	}
+	
+	input:checked + .slider:before {
+	  -webkit-transform: translateX(26px);
+	  -ms-transform: translateX(26px);
+	  transform: translateX(26px);
+	}
+	
+	/* Rounded sliders */
+	.slider.round {
+	  border-radius: 34px;
+	}
+	
+	.slider.round:before {
+	  border-radius: 50%;
+	}
+	
 </style>
 
 
 <script>
 	$(document).ready(function(){
+		$("#container").hide();
 		goViewBoard(1);
 		$(document).on('click', 'tr#tr_MainBoard', function(){
 		var seq = $(this).children(".seq").text();
 	
 		location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+seq+"&goBackURL=${requestScope.goBackURL}";
 		});// end of click
+
+
+	 if($("#toggle").is(":checked")==true){
+	        	go_boardDisplay()
+	        }else{
+	        	$("#mainhead").show();
+	        	$("#pageBar").show();
+	        	$("#MainBoard").show();
+	        }  
 		 
+		 $("#toggle").change(function(){
+		        if($("#toggle").is(":checked")){
+		        	go_boardDisplay()
+		        }else{
+		        	$("#mainhead").show();
+		        	$("#pageBar").show();
+		        	$("#MainBoard").show();
+		        	$("#container").hide();
+
+		        }
+		    });
+		 
+
+	
 	});// end of $(document).ready(function(){})--------------
 	
 	// === #127. Ajax로 불러온 댓글내용을 페이징처리하기 === //
@@ -345,7 +442,6 @@
 						data:{"perno":"${sessionScope.loginuser.perno}"},
 						dataType:"json",
 						success:function(json){
-							
 						if(json.length > 0) {
 							var events=[];
 						      $.each(json, function(index, item){
@@ -358,7 +454,6 @@
 									  description:item.memo
 									});
 			                 });// end of $.each(json1, function(index, item){}) ------------
-						
 						      successCallback(events); 
 						}	
 					      //console.log(events);
@@ -389,7 +484,6 @@
 							},
 						dataType:"json",
 						success:  function(data){
-				
 							if(data.loginYesNo == "Yes") {							
 								window.open("<%= ctxPath%>/scheduleEditPopup.sam?schno="+data.schno+"&perno="+data.perno, "스케줄입력", " left=430px , top=80px,width=400, height=580, toolbar=no, menubar=no, scrollbars=no, resizable=yes" ) 
 							}
@@ -430,6 +524,98 @@ function go_pop(){
 	
 		<%-- location.href="<%= serverName%><%=ctxPath%>/chatting/multichat.sam"; --%>
 	}
+
+function go_boardDisplay(){
+	
+	$("#mainhead").hide();
+	$("#pageBar").hide();
+	$("#MainBoard").hide();
+	$("#container").show();
+	$.ajax({
+		url:"<%= ctxPath%>/chart/bestBoard.sam",
+		dataType:"json",
+		success:function(json){
+			
+			var resultArr=[];
+			for(var i=0;i<json.length; i++){
+				var obj;
+				
+			
+				 obj ={ name:json[i].subject,
+						 weight:Number(json[i].good),
+						 seq:json[i].seq
+					  };
+		
+				
+				resultArr.push(obj)//배열속에 객체를 넣기
+			}//end of for----------------------
+			//console.log(resultArr);
+			/* var text = resultArr;
+			var lines = text.split(/[,\. ]+/g),
+			  data = Highcharts.reduce(lines, function (arr, word) {
+			    var obj = Highcharts.find(arr, function (obj) {
+			      return obj.name === word;
+			    });
+			    if (obj) {
+			      obj.weight += 1;
+			    } else {
+			      obj = {
+			        name: word,
+			        weight: 1
+			      };
+			      arr.push(obj);
+			    }
+			    return arr;
+			  }, []);
+		 */
+			Highcharts.chart('container', {
+			    chart: {
+			        renderTo: 'chart',
+			        margin:0,
+			        height: 600,
+			        width:1150,
+			        marginBottom:50,
+			        defaultSeriesType: 'areaspline'
+			    },    
+			  accessibility: {
+			    screenReaderSection: {
+			      beforeChartFormat: '<h5>{chartTitle}</h5>' +
+			        '<div>{chartSubtitle}</div>' +
+			        '<div>{chartLongdesc}</div>' +
+			        '<div>{viewTableButton}</div>'
+			    }
+			  },
+			  series: [{
+			    type: 'wordcloud',
+			    data: resultArr,
+			    name: '좋아요'
+			  }],
+			  title: {
+				  text: '<span style=" font-family: Noto Sans KR, sans-serif; font-size: 30px; font-weight:bold; margin-bottom: 10px;">게시판</span><br><br>'+
+				  		'<span style="font-size: 26px">실시간 인기글 </span>'
+			     
+			  },       
+			  plotOptions: {
+				    series: {
+				        cursor: 'pointer',
+				        point: {
+				             events: {
+				                 click: function(e) {
+				                    location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+e.point.seq;
+				                }
+				            }
+				        }
+				    }
+				}
+			});//end of Highcharts.chart-------
+			
+		},//end of success:function(json)-----
+		
+		error: function(request, status, error){
+              alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+         }
+	})//end of ajax------
+}
 
 </script>
    
@@ -477,7 +663,7 @@ function go_pop(){
 		</div>
 		<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status">
 			<div style="margin-top: 20px;">
-			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="<%=ctxPath%>/class/index.sam?subno=${subjectvo.subno}">${subjectvo.subname}</a></span>
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a id="subject" href="<%=ctxPath%>/class/index.sam?subno=${subjectvo.subno}">${subjectvo.subname}</a></span>
 			<br>
 			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}교수님</span>
 			</div>
@@ -489,7 +675,7 @@ function go_pop(){
 				</div>
 				<c:forEach var="Prosubjectvo" items="${requestScope.MainProsubjectList}" varStatus="status"> 
 			<div style="margin-top: 20px;">
-			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="<%=ctxPath%>/class/index.sam?subno=${Prosubjectvo.subno}">${Prosubjectvo.subname}</a></span>
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a id="subject"  href="<%=ctxPath%>/class/index.sam?subno=${Prosubjectvo.subno}">${Prosubjectvo.subname}</a></span>
 			<br>
 			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${Prosubjectvo.day}&nbsp;${Prosubjectvo.time}&nbsp;</span>
 			</div>
@@ -499,26 +685,36 @@ function go_pop(){
 </div>
 
 <div id="mainBoard" align="center">
-		<h2 style="padding-top:50px; font-weight:bold;">게시판</h2>
-		<h3>실시간 인기글</h3>
-		<br><br>
-	    <table id = "MainBoard">
-	        <thead>
-	       
-	           <tr id="menu" align="center">	 
-	              <th>No.</th>
-	              <th id = "category">분류</th>
-	              <th id="subject">제목</th>
-	              <th>작성자</th>
-	              <th>추천수</th>
-	           </tr>
-	        </thead>
-	        <tbody id="boardDisplay" >
-	     
-	        </tbody>
-	    </table>
-	    <div id="pageBar" style="margin-top: 30px;"></div>
-
+		<label class="switch" >
+  <input type="checkbox" id="toggle">
+  <span class="slider round"></span>
+</label>
+		<div id= "mainhead">
+		
+				<h2 style="font-weight:bold;">게시판</h2>
+				<h3>실시간 인기글</h3>
+				<br><br>
+				</div>
+			    <table id = "MainBoard">
+			    
+			        <thead>
+			           <tr id="menu" align="center">	 
+			              <th>No.</th>
+			              <th id = "category">분류</th>
+			              <th id="subject">제목</th>
+			              <th>작성자</th>
+			              <th>추천수</th>
+			           </tr>
+			        </thead>
+			        <tbody id="boardDisplay" >
+			     
+			        </tbody>
+			    </table>
+			    <div id="pageBar" style="margin-top: 30px;"></div>
+			
+	    <figure class="highcharts-figure">
+  <div id="container"></div>
+</figure>
 </div>
 
 <c:if test="${ not empty sessionScope.loginuser}">

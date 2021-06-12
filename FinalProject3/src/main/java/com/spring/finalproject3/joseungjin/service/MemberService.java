@@ -167,6 +167,13 @@ public class MemberService implements InterMemberService {
 		List<Map<String, String>> adminExcelsubjectList =sudao.getExcelsubjectList();
 		return adminExcelsubjectList;
 	}
+	
+	//하이차트 사용
+	@Override
+	public List<Map<String, String>> getbestBoard() {
+		List<Map<String, String>> bestBoardList=bdao.getbestBoard();
+		return bestBoardList;
+	}
 
 
 
