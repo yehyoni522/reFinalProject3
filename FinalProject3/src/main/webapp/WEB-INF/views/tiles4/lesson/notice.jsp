@@ -16,7 +16,7 @@
 	text-align:center;
 	font-weight: bolder;
 }
-
+ 
 .headerCategoty{
 	display: inline-block; 
 	padding-bottom:5px; 
