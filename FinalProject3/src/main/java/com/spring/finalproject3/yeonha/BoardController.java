@@ -309,6 +309,7 @@ public class BoardController {
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		
 		String seq = request.getParameter("seq");		
+		String categoryno = request.getParameter("categoryno");
 	    String searchType = request.getParameter("searchType");
 	    String searchWord = request.getParameter("searchWord");
 	    
@@ -323,10 +324,11 @@ public class BoardController {
 	    paraMap.put("seq", seq);
 	    paraMap.put("searchType", searchType);
 	    paraMap.put("searchWord", searchWord);
+	    paraMap.put("categoryno", categoryno);
 	      
 	    mav.addObject("searchType", searchType);
 	    mav.addObject("searchWord", searchWord);
-	    
+	    mav.addObject("categoryno", categoryno);
 	    
 		String gobackURL = request.getParameter("gobackURL");		
 	
@@ -335,10 +337,6 @@ public class BoardController {
 		}
 		
 		mav.addObject("gobackURL", gobackURL);
-		
-		String categoryno = request.getParameter("categoryno");
-		// System.out.println(categoryno);
-		mav.addObject("categoryno", categoryno);
 		
 		try {
 			Integer.parseInt(seq);
@@ -389,7 +387,6 @@ public class BoardController {
 		commentvo.setCo_depthno(co_depthno);
 		commentvo.setContent(content);
 		
-		System.out.println();
 		
 		int n = 0;
 		
@@ -447,7 +444,7 @@ public class BoardController {
 				jsonObj.put("co_depthno", cmtvo.getCo_depthno());
 				jsonObj.put("fk_perno", cmtvo.getFk_perno());
 				jsonObj.put("fk_seq", cmtvo.getFk_seq());
-				jsonObj.put("noopen", cmtvo.getNoopen());
+
 				
 				jsonArr.put(jsonObj);
 			}

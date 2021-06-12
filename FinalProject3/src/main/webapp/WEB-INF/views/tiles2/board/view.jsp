@@ -196,7 +196,6 @@ a {
 						
 						var content = '"'+item.content+'"';						
 						
-						//console.log(item.noopen);
 						//console.log("댓글작성자사람번호"+item.fk_perno);
 						// console.log("로그인유저 perno: '${sessionScope.loginuser.perno}'");
 					//	console.log("게시글유저 perno: "+${boardvo.fk_perno});						
@@ -246,7 +245,6 @@ a {
 							html += "</div>";
 							
 							html += "<div id='comreplyFrm"+item.comseq+"' style='display:none;'>"
-							html += "<label>비공개</label> <input type='checkbox' name='noopen' id='noopen' value='1'/><br>";
 							html += "<textarea id='commentreply"+item.comseq+"' row='10' style='width: 90%; height:80px;'></textarea><br>";
 							html += "<button id='comreplyEnd' style='height:50px; width:70px;' onclick='comreplyEnd("+item.comseq+","+item.co_groupno+","+item.co_depthno+","+item.fk_seq+")'>등록</button>"
 							html += "</div>"
@@ -410,7 +408,7 @@ a {
 		
 		// alert("결과내용 : "+comreplyVal+"co_groupno"+co_groupno);
 		
-		if(comreplyVal == "") {
+		if(content == "") {
            alert("댓글내용을 입력하세요!!");
            return;
         } 
@@ -608,7 +606,6 @@ a {
 					<form name="addWriteFrm" style="margin-top: 20px;">
 						<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />  
 						<h3>댓글작성</h3>
-						<label>비공개</label> <input type="checkbox" name="noopen" id="noopen" value="1"/><br>
 						<input id="commentContent" type="text" name="content" class="long" /> 						
 						<input type="hidden" name="fk_seq" value="${requestScope.boardvo.seq}" /> 
 						<img src="<%=ctxPath%>/resources/images/commentWrite.PNG" id= "comwriteimg" onclick="goAddWrite()">
