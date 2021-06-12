@@ -95,6 +95,12 @@ public interface InterClassBoardService {
 	// 자료) 조회수 증가 없이 글 상세 보기
 	materialVO materialViewNoAddCount(Map<String, String> paraMap);
 
+	// 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
+	int materialEdit_delfile(Map<String, String> paraMap);
+
+	// 새로운 첨부파일 등록 & 수정 update
+	int materialEdit_withfile(Map<String, String> paraMap);
+	
 	// 자료) 글 수정하기
 	int materialEdit(materialVO mtrvo);
 
@@ -118,6 +124,7 @@ public interface InterClassBoardService {
 
 	// 계획) 강의 계획서 수정하기 완료
 	int planEdit(Map<String, String> paraMap);
+
 
 
 }

@@ -1483,15 +1483,61 @@ public class ClassBoardController {
 			
 			// === 글수정 페이지 완료하기 === //
 			@RequestMapping(value="/class/materialEditEnd.sam", method= {RequestMethod.POST})
-			public ModelAndView materialEditEnd(ModelAndView mav, materialVO mtrvo, HttpServletRequest request) {
-			
-				int n = service.materialEdit(mtrvo);
+			public ModelAndView materialEditEnd(ModelAndView mav, materialVO mtrvo, MultipartHttpServletRequest mrequest) {
+				
+				// 수정해야 할 글번호 가져오기
+				String mtrno = mrequest.getParameter("mtrno");
+				
+				HttpSession session = mrequest.getSession();
+				
+				Map<String,String> paraMap = new HashMap<>();
+				paraMap.put("mtrno", mtrno);
+				paraMap.put("searchType", "");
+				paraMap.put("searchWord", "");
+				
+				// === 새로운 첨부파일 있는지 조사 ===		
+				MultipartFile attach = mtrvo.getAttach();
+				
+				int n=0;
+				
+				// === 새로운 첨부파일 있음 ===	
+				if( !attach.isEmpty() ) {
+					
+					// === 기존 첨부파일 있는지 조사 ===					
+					String fileName = mtrvo.getFileName();
+					
+					if( fileName!=null && !"".equals(fileName) ) {
+						// == 기존 첨부파일 있음 ==
+						paraMap.put("fileName", fileName); // 삭제해야 할 파일명
+						
+						String root = session.getServletContext().getRealPath("/");
+				    	String path = root+"resources"+File.separator+"files";
+				    	  
+				    	paraMap.put("path", path);	
+				    	
+				    	// 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
+				    	n = service.materialEdit_delfile(paraMap);
+					}
+					
+					else {
+						// == 기존 첨부파일 없음 ==
+						
+						// 새로운 첨부파일 등록 & 수정 update
+						n = service.materialEdit_withfile(paraMap);					
+					}				
+				}
+				
+				// === 새로운 첨부파일 없음 ===
+				else {
+					// 글 내용물만 수정
+					n = service.materialEdit(mtrvo);
+				}
 				
 				if(n==1) {
 					mav.addObject("message", "글수정 성공!!");		
 				}			
 				
-				mav.addObject("loc", request.getContextPath()+"/class/materialView.sam?mtrno="+mtrvo.getMtrno());
+				mav.addObject("loc", mrequest.getContextPath()+"/class/materialView.sam?mtrno="+mtrvo.getMtrno());
 			
 				mav.setViewName("msg");
 				

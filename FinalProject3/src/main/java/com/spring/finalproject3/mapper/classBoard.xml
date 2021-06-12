@@ -398,6 +398,12 @@
       	where mtrno = #{mtrno}
 	</update>
 	
+	<!-- 자료) 첨부파일과 글 수정하기 -->
+	<update id="materialEdit_withfile" parameterType="HashMap">
+		update tbl_materialset set subject = #{subject}, content = #{content}, fileName = #{fileName}, orgFilename = #{orgFilename}, fileSize = #{fileSize}
+		where mtrno = #{mtrno}
+	</update>
+	
 	<!-- 자료) 글 수정하기 -->
 	<update id="materialEdit" parameterType="com.spring.finalproject3.seoyeon.model.materialVO">
 		update tbl_material set subject = #{subject}

@@ -110,6 +110,9 @@ public interface InterClassBoardDAO {
 	// 자료) 조회수 증가 
 	void materialAddReadCount(String mtrno);
 
+	// 자료) 새로운 첨부파일 및 수정하기 완료
+	int materialEdit_withfile(Map<String, String> paraMap);
+	
 	// 자료) 글 수정하기
 	int materialEdit(materialVO mtrvo);
 
@@ -133,6 +136,7 @@ public interface InterClassBoardDAO {
 
 	// 계획) 강의 계획서 수정하기 완료
 	int planEdit(Map<String, String> paraMap);
+
 
 	
 

@@ -271,6 +271,34 @@ public class ClassBoardService implements InterClassBoardService {
 		materialVO mtrvo = dao.materialView(paraMap);
 		return mtrvo;
 	}
+	
+	// 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
+	@Override
+	public int materialEdit_delfile(Map<String, String> paraMap) {
+
+		// 첨부파일 삭제
+		String fileName = paraMap.get("fileName");
+		String path = paraMap.get("path");
+	   
+	   if(fileName!=null && "".equals(fileName)) {
+		   try {
+			   fileManager.doFileDelete(fileName, path);
+		   } catch (Exception e) {
+			   e.printStackTrace();
+		   }
+	   }
+	   
+	   int n=dao.materialEdit_withfile(paraMap);
+	   
+	   return n;
+	}
+
+	// 새로운 첨부파일 등록 & 수정 update
+	@Override
+	public int materialEdit_withfile(Map<String, String> paraMap) {
+		int n=dao.materialEdit_withfile(paraMap);
+		return n;
+	}
 
 	// 자료) 글 수정하기
 	@Override
@@ -342,5 +370,7 @@ public class ClassBoardService implements InterClassBoardService {
 		int n = dao.planEdit(paraMap);
 		return n;
 	}
+
+
 
 }
