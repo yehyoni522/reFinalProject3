@@ -122,6 +122,18 @@ public interface InterClassBoardDAO {
 	// 질문) 원글 글쓴이 perno 받아오기
 	String getOrgPerno(String qnano);
 
+	// 계획) 정보 추출해오기
+	planVO getInfo(String subno);
+
+	// 계획) 계획 추출해오기
+	List<planVO> getPlan(String subno);
+
+	// 계획) 강의 계획서 등록하기 완료
+	int planAdd(Map<String, String> paraMap);
+
+	// 계획) 강의 계획서 수정하기 완료
+	int planEdit(Map<String, String> paraMap);
+
 	
 
 
