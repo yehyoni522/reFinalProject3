@@ -12,6 +12,7 @@ import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.InterMessageDAO;
 import com.spring.finalproject3.hyeminJang.model.InterMypageDAO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
+import com.spring.finalproject3.hyeminJang.model.ScoreVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 //=== #31. Service 선언 === 
@@ -47,7 +48,12 @@ public class MessageService implements InterMessageService {
 		
 		if(inboxvo != null) {
 			int n = dao.updateReadState(inboxSeq);
-			// 읽은것은 1로 변환해준다.
+				n = n+1;
+			if(n ==2) {
+				dao.updateisRead(inboxSeq);
+			}
+					
+				
 		}
 		
 		return inboxvo;
@@ -102,6 +108,8 @@ public class MessageService implements InterMessageService {
 		
 		if(n ==1) {
 			n = dao.insertOutbox(paraMap); // outbox 에 insert (로그인한 사람이 발신자)
+			
+			n = dao.insertMessageSender(); //쪽지 발신관련 테이블에 insert
 		}
 		return n;
 	}
@@ -184,6 +192,13 @@ public class MessageService implements InterMessageService {
 	public String getNameCol(int majseq) {
 		String str = dao.getNameCol(majseq);
 		return str;
+	}
+
+	// 학생이 듣고있는 수업정보가지고오기
+	@Override
+	public List< Map<String, String>> getscoreList(int perno) {
+		List< Map<String, String>> list = dao2.getscoreList(perno);
+		return list;
 	}
 
 

@@ -60,6 +60,14 @@ public interface InterMessageDAO {
 	//단대이름 알아오기
 	String getNameCol(int majseq);
 
+	// messagesender 테이블에 인서트
+	int insertMessageSender();
+
+	// 쪽지 읽은것 1변환
+	void updateisRead(int inboxSeq);
+
+
+
 
 	
 

@@ -174,6 +174,9 @@ dfn:hover::before {top: 50px;}
 			return;
 		}
 	}
+	function gocheck(perno){
+		location.href="<%= ctxPath%>/reading/index.sam";
+	}
 </script>
 
 <div class="msgHead">
@@ -331,45 +334,28 @@ dfn:hover::before {top: 50px;}
 	      <tr id="score"> 
 	        <th>과목번호</th>
 	        <th style="width: 30%;">과목명</th>
-	        <th>개설학기</th>
 	        <th>담당교수</th>
 	        <th>총점</th>
-	        <th>세부성적조회</th>
+	        <th>과제점수</th>
+	        <th>쪽지시험점수</th>
+	        <th>출석점수</th>
 	      </tr>
 	    </thead>
     
+    <c:forEach var="scorelist" items="${requestScope.scorevolist}">
 	    <tbody class="scoretable">
 	      <tr id="tr_1" style="color: #055AC1;">
-	        <td>1</td>
-	        <td >경영학원론</td>
-	        <td>2021년도 1학기</td>
-	        <td>이수영</td>
-	        <td>50/100</td>
-	        <td><button>세부성적조회하기</button></td>
+	        <td>${scorelist.subno}</td>
+	        <td >${scorelist.subname}</td>
+	        <td>${scorelist.name}</td>
+	        <td></td>
+	        <td onclick="goCheck(${sessionScope.loginuser.perno})">${scorelist.exchagedScore}/40(실점수:${scorelist.totalscore})</td>
+	        <td>${scorelist.exchagedScore}/40(실점수:${scorelist.totalscore})</td>
+	        <td>추후기재</td>
 	      </tr>
 	    </tbody>
-	    
-	    <tbody class="scoretable">
-	      <tr id="tr_1" style="color: #055AC1;">
-	        <td>2</td>
-	        <td >경영학원론</td>
-	        <td>2021년도 1학기</td>
-	        <td>이수영</td>
-	        <td>50/100</td>
-	        <td><button>세부성적조회하기</button></td>
-	      </tr>
-	    </tbody>
-	    
-	    <tbody class="scoretable">
-	      <tr id="tr_1" style="color: #055AC1;">
-	        <td>3</td>
-	        <td >경영학원론</td>
-	        <td>2021년도 1학기</td>
-	        <td>이수영</td>
-	        <td>50/100</td>
-	        <td><button>세부성적조회하기</button></td>
-	      </tr>
-	    </tbody>
+	 </c:forEach>  
+	   
 
 	  </table>
 	

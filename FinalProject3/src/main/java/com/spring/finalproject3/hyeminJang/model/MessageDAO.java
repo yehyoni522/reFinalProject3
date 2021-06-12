@@ -173,6 +173,20 @@ public class MessageDAO implements InterMessageDAO {
 		return str;
 	}
 
+	// 쪽지전달 ㅇ테이블에 인서트 
+	@Override
+	public int insertMessageSender() {
+		int n = sqlsession.insert("Message.insertMessageSender");
+		return n;
+	}
+
+
+	@Override
+	public void updateisRead(int inboxSeq) {
+		sqlsession.update("Message.updateisRead",inboxSeq);
+		
+	}
+
 
 
 
