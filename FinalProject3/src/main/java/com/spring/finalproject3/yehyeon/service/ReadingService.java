@@ -135,4 +135,36 @@ public class ReadingService implements InterReadingService {
 		return n;
 	}
 
+
+
+	@Override
+	public String getSubjectname(String subno) {
+		String subject = dao.getSubjectname(subno);
+		return subject;
+	}
+
+
+
+	@Override
+	public List<Map<String, String>> getNoticeList(String subno) {
+		List<Map<String, String>> noticeList = dao.getNoticeList(subno);
+		return noticeList;
+	}
+
+
+
+	@Override
+	public List<Map<String, String>> getQnAList(String subno) {
+		List<Map<String, String>> qnaList = dao.getQnAList(subno);
+		return qnaList;
+	}
+
+
+
+	@Override
+	public List<Map<String, String>> getMaterialList(String subno) {
+		List<Map<String, String>> materialList = dao.getMaterialList(subno);
+		return materialList;
+	}
+
 }

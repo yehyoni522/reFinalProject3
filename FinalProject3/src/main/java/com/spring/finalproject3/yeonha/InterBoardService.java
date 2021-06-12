@@ -60,6 +60,18 @@ public interface InterBoardService {
 	// 댓글 수정완료하기
 	int comEditEnd(Map<String, String> paraMap);
 
+	// 게시물 좋아요 수 알아오기
+	int likeCount(String seq);
+
+	// 게시글에 첨부파일이 있는지 확인하기(수정)
+	String isFilename(BoardVO boardvo);
+
+	// 첨부파일 삭제 체크시 첨부파일 삭제
+	int delFile(BoardVO boardvo);
+
+	// 첨부파일이 없는 경우라면(수정)
+	int edit_withFile(BoardVO boardvo);
+
 
 
 

@@ -1,10 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+
+<%@ page import="java.net.InetAddress"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 
 <%
 	String ctxPath = request.getContextPath();
-    //     /MyMVC 
+
+	// === #172. (웹채팅관련3) === 
+	// === 서버 IP 주소 알아오기(사용중인 IP주소가 유동IP 이라면 IP주소를 알아와야 한다.) ===//
+	InetAddress inet = InetAddress.getLocalHost(); 
+	String serverIP = inet.getHostAddress();
+	
+ //System.out.println("serverIP : " + serverIP);
+ // serverIP :192.168.35.133
+	
+	// String serverIP = "211.238.142.72"; 만약에 사용중인 IP주소가 고정IP 이라면 IP주소를 직접입력해주면 된다.
+	
+	// === 서버 포트번호 알아오기   ===
+	int portnumber = request.getServerPort();
+ // System.out.println("portnumber : " + portnumber);
+ // portnumber : 9090
+	
+	String serverName = "http://"+serverIP+":"+portnumber; 
+ // System.out.println("serverName : " + serverName);
+ // serverName : http://211.238.142.72:9090 
 %>
 
 <script src="<%= ctxPath%>/resources/js/jquery.min.js"></script>
@@ -14,6 +34,13 @@
 <script src='<%= ctxPath%>/resources/fullcalendar/ko.js'></script>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/wordcloud.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 
 <style type="text/css">
 	div#calendar{
@@ -131,20 +158,130 @@
 	  }
 	.fc-sun {color:#e31b23}
 	.fc-col-header-cell fc-day fc-day-sat {color:#007dc3}
-
-
+	
+	img#popup{
+	position: fixed;
+  	top: 650px;
+  	right: 60px;
+  	cursor:pointer;
+  	 width: 80px; 
+  	 height: 80px;
+	
+	}
+	a#name{
+	 padding: 8px 20px 8px 32px;
+	  text-decoration: none;
+	  font-size: 23px;
+	  color: #f1f1f1;
+	  display: block;
+	  transition: 0.3s;
+	  text-align: right;
+	
+	}
+	label{
+		height: 200px;
+	}
+	.highcharts-figure{
+		margin-top: 50px;
+	}
+	.switch {
+	  position: relative;
+	  display: inline-block;
+	  width: 50px;
+	  height: 20px;
+	  margin-left: 1100px;
+	}
+	a#subject{
+	
+		color:navy;
+	
+	}
+	.switch input {display:none;}
+	
+	.slider {
+	  position: absolute;
+	  cursor: pointer;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  background-color: #ccc;
+	  -webkit-transition: .4s;
+	  transition: .4s;
+	}
+	
+	.slider:before {
+	  position: absolute;
+	  content: "";
+	  height: 17px;
+	  width: 16px;
+	  left: 4px;
+	  bottom: 2px;
+	  background-color: white;
+	  -webkit-transition: .4s;
+	  transition: .4s;
+	}
+	
+	input:checked + .slider {
+	  background-color: #29CC97;
+	}
+	
+	input:focus + .slider {
+	  box-shadow: 0 0 1px #29CC97;
+	}
+	
+	input:checked + .slider:before {
+	  -webkit-transform: translateX(26px);
+	  -ms-transform: translateX(26px);
+	  transform: translateX(26px);
+	}
+	
+	/* Rounded sliders */
+	.slider.round {
+	  border-radius: 34px;
+	}
+	
+	.slider.round:before {
+	  border-radius: 50%;
+	}
+	
 </style>
 
 
 <script>
 	$(document).ready(function(){
+		$("#container").hide();
 		goViewBoard(1);
-		$("tr#tr_MainBoard").click(function(){
-		var seq = $(this).children("seq").text();
-	
-		location.href ="<%= request.getContextPath()%>/baord/view.sam?seq="+seq+"&goBackURL=${requestScope.goBackURL}";
+		$(document).on('click', 'tr#tr_MainBoard', function(){
+		var seq = $(this).children(".seq").text();
+		var categoryno = $(this).children(".categoryno").val();
+		
+		location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+seq+"&categoryno="+categoryno+"&goBackURL=${requestScope.goBackURL}";
 		});// end of click
+
+
+	 if($("#toggle").is(":checked")==true){
+	        	go_boardDisplay()
+	        }else{
+	        	$("#mainhead").show();
+	        	$("#pageBar").show();
+	        	$("#MainBoard").show();
+	        }  
 		 
+		 $("#toggle").change(function(){
+		        if($("#toggle").is(":checked")){
+		        	go_boardDisplay()
+		        }else{
+		        	$("#mainhead").show();
+		        	$("#pageBar").show();
+		        	$("#MainBoard").show();
+		        	$("#container").hide();
+
+		        }
+		    });
+		 
+
+	
 	});// end of $(document).ready(function(){})--------------
 	
 	// === #127. Ajax로 불러온 댓글내용을 페이징처리하기 === //
@@ -163,7 +300,8 @@
 				if(json.length > 0) {
 					$.each(json, function(index, item){
 						html += "<tr id='tr_MainBoard'>";
-						html += "<td class='comment'>"+item.seq+"</td>";
+						html += "<td class='seq'>"+item.seq+"</td>";
+						html += "<input type='hidden' class='categoryno' value='"+item.categoryno+"'/>"
 						
 						var categoryno = item.categoryno;
 						switch (categoryno) {
@@ -254,7 +392,7 @@
 					while( !(loop > blockSize || pageNo > totalPage) ) {
 					
 						if(pageNo == currentShowPageNo) {
-							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
+							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; color:black; padding:2px 4px;'>"+pageNo+"</li>";
 						}
 						else {
 							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='javascript:goViewBoard(\""+pageNo+"\")'>"+pageNo+"</a></li>";
@@ -288,17 +426,17 @@
 	
 	   document.addEventListener('DOMContentLoaded', function() {
 		 
-	        var calendarEl = document.getElementById('calendar');
-	        var calendar = new FullCalendar.Calendar(calendarEl, {
-	        	headerToolbar: {
-	        		  start: "today",
-	        		  center: "prev title next",
-	        		  end: "",
-	        		},
-	        	locale : "ko",
-	        	initialView: 'dayGridMonth',
+			 
+		    var calendarEl = document.getElementById('calendar');
+		    var calendar = new FullCalendar.Calendar(calendarEl, {
+		    	headerToolbar: {
+		    		  start: "today",
+		    		  center: "prev title next",
+		    		  end: "",
+		    		},
+		    	locale : "ko",
+		    	initialView: 'dayGridMonth',
 				dayMaxEvents: true,
-				editable : true,
 				events: 
 					function(info, successCallback, failureCallback) {
 					$.ajax({
@@ -306,30 +444,65 @@
 						data:{"perno":"${sessionScope.loginuser.perno}"},
 						dataType:"json",
 						success:function(json){
+						if(json.length > 0) {
 							var events=[];
-						
-					      $.each(json, function(index, item){
-							  events.push({
-								  title:item.calsubject,
-								  start:item.startDate,
-								  end:item.endDate
-								});
-							 
-		                 });// end of $.each(json1, function(index, item){}) ------------
-		    					
-					      console.log(events);
+						      $.each(json, function(index, item){
+								  events.push({
+									  id:item.schno,
+									  title:item.calsubject,
+									  start:item.startDate,
+									  end:item.endDate,
+									  color:item.color,
+									  description:item.memo
+									});
+			                 });// end of $.each(json1, function(index, item){}) ------------
+						      successCallback(events); 
+						}	
+					      //console.log(events);
 					      //$("#calendar").fullCalendar(events);
-					      successCallback(events); 
+						  
 						},
 						error: function(request, status, error){
 			                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		           	}
 					})//end of ajax--------
-				
-				}
-	        	
-	        });
-	        calendar.render();
+				   
+
+				},//end of event----
+		    	eventDidMount: function(info) {
+		            tippy(info.el, {
+		            	
+		                  content: 
+		                     info.event.extendedProps.description
+		                 
+		            });
+		        },
+		        eventClick: function(info) {
+					$.ajax({
+						url:"<%= ctxPath%>/scheduleEdit.sam",
+						data:{"perno":"${sessionScope.loginuser.perno}",
+							"title":info.event.title,
+							"schno":info.event.id
+							},
+						dataType:"json",
+						success:  function(data){
+							if(data.loginYesNo == "Yes") {							
+								window.open("<%= ctxPath%>/scheduleEditPopup.sam?schno="+data.schno+"&perno="+data.perno, "스케줄입력", " left=430px , top=80px,width=400, height=580, toolbar=no, menubar=no, scrollbars=no, resizable=yes" ) 
+							}
+							
+						}
+
+					})//end of ajax--------
+		    		
+		    	}
+
+
+			
+		    });
+
+		  
+		    
+		    calendar.render();
 	      });
   
 
@@ -343,9 +516,107 @@ function closeNav() {
 
 function click_add(){
 	
-    window.open("<%= ctxPath%>/schedulePopup.sam", "스케줄입력", " left=430px , top=80px,width=400, height=500, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
+    window.open("<%= ctxPath%>/schedulePopup.sam", "스케줄입력", " left=430px , top=80px,width=430, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=yes" );  
 
 
+}
+function go_pop(){
+	
+	javascript:void(window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=400, height=650, toolbar=no, menubar=no, scrollbars=yes, resizable=yes")); 
+	
+		<%-- location.href="<%= serverName%><%=ctxPath%>/chatting/multichat.sam"; --%>
+	}
+
+function go_boardDisplay(){
+	
+	$("#mainhead").hide();
+	$("#pageBar").hide();
+	$("#MainBoard").hide();
+	$("#container").show();
+	$.ajax({
+		url:"<%= ctxPath%>/chart/bestBoard.sam",
+		dataType:"json",
+		success:function(json){
+			
+			var resultArr=[];
+			for(var i=0;i<json.length; i++){
+				var obj;
+				
+			
+				 obj ={ name:json[i].subject,
+						 weight:Number(json[i].good),
+						 seq:json[i].seq
+					  };
+		
+				
+				resultArr.push(obj)//배열속에 객체를 넣기
+			}//end of for----------------------
+			//console.log(resultArr);
+			/* var text = resultArr;
+			var lines = text.split(/[,\. ]+/g),
+			  data = Highcharts.reduce(lines, function (arr, word) {
+			    var obj = Highcharts.find(arr, function (obj) {
+			      return obj.name === word;
+			    });
+			    if (obj) {
+			      obj.weight += 1;
+			    } else {
+			      obj = {
+			        name: word,
+			        weight: 1
+			      };
+			      arr.push(obj);
+			    }
+			    return arr;
+			  }, []);
+		 */
+			Highcharts.chart('container', {
+			    chart: {
+			        renderTo: 'chart',
+			        margin:0,
+			        height: 600,
+			        width:1150,
+			        marginBottom:50,
+			        defaultSeriesType: 'areaspline'
+			    },    
+			  accessibility: {
+			    screenReaderSection: {
+			      beforeChartFormat: '<h5>{chartTitle}</h5>' +
+			        '<div>{chartSubtitle}</div>' +
+			        '<div>{chartLongdesc}</div>' +
+			        '<div>{viewTableButton}</div>'
+			    }
+			  },
+			  series: [{
+			    type: 'wordcloud',
+			    data: resultArr,
+			    name: '좋아요'
+			  }],
+			  title: {
+				  text: '<span style=" font-family: Noto Sans KR, sans-serif; font-size: 30px; font-weight:bold; margin-bottom: 10px;">게시판</span><br><br>'+
+				  		'<span style="font-size: 26px">실시간 인기글 </span>'
+			     
+			  },       
+			  plotOptions: {
+				    series: {
+				        cursor: 'pointer',
+				        point: {
+				             events: {
+				                 click: function(e) {
+				                    location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+e.point.seq;
+				                }
+				            }
+				        }
+				    }
+				}
+			});//end of Highcharts.chart-------
+			
+		},//end of success:function(json)-----
+		
+		error: function(request, status, error){
+              alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+         }
+	})//end of ajax------
 }
 
 </script>
@@ -355,13 +626,13 @@ function click_add(){
   <div id="loginInfo">
   	<c:if test="${empty sessionScope.loginuser}"><a href="<%=ctxPath%>/login.sam">로그인을 해주세요</a></c:if>
   		<c:if test="${sessionScope.loginuser.identity == 0}">
-			<a>${sessionScope.loginuser.name} 학생</a>
+			<a id="name">${sessionScope.loginuser.name}님</a>
 	</c:if>
 		<c:if test="${sessionScope.loginuser.identity == 1}">
-			<a>${sessionScope.loginuser.name} 교수</a>
+			<a id="name">${sessionScope.loginuser.name}님</a>
 	</c:if>
   </div>
-  <a href="#">내 수업 목록</a>
+  <a href="<%=ctxPath%>/mypage/mypage.sam">마이페이지</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=4">공지사항</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=5">Q&A</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=1">게시판</a>
@@ -392,45 +663,62 @@ function click_add(){
 		<div style="font-size: 25pt; font-weight: bold; margin-top:30px; margin-bottom: 50px;">
 		내 강의
 		</div>
-		<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
-			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
+		<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status">
+			<div style="margin-top: 20px;">
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a id="subject" href="<%=ctxPath%>/class/index.sam?subno=${subjectvo.subno}">${subjectvo.subname}</a></span>
 			<br>
-			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;&nbsp; ${subjectvo.name}교수님</span>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}교수님</span>
+			</div>
 		</c:forEach>
 	</c:if>
 	<c:if test="${sessionScope.loginuser.identity == 1}">
 			<div style="font-size: 25pt; font-weight: bold; margin-top:50px; margin-bottom: 50px;">
 				${sessionScope.loginuser.name} 교수님 강의 목록
 				</div>
-				<c:forEach var="subjectvo" items="${requestScope.MainsubjectList}" varStatus="status"> 
-			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a href="#">${subjectvo.subname}</a></span>
+				<c:forEach var="Prosubjectvo" items="${requestScope.MainProsubjectList}" varStatus="status"> 
+			<div style="margin-top: 20px;">
+			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a id="subject"  href="<%=ctxPath%>/class/index.sam?subno=${Prosubjectvo.subno}">${Prosubjectvo.subname}</a></span>
 			<br>
-			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}</span>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${Prosubjectvo.day}&nbsp;${Prosubjectvo.time}&nbsp;</span>
+			</div>
 		</c:forEach>
 	</c:if>
 	
 </div>
 
 <div id="mainBoard" align="center">
-		<h2 style="padding-top:50px; font-weight:bold;">게시판</h2>
-		<h3>실시간 인기글</h3>
-		<br><br>
-	    <table id = "MainBoard">
-	        <thead>
-	       
-	           <tr id="menu" align="center">	 
-	              <th>No.</th>
-	              <th id = "category">분류</th>
-	              <th id="subject">제목</th>
-	              <th>작성자</th>
-	              <th>추천수</th>
-	           </tr>
-	        </thead>
-	        <tbody id="boardDisplay" >
-	     
-	        </tbody>
-	    </table>
-	    <div id="pageBar" style="margin-top: 30px;"></div>
-
+		<label class="switch" >
+  <input type="checkbox" id="toggle">
+  <span class="slider round"></span>
+</label>
+		<div id= "mainhead">
+		
+				<h2 style="font-weight:bold;">게시판</h2>
+				<h3>실시간 인기글</h3>
+				<br><br>
+				</div>
+			    <table id = "MainBoard">
+			    
+			        <thead>
+			           <tr id="menu" align="center">	 
+			              <th>No.</th>
+			              <th id = "category">분류</th>
+			              <th id="subject">제목</th>
+			              <th>작성자</th>
+			              <th>추천수</th>
+			           </tr>
+			        </thead>
+			        <tbody id="boardDisplay" >
+			     
+			        </tbody>
+			    </table>
+			    <div id="pageBar" style="margin-top: 30px;"></div>
+			
+	    <figure class="highcharts-figure">
+  <div id="container"></div>
+</figure>
 </div>
 
+<c:if test="${ not empty sessionScope.loginuser}">
+<img src="<%= ctxPath%>/resources/images/chat.png" onclick="go_pop()" id="popup" >
+</c:if>

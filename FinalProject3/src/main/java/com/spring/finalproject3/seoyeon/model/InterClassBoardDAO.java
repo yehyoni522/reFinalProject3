@@ -14,6 +14,15 @@ public interface InterClassBoardDAO {
 	// === 과제 게시판 글쓰기 완료 요청 === // 
 	int assignmentAdd(assignmentBoardVO assgnVO);
 
+	// 현재 시퀀스 알아오기
+	String getAssignno();
+	
+	// 수업듣는 학생 명단
+	List<String> pernoList(String fk_subno);
+	
+	// 학생들에게 과제제출 행 만들어주기
+	int assgnStudent(Map<String, String> paraMap);
+	
 	// 어떤 과목인지 과목번호 알아오기 
 	String getSubjectname(String subno);
 
@@ -79,6 +88,58 @@ public interface InterClassBoardDAO {
 
 	// 댓글 1개 조회만을 해주는 것이다.
 	SubmitVO getSubmitOne(String submitno);
+
+	// 점수 변경하기
+	int changeScore(Map<String, String> paraMap);
+	
+	// 자료) 총 갯수 알아오기
+	int getTotalMaterial(Map<String, String> paraMap);
+	
+	// 자료) 페이징처리한 목록 가져오기
+	List<materialVO> materialListSearchWithPaging(Map<String, String> paraMap);
+	
+	// 자료) 첨부파일 없는 글쓰기
+	int materialAdd(materialVO mtrvo);
+	
+	// 자료) 첨부파일 있는 글쓰기
+	int materialAdd_withFile(materialVO mtrvo);
+	
+	// 자료) 글 상세 보기
+	materialVO materialView(Map<String, String> paraMap);
+	
+	// 자료) 조회수 증가 
+	void materialAddReadCount(String mtrno);
+
+	// 자료) 새로운 첨부파일 및 수정하기 완료
+	int materialEdit_withfile(Map<String, String> paraMap);
+	
+	// 자료) 글 수정하기
+	int materialEdit(materialVO mtrvo);
+
+	// 자료) 글 삭제하기
+	int materialDelete(Map<String, String> paraMap);
+
+	// 자료) 글 검색어 입력시 자동글 완성하기
+	List<String> materialWordSearchShow(Map<String, String> paraMap);
+
+	// 질문) 원글 글쓴이 perno 받아오기
+	String getOrgPerno(String qnano);
+
+	// 계획) 정보 추출해오기
+	planVO getInfo(String subno);
+
+	// 계획) 계획 추출해오기
+	List<planVO> getPlan(String subno);
+
+	// 계획) 강의 계획서 등록하기 완료
+	int planAdd(Map<String, String> paraMap);
+
+	// 계획) 강의 계획서 수정하기 완료
+	int planEdit(Map<String, String> paraMap);
+
+
+	
+
 
 
 }

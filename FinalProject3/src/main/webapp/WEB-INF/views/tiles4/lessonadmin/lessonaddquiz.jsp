@@ -58,14 +58,14 @@ button {
 		
 		html += "<tr class='remove"+i+"'><td class='nextline' colspan='2'></td></tr>"
 		
-		html += "<tr class='remove"+i+"'><th scope='row'>"+(i+1)+"번 문제</th><td><input type='hidden' name='qzno"+i+"' value='"+(i+1)+"'>정답<input type='text' class='confirm' name='quizanswer"+i+"' style='width: 50px; margin-left:10px;' /></input><input type='hidden' name='cnt' value="+cnt+" /></td></tr>";
+		html += "<tr class='remove"+i+"'><th scope='row'>"+(i+1)+"번 문제</th><td><input type='hidden' name='qzno"+i+"' value='"+(i+1)+"'>정답</input><input type='text' class='confirm' name='quizanswer"+i+"' style='width: 50px; margin-left:10px;' /></td></tr>";
 		html += "<tr class='remove"+i+"'><th scope='row'>문제 내용</th><td><input type='text' class='confirm' name='qzcontent"+i+"'></input></td></tr>";
 		html += "<tr class='remove"+i+"'><th scope='row'>1.</th><td><input type='text' class='confirm' name='answerfirst"+i+"'></input></td></tr>";
 		html += "<tr class='remove"+i+"'><th scope='row'>2.</th><td><input type='text' class='confirm' name='answersecond"+i+"'></input></td></tr>";
 		html += "<tr class='remove"+i+"'><th scope='row'>3.</th><td><input type='text' class='confirm' name='answerthird"+i+"'></input></td></tr>";
 		html += "<tr class='remove"+i+"'><th scope='row'>4.</th><td><input type='text' class='confirm' name='answerfourth"+i+"'></input></td></tr>";
 		
-		}
+		}	
 		
 		$(html).appendTo("table");	
 		
@@ -76,8 +76,8 @@ button {
 	
 	function removequiz() {
 		
-		console.log(cnt);
-		console.log(i);
+		// console.log(cnt);
+		// console.log(i);
 		
 		$("tr.remove"+(i-1)+"").remove();
 		
@@ -95,6 +95,7 @@ button {
  		
  		if(quiznameVal != "" && confirmVal != ""){		
 	 		var frm = document.addquizFrm; 		
+	 		frm.cnt.value = cnt;
 	 		frm.method = "post";
 	 		frm.action = "<%= ctxPath%>/lesson/quizaddEnd.sam";
 	        frm.submit();
@@ -108,13 +109,15 @@ button {
 
 </script>
 
-<div align="center">
+<div align="center" style="margin-top: 200px; min-height: 400px;">
 	
-	<div align="left" style="font-weight: bold; font-size: 10pt; margin-left: 200px; cursor: pointer; text-decoration: underline;" onclick="location.href='<%=ctxPath%>/lesson/quizlist.sam'">작성 취소</div>
+	
 	<div style="font-weight: bold; font-size: 14pt;">쪽지시험 문제 작성</div>
+	<div style="font-weight: bold; font-size: 10pt; cursor: pointer; text-decoration: underline; text-align: right; margin-right: 200px;" onclick="location.href='<%=ctxPath%>/lesson/quizlist.sam'">작성 취소</div>
 	
 	<form name="addquizFrm">
-
+		<input type='hidden' name='cnt' />
+		
 		<table class="quiz">
 		
 		  <tr>
@@ -128,7 +131,7 @@ button {
 		</table>	
 	</form>
 	
-	<div align="center">
+	<div align="center" style="width: 50%;">
 		<%-- 문제 추가 시 cnt 값이 1 올라가고  --%>
 		<button type="button" onclick="addquiz()" style=" background-color: #00e600;">문제 추가</button>
 		<button type="button" onclick="removequiz()" style=" background-color: #ff471a;">문제 삭제</button>

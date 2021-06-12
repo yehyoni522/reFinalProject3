@@ -107,12 +107,12 @@ div#admincontent {
  	  	$("select#page").val("${requestScope.page}");
 
 
-		$("span.subject").bind("mouseover",function(event){
+		$(".subject").bind("mouseover",function(event){
 			var $target=$(event.target);
 			$target.addClass("subjectStyle");
 		});
 	   
-		$("span.subject").bind("mouseout",function(event){
+		$(".subject").bind("mouseout",function(event){
 			var $target=$(event.target);
 			$target.removeClass("subjectStyle");			
 		});
@@ -231,10 +231,6 @@ div#admincontent {
 							comseqArr.push( $("input:checkbox[name=checkOne]").eq(i).val());
 		        		}
 					}
-		            alert($(this).val()+"까지 "+checkCnt+"개 선택됨");
-					console.log(comseqArr);
-		        }else{
-		        	alert($("input:checkbox[name=checkOne]:checked").val()+"선택해제됨");
 		        }
 		    });
    });// end of $(document).ready(function(){}---------------------------------------
@@ -275,7 +271,13 @@ div#admincontent {
 
 	function goView(seq){
 		   
-		   location.href="<%=ctxPath%>/view.action?seq="+seq;
+		var frm = document.goViewFrm;
+		frm.seq.value=seq;
+		frm.searchType.value = "${requestScope.paraMap.searchType}";
+	    frm.searchWord.value = "${requestScope.paraMap.searchWord}"; 
+		frm.method="get";
+		frm.action="<%= ctxPath%>/board/view.sam";
+		frm.submit();
 		   
 	} // end of function goView(seq)-----------------------------
 	
@@ -421,10 +423,10 @@ div#admincontent {
 		      	 <th style="width: 3%;  text-align: center;"></th>
 		      	 <th style="width: 5%;  text-align: center;">No.</th>
 		         <th style="width: 10%;  text-align: center;">게시판 명</th>
-		         <th style="width: 27%;  text-align: left;">게시글 제목</th>
+		         <th style="width: 23%;  text-align: left;">게시글 제목</th>
 		         <th style="width: 30%;  text-align: left;">댓글 내용</th>
-		         <th style="width: 10%;">글쓴이</th>
-		         <th style="width: 15%;  text-align: center;">작성일</th>
+		         <th style="width: 14%; text-align: center;">글쓴이(학번)</th>
+		         <th style="width: 15%;  text-align: center;">작성일시</th>
 		      
 		      </tr>
 		      
@@ -435,21 +437,21 @@ div#admincontent {
 				 	</td>
 		         	<td align="center">${commentvo.comseq}</td>
 		             <td align="center">
-		             	<c:if test="${commentvo.categoryno==1}">
-		             		자유게시판
-		             	</c:if>
-		             	<c:if test="${commentvo.categoryno==2}">
-		             		중고거래
-		             	</c:if>
-		             	<c:if test="${commentvo.categoryno==3}">
-		             		동아리 / 공모전
-		             	</c:if>
+		             		<c:if test="${commentvo.categoryno==1}">
+			             		<a class="subject" style=" text-align:center; width: 280px;" href="/finalproject3/board/list.sam?categoryno=1">자유게시판</a>
+			             	</c:if>
+			             	<c:if test="${commentvo.categoryno==2}">
+			             		<a class="subject"  style=" text-align:center; width: 280px;" href="/finalproject3/board/list.sam?categoryno=2">중고거래</a>
+			             	</c:if>
+			             	<c:if test="${commentvo.categoryno==3}">
+			             		<a class="subject" style=" text-align:center; width: 280px;" href="/finalproject3/board/list.sam?categoryno=3">동아리 / 공모전</a>
+			             	</c:if>
 		             </td>
 		             <td align="left">
 		             	<span class="subject" onclick="goView('${commentvo.fk_seq}')">${commentvo.subject}</span>
 		             </td>
 		             <td>${commentvo.content}</td>       
-		            <td>${commentvo.name}</td>
+		            <td align="center">${commentvo.name}(${commentvo.fk_perno})</td>
 		            <td align="center">${commentvo.reregDate}</td>
 		             
 		         </tr>
@@ -464,6 +466,14 @@ div#admincontent {
 		</div>
 	</div>
 </div>
+
+<form name="goViewFrm">
+	<input type="hidden" name="seq" />
+	<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
+	<input type="hidden" name="categoryno" value="${categoryno}">
+	<input type="hidden" name="searchType" />
+    <input type="hidden" name="searchWord" />
+</form>
 
 
     

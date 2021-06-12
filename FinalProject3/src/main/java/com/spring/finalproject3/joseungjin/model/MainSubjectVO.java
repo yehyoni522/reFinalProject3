@@ -1,5 +1,6 @@
 package com.spring.finalproject3.joseungjin.model;
 
+
 public class MainSubjectVO {
 	private int subno;          // 과목정보
 	private int fk_perno;	 // 사람번호(학번,교수번호,관리자번호?)
@@ -10,10 +11,16 @@ public class MainSubjectVO {
     private String day;		 // 수업요일
     private String time;
     private String name; 	//교수명
+    private String fk_majseq;
+    
+    private String content;
+    private String majseq;
+    
     public MainSubjectVO() {}
     
     public MainSubjectVO(int subno, int fk_perno, int fk_colno, String subname, 
-    					int credit, int semeter,String day,String name,String time) {
+    					int credit, int semeter,String day,String name,String time,String fk_majseq
+    					,String content,String majseq) {
 		super();
 		this.subno = subno;
 		this.fk_perno = fk_perno;
@@ -24,6 +31,9 @@ public class MainSubjectVO {
 		this.day = day;
 		this.name = name;
 		this.time = time;
+		this.fk_majseq = fk_majseq;
+		this.content=content;
+		this.majseq=majseq;
 	}
     
 	public int getSubno() {
@@ -84,5 +94,31 @@ public class MainSubjectVO {
 	public void setTime(String time) {
 		this.time = time;
 	}
+
+	public String getFk_majseq() {
+		return fk_majseq;
+	}
+
+	public void setFk_majseq(String fk_majseq) {
+		this.fk_majseq = fk_majseq;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getMajseq() {
+		return majseq;
+	}
+
+	public void setMajseq(String majseq) {
+		this.majseq = majseq;
+	}
+	
+
 	
 }

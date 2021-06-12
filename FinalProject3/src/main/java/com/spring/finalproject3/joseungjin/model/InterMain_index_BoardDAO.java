@@ -9,5 +9,7 @@ public interface InterMain_index_BoardDAO {
 	//페이징 처리
 	int getboardTotalPage(Map<String, String> paraMap);
 	List<Main_index_BoardVO> getboardistPaging(Map<String, String> paraMap);
+	//하이차트 활용
+	List<Map<String, String>> getbestBoard();
 
 }

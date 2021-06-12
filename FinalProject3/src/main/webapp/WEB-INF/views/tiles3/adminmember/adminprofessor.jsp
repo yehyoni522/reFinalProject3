@@ -170,35 +170,31 @@ tr {
 		
 	}// end of function allCheckStart()-------------------
 
+	function goSendEmail() {
+		var checkCnt = $("input:checkbox[name=PERNO]:checked").length;
+		
+		if(checkCnt < 1) {
+	    	alert("교수를 선택하세요.");
+	    	return; 
+	    }	
+		else{
+			var emailArr = new Array();
+       		$("input[name=PERNO]:checked").each(function() {
+       			var chk = $(this).val();
+       			emailArr.push(chk);
+       		});
+       		
+       		$("input#parentEmail").val(emailArr);
+       		var openWin;
+       		openWin = window.open("<%= ctxPath%>/admin/sendEmail.sam",
+                    								"이메일 전송", "left=430px , top=80px,width=400, height=300, toolbar=no, menubar=no, scrollbars=no, resizable=yes"); 	
+        	
+			//window.open("<%= ctxPath%>/admin/sendEmail.sam", "이메일 전송", " left=430px , top=80px,width=400, height=300, toolbar=no, menubar=no, scrollbars=no, resizable=yes" ); 
+		}
+	}
 </script>
 
 <div id="adminhome">
-	
-	<div id="adminside" >
-		<span style="font-family: 'Noto Sans KR', sans-serif;">관리자 페이지 홈</span>
-		<br>
-		<br>
-		<span>회원/교수진 관리</span>
-		<ul>
-			<li>학생 관리</li>
-			<li>교수진 관리</li>
-			<li>활둥중지 회원</li>
-		</ul>
-		<br>
-		<span>게시글 관리</span>
-		<ul>
-			<li>게시글 관리</li>
-			<li>댓글 관리</li>
-			<li>스팸글 관리</li>
-		</ul>
-		<br>
-		<span>열람실 관리</span>		
-		<br>
-		<span>수업 관리</span>	
-		<ul>
-			<li>수업 개설</li>
-		</ul> 	
-	</div>
 	
 	<div id="admincontent">
 	
@@ -221,26 +217,16 @@ tr {
 		
 		<div style="clear: both;">
 			<span style="font-weight: bold; font-size: 11pt;">교수진 총 인원 <span style="color: green; font-weight: bold; font-size: 11pt;">234</span></span>
-			<select style="display: inline-block; float: right; margin-right: 20px; height: 25px; margin-bottom: 10px;">
-					<option>15개씩</option>
-			</select>
+
 		</div>
 		
 		<div style="clear: both;"></div>
 			
-		<div class="admtitleoptions">
-			<div class="adminsbopt">
-				<select class="adminsearchoption">
-					<option>단과대학</option>
-				</select>
-				<select class="adminsearchoption">
-					<option>학과</option>
-				</select>
+		<div class="admtitleoptions">	
+			<div  style="float:right"> 
+				<span class="admsubtsp">선택된 교수진</span>
+				<button style="background-color: #99ccff; border-radius: 10%; color: white; " onclick="goSendEmail();">이메일 보내기</button>
 			</div>
-	
-			<span class="admsubtsp">선택된 교수진</span>
-			<button style="background-color: #99ccff; border-radius: 10%; color: white;">이메일 보내기</button>
-			<button style="background-color: #99ccff; border-radius: 10%; color: white;">메세지 보내기</button>
 		</div>
 				
 		<div style="clear: both;">
@@ -262,7 +248,7 @@ tr {
 					<c:forEach var="personMap" items="${requestScope.personList}" varStatus="status">			
 						<form name="studentinfoFrm">
 						<tr>		
-							<td><input type="checkbox" class="CheckStudent student" name="PERNO" id="CheckStudent${status.index}" value="${personMap.PERNO}"><label for="CheckStudent${status.index}"></label></td>
+							<td><input type="checkbox" class="CheckStudent student" name="PERNO" id="CheckStudent${status.index}" value="${personMap.EMAIL}"><label for="CheckStudent${status.index}"></label></td>
 							<td style="margin-right: 70px; width: 30px;">${status.count}</td>
 							<td class="admthtdall goinfo">${personMap.FK_MAJSEQ}</td>
 							<td class="admthtdall goinfo">${personMap.CONTENT}</td>
@@ -281,5 +267,7 @@ tr {
 		</div>
 						
 	</div>
-
+	<form name="goEmail">
+		<input type="hidden" id="parentEmail" />
+	</form>
 </div>

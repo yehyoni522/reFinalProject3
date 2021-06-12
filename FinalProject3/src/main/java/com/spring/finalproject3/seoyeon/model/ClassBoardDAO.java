@@ -34,6 +34,28 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		int n = sqlsession.insert("classBoard.assignmentAdd",assgnVO);
 		return n;
 	}
+	
+	// 현재 시퀀스 알아오기
+	@Override
+	public String getAssignno() {
+		String assgnno = sqlsession.selectOne("classBoard.getAssignno");
+		return assgnno;
+	}
+	
+	// 해당 수업 듣는 학생들의 총 perno 리스트
+	@Override
+	public List<String> pernoList(String fk_subno) {
+		List<String> pernoList = sqlsession.selectList("classBoard.pernoList", fk_subno);
+		
+		return pernoList;
+	}
+
+	// === 과제 게시판 글쓰면 학생들한테 과제 부여하기
+	@Override
+	public int assgnStudent(Map<String, String> paraMap) {
+		int n = sqlsession.	insert("classBoard.assgnStudent",paraMap);
+		return n;
+	}
 
 	// 어떤 과목인지 과목번호 알아오기 
 	@Override
@@ -182,11 +204,132 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		return n;
 	}
 
+	//댓글 1개 조회
 	@Override
 	public SubmitVO getSubmitOne(String submitno) {
 		SubmitVO submitvo = sqlsession.selectOne("classBoard.getSubmitOne",submitno);
 		return submitvo;
 	}
+
+	// 점수 변경하기
+	@Override
+	public int changeScore(Map<String, String> paraMap) {
+		int n = sqlsession.update("classBoard.changeScore",paraMap);
+		return n;
+	}
+	
+	
+	////////////////////////////////////수업자료////////////////////////////////////
+	
+	// 자료) 총 갯수 알아오기
+	@Override
+	public int getTotalMaterial(Map<String, String> paraMap) {
+		int n = sqlsession.selectOne("classBoard.getTotalMaterial", paraMap);
+		return n;
+	}
+	
+	// 자료) 페이징처리한 목록 가져오기
+	@Override
+	public List<materialVO> materialListSearchWithPaging(Map<String, String> paraMap) {
+		List<materialVO> mtrList = sqlsession.selectList("classBoard.materialListSearchWithPaging", paraMap);
+	      return mtrList;
+	}
+	
+	// 자료) 첨부파일 없는 글쓰기
+	@Override
+	public int materialAdd(materialVO mtrvo) {
+		int n = sqlsession.insert("classBoard.materialAdd", mtrvo);
+	    return n;
+	}
+	
+	// 자료) 첨부파일 있는 글쓰기
+	@Override
+	public int materialAdd_withFile(materialVO mtrvo) {
+		int n = sqlsession.insert("classBoard.materialAdd_withFile",mtrvo);
+		return n;
+	}
+	
+	// 자료) 글 상세 보기
+	@Override
+	public materialVO materialView(Map<String, String> paraMap) {
+		materialVO mtrvo = sqlsession.selectOne("classBoard.materialView", paraMap);
+	    return mtrvo;
+	}
+	
+	// 자료) 조회수 증가 
+	@Override
+	public void materialAddReadCount(String mtrno) {
+	      sqlsession.update("classBoard.materialAddReadCount", mtrno);		
+	}
+	
+	// 자료) 새로운 첨부파일 및 수정하기 완료
+	@Override
+	public int materialEdit_withfile(Map<String, String> paraMap) {
+		int n = sqlsession.update("classBoard.materialEdit_withfile", paraMap);
+	     return n;
+	}
+	
+	// 자료) 글 수정하기
+	@Override
+	public int materialEdit(materialVO mtrvo) {
+		 int n = sqlsession.update("classBoard.materialEdit", mtrvo);
+	     return n;
+	}
+	
+	// 자료) 글 삭제하기
+	@Override
+	public int materialDelete(Map<String, String> paraMap) {
+		 int n = sqlsession.delete("classBoard.materialDelete", paraMap);
+	     return n;
+	}
+
+	// 자료) 글 검색어 입력시 자동글 완성하기
+	@Override
+	public List<String> materialWordSearchShow(Map<String, String> paraMap) {
+		List<String> wordList = sqlsession.selectList("classBoard.materialWordSearchShow", paraMap);
+		return wordList;
+	}
+
+	// 질문) 원글 글쓴이 perno 받아오기
+	@Override
+	public String getOrgPerno(String qnano) {
+		String org_perno = sqlsession.selectOne("classBoard.getOrgPerno",qnano);
+		return org_perno;
+	}
+
+	// 계획) 정보 추출해오기
+	@Override
+	public planVO getInfo(String subno) {
+		planVO InfoVO = sqlsession.selectOne("classBoard.getInfo",subno);
+		return InfoVO;
+	}
+
+	// 계획) 계획 추출해오기
+	@Override
+	public List<planVO> getPlan(String subno) {
+		List<planVO> planVO = sqlsession.selectList("classBoard.getPlan",subno);
+		return planVO;
+	}
+
+	// 계획) 강의 계획서 등록하기 완료
+	@Override
+	public int planAdd(Map<String, String> paraMap) {
+		int n=sqlsession.insert("classBoard.planAdd",paraMap);
+		return n;
+	}
+
+	// 계획) 강의 계획서 수정하기 완료
+	@Override
+	public int planEdit(Map<String, String> paraMap) {
+		int n=sqlsession.update("classBoard.planEdit",paraMap);
+		return n;
+	}
+
+
+
+
+
+
 	
 	
 }

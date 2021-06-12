@@ -23,6 +23,14 @@
 
 <link rel="stylesheet" type="text/css" href="<%=ctxPath %>/resources/css/style4.css" />
 </head>
+<script type="text/javascript">
+	$(function() {
+		if(${sessionScope.loginuser.perno == null}) {
+			alert("로그인 후 이용할 수 있습니다.");
+			location.href="<%=ctxPath%>/index.sam";
+		}
+	})
+</script>
 <body>
 <div id="mycontainer">
       <div id="myheader">

@@ -151,7 +151,7 @@ public class BoardController {
 		String categoryno = request.getParameter("categoryno");	
 		mav.addObject("categoryno", categoryno); // jsp에서 카테고리 번호 호출하기 위함
 		
-		System.out.println("카테고리번호"+categoryno);
+		// System.out.println("카테고리번호"+categoryno);
 		
 		String searchType = request.getParameter("searchType"); 
 		String searchWord = request.getParameter("searchWord");
@@ -204,9 +204,10 @@ public class BoardController {
 		
 		// 최신순, 인기순 select태그 옵션선택
 		String newhit = request.getParameter("newhit");
+		if(newhit == null) {
+			newhit = "1";
+		}
 		paraMap.put("newhit", newhit);
-		
-		// System.out.println("최신순?인기순? : "+newhit);
 		
 		boardList = service.boardListSearchWithPaging(paraMap);
 		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한것)
@@ -236,7 +237,7 @@ public class BoardController {
 				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
 			}
 			else {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a class='boarda' href='"+url+"?categoryno="+categoryno+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
+				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a class='boarda' href='"+url+"?newhit="+newhit+"&categoryno="+categoryno+"&searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
 			}
 			
 			loop++;
@@ -262,6 +263,9 @@ public class BoardController {
 		
 		mav.addObject("gobackURL", gobackURL);				
 		mav.addObject("boardList", boardList);
+		
+		mav.addObject("newhit", newhit);
+		
 		mav.setViewName("board/list.tiles2");
 		
 		return mav;
@@ -304,7 +308,9 @@ public class BoardController {
 	@RequestMapping(value="/board/view.sam")
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		
+		
 		String seq = request.getParameter("seq");		
+		String categoryno = request.getParameter("categoryno");
 	    String searchType = request.getParameter("searchType");
 	    String searchWord = request.getParameter("searchWord");
 	    
@@ -319,10 +325,11 @@ public class BoardController {
 	    paraMap.put("seq", seq);
 	    paraMap.put("searchType", searchType);
 	    paraMap.put("searchWord", searchWord);
+	    paraMap.put("categoryno", categoryno);
 	      
 	    mav.addObject("searchType", searchType);
 	    mav.addObject("searchWord", searchWord);
-	    
+	    mav.addObject("categoryno", categoryno);
 	    
 		String gobackURL = request.getParameter("gobackURL");		
 	
@@ -331,10 +338,6 @@ public class BoardController {
 		}
 		
 		mav.addObject("gobackURL", gobackURL);
-		
-		String categoryno = request.getParameter("categoryno");
-		// System.out.println(categoryno);
-		mav.addObject("categoryno", categoryno);
 		
 		try {
 			Integer.parseInt(seq);
@@ -373,7 +376,18 @@ public class BoardController {
 	// 댓글쓰기(Ajax로 처리)  
 	@ResponseBody
 	@RequestMapping(value="/board/addComment.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
-	public String addComment(CommentVO commentvo) {
+	public String addComment(CommentVO commentvo, HttpServletRequest request) {
+		
+		String fk_comseq = request.getParameter("fk_comseq");
+		String co_groupno = request.getParameter("co_groupno");
+		String co_depthno = request.getParameter("co_depthno");	 
+		String content = request.getParameter("content");
+		
+		commentvo.setFk_comseq(fk_comseq);
+		commentvo.setCo_groupno(co_groupno);
+		commentvo.setCo_depthno(co_depthno);
+		commentvo.setContent(content);
+		
 		
 		int n = 0;
 		
@@ -430,6 +444,8 @@ public class BoardController {
 				jsonObj.put("co_groupno", cmtvo.getCo_groupno());
 				jsonObj.put("co_depthno", cmtvo.getCo_depthno());
 				jsonObj.put("fk_perno", cmtvo.getFk_perno());
+				jsonObj.put("fk_seq", cmtvo.getFk_seq());
+
 				
 				jsonArr.put(jsonObj);
 			}
@@ -509,29 +525,113 @@ public class BoardController {
 	
 	
 	// 글수정 페이지 완료하기 
-	@RequestMapping(value="/board/editEnd.sam", method= {RequestMethod.POST})
-	public ModelAndView editEnd(ModelAndView mav, BoardVO boardvo, HttpServletRequest request) {   
-	   
-		String searchType = request.getParameter("searchType");
-		String searchWord = request.getParameter("searchWord");
-		
-		int n = service.edit(boardvo);
-	   
-		if(n == 0) {
-			mav.addObject("message", "수정이 실패했습니다.");
-		}
-		else {
-			mav.addObject("message", "글수정 성공!!");      
-		}
-	  
-		mav.addObject("loc", request.getContextPath()+"/board/view.sam?seq="+boardvo.getSeq()+
-							"&categoryno="+boardvo.getCategoryno()+
-							"&searchType="+searchType+
-							"&searchWord="+searchWord);
-		mav.setViewName("msg");
+   @RequestMapping(value="/board/editEnd.sam", method= {RequestMethod.POST})
+   public ModelAndView editEnd(ModelAndView mav, BoardVO boardvo, HttpServletRequest request, MultipartHttpServletRequest mrequest) {   
+      
+      // System.out.println("삭제체크여부"+(request.getParameter("delfileName")));
+      
+      String delFileCheck = request.getParameter("delfileName");
+      
+      String searchType = request.getParameter("searchType");
+      String searchWord = request.getParameter("searchWord");
+      
+      MultipartFile attach = boardvo.getAttach();
+      
+      // 게시글에 첨부파일이 있는지 확인하기(수정)
+      String filename = service.isFilename(boardvo);
+      boardvo.setFileName(filename);
+      // System.out.println("파일삭제 작업전 파일이름: "+boardvo.getFileName());
+      
+      if(delFileCheck != null && filename != null) {
+         // 게시글에 파일이 있는데 파일삭제에 체크가 되어있다면
+         service.delFile(boardvo); // 첨부파일 삭제 체크시 첨부파일 삭제
+         boardvo.setFileName(null);
+      }
+      filename = service.isFilename(boardvo);
+      boardvo.setFileName(filename);
+      // System.out.println("파일삭제 작업후 파일이름: "+boardvo.getFileName());
+      
+      if(!attach.isEmpty() && filename == null) {
+         // 게시글이 파일이 없고 파일첨부가 되었다면
+         
+         HttpSession session = mrequest.getSession();
+         String root = session.getServletContext().getRealPath("/"); 
+         
+         String path = root+"resources"+File.separator+"files";
+         
+         String newFileName = "";
+         // WAS(톰캣)의 디스크에 저장될 파일명 
+         
+         byte[] bytes = null;
+         // 첨부파일의 내용을 담는 것
+         
+         long fileSize = 0;
+         // 첨부파일의 크기 
+         
+         try {
+            bytes = attach.getBytes();
+            // 첨부파일의 내용물을 읽어오는 것 
+            
+            String originalFilename = attach.getOriginalFilename();
+            // originalFilename ==> "강아지.png"
+            
+            newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
+            
+   //         System.out.println(">>> 확인용 newFileName => " + newFileName);
+            // >>> 확인용 newFileName => 20210603123820876795424460900.png 
+            // >>> 확인용 newFileName => 20210603124015876910815673500.png
+            
+         /*
+             3. BoardVO boardvo 에 fileName 값과 orgFilename 값과 fileSize 값을 넣어주기   
+         */
+            boardvo.setFileName(newFileName);
+            // WAS(톰캣)에 저장될 파일명(20210603123820876795424460900.png)
+            
+            boardvo.setOrgFilename(originalFilename);
+            // 게시판 페이지에서 첨부된 파일(강아지.png)을 보여줄 때 사용.
+            // 또한 사용자가 파일을 다운로드 할때 사용되어지는 파일명으로 사용.
+            
+            fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
+            boardvo.setFileSize(String.valueOf(fileSize));
+            
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      else if(!attach.isEmpty() && filename != null){
+         // 게시글에 파일이 있는데 파일첨부를 했다면
+         mav.addObject("message", "파일은 하나만 첨부가능합니다");
+         mav.setViewName("msg");
+         
+         return mav;
+      }
+      
+      int n = 0;
+      
+      if(attach.isEmpty()) { 
+         // 첨부파일이 없는 경우라면
+         n = service.edit_withFile(boardvo);         
+      }
+      else {
+         // 첨부파일이 있는 경우
+         n = service.edit(boardvo);
+      }
+      
+      if(n == 0) {
+         mav.addObject("message", "수정이 실패했습니다.");
+      }
+      else {
+         mav.addObject("message", "글수정 성공!!");      
+      }
+     
+      mav.addObject("loc", request.getContextPath()+"/board/view.sam?seq="+boardvo.getSeq()+
+                     "&categoryno="+boardvo.getCategoryno()+
+                     "&searchType="+searchType+
+                     "&searchWord="+searchWord);
+      mav.setViewName("msg");
        
-		return mav;
-	}
+      return mav;
+   }
 
 	// 글 삭제하기
 	@RequestMapping(value="/board/del.sam", method= {RequestMethod.POST})
@@ -641,16 +741,17 @@ public class BoardController {
 	public String comreplyEnd(HttpServletRequest request, CommentVO commentvo) {
 	
 		String comseq = request.getParameter("comseq");
-		String content = request.getParameter("comreplyVal");
-		
+		String content = request.getParameter("comreplyVal");	
 		
 		commentvo.setComseq(comseq);
 		commentvo.setContent(content);
 		
 		int n = 0;
+		System.out.println(n);
 		
 		try {
 			n = service.addComment(commentvo);
+			System.out.println("결과: "+ n);	
 		}catch (Throwable e) {
 			
 		}
@@ -760,19 +861,40 @@ public class BoardController {
 	// 게시물 좋아요(ajax)
 	@ResponseBody
 	@RequestMapping(value="/board/goGoodAdd.sam", method= {RequestMethod.GET})
-	public void goodAdd(HttpServletRequest request) {
+	public String goodAdd(HttpServletRequest request) {
 		
 		String seq = request.getParameter("seq");		
 		
 		int n  = service.goodAdd(seq);
+		System.out.println("좋아요 결과: "+n);
 		
-		String loc = "javascript:history.back()";
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n); 
 		
-		System.out.println(n);		
-		
+		return jsonObj.toString();
 	
 	}
-   
+	
+	
+	// 게시물 좋아요 수 알아오기
+	@ResponseBody
+	@RequestMapping(value="/board/likeCount.sam")
+	public String likeCount(HttpServletRequest request) {
+		
+		String seq = request.getParameter("seq");		
+		System.out.println("게시물 좋아요 수 알아오기넘어온 seq값: "+seq);
+		
+		int likecnt  = service.likeCount(seq);
+		
+		System.out.println("좋아요 수 알아오기 결과: "+likecnt);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("likecnt", likecnt); 
+		
+		return jsonObj.toString();
+	
+	}
+	
 	
 	// 스마트에디터  /image/photoUpload.sam
 	// 스마트에디터. 드래그앤드롭을 사용한 다중사진 파일업로드 ====

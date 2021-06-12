@@ -13,7 +13,7 @@ public class AdminBoardVO {
    private String readCount;    // 글조회수
    private String good;		// 좋아요
  
-private String regDate;      // 글쓴날짜
+   private String regDate;      // 글쓴날짜
    private String status;       // 글삭제여부   1:사용가능한 글,  0:삭제된글 
    private String commentCount;	// 댓글의 개수
    
@@ -21,6 +21,16 @@ private String regDate;      // 글쓴날짜
    private String previoussubject;  // 이전글제목
    private String nextseq;          // 다음글번호
    private String nextsubject;      // 다음글제목  
+   
+   private String namecheck;     // 익명선택여부( 0: 익명아님, 1:익명)
+   
+   private String groupno; // 게시글 답글에서 사용
+   private String fk_seq;
+   private String depthno;
+   
+   private String fileName;    // WAS(톰캣)에 저장될 파일명(2020120809271535243254235235234.png) 
+
+   
    
    public AdminBoardVO() {}
    
@@ -118,11 +128,85 @@ private String regDate;      // 글쓴날짜
 		this.nextsubject = nextsubject;
 	}
    
-  public String getName() {
+	public String getName() {
 		return name;
 	}
-  public void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
+
+
+
+
+	public String getNamecheck() {
+		return namecheck;
+	}
+
+
+
+
+	public void setNamecheck(String namecheck) {
+		this.namecheck = namecheck;
+	}
+
+
+
+
+	public String getGroupno() {
+		return groupno;
+	}
+
+
+
+
+	public void setGroupno(String groupno) {
+		this.groupno = groupno;
+	}
+
+
+
+
+	public String getFk_seq() {
+		return fk_seq;
+	}
+
+
+
+
+	public void setFk_seq(String fk_seq) {
+		this.fk_seq = fk_seq;
+	}
+
+
+
+
+	public String getDepthno() {
+		return depthno;
+	}
+
+
+
+
+	public void setDepthno(String depthno) {
+		this.depthno = depthno;
+	}
+
+
+
+
+	public String getFileName() {
+		return fileName;
+	}
+
+
+
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
    
+  
+	
+  
+  
 }

@@ -4,8 +4,8 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.spring.finalproject3.yehyeon.mail.GoogleMail_ToPerson;
 import com.spring.finalproject3.yehyeon.mail.GoogleMail_yehyeon;
 import com.spring.finalproject3.yehyeon.model.BookListVO;
 import com.spring.finalproject3.yehyeon.model.DetailSeatInfoVO;
@@ -398,6 +399,99 @@ public class YehyeonController {
 		String json = jsonObj.toString(); 
 		
 		return json;   // "{"n":1}"
+	}
+	
+	@RequestMapping(value="/admin/sendEmail.sam", produces="text/plain;charset=UTF-8")
+	public ModelAndView sendEmail(HttpServletRequest request, ModelAndView mav) {
+		
+		mav.setViewName("sendEmail/sendEmail");
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="/admin/sendEmailEnd.sam", produces="text/plain;charset=UTF-8")
+	public ModelAndView sendEmailEnd(HttpServletRequest request, ModelAndView mav) {
+		
+		String memo = request.getParameter("memo");
+		String emailAddress = request.getParameter("emailAddress");
+		
+		String[] emailArr = emailAddress.split(",");
+		
+		GoogleMail_ToPerson mail = new GoogleMail_ToPerson();
+		
+		for(int i = 0; i < emailArr.length; i++) {
+			// 메일이 정상적으로 전송되었는지 유무를 알아오기 위한 용도
+			try {
+				mail.sendmail(emailArr[i], memo);
+				String message = "메일 전송 성공";
+				String loc = "javascript:history.back()";
+				
+				mav.addObject("message", message);
+				mav.addObject("loc", loc);
+			} catch (Exception e) {
+				// 메일 전송이 실패한 경우
+				String message = "메일 전송 실패";
+				String loc = "javascript:history.back()";
+				
+				mav.addObject("message", message);
+				mav.addObject("loc", loc);
+				
+				e.printStackTrace();
+			}
+		} // end of for ----------------
+		mav.setViewName("msg");
+		
+		return mav;
+	}
+	
+	@RequestMapping(value="/class/index.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+	public ModelAndView classHome(HttpServletRequest request, ModelAndView mav) {
+		
+		String subno = request.getParameter("subno");
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("subno", subno);
+		
+		String subject = service.getSubjectname(subno);
+		session.setAttribute("subject", subject);
+		
+		List<Map<String,String>> noticeList = service.getNoticeList(subno);
+		
+		System.out.println("확인용 사이즈 : " + noticeList.size());
+		
+		for(int i = 0; i < noticeList.size(); i++) {
+			System.out.println("~~확인용 : " + noticeList.get(i).get("subject"));
+			System.out.println("~~확인용 : " + noticeList.get(i).get("regdate"));
+		}
+		
+		mav.addObject("noticeList", noticeList);
+		
+		List<Map<String,String>> qnaList = service.getQnAList(subno);
+		
+		System.out.println("확인용 사이즈 : " + qnaList.size());
+		
+		for(int i = 0; i < qnaList.size(); i++) {
+			System.out.println("~~확인용 : " + qnaList.get(i).get("subject"));
+			System.out.println("~~확인용 : " + qnaList.get(i).get("regdate"));
+		}
+		
+		mav.addObject("qnaList", qnaList);
+		
+		List<Map<String,String>> materialList = service.getMaterialList(subno);
+		
+		System.out.println("확인용 사이즈 : " + materialList.size());
+		
+		for(int i = 0; i < materialList.size(); i++) {
+			System.out.println("~~확인용 : " + materialList.get(i).get("subject"));
+			System.out.println("~~확인용 : " + materialList.get(i).get("regdate"));
+		}
+		
+		mav.addObject("materialList", materialList);
+		
+		
+		mav.setViewName("class/index.tiles4");
+		
+		return mav;
 	}
 	
 	////////////////////////////관리자 전용 메인 페이지 시작///////////////////////////////////	

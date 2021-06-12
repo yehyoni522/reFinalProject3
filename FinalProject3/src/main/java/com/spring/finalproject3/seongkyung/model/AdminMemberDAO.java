@@ -194,19 +194,9 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 		
 		return n;
 	}
-
 	
-	// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
-	@Override
-	public List<PersonVO> getStudentList(Map<String, String> paraMap) {
-		
-		List<PersonVO> studentList = sqlsession.selectList("adminmember.getStudentList", paraMap);
-		
-		return studentList;
-	}
-
 	
-	// 출석신호 테이블 insert
+	// 출석신호 테이블 insert 후 집어넣은 랜덤값을 가져온다. 
 	@Override
 	public int addattendancesign(Map<String, String> paraMap) {
 		
@@ -214,6 +204,130 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 		
 		return n;
 	}
+
+	
+	// 출석신호 테이블 insert 후 집어넣은 랜덤값을 가져온다.
+	@Override
+	public AttendanceVO getaddattendancesign(Map<String, String> paraMap) {
+		
+		AttendanceVO attendancevo = sqlsession.selectOne("adminmember.getaddattendancesign", paraMap);
+		
+		return attendancevo;
+	}
+
+	
+	// select 에 넣을 출석신호를 보낸 날짜 List
+	@Override
+	public List<AttendanceVO> getattendanceList(Map<String, String> paraMap) {
+		
+		List<AttendanceVO> attendanceList = sqlsession.selectList("adminmember.getattendanceList", paraMap);
+		
+		return attendanceList;
+	}
+
+	
+	// select 태그의 변화에 따라 해당 날짜에 출석한 학생들의 리스트를 알려준다.
+	@Override
+	public List<Map<String, String>> studentsignList(Map<String, String> paraMap) {
+
+		List<Map<String, String>> attendanceList = sqlsession.selectList("adminmember.studentsignList", paraMap);
+		
+		return attendanceList;
+	}
+
+	
+	// 신호의 랜덤번호와 비교하면서 해당 신호의 행을 읽어옴
+	@Override
+	public AttendanceVO getinputstudentsign(Map<String, String> paraMap) {
+		
+		AttendanceVO attendancevo = sqlsession.selectOne("adminmember.getinputstudentsign", paraMap);
+		
+		return attendancevo;
+	}
+
+	
+	// 신호를 입력  => 결석으로 된 행을 입력받은 시간을 넣어주면서 출석으로 바꾸어준다.
+	@Override
+	public int addstudentsign(Map<String, String> paraMap) {
+
+		int n = sqlsession.update("adminmember.addstudentsign",paraMap);
+		
+		return n;
+	}
+
+	
+	// 현재 몇 주차인지 알아오자.
+	@Override
+	public int getinputweekno(Map<String, String> paraMap) {
+		
+		int inputweekno = sqlsession.selectOne("adminmember.getinputweekno", paraMap);
+		
+		return inputweekno;
+	}
+
+	
+	// 입력한 시간의 값을 알아온다.
+	@Override
+	public String gettimevs(Map<String, String> paraMap) {
+
+		String inputatdcdate = sqlsession.selectOne("adminmember.gettimevs",paraMap);
+		
+		return inputatdcdate;
+	}
+
+	
+	// 지각 처리
+	@Override
+	public int changesign(Map<String, String> paraMap) {
+		
+		int n = sqlsession.update("adminmember.changesign",paraMap);
+		
+		return n;
+	}	
+	
+	// 수강 테이블의 학생들의 리스트를 가지고 온다.
+	@Override
+	public List<ClassVO> getStudentList(Map<String, String> paraMap) {
+		
+		List<ClassVO> sudentList = sqlsession.selectList("adminmember.getStudentList", paraMap);
+		
+		return sudentList;
+	}
+
+	
+	// 반복문으로 담긴 학생번호로 출석입력테이블에 행을 넣어준다.
+	@Override
+	public int addStudentList(Map<String, String> paraMap) {
+
+		int s = sqlsession.insert("adminmember.addStudentList", paraMap);
+		
+		return s;
+	}
+
+	
+	// 접속한 학생의 출석 상태를 보여준다.
+	@Override
+	public List<InputatdcVO> getStudentCheckSign(Map<String, String> paraMap) {
+		
+		List<InputatdcVO >inputatdclist = sqlsession.selectList("adminmember.getStudentCheckSign", paraMap);
+		
+		return inputatdclist;
+	}
+
+	
+	// 만약 이미 출석이 되어있다면을 처리하기 위해 존재하는지 검색한다.
+	@Override
+	public InputatdcVO getchecksign(Map<String, String> paraMap) {
+		
+		InputatdcVO inputatdcvo = sqlsession.selectOne("adminmember.getchecksign", paraMap);
+		
+		return inputatdcvo;
+	}
+	
+	
+
+
+
 	
 	
 

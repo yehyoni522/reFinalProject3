@@ -7,6 +7,7 @@ public class AdminCommentVO {
    private String name;			// 사용자 이름
    private String subject;      // 글제목
    private String content;      // 댓글내용 
+   private String fk_perno;
    
    private String categoryno;	// 카테고리 번호
  
@@ -114,6 +115,14 @@ public String getNextsubject() {
 
 public void setNextsubject(String nextsubject) {
 	this.nextsubject = nextsubject;
+}
+
+public String getFk_perno() {
+	return fk_perno;
+}
+
+public void setFk_perno(String fk_perno) {
+	this.fk_perno = fk_perno;
 }
    
 

@@ -54,6 +54,9 @@
 
 	$(document).ready(function(){
 		
+		$("select#newhit").val(${requestScope.newhit});
+		
+		
 		$("span.subject").bind("mouseover", function(event){
 			var $target = $(event.target);
 			$target.addClass("subjectStyle");
@@ -190,7 +193,7 @@
  		<c:if test="${categoryno == 5}">Q&A</c:if> 
  	</h2>
 
-	<c:if test="${!(categoryno == 4 || categoryno == 5)}">
+	<c:if test="${categoryno == 1}">
 	 	<form name="newhitFrm">
 			<select id="newhit" name="newhit" onChange="gonewhit()">
 				<option value="1">최신순</option>
@@ -199,6 +202,7 @@
 			<input type="hidden" name="categoryno" value="${categoryno}">
 		</form>
 	</c:if>
+
 	<table id="table" style="width: 1300px;">
 		<tr>
 			<th style="width: 80px;  text-align: center;">번호</th>

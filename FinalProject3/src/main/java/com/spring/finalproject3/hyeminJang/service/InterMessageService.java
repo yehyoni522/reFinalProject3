@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
+import com.spring.finalproject3.hyeminJang.model.ScoreVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 import com.spring.finalproject3.yehyeon.model.BookListVO;
 
@@ -71,7 +72,10 @@ public interface InterMessageService {
 	 //단대이름 알아오기
 	String getNameCol(int majseq);
 
+	// 학생이 듣고있는 수업정보가지고오기
+	List<Map<String, String>> getscoreList(int perno);
 
+	
 
 	
 

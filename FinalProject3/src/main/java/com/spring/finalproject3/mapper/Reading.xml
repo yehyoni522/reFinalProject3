@@ -155,5 +155,52 @@
 		values (subno.nextval, #{profnum}, #{majseq}, #{subname}, #{credit}, #{semeter}+1, #{week}||'요일', #{time1}||'~'||#{time2})
 	</insert>
 
+	<select id="getSubjectname" parameterType="String" resultType="String">
+		select distinct subname
+		from tbl_assgn A join tbl_subject S
+		on fk_subno=subno
+		where fk_subno = #{subno}
+	</select>
+	
+	<resultMap type="HashMap" id="ListMap">
+		<result property="subject" 			column="subject" 			javaType="String" />
+		<result property="regdate" 			column="regdate" 			javaType="String" />
+	</resultMap>	
+	
+	<select id="getNoticeList" parameterType="String" resultMap="ListMap">
+		select subject, regdate
+		from 
+		(
+		    select row_number() over(order by seq desc) AS rno,
+		           subject,  to_char(regdate, 'yyyy-mm-dd') AS regdate
+		    from tbl_classnoti
+		    where fk_subno = #{subno}
+		) V
+		where rno between '1' and '5'
+	</select>
+	
+	<select id="getQnAList" parameterType="String" resultMap="ListMap">
+		select subject, regdate
+		from 
+		(
+		    select row_number() over(order by qnano desc) AS rno,
+		           subject,  to_char(regdate, 'yyyy-mm-dd') AS regdate
+		    from tbl_qna
+		    where fk_subno = #{subno}
+		) V
+		where rno between '1' and '5'
+	</select>
+	
+	<select id="getMaterialList" parameterType="String" resultMap="ListMap">
+		select subject, regdate
+		from 
+		(
+		    select row_number() over(order by mtrno desc) AS rno,
+		           subject,  to_char(regdate, 'yyyy-mm-dd') AS regdate
+		    from tbl_material
+		    where fk_subno = #{subno}
+		) V
+		where rno between '1' and '5'
+	</select>
 
 </mapper>

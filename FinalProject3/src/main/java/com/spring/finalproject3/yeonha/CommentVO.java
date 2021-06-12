@@ -16,7 +16,10 @@ public class CommentVO {
     private String fk_comseq;
     private String co_depthno;
     
+   // private String noopen; // 비공개선택여부( 0: 비공개아님, 1:비공개 / 게시글작성자만 볼수있는 댓글
+    
 	public CommentVO() {}		
+	
 	
 	public CommentVO(String comseq, String fk_seq, String fk_perno, String content, String reregDate, String status,
 			String name, String identity, String co_groupno, String fk_comseq, String co_depthno) {
@@ -33,6 +36,8 @@ public class CommentVO {
 		this.fk_comseq = fk_comseq;
 		this.co_depthno = co_depthno;
 	}
+
+
 
 	public String getCo_groupno() {
 		return co_groupno;

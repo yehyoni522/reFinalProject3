@@ -206,7 +206,7 @@ div#btn-board{
 	&nbsp;>&nbsp;질문게시판
 	</div>
 	
-	<h1 class="headerName">컴퓨터 네트워크</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<c:if test="${requestScope.qnavo.depthno eq 0}"> 
 		<h3 style="text-align: left; font-weight: bold;">| 질문</h3>
@@ -228,13 +228,21 @@ div#btn-board{
 					   </td>
 					</tr>
 					<tr>
+					<c:if test="${requestScope.qnavo.depthno != 0}"> 
+						<th>글쓴이</th>
+						<td>
+					     	${requestScope.qnavo.name}&nbsp;교수님
+					   </td>
+					</c:if>
+					<c:if test="${requestScope.qnavo.depthno eq 0}"> 
 					   <th>글쓴이(학번)</th>
 					   <td>
-					     	${requestScope.qnavo.name}( ${requestScope.qnavo.fk_perno} )
+					     	${requestScope.qnavo.name}&nbsp;(${requestScope.qnavo.fk_perno})
 					   </td>
+					</c:if>
 					</tr>	
 					<tr>
-					   <th>게시일</th>
+					   <th>작성일시</th>
 					   <td>
 					     	${requestScope.qnavo.regDate}
 					   </td>
@@ -273,7 +281,7 @@ div#btn-board{
 			<form name="answerFrm" method="post" enctype="multipart/form-data">
 			
 				<%--------------------------=== 과목번호 fk_subno 넣어주는 곳  -------------------------------------%>
-				<input type="hidden" name="fk_subno" value="1000"/>
+				<input type="hidden" name="fk_subno" value="${sessionScope.subno}"/>
 				<%-----------------------------=== 과목번호 fk_subno 넣어주는 곳  ------------------------------------%>
 				
 			

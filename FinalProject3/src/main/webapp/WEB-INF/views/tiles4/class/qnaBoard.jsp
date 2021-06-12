@@ -7,6 +7,7 @@
 
 <style type="text/css">
 
+
 .subjectStyle {
 	font-weight: bolder;
 	cursor: pointer;
@@ -60,6 +61,22 @@ div#btn-board{
 		background-color: #fafafa;
 	}
 
+	.select{
+	 	padding:5px;
+	 	border-radius: 5px;
+	 	height: 30px;
+		border:0.5px solid #a6a6a6;	 	
+	}
+	
+	.search{
+		width:320px;
+		border:0.5px solid #a6a6a6;
+	 	padding:5px;
+	 	border-radius: 5px;
+	 	height: 30px;	 	
+	}
+	
+
 </style>
 
 <script type="text/javascript">
@@ -88,11 +105,25 @@ div#btn-board{
 	   	    frm.action = "<%= ctxPath%>/class/qnaView.sam";
 	   	    frm.submit();
 		});
+	        	       
+	       //검색시 검색조건 및 검색어 값 유지시키기
+	       if( ${not empty requestScope.paraMap} ) {
+					$("select#searchType").val("${requestScope.paraMap.searchType}");
+	          		$("input#searchWord").val("${requestScope.paraMap.searchWord}");	   	    	   
+	    	}
 		
-		
+	       
 	});// end of function goView(assgnno) {}-----------------------
 	   	
-	   
+	function goSearch(){
+		   
+		   var frm = document.searchFrm;
+		   frm.method = "get";
+		   frm.action = "<%=ctxPath%>/class/qnaBoard.sam";
+		   frm.submit();
+		   
+	}// end of function goSearch()------------------------------------
+	
 	
 </script>   
 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
@@ -104,7 +135,7 @@ div#btn-board{
 	&nbsp;>&nbsp;질문게시판
 	</div>
 
-	<h1 class="headerName">${requestScope.subject}</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<h3 style="text-align: left; font-weight: bold;">| 질문게시판</h3>
 	<br>
@@ -114,10 +145,16 @@ div#btn-board{
 			<th style="width: 10%;">No.</th>
 			<th style="width: 40%;">제목</th>
 			<th style="width: 15%;">답변여부</th>
-			<th style="width: 15%;">글쓴이</th>
-			<th style="width: 20%;">작성일</th>			
+			<th style="width: 15%;">글쓴이(학번)</th>
+			<th style="width: 20%;">작성일시</th>			
 		</tr>
-			
+		
+		<c:if test="${empty requestScope.qnaList}">
+			<tr>
+				<td colspan="100%" style="text-align: center;">질문 게시글이 없습니다.</td>
+			</tr> 
+		</c:if>
+		
 		<c:forEach var="qnaVO" items="${requestScope.qnaList}" varStatus="status"> 
 			<tr class="list">
 				<td>${qnaVO.qnano}</td>
@@ -129,7 +166,7 @@ div#btn-board{
 					</c:if>
 					<c:if test="${qnaVO.depthno > 0}">
 						<span style="color:red; font-style: italic; padding-left: ${qnaVO.depthno * 20}px;">ㄴRe :&nbsp;</span>
-						<span class="subject">${qnaVO.subject}</span>
+						<input type="hidden" value="${qnaVO.fk_perno}"/><span class="subject">${qnaVO.subject}</span>
 					</c:if>		 					
 				</td>	
 				<td>
@@ -137,7 +174,12 @@ div#btn-board{
 					<c:if test="${ (qnaVO.depthno eq 0) and (qnaVO.answer ne 0) }"><span style="color:blue; font-weight: bold;">답변완료</span></c:if>
 					<c:if test="${qnaVO.depthno != 0}"></c:if>
 				</td>
-				<td>${qnaVO.name}</td>
+				<c:if test="${qnaVO.depthno == 0}">
+					<td>${qnaVO.name}(${qnaVO.fk_perno})</td>
+				</c:if>
+				<c:if test="${qnaVO.depthno > 0}">
+					<td>${qnaVO.name} 교수님</td>
+				</c:if>
 				<td>${qnaVO.regDate}</td>
 			</tr>
 		</c:forEach>	
@@ -154,6 +196,18 @@ div#btn-board{
 		${requestScope.pageBar}
 	</div>
 
+   <div style="text-align:right; vertical-align:middle; margin:5px;  ">
+   <%-- === #101. 글검색 폼 추가하기 : 글제목, 글내용으로 검색을 하도록 한다. === --%>
+	<form name="searchFrm" style="margin-top: 20px;">		
+      <select name="searchType" id="searchType"  class="select">	
+         <option value="name">글쓴이(이름)</option>
+         <option value="perno">글쓴이(학번)</option>
+         <option value="subject">제목</option>
+      </select>
+      <input type="text" name="searchWord" class="search" id="searchWord" size="15" autocomplete="off" /> 
+      <button type="button" onclick="goSearch()" class="btn-board">검색</button>
+   </form>
+  </div>
 	<form name="goViewFrm">	
 		<input type="hidden" name="qnano" />
 		<input type="hidden" name="fk_perno" />

@@ -164,6 +164,34 @@ public class BoardDAO implements InterBoardDAO {
 		return n;
 	}
 
+	// 게시물 좋아요 수 알아오기
+	@Override
+	public int likeCount(String seq) {
+		int likecnt = sqlsession.selectOne("board.likeCount", seq);
+		return likecnt;
+	}
+
+	// 게시글에 첨부파일이 있는지 확인하기(수정)
+	@Override
+	public String isFilename(BoardVO boardvo) {
+		String filename = sqlsession.selectOne("board.isFilename", boardvo);
+		return filename;
+	}
+
+	// 첨부파일 삭제 체크시 첨부파일 삭제
+	@Override
+	public int delFile(BoardVO boardvo) {
+		int n = sqlsession.delete("board.delFile", boardvo);
+		return n;
+	}
+
+	// 첨부파일이 없는 경우라면(수정)
+	@Override
+	public int edit_withFile(BoardVO boardvo) {
+		int n = sqlsession.update("board.edit_withFile", boardvo);
+		return n;
+	}
+
 
 
 

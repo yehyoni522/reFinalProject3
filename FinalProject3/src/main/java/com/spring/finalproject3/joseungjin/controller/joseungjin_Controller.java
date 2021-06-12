@@ -5,7 +5,11 @@ import java.util.HashMap;
 
 
 
+
+
+
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -14,10 +18,24 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,6 +53,7 @@ import com.spring.finalproject3.joseungjin.model.PersonVO;
 import com.spring.finalproject3.joseungjin.model.ScheduleDAO;
 import com.spring.finalproject3.joseungjin.model.ScheduleVO;
 import com.spring.finalproject3.joseungjin.service.InterMemberService;
+import com.spring.finalproject3.yehyeon.model.SubjectVO;
 
 
 @Controller
@@ -49,16 +68,14 @@ public class joseungjin_Controller {
 		
 		List<Main_index_BoardVO> MainboardList = null;
 		List<MainSubjectVO> MainsubjectList = null;
-		
+		List<MainSubjectVO> MainProsubjectList=null;
 		HttpSession session = request.getSession();
-		session.setAttribute("readCountPermission", "yes");
-		
 		if(session.getAttribute("loginuser") != null) {
 			PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
 			int userid = loginuser.getPerno();
 		
 			MainsubjectList = service.Mainsubject(userid);
-			
+			MainProsubjectList =service.MainProsubject(userid);
 			int ident = loginuser.getIdentity();
 			if(ident ==2) {
 				mav.setViewName("admin/index.tiles3");
@@ -66,7 +83,7 @@ public class joseungjin_Controller {
 			else {
 				MainboardList =service.MainboardView();
 				
-				
+				mav.addObject("MainProsubjectList",MainProsubjectList);
 				mav.addObject("MainsubjectList",MainsubjectList);
 				mav.addObject("MainboardList",MainboardList);
 				mav.setViewName("main/index.tiles1");
@@ -76,7 +93,7 @@ public class joseungjin_Controller {
 			
 			MainboardList =service.MainboardView();
 			
-			
+			mav.addObject("MainProsubjectList",MainProsubjectList);
 			mav.addObject("MainsubjectList",MainsubjectList);
 			mav.addObject("MainboardList",MainboardList);
 			mav.setViewName("main/index.tiles1");
@@ -99,7 +116,7 @@ public class joseungjin_Controller {
 		mav.setViewName("login/loginform.tiles2");
 		return mav;
 	}
-	//===== 등록 작업======
+	//===== 관리자 등록 작업 시작 ======
 	
 	@RequestMapping(value="/admin/memberRegister.sam")
 	public ModelAndView memberRegister(ModelAndView mav) {
@@ -108,14 +125,49 @@ public class joseungjin_Controller {
 	}
 	
 	
+	@RequestMapping(value="/admin/memberRegisterend.sam")
+	public ModelAndView memberRegisterend(ModelAndView mav, HttpServletRequest request) {
+		String perno = request.getParameter("perno");
+		String fk_majseq = request.getParameter("fk_majseq");
+		String gender = request.getParameter("gender");
+		String name = request.getParameter("name");
+		String birthday = request.getParameter("birthday");
+		String email = request.getParameter("email");
+		String address = request.getParameter("address");
+		String identity = request.getParameter("identity");
+		String hp1 = request.getParameter("hp1"); 
+		String hp2 = request.getParameter("hp2"); 
+		String hp3 = request.getParameter("hp3"); 
+		String mobile = hp1 + hp2 + hp3;
 	
-	
-	
-	
-	
-	
-	
-	
+		Map<String,String> paraMap = new HashMap<>();
+		paraMap.put("perno", perno);
+		paraMap.put("fk_majseq", fk_majseq);
+		paraMap.put("gender", gender);
+		paraMap.put("name", name);
+		paraMap.put("birthday", birthday);
+		paraMap.put("email", email);
+		paraMap.put("mobile", mobile);
+		paraMap.put("address", address);
+		paraMap.put("identity", identity);
+		
+		
+		int n = service.registerMember(paraMap);
+		
+		if(n == 0) {
+			mav.addObject("message", "회원정보등록 실패 ");
+			mav.setViewName("msg");
+			
+		}
+		else {
+			mav.addObject("message", "회원정보등록 성공!!");
+			String loc = "javascript:history.back()";
+			mav.addObject("loc", loc);
+		}
+		mav.setViewName("msg");
+		return mav;
+	}
+	//===== 관리자 등록 작업 끝 ======
 	
 // === #41. 로그인 처리하기 === // 
 	@RequestMapping(value="/loginEnd.sam", method= {RequestMethod.POST})
@@ -321,9 +373,7 @@ public class joseungjin_Controller {
 				mav.addObject("loc", loc);
 				mav.setViewName("msg");
 			}
-			
-			
-			
+
 			// !!!! 중요 !!!! //
 			// !!!! 세션에 저장된 인증코드 삭제하기 !!!! // 
 			session.removeAttribute("certificationCode");
@@ -371,7 +421,6 @@ public class joseungjin_Controller {
 			@RequestMapping(value="/personRegisterGo.sam",method=RequestMethod.POST)
 			public ModelAndView personRegisterGo(ModelAndView mav, HttpServletRequest request,PersonVO pvo) {
 				
-				
 				String userid = request.getParameter("userid");
 				String name = request.getParameter("name");
 				String email = request.getParameter("email");
@@ -380,9 +429,21 @@ public class joseungjin_Controller {
 				paraMap.put("userid", userid);
 				paraMap.put("name", name);
 				paraMap.put("email", email);
-				int regn =  service.isUserExist2(paraMap);
 				
-				boolean sendMailSuccess = true; // 메일이 정상적으로 전송되었는지 유무를 알아오기 위한 용도
+				
+			
+				PersonVO pwdFind = service.pwdFind(paraMap);
+				if(pwdFind !=null) {
+				if(!pwdFind.getPwd().equals("1234")) {
+					mav.addObject("message", "이미 등록한 회원입니다.");
+					mav.setViewName("msg");
+				}
+				
+				else {
+					System.out.println(pwdFind);
+				 int regn =  service.isUserExist2(paraMap);
+				
+				 boolean sendMailSuccess = true; // 메일이 정상적으로 전송되었는지 유무를 알아오기 위한 용도
 					if(regn==1) {
 
 						// 회원으로 존재하는 경우
@@ -424,12 +485,12 @@ public class joseungjin_Controller {
 						
 						mav.setViewName("member/personRegister");
 					}
-					else {
-						mav.addObject("check", 1);
-						mav.setViewName("member/personRegister");
 					}
-		
-			
+				}
+				else {
+					mav.addObject("check", 1);
+					mav.setViewName("member/personRegister");
+				}
 				return mav;
 			}
 			
@@ -568,8 +629,9 @@ public class joseungjin_Controller {
 			  
 				
 				ScheduleVO scvo = service.scheduleEdit(paraMap);
-				
+								
 				JSONObject jsonObj = new JSONObject();
+				if(scvo != null) {
 						jsonObj.put("schno",scvo.getSchno());
 						jsonObj.put("title",scvo.getCalsubject());
 						jsonObj.put("perno", scvo.getFk_perno());
@@ -577,11 +639,14 @@ public class joseungjin_Controller {
 						jsonObj.put("endDate", scvo.getEndDate());
 						jsonObj.put("color", scvo.getColor());
 						jsonObj.put("memo", scvo.getMemo());
-					
+						jsonObj.put("loginYesNo","Yes");
+				}
+				else {
+					jsonObj.put("loginYesNo","No");
+				}
 				
 				return jsonObj.toString(); 
-
-			
+		
 			}
 			
 			
@@ -597,6 +662,18 @@ public class joseungjin_Controller {
 				 
 				ScheduleVO scvo = service.scheduleEdit(paraMap);
 				
+				HttpSession session = request.getSession();
+				PersonVO loginuser = (PersonVO) session.getAttribute("loginuser");
+				
+				if(!Integer.toString(loginuser.getPerno()).equals(scvo.getFk_perno()) )  {
+					String message = "다른 사용자의 일정 수정이 불가합니다.";
+					String loc = "javascript:history.back()";
+					
+					mav.addObject("message", message);
+					mav.addObject("loc", loc);
+					mav.setViewName("msg");
+				}
+				else {
 				mav.addObject("schno",scvo.getSchno());
 				mav.addObject("title",scvo.getCalsubject());
 				mav.addObject("perno", scvo.getFk_perno());
@@ -606,7 +683,7 @@ public class joseungjin_Controller {
 				mav.addObject("memo", scvo.getMemo());
 				
 				mav.setViewName("calendar/scheduleEditPopup");
-				
+				}
 				return mav;
 			}
 	
@@ -619,10 +696,10 @@ public class joseungjin_Controller {
 				// n 이 0 이라면 글수정에 필요한 글암호가 틀린경우 
 				
 				if(n == 0) {
-					mav.addObject("message", "암호가 일치하지 않아 글 수정이 불가합니다.");
+					mav.addObject("message", "일정 수정 오류!!");
 				}
 				else {
-					mav.addObject("message", "글수정 성공!!");
+					mav.addObject("message", "일정 수정 성공!!");
 				}
 				
 				mav.setViewName("msg");
@@ -635,7 +712,7 @@ public class joseungjin_Controller {
 			
 				String perno = request.getParameter("fk_perno"); 	
 				String schno = request.getParameter("schno");
-				System.out.println("확인용~~~~~"+perno);
+				//System.out.println("확인용~~~~~"+perno);
 				Map<String,String>paraMap = new HashedMap<>();
 				 paraMap.put("perno", perno);
 				 paraMap.put("schno", schno);
@@ -656,9 +733,354 @@ public class joseungjin_Controller {
 			}
 			//============   캘린더 작업  끝==============
 			
+			//===== 관리자 수업 목록======
+			@RequestMapping(value="/admin/adminSubjectList.sam")
+			public ModelAndView subjectList(HttpServletRequest request,ModelAndView mav) {
+				List<MainSubjectVO> adminsubjectList =null;
+				
+				String searchType = request.getParameter("searchType"); 
+				String searchWord = request.getParameter("searchWord");
+				String str_currentShowPageNo = request.getParameter("currentShowPageNo");
+				
+				if(searchType == null || (!"content".equals(searchType) && !"name".equals(searchType) && !"subname".equals(searchType)) ) {
+					searchType = "";
+				}
+				
+				if(searchWord == null || "".equals(searchWord) || searchWord.trim().isEmpty()) {
+					searchWord = "";
+				}
+				Map<String, String> paraMap = new HashMap<>();
+				paraMap.put("searchType", searchType);
+				paraMap.put("searchWord", searchWord);
+			
+	
+				int totalCount = 0;         // 총 게시물 건수
+				int sizePerPage = 10;       // 한 페이지당 보여줄 게시물 건수
+				int currentShowPageNo = 0;  // 현재 보여주는 페이지 번호로서, 초기치로는 1페이지로 설정함.
+				int totalPage = 0;          // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)  
+				
+				int startRno = 0;           // 시작 행번호
+				int endRno = 0;             // 끝 행번호 
+				
+			
+				totalCount = service.getSubjectTotal(paraMap);
+				//System.out.println("~~~~ 확인용 totalCount : " + totalCount);
+				
+				
+				totalPage = (int) Math.ceil( (double)totalCount/sizePerPage ); 
+				
+				
+				
+				if(str_currentShowPageNo == null) {
+					// 게시판에 보여지는 초기화면 
+					currentShowPageNo = 1;
+				}
+				else {
+					try {
+						currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
+						if(currentShowPageNo < 1 || currentShowPageNo > totalPage) {
+							currentShowPageNo = 1;
+						}
+						
+					} catch (NumberFormatException e) {
+						currentShowPageNo = 1;
+					}
+				}
+				
+				startRno = ((currentShowPageNo - 1 ) * sizePerPage) + 1;
+				endRno = startRno + sizePerPage - 1;
+				
+				paraMap.put("startRno", String.valueOf(startRno));
+				paraMap.put("endRno", String.valueOf(endRno));
+				
+				adminsubjectList = service.getsubjectList(paraMap);
+			
+				// 아래는 검색대상 컬럼과 검색어를 유지시키기 위한 것임.
+				if(!"".equals(searchType) && !"".equals(searchWord)) {
+					mav.addObject("paraMap", paraMap);
+				}
+				
+				
+				// === #121. 페이지바 만들기 === //
+				int blockSize = 10;
+				int loop = 1;
+				int pageNo = ((currentShowPageNo - 1)/blockSize) * blockSize + 1;
+				String pageBar = "<ul style='list-style: none;'>";
+				String url = "";
+				
+				// === [맨처음][이전] 만들기 === 
+				if(pageNo != 1) {
+					pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo=1'>[맨처음]</a></li>";
+					pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo-1)+"'>[이전]</a></li>";
+				}
+				
+				while( !(loop > blockSize || pageNo > totalPage) ) {
+					
+					if(pageNo == currentShowPageNo) {
+						pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; color:black; padding:2px 4px;'>"+pageNo+"</li>";
+					}
+					else {
+						pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
+					}
+					
+					loop++;
+					pageNo++;
+				}// end of while------------------------
+				
+				
+				// === [다음][마지막] 만들기 === 
+				if(pageNo <= totalPage) {
+					pageBar += "<li style='display:inline-block; width:50px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>[다음]</a></li>";
+					pageBar += "<li style='display:inline-block; width:70px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+totalPage+"'>[마지막]</a></li>";
+				}
+				
+				pageBar += "</ul>";
+				
+				mav.addObject("pageBar",pageBar);
+				mav.addObject("adminsubjectList",adminsubjectList);
+				mav.setViewName("admin/adminSubjectList.tiles3");
+				return mav;
+			}
+			
+			// ===검색어 입력시 자동글 완성하기 3 === //
+			@ResponseBody
+			@RequestMapping(value="/admin/subjectwordSearchShow.sam", method= {RequestMethod.GET}, produces="text/plain;charset=UTF-8")
+			public String wordSearchShow(HttpServletRequest request) {
+				
+				String searchType = request.getParameter("searchType");
+				String searchWord = request.getParameter("searchWord");
+				
+				Map<String,String> paraMap = new HashMap<>();
+				paraMap.put("searchType", searchType);
+				paraMap.put("searchWord", searchWord);
+				
+				List<String> wordList = service.wordSearchShow(paraMap);
+				
+				JSONArray jsonArr = new JSONArray(); // []
+				
+				if(wordList != null) {
+					for(String word : wordList) {
+						JSONObject jsonObj = new JSONObject(); // {}
+						jsonObj.put("word", word);
+						
+						jsonArr.put(jsonObj);
+					}
+				}
+				
+				return jsonArr.toString(); 
+			}
+			// >>> #191. Excel 파일로 다운받기 예제 <<< // 
+			@RequestMapping(value="/admin/downloadExcelFile.sam") 
+			  public String downloadExcelFile(HttpServletRequest request, Model model) {
+			
+				
+				List<Map<String,String>> adminExcelsubjectList = service.getExcelsubjectList();
+			   // === 조회결과물인 empList 를 가지고 엑셀 시트 생성하기 ===
+			      // 시트를 생성하고, 행을 생성하고, 셀을 생성하고, 셀안에 내용을 넣어주면 된다.
+			      SXSSFWorkbook workbook = new SXSSFWorkbook();
+			      
+			      // 시트생성
+			      SXSSFSheet sheet = workbook.createSheet("쌍용대학 수업목록");
+			      
+			      // 시트 열 너비 설정
+			      sheet.setColumnWidth(0, 2000);
+			      sheet.setColumnWidth(1, 4000);
+			      sheet.setColumnWidth(2, 5000);
+			      sheet.setColumnWidth(3, 3000);
+			      sheet.setColumnWidth(4, 5000);
+			      sheet.setColumnWidth(5, 2000);
+			      sheet.setColumnWidth(6, 5000);
+			      sheet.setColumnWidth(7, 1000);
+			      
+			   // 행의 위치를 나타내는 변수 
+			      int rowLocation = 0;
+			      
+				////////////////////////////////////////////////////////////////////////////////////////
+				// CellStyle 정렬하기(Alignment)
+				// CellStyle 객체를 생성하여 Alignment 세팅하는 메소드를 호출해서 인자값을 넣어준다.
+				// 아래는 HorizontalAlignment(가로)와 VerticalAlignment(세로)를 모두 가운데 정렬 시켰다.
+				CellStyle mergeRowStyle = workbook.createCellStyle();
+				mergeRowStyle.setAlignment(HorizontalAlignment.CENTER);
+				mergeRowStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				// import org.apache.poi.ss.usermodel.VerticalAlignment 으로 해야함.
+				
+				CellStyle headerStyle = workbook.createCellStyle();
+				headerStyle.setAlignment(HorizontalAlignment.CENTER);
+				headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				
+				
+				// CellStyle 배경색(ForegroundColor)만들기
+				// setFillForegroundColor 메소드에 IndexedColors Enum인자를 사용한다.
+				// setFillPattern은 해당 색을 어떤 패턴으로 입힐지를 정한다.
+				mergeRowStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex()); // IndexedColors.DARK_BLUE.getIndex() 는 색상(남색)의 인덱스값을 리턴시켜준다.  
+				mergeRowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+				
+				headerStyle.setFillForegroundColor(IndexedColors.GREY_40_PERCENT.getIndex()); // IndexedColors.LIGHT_YELLOW.getIndex() 는 연한노랑의 인덱스값을 리턴시켜준다.  
+				headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				
+				
+				// Cell 폰트(Font) 설정하기
+				// 폰트 적용을 위해 POI 라이브러리의 Font 객체를 생성해준다.
+				// 해당 객체의 세터를 사용해 폰트를 설정해준다. 대표적으로 글씨체, 크기, 색상, 굵기만 설정한다.
+				// 이후 CellStyle의 setFont 메소드를 사용해 인자로 폰트를 넣어준다.
+				Font mergeRowFont = workbook.createFont(); // import org.apache.poi.ss.usermodel.Font; 으로 한다.
+				mergeRowFont.setFontName("나눔고딕");
+				mergeRowFont.setFontHeight((short)500);
+				mergeRowFont.setColor(IndexedColors.WHITE.getIndex());
+				mergeRowFont.setBold(true);
+				
+				mergeRowStyle.setFont(mergeRowFont); 
+				
+				
+				// CellStyle 테두리 Border
+				// 테두리는 각 셀마다 상하좌우 모두 설정해준다.
+				// setBorderTop, Bottom, Left, Right 메소드와 인자로 POI라이브러리의 BorderStyle 인자를 넣어서 적용한다.
+				headerStyle.setBorderTop(BorderStyle.THICK);
+				headerStyle.setBorderBottom(BorderStyle.THICK);
+				headerStyle.setBorderLeft(BorderStyle.THIN);
+				headerStyle.setBorderRight(BorderStyle.THIN);    
+			      
+				// Cell Merge 셀 병합시키기
+		        /* 셀병합은 시트의 addMergeRegion 메소드에 CellRangeAddress 객체를 인자로 하여 병합시킨다.
+		           CellRangeAddress 생성자의 인자로(시작 행, 끝 행, 시작 열, 끝 열) 순서대로 넣어서 병합시킬 범위를 정한다. 배열처럼 시작은 0부터이다.  
+		        */
+		        // 병합할 행 만들기
+		        Row mergeRow = sheet.createRow(rowLocation);  // 엑셀에서 행의 시작은 0 부터 시작한다.
+		        
+		      // 병합할 행에 "우리회사 사원정보" 로 셀을 만들어 셀에 스타일을 주기  
+		        for(int i=0; i<8; i++) {
+		           Cell cell = mergeRow.createCell(i);
+		           cell.setCellStyle(mergeRowStyle);
+		           cell.setCellValue("쌍용대학교 수업목록");
+		        }
+		        
+		        // 셀 병합하기
+		        sheet.addMergedRegion(new CellRangeAddress(rowLocation, rowLocation, 0, 7)); // 시작 행, 끝 행, 시작 열, 끝 열 
+		        
+		        // CellStyle 천단위 쉼표, 금액
+		        CellStyle moneyStyle = workbook.createCellStyle();
+		        moneyStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0"));
+		        ////////////////////////////////////////////////////////////////////////////////////////////////
+		     // 헤더 행 생성
+		        Row headerRow = sheet.createRow(++rowLocation); // 엑셀에서 행의 시작은 0 부터 시작한다.
+		                                                       // ++rowLocation는 전위연산자임. 
+		        
+		        // 해당 행의 첫번째 열 셀 생성
+		        Cell headerCell = headerRow.createCell(0); // 엑셀에서 열의 시작은 0 부터 시작한다.
+		        headerCell.setCellValue("학기");
+		        headerCell.setCellStyle(headerStyle);
+		        
+		        // 해당 행의 두번째 열 셀 생성
+		        headerCell = headerRow.createCell(1);
+		        headerCell.setCellValue("학과");
+		        headerCell.setCellStyle(headerStyle);
+		        
+		        // 해당 행의 세번째 열 셀 생성
+		        headerCell = headerRow.createCell(2);
+		        headerCell.setCellValue("교번");
+		        headerCell.setCellStyle(headerStyle);
+		        
+		        // 해당 행의 네번째 열 셀 생성
+		        headerCell = headerRow.createCell(3);
+		        headerCell.setCellValue("교수명");
+		        headerCell.setCellStyle(headerStyle);
+		        
+		        // 해당 행의 다섯번째 열 셀 생성
+		        headerCell = headerRow.createCell(4);
+		        headerCell.setCellValue("수업명");
+		        headerCell.setCellStyle(headerStyle);
+		        
+		        // 해당 행의 여섯번째 열 셀 생성
+		        headerCell = headerRow.createCell(5);
+		        headerCell.setCellValue("요일");
+		        headerCell.setCellStyle(headerStyle);
+		        
+		        // 해당 행의 일곱번째 열 셀 생성
+		        headerCell = headerRow.createCell(6);
+		        headerCell.setCellValue("시간");
+		        headerCell.setCellStyle(headerStyle);
+		        
+		        // 해당 행의 여덟번째 열 셀 생성
+		        headerCell = headerRow.createCell(7);
+		        headerCell.setCellValue("학점");
+		        headerCell.setCellStyle(headerStyle);
+		        
+		        // HR사원정보 내용에 해당하는 행 및 셀 생성하기
+		        Row bodyRow = null;
+		        Cell bodyCell = null;
+		        
+		        for(int i=0; i<adminExcelsubjectList.size(); i++) {
+		           
+		            Map<String,String> adminsubjectMap =  adminExcelsubjectList.get(i);
+		           
+		           // 행생성
+		           bodyRow = sheet.createRow(i + (rowLocation+1) );
+		           
+		           // 데이터 부서번호 표시 
+		           bodyCell = bodyRow.createCell(0);
+		           bodyCell.setCellValue(Integer.parseInt(adminsubjectMap.get("semeter")));
+		           
+		           // 데이터 부서명 표시 
+		           bodyCell = bodyRow.createCell(1);
+		           bodyCell.setCellValue(adminsubjectMap.get("content"));
+		           
+		           // 데이터 사원번호 표시 
+		           bodyCell = bodyRow.createCell(2);
+		           bodyCell.setCellValue(adminsubjectMap.get("fk_perno"));
+		           
+		           // 데이터 사원명 표시 
+		           bodyCell = bodyRow.createCell(3);
+		           bodyCell.setCellValue(adminsubjectMap.get("name"));
+		           
+		           // 데이터 입사일자 표시 
+		           bodyCell = bodyRow.createCell(4);
+		           bodyCell.setCellValue(adminsubjectMap.get("subname"));
+		           
+		           // 데이터 월급 표시 
+		           bodyCell = bodyRow.createCell(5);
+		           bodyCell.setCellValue(adminsubjectMap.get("day"));
+		           
+		           // 데이터 성별 표시 
+		           bodyCell = bodyRow.createCell(6);
+		           bodyCell.setCellValue(adminsubjectMap.get("time"));
+		           
+		           // 데이터 나이 표시 
+		           bodyCell = bodyRow.createCell(7);
+		           bodyCell.setCellValue(Integer.parseInt(adminsubjectMap.get("credit")));
+		           
+		        }// end of for----------------------------------------
+		        
+		        model.addAttribute("locale", Locale.KOREA);
+		        model.addAttribute("workbook", workbook);
+		        model.addAttribute("workbookName", "쌍용대학 수업목록");
+		        
+		      return "excelDownloadView";
+			}// end of public String downloadExcelFile(HttpServletRequest request, Model model)------------- 
 			
 			
 			
+			// >>> 차트그리기(Ajax) 부서명별  인원수 및 퍼센티지 가져오기 <<< //
+			@ResponseBody
+			@RequestMapping(value="/chart/bestBoard.sam", produces="text/plain;charset=UTF-8")
+			public String bestBoard(HttpServletRequest requset) {
+				
+				List<Map<String,String>> bestBoardList= service.getbestBoard();
+				
+				
+				JsonArray jsonArr = new JsonArray();
+				for(Map<String,String> map: bestBoardList) {
+					
+					JsonObject jsonObj = new JsonObject();
+					jsonObj.addProperty("seq",map.get("seq"));
+					jsonObj.addProperty("subject",map.get("subject"));
+					jsonObj.addProperty("good",map.get("good"));
+					
+					jsonArr.add(jsonObj);
+				}//end of for(Map<String,String>map:deptnamePercentageList){}-----
+			
+				return jsonArr.toString(); 
+			}
 			
 			
 }

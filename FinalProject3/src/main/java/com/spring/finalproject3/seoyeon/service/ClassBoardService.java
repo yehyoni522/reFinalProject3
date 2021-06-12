@@ -10,10 +10,13 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.finalproject3.common.FileManager;
 import com.spring.finalproject3.seoyeon.model.InterClassBoardDAO;
 import com.spring.finalproject3.seoyeon.model.QnAVO;
 import com.spring.finalproject3.seoyeon.model.SubmitVO;
 import com.spring.finalproject3.seoyeon.model.assignmentBoardVO;
+import com.spring.finalproject3.seoyeon.model.materialVO;
+import com.spring.finalproject3.seoyeon.model.planVO;
 
 @Component
 @Service
@@ -21,6 +24,9 @@ public class ClassBoardService implements InterClassBoardService {
 
 	@Autowired
 	private InterClassBoardDAO dao;
+	
+	@Autowired 
+	private FileManager fileManager;
 	
 	// 총 게시물 건수(totalCount)
 	@Override
@@ -38,8 +44,12 @@ public class ClassBoardService implements InterClassBoardService {
 
 	// === 과제 게시판 글쓰기 완료 요청 === // 
 	@Override
+//	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
 	public int assignmentAdd(assignmentBoardVO assgnVO) {
+		
+		// 과제테이블에 추가
 		int n = dao.assignmentAdd(assgnVO);
+		
 		return n;
 	}
 
@@ -201,5 +211,166 @@ public class ClassBoardService implements InterClassBoardService {
 		SubmitVO submitvo = dao.getSubmitOne(submitno);
 		return submitvo;
 	}
+
+	// 점수 변경하기
+	@Override
+	public int changeScore(Map<String, String> paraMap) {
+		int n = dao.changeScore(paraMap);
+		return n;
+	}
+	
+	// 자료) 총 갯수 알아오기
+	@Override
+	public int getTotalMaterial(Map<String, String> paraMap) {
+		int n = dao.getTotalMaterial(paraMap);
+		return n;
+	}
+
+	// 자료) 페이징처리한 목록 가져오기
+	@Override
+	public List<materialVO> materialListSearchWithPaging(Map<String, String> paraMap) {
+		List<materialVO> mtrvoList = dao.materialListSearchWithPaging(paraMap);
+		return mtrvoList;
+	}
+
+	// 자료) 첨부파일 없는 글쓰기
+	@Override
+	public int materialAdd(materialVO mtrvo) {
+		int n = dao.materialAdd(mtrvo);
+		return n;
+	}
+
+	// 자료) 첨부파일 있는 글쓰기
+	@Override
+	public int materialAdd_withFile(materialVO mtrvo) {
+		int n = dao.materialAdd_withFile(mtrvo); // 첨부파일이 있는 경우
+		return n;
+	}
+
+	// 자료) 조회수 증가 + 글 상세 보기
+	@Override
+	public materialVO materialView(Map<String, String> paraMap, int login_perno) {
+
+		materialVO mtrvo = dao.materialView(paraMap);
+		
+		if(login_perno != 0 &&
+				mtrvo != null &&
+				!Integer.toString(login_perno).equals(mtrvo.getFk_perno()) ) {
+	         	// 글조회수 증가는 로그인을 한 상태에서 다른 사람의 글을 읽을때만 증가하도록 해야 한다.
+	         
+					dao.materialAddReadCount(mtrvo.getMtrno()); // 글조회수 1증가 하기
+					mtrvo = dao.materialView(paraMap);
+		}
+
+		return mtrvo;
+	}
+
+	// 자료) 조회수 증가 없이 글 상세 보기
+	@Override
+	public materialVO materialViewNoAddCount(Map<String, String> paraMap) {
+		materialVO mtrvo = dao.materialView(paraMap);
+		return mtrvo;
+	}
+	
+	// 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
+	@Override
+	public int materialEdit_delfile(Map<String, String> paraMap) {
+
+		// 첨부파일 삭제
+		String fileName = paraMap.get("fileName");
+		String path = paraMap.get("path");
+	   
+	   if(fileName!=null && "".equals(fileName)) {
+		   try {
+			   fileManager.doFileDelete(fileName, path);
+		   } catch (Exception e) {
+			   e.printStackTrace();
+		   }
+	   }
+	   
+	   int n=dao.materialEdit_withfile(paraMap);
+	   
+	   return n;
+	}
+
+	// 새로운 첨부파일 등록 & 수정 update
+	@Override
+	public int materialEdit_withfile(Map<String, String> paraMap) {
+		int n=dao.materialEdit_withfile(paraMap);
+		return n;
+	}
+
+	// 자료) 글 수정하기
+	@Override
+	public int materialEdit(materialVO mtrvo) {
+		int n = dao.materialEdit(mtrvo);
+		return n;
+	}
+
+	// 자료) 글 삭제하기
+	@Override
+	public int materialDelete(Map<String, String> paraMap) {
+
+		int n = dao.materialDelete(paraMap);
+	      
+		   // === #165. 파일첨부가 된 글이라면 DB에서 글 삭제가 성공된 후 첨부파일을 삭제해주어야 한다. === //
+		   if(n==1) {
+			   String fileName = paraMap.get("fileName");
+			   String path = paraMap.get("path");
+			   
+			   if(fileName!=null && "".equals(fileName)) {
+				   try {
+					   fileManager.doFileDelete(fileName, path);
+				   } catch (Exception e) {
+					   e.printStackTrace();
+				   }
+			   }
+		   }
+		return n;
+	}
+
+	// 자료) 검색어 입력 시 자동글 완성하기 ===
+	@Override
+	public List<String> materialWordSearchShow(Map<String, String> paraMap) {
+		List<String> wordList = dao.materialWordSearchShow(paraMap);
+		return wordList;
+	}
+
+	// 질문) 원글 글쓴이 perno 받아오기
+	@Override
+	public String getOrgPerno(String qnano) {
+		String org_perno = dao.getOrgPerno(qnano);
+		return org_perno;
+	}
+	
+	// 계획) 정보 추출해오기
+	@Override
+	public planVO getInfo(String subno) {
+		planVO InfoVO = dao.getInfo(subno);
+		return InfoVO;
+	}
+
+	// 계획) 정보 추출해오기
+	@Override
+	public List<planVO> getPlan(String subno) {
+		List<planVO> planVO = dao.getPlan(subno);
+		return planVO;
+	}
+
+	// 계획) 강의 계획서 등록하기 완료
+	@Override
+	public int planAdd(Map<String, String> paraMap) {
+		int n = dao.planAdd(paraMap);
+		return n;
+	}
+
+	// 계획) 강의 계획서 수정하기 완료
+	@Override
+	public int planEdit(Map<String, String> paraMap) {
+		int n = dao.planEdit(paraMap);
+		return n;
+	}
+
+
 
 }

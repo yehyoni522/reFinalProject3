@@ -7,6 +7,7 @@
 
 <style type="text/css">
 
+
 .subjectStyle {
 	font-weight: bolder;
 	cursor: pointer;
@@ -101,7 +102,7 @@ div#btn-board{
 	&nbsp;>&nbsp;과제게시판
 	</div>
 
-	<h1 class="headerName">${requestScope.subject}</h1>
+	<h1 class="headerName">${sessionScope.subject}</h1>
 	<br>
 	<h3 style="text-align: left; font-weight: bold;">| 과제게시판</h3>
 	<br>
@@ -127,7 +128,14 @@ div#btn-board{
 			<th style="width: 20%;">마감일</th>			
 		</tr>
 		
+		<c:if test="${empty requestScope.assignmentList}">
+			<tr>
+				<td colspan="100%" style="text-align: center;">과제 게시글이 없습니다.</td>
+			</tr> 
+		</c:if>
+		
 		<c:forEach var="assgnVO" items="${requestScope.assignmentList}" varStatus="status"> 
+		
 			<tr class="list">
 				<td>${assgnVO.assgnno}</td>
 				<td style="text-align:left;">
@@ -148,11 +156,11 @@ div#btn-board{
 				<c:choose>
 					<%-- 학생일 경우 제출상태, 점수 컬럼 --%>
 					<c:when test="${sessionScope.loginuser.identity eq '0'}">					
-						<c:if test="${assgnVO.status eq null}"><td>X</td></c:if>
+						<c:if test="${assgnVO.status eq null || assgnVO.status eq '0'}"><td>X</td></c:if>
 						<c:if test="${assgnVO.status eq '1'}"><td>O</td></c:if>		
 						
 						<c:choose>
-							<c:when test="${assgnVO.score eq null}">
+							<c:when test="${assgnVO.score eq null || assgnVO.score eq '0'}">
 								<td>비공개</td>
 							</c:when>							
 							<c:otherwise>

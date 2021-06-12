@@ -59,11 +59,46 @@ public interface InteradminMemberDAO {
 	// 일련번호, 문제일련번호, 사람번호를 구했으면 그 값을 가지고 insert 
 	int addStudentAnswer(Map<String, String> paraMap);
 	
-	// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
-	List<PersonVO> getStudentList(Map<String, String> paraMap);
-	
-	// 출석신호 테이블 insert
+	// 출석신호 테이블 insert 후 집어넣은 랜덤값을 가져온다. -2-
 	int addattendancesign(Map<String, String> paraMap);
+	AttendanceVO getaddattendancesign(Map<String, String> paraMap);
+	
+	// select 에 넣을 출석신호를 보낸 날짜 List
+	List<AttendanceVO> getattendanceList(Map<String, String> paraMap);
+	
+	// select 태그의 변화에 따라 해당 날짜에 출석한 학생들의 리스트를 알려준다.
+	List<Map<String, String>> studentsignList(Map<String, String> paraMap);
+	
+	// 신호의 랜덤번호와 비교하면서 해당 신호의 행을 읽어옴
+	AttendanceVO getinputstudentsign(Map<String, String> paraMap);
+	
+	// 신호를 입력  => 결석으로 된 행을 입력받은 시간을 넣어주면서 출석으로 바꾸어준다.
+	int addstudentsign(Map<String, String> paraMap);
+	
+	// 현재 몇 주차인지 알아오자.
+	int getinputweekno(Map<String, String> paraMap);
+	
+	// 출력시간과 입력시간을 비교해서 5분을 초과했으면 지각으로 한다.
+	String gettimevs(Map<String, String> paraMap);
+	
+	// 지각 처리
+	int changesign(Map<String, String> paraMap);
+	
+	// 수강 테이블의 학생들의 리스트를 가지고 온다.
+	List<ClassVO> getStudentList(Map<String, String> paraMap);
+	
+	// 반복문으로 담긴 학생번호로 출석입력테이블에 행을 넣어준다.
+	int addStudentList(Map<String, String> paraMap);
+	
+	// 접속한 학생의 출석 상태를 보여준다.
+	List<InputatdcVO> getStudentCheckSign(Map<String, String> paraMap);
+	
+	// 만약 이미 출석이 되어있다면을 처리하기 위해 존재하는지 검색한다.
+	InputatdcVO getchecksign(Map<String, String> paraMap);
+
+	
+	
+	
 	
 	
 
