@@ -30,6 +30,7 @@ import com.spring.finalproject3.seoyeon.model.QnAVO;
 import com.spring.finalproject3.seoyeon.model.SubmitVO;
 import com.spring.finalproject3.seoyeon.model.assignmentBoardVO;
 import com.spring.finalproject3.seoyeon.model.materialVO;
+import com.spring.finalproject3.seoyeon.model.planVO;
 import com.spring.finalproject3.seoyeon.service.InterClassBoardService;
 
 @Component
@@ -1676,21 +1677,116 @@ public class ClassBoardController {
 			// 과목번호 알아오기 session으로!
 			HttpSession session = request.getSession();			
 			String subno = (String) session.getAttribute("subno");
-			/*
-			planVO planVO = null;
-
-			// 과제 게시글1개 조회
-			planVO = service.assignmentView(planno);
 			
-			mav.addObject("planVO", planVO);
-			*/
+			// 과목정보 추출해오기
+			planVO InfoVO = service.getInfo(subno);
+			
+			// 계획서 추출해오기
+			List<planVO> PlanVO = service.getPlan(subno);
+
+			mav.addObject("InfoVO", InfoVO);
+			mav.addObject("PlanVO", PlanVO);
+			
 			mav.setViewName("class/planView.tiles4");
 			
 			return mav;
 		}
 		
+		
+		// 강의 계획서 수정/등록 페이지 요청하기
+		@RequestMapping(value="/class/planAddEdit.sam")
+		public ModelAndView planAddEdit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+			// 과목번호 알아오기 session으로!
+			HttpSession session = request.getSession();			
+			String subno = (String) session.getAttribute("subno");
+						
+			// 계획서 추출해오기
+			List<planVO> PlanVO = service.getPlan(subno);
+
+			mav.addObject("PlanVO",PlanVO);
+			mav.setViewName("class/planEdit.tiles4");
+		
+			return mav;
+		}
+						
+		
+		// 강의 계획서 등록하기 완료
+		@RequestMapping(value="/class/planAdd.sam")
+		public ModelAndView planAddEnd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+	      
+			// 과목번호 알아오기 session으로!
+			HttpSession session = request.getSession();			
+			String subno = (String) session.getAttribute("subno");
+						
+			String planno = request.getParameter("planno");
+			String content = request.getParameter("content");
+			String etc = request.getParameter("etc");
+
+			String[] plannoArr = planno.split(",");
+			String[] contentArr = content.split(",");
+			String[] etcArr = etc.split(",");
 			
+			int n = 0;
 			
+			for(int i=0; i<16; i++) {
+				Map<String, String > paraMap = new HashMap<String, String>();
+				n=0;
+				paraMap.put("planno", plannoArr[i]);
+				paraMap.put("content", contentArr[i]);
+				paraMap.put("etc", etcArr[i]);
+				paraMap.put("subno",subno);
+				n = service.planAdd(paraMap);
+			}
+	      
+
+			if(n==1) {
+				mav.addObject("message", "수업 계획서 등록 성공!!");		
+			}			
 			
+			mav.addObject("loc", request.getContextPath()+"/class/planView.sam?subno="+subno);
+		
+			mav.setViewName("msg");
 			
+			return mav;
+	   }
+			
+		// 강의 계획서 수정하기 완료
+		@RequestMapping(value="/class/planEdit.sam")
+		public ModelAndView planEditEnd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+	      
+			// 과목번호 알아오기 session으로!
+			HttpSession session = request.getSession();			
+			String subno = (String) session.getAttribute("subno");
+						
+			String planno = request.getParameter("planno");
+			String content = request.getParameter("content");
+			String etc = request.getParameter("etc");
+
+			String[] plannoArr = planno.split(",");
+			String[] contentArr = content.split(",");
+			String[] etcArr = etc.split(",");			
+			
+			int n = 0;
+			
+			for(int i=0; i<16; i++) {
+				Map<String, String > paraMap = new HashMap<String, String>();
+				n=0;
+				paraMap.put("planno", plannoArr[i]);
+				paraMap.put("content", contentArr[i]);
+				paraMap.put("etc", etcArr[i]);
+				paraMap.put("subno",subno);
+				n = service.planEdit(paraMap);
+			}
+	      
+
+			if(n==1) {
+				mav.addObject("message", "수업 계획서 수정 성공!!");		
+			}			
+			
+			mav.addObject("loc", request.getContextPath()+"/class/planView.sam?subno="+subno);
+		
+			mav.setViewName("msg");
+			
+			return mav;
+	   }
 }	

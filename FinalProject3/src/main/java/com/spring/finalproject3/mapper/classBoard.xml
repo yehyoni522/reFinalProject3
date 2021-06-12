@@ -419,12 +419,49 @@
 	</select>
 	
 
+	<!-- 계획) 내용물 추출해오기 -->
+	<select id="getInfo" parameterType="String" resultType="com.spring.finalproject3.seoyeon.model.planVO">
+		select V.subno,subname,credit,semeter as semester,day,time,subcol,submajor,name,mobile,email,col,major
+		from
+		(select subno, subname, credit, semeter, day, time, colname as subcol, content as submajor
+		from tbl_subject S 
+		join tbl_major M
+		on S.fk_majseq = M.majseq
+		join tbl_college C
+		on M.fk_colno = colno
+		) V
+		join
+		(
+		select s.subno,name, mobile,email, colname as col, content as major
+		from tbl_subject S
+		join tbl_person P
+		on S.fk_perno=P.perno
+		join TBL_major M
+		on majseq= P.fk_majseq
+		join tbl_college C
+		on colno = M.fk_colno
+		) M
+		on V.subno=M.subno
+		where V.subno=#{subno}
+	</select>
+
+	<!-- 계획) 글계획주차 -->
+	<select id="getPlan" parameterType="String" resultType="com.spring.finalproject3.seoyeon.model.planVO">
+		select planno,content,etc
+		from tbl_plan
+		where fk_subno=#{subno}
+		order by planno asc
+	</select>
+
+	<!-- 계획) 강의 계획서 등록하기 완료 -->
+	<insert id="planAdd" parameterType="HashMap">
+		insert into tbl_plan values(#{planno}, #{subno}, #{content}, #{etc})
+	</insert>
 	
-
-
-
-
-
-
+		<!-- 계획) 강의 계획서 수정하기 완료 -->
+	<update id="planEdit" parameterType="HashMap">
+		update tbl_plan set content = #{content}, etc = #{etc}
+		where planno = #{planno} and fk_subno = #{subno}
+	</update>
 
 </mapper>
