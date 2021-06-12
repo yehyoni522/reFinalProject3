@@ -262,6 +262,13 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 	      sqlsession.update("classBoard.materialAddReadCount", mtrno);		
 	}
 	
+	// 자료) 새로운 첨부파일 및 수정하기 완료
+	@Override
+	public int materialEdit_withfile(Map<String, String> paraMap) {
+		int n = sqlsession.update("classBoard.materialEdit_withfile", paraMap);
+	     return n;
+	}
+	
 	// 자료) 글 수정하기
 	@Override
 	public int materialEdit(materialVO mtrvo) {
@@ -317,6 +324,9 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		int n=sqlsession.update("classBoard.planEdit",paraMap);
 		return n;
 	}
+
+
+
 
 
 

@@ -150,13 +150,13 @@ div#btn-board{
 						<th>개설학기</th>
 						<td>${requestScope.InfoVO.semester}학기</td>
 					</tr>				
-					<tr class="bottom">
+					<tr>
 						<th>강의시간</th>
 						<td>${requestScope.InfoVO.day}&nbsp;${requestScope.InfoVO.time}</td>
 						<th>학점</th>
-						<td>${requestScope.InfoVO.credit}</td>
+						<td>${requestScope.InfoVO.credit}학점</td>
 					</tr>
-					<tr>
+					<tr class="bottom">
 						<th>성적평가</th>
 						<td colspan="3" class="comment">출석 10% 과제 30% 쪽지시험 10% 중간고사 30% 기말고사 40%</td>
 					</tr>
@@ -181,7 +181,7 @@ div#btn-board{
 				
 				<table id="table" style="width:100%; border:1.5px #b3b3b3 solid;">
 					<tr class="top bottom">
-						<th colspan="100%">주차별 강의계획 </th>
+						<th colspan="100%">주차별 강의 계획 </th>
 					</tr>
 					
 					<tr>

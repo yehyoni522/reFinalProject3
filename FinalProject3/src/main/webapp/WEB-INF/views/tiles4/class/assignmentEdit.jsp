@@ -135,8 +135,10 @@ div#btn-board{
 						${requestScope.assignmentVO.orgFilename}
 					</a>
 					<span style="font-size: 9pt;">(<fmt:formatNumber value="${requestScope.assignmentVO.fileSize}" pattern="#,###" />bytes)</span>												
+					<input type="file" name="attach" />
 				</c:if>
 				<c:if test="${requestScope.assignmentVO.fileSize == null}">	
+					<input type="file" name="attach" />
 				</c:if>
 	            </td>
         	</tr>
