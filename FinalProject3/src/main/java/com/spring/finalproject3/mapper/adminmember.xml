@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- ==== #29. mapper 기본설정 ==== -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
 <mapper namespace="adminmember">
 
 	<resultMap type="HashMap" id="adminsudentMap">
@@ -180,17 +183,104 @@
 		values(stdtansSeq.nextval, #{perno}, #{quizno}, #{questionno}, #{stdtanswer})
 	</insert>
 	
-	<!-- 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다. -->
-	<select id="getStudentList" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.PersonVO">
-		select perno, name
-		from tbl_person
-		where perno = (select fk_perno from tbl_class where fk_subno = #{subno})
+	<!-- 출석신호 테이블 insert 후 집어넣은 랜덤값을 가져온다. -->
+	<insert id="addattendancesign" parameterType="HashMap">
+		insert into tbl_attendance(atdcno, fk_subno, fk_perno, randomsign)
+		values(attendanceSeq.nextval, #{fk_subno}, #{fk_perno}, CEIL(dbms_random.value(100000,999999)))
+	</insert>
+	
+	<!-- 출석신호 테이블 insert 후 집어넣은 랜덤값을 가져온다. -->
+	<select id="getaddattendancesign" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.AttendanceVO">
+		select atdcno, attendancedate, randomsign, fk_subno, fk_perno, to_char(attendancedate, 'yyyy-mm-dd') as attendancedate
+		from tbl_attendance
+		where to_char(attendancedate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd') and fk_subno = #{fk_subno} and fk_perno = #{fk_perno}
 	</select>
 	
-	<!-- 출석신호 테이블 insert -->
-	<insert id="addattendancesign" parameterType="HashMap">
-		insert into tbl_attendance(atdcno, fk_subno, fk_perno)
-		values(attendanceSeq.nextval, #{fk_subno}, #{fk_perno});
+	<!-- select 에 넣을 출석신호를 보낸 날짜 List -->
+	<select id="getattendanceList" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.AttendanceVO">
+		select atdcno, to_char(attendancedate, 'yyyy-mm-dd') as attendancedate, randomsign, fk_subno, fk_perno
+		from tbl_attendance
+		where fk_subno = #{subno}
+	</select>
+	
+	<resultMap type="HashMap" id="studentsignListMap">
+		<result property="name" column="name" javaType="String" />
+		<result property="perno" column="perno" javaType="String" />
+		<result property="inputatdcdate" column="inputatdcdate" javaType="String" />
+	</resultMap>
+	
+	<!-- select 태그의 변화에 따라 해당 날짜에 출석한 학생들의 리스트를 알려준다. -->
+	<select id="studentsignList" parameterType="HashMap" resultMap="studentsignListMap">
+		select name, perno, to_char(inputatdcdate, 'yyyy-mm-dd') as inputatdcdate
+		from tbl_inputatdc i join tbl_person p
+		on fk_perno = perno
+		where  fk_subno = #{subno}
+		<if test='attendancedate != null and !"".equals(attendancedate)'>
+		and to_char(inputatdcdate, 'yyyy-mm-dd') = #{attendancedate}
+		</if>
+	</select>
+	
+	<!-- 수강 테이블의 학생들의 리스트를 가지고 온다. -->
+   	<select id="getStudentList" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.ClassVO">
+   		select fk_perno, fk_subno
+		from tbl_class
+		where fk_subno = #{fk_subno}
+   	</select>
+   	
+   	<!-- 반복문으로 담긴 학생번호로 출석입력테이블에 행을 넣어준다. -->
+   	<insert id="addStudentList" parameterType="HashMap">
+		insert into tbl_inputatdc (inatdcno, fk_atdcno, fk_perno, fk_subno, inputweekno) 
+		values(inputatdcseq.nextval, #{atdcno}, #{sfk_perno}, #{fk_subno}, #{weekno})
 	</insert>
+	
+	<!-- 신호의 랜덤번호와 비교하면서 해당 신호의 행을 읽어옴 -->
+	<select id="getinputstudentsign" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.AttendanceVO">
+		select atdcno, to_char(attendancedate, 'yyyymmddhh24mi') as attendancedate
+		from tbl_attendance
+		where fk_subno = #{fk_subno} and randomsign = #{randomsign} and to_char(attendancedate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd')
+	</select>
+	
+	<!-- 현재 몇 주차인지 알아오자. -->
+	<select id="getinputweekno" parameterType="HashMap" resultType="int">
+		select count(*) as inputweekno
+		from tbl_attendance
+		where fk_perno = #{fk_perno} and fk_subno = #{fk_subno}
+	</select>
+	
+	<!-- 신호를 입력  => 결석으로 된 행을 입력받은 시간을 넣어주면서 출석으로 바꾸어준다. -->
+	<update id="addstudentsign" parameterType="HashMap"> 
+		update tbl_inputatdc set inputatdcstatus = 2, inputatdcdate = sysdate
+		where fk_atdcno = #{atdcno} and fk_perno = #{fk_perno}
+	</update>
+	
+	<!-- 입력한 시간의 값을 알아온다. -->
+	<select id="gettimevs" parameterType="HashMap" resultType="String">
+		select to_char(inputatdcdate, 'yyyymmddhh24mi') as inputatdcdate
+		from tbl_inputatdc 
+		where to_char(inputatdcdate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd') and fk_subno = #{fk_subno} and fk_perno = #{fk_perno}
+	</select>
+	
+	<!-- 지각 처리 -->
+	<update id="changesign" parameterType="HashMap">
+		update tbl_inputatdc set inputatdcstatus = 1
+		where to_char(inputatdcdate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd') and fk_subno = #{fk_subno} and fk_perno = #{fk_perno}
+	</update>
+   	
+   	<!-- 접속한 학생의 출석 상태를 보여준다. -->
+   	<select id="getStudentCheckSign" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.InputatdcVO">
+   		select inputatdcstatus, inputweekno, to_char(inputatdcdate, 'yyyy-mm-dd hh24:mi:ss') as inputatdcdate
+		from tbl_inputatdc
+		where fk_subno = #{fk_subno} and fk_perno = #{fk_perno} and inputatdcstatus != 0
+   	</select>	
+   	
+   	<!-- 만약 이미 출석이 되어있다면을 처리하기 위해 존재하는지 검색한다. -->
+	<select id="getchecksign" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.InputatdcVO">
+		select inputatdcstatus, inputweekno, to_char(inputatdcdate, 'yyyy-mm-dd hh24:mi:ss') as inputatdcdate
+		from tbl_inputatdc
+		where fk_subno = #{fk_subno} and fk_perno = #{fk_perno} and to_char(inputatdcdate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd')
+	</select>
+   	
+   	
+    
 	
 </mapper>

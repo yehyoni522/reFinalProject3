@@ -1,5 +1,6 @@
 package com.spring.finalproject3.seongkyung.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.spring.finalproject3.seongkyung.model.AttendanceVO;
+import com.spring.finalproject3.seongkyung.model.ClassVO;
+import com.spring.finalproject3.seongkyung.model.InputatdcVO;
 import com.spring.finalproject3.seongkyung.model.InteradminMemberDAO;
 import com.spring.finalproject3.seongkyung.model.PersonVO;
 import com.spring.finalproject3.seongkyung.model.QuestionVO;
@@ -219,23 +223,170 @@ public class AdminMemberService implements InteradminMemberService {
 	}
 
 	
-	// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
+	// 출석신호 테이블 insert 후 집어넣은 랜덤값을 가져온다.
 	@Override
-	public List<PersonVO> getStudentList(Map<String, String> paraMap) {
+	public AttendanceVO addattendancesign(Map<String, String> paraMap) {
 		
-		List<PersonVO> studentList = dao.getStudentList(paraMap);
+		AttendanceVO attendancevo = null;
+		// 교수번호와 과목번호를 가지고 현재날짜의 출석테이블이 생성되어있는지 확인한다.
+		attendancevo = dao.getaddattendancesign(paraMap);
 		
-		return studentList;
+		// 있다면 생성된 테이블의 정보를 그대로 넘겨준다.
+		if(attendancevo != null) {			
+			
+			return attendancevo;
+
+		}
+		// 출석테이블에서 현재날짜의 출석정보가 없는 경우
+		else {
+			// 없다면 테이블을 가지고온 paraMap 데이터로 출석테이블에 행을 하나 만든다.
+			int n = dao.addattendancesign(paraMap);
+			// System.out.println("되냐0");
+			if(n==1) {
+				// 만들어진 오늘 날짜의 행을 검색한 다음 그 정보를 넘겨준다.
+				attendancevo = dao.getaddattendancesign(paraMap);
+				
+				paraMap.put("atdcno", String.valueOf(attendancevo.getAtdcno()));
+				
+				// 출석신호의 총 개수가 출석입력 테이블에서 몇 주차인지 알 수 있게 한다.
+				int weekno = dao.getinputweekno(paraMap);
+				
+				paraMap.put("weekno", String.valueOf(weekno));
+				
+				paraMap.put("attendancedate", attendancevo.getAttendancedate());
+				
+				System.out.println("atdcno : " + attendancevo.getAtdcno());
+				System.out.println("atdcno : " + weekno);
+				
+				// 수강 테이블의 학생들의 리스트를 가지고 온다.
+				List<ClassVO> sudentList = dao.getStudentList(paraMap);
+				// System.out.println("되냐1");
+				// 검색한 학생 리스트가 존재하는 경우
+				if(sudentList != null) {
+					
+					// System.out.println("되냐2");
+					
+					int sfk_perno = 0;
+					
+					// 검색해온 학생 리스트를 반복문으로 담는다
+					for(ClassVO classvo:sudentList) {					
+						// System.out.println("되냐3");
+						sfk_perno = classvo.getFk_perno();
+						// System.out.println("sfk_perno : "+ sfk_perno);
+						paraMap.put("sfk_perno", String.valueOf(sfk_perno));
+						
+						// 반복문으로 담긴 학생번호로 출석입력테이블에 행을 넣어준다.
+						int s = dao.addStudentList(paraMap);					
+						
+					}
+					
+				}
+				
+			} 		
+		}	
+		return attendancevo;		
+	}
+	
+	
+	// select 에 넣을 출석신호를 보낸 날짜 List
+	@Override
+	public List<AttendanceVO> getattendanceList(Map<String, String> paraMap) {
+		
+		List<AttendanceVO> attendanceList = dao.getattendanceList(paraMap);
+		
+		return attendanceList;
 	}
 
 	
-	// 출석신호 테이블 insert
+	// select 태그의 변화에 따라 해당 날짜에 출석한 학생들의 리스트를 알려준다.
 	@Override
-	public int addattendancesign(Map<String, String> paraMap) {
+	public List<Map<String, String>> studentsignList(Map<String, String> paraMap) {
+
+		List<Map<String, String>> attendanceList = dao.studentsignList(paraMap);
 		
-		int n = dao.addattendancesign(paraMap);
+		if(attendanceList != null) {
+			return attendanceList;
+		}
+
+		
+		return attendanceList;
+	}
+
+	
+	// 신호를 입력  => 결석으로 된 행을 입력받은 시간을 넣어주면서 출석으로 바꾸어준다.
+	@Override
+	public int addstudentsign(Map<String, String> paraMap) {
+		
+		// 신호의 랜덤번호와 비교하면서 해당 신호의 행을 읽어옴
+		AttendanceVO attendancevo = dao.getinputstudentsign(paraMap);
+		
+		int n = 0;
+		
+		// 만약 이미 출석이 되어있다면을 처리하기 위해 존재하는지 검색한다.
+		InputatdcVO inputatdcvo = dao.getchecksign(paraMap);
+		
+
+		
+		// 출석신호가 존재하는 경우
+		if(attendancevo != null) {
+			
+			// 출석신호가 존재하고 그 출석에 의해 학생의 행이 생성된 경우
+			if(inputatdcvo != null) {
+				
+				// 학생의 행이 존재하고 학생이 출석을 시도하는 경우
+				if(inputatdcvo.getInputatdcstatus() == 0) {
+					
+					paraMap.put("atdcno", String.valueOf(attendancevo.getAtdcno()));
+					
+					// 신호를 입력  => 결석으로 된 행을 입력받은 시간을 넣어주면서 출석으로 바꾸어준다.
+					n = dao.addstudentsign(paraMap);
+					
+					// 출석이 정상적으로 되었고 지각인지 확인한다.
+					if(n==1) {
+						
+						// 출력시간과 입력시간을 비교해서 5분을 초과했으면 지각으로 한다.			
+						String inputatdcdate = dao.gettimevs(paraMap);
+						
+						if( (Integer.parseInt(inputatdcdate) - Integer.parseInt(attendancevo.getAttendancedate())) > 10) {
+							
+							// 지각 처리
+							n = dao.changesign(paraMap);
+							
+						}				
+						
+					}
+					
+				}
+				// 학생의 행이 존재하고 학생이 이미 출석을 완료한 경우
+				else {
+					
+					n = 3;
+					return n;
+					
+				}
+				
+			}			
+			
+		}
+		// 출석신호가 존재하지 않는 경우 == 입력한 출석신호의 번호가 틀린 경우
+		else {
+			
+			n = 2;
+			return n;
+		}
 		
 		return n;
+		
+	}
+
+	
+	// 접속한 학생의 출석 상태를 보여준다.
+	@Override
+	public List<InputatdcVO> getStudentCheckSign(Map<String, String> paraMap) {
+		
+		List<InputatdcVO> inputatdclist = dao.getStudentCheckSign(paraMap);
+		
+		return inputatdclist;
 	}
 	
 

@@ -6,6 +6,8 @@
 	String ctxPath = request.getContextPath();   
 %>    
 
+
+
 <style type="text/css">
 
 table.studentList {
@@ -34,117 +36,136 @@ table.studentList td {
   background: #eee;
 }
 button {
-  border-radius: 10%;
-  border: none;
-  color: white;
-  font-weight: bold;
-  margin: 0 3px 0 3px;
-  font-size: 18pt;
+ border-radius: 5%;
+	  border: none;
+	  color: white;
+	  font-weight: bold;
+	  margin: 10px 5px 0 5px;
+	  font-size: 14pt;
+	  width: 150px;	
+	  background-color: #bfbfbf;
 }
 
 
 </style>
 
 <script>
-	
- 	function outputsign(){	
+
+	$(function(){
 		
- 		// 출석신호 테이블에 입력시킬 랜덤값
- 		var fRandom = Math.floor( Math.random()*(10000000-1000000+1) ) + 1000000; 
+ 		var sign_frm = document.takemodalFrm;
+		
+ 		sign_frm.target = "signoutput";
+ 		sign_frm.action = "<%=ctxPath%>/lesson/attendancemodal.sam";
+ 		sign_frm.method = "post";
+ 		sign_frm.submit();
+		
+ 		$("#dateList").change(function(){
+ 			
+ 			var html = "";
+ 			
+ 			if($("#dateList").text() != "날짜를 선택해주세요!"){
+ 			
+	 	        $.ajax({
+	 	        	url:"<%= ctxPath%>/lesson/studentsignList.sam",
+	 	            type: "post",
+	 	            data:  {"attendancedate":$('#dateList option:selected').val()
+	 	            	   ,"subno":"${requestScope.subno}"},
+	 	       		dataType:"json",
+	 	       		success:function(json){
+	
+	 	       			
+						
+	 	       				if(json.length > 0){
+	 	       					
+	 	       					html = "";
+	 	       					
+		 	       				$.each(json, function(index, item){
+		 	       				
+			 	       				html += "<tr>";
+			 	       				
+			 	       				html += "<td>"+(index+1)+"</td>";       				
+			 	       				html += "<td>"+item.perno+"</td>";
+			 	       				html += "<td>"+item.name+"</td>";
+			 	       				html += "<td>"+item.inputatdcdate+"</td>";       				
+			 	       				
+			 	       				html += "</tr>";
+		 	       				
+		 	       				});
+	 	       				}
+	 	       				else {
+	 	       				html = "<tr><td colspan='4'>조회된 학생이 없습니다.</td></tr>";
+	 	       				}
+					
+	 	       				       			
+	 	       				$("tbody.in").html(html);
+	 	       				
+		 	       	}, error: function(request, status, error){
+					      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+					}
+	 	       	 }); // end of $.ajax({})
+ 			}
+ 			else{
+ 				html = "<tr><td colspan='4'>조회된 학생이 없습니다.</td></tr>";
+ 				$("tbody.in").html(html);
+ 			}
+ 			
+ 		}); 
  		
-		$.ajax({
-			url:"<%=ctxPath%>/lesson/attendancesign.sam",
-			type:"get",
-			data:{"fk_subno":${requestScope.subno},
-				  "fk_perno":${sessionScope.loginuser.perno},
-				  "fRandom":fRandom},
-			dataType:"json",
-		   	success:function(json) {
-		   		
-		   		
-		   		
-		   	}, error: function(request, status, error){
-			      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			}
-		});
-		
-		
-	
-		
-	} // end of function outputsign(){} 
-	
-	function outputsign(){
-		
-		var now = new Date();
-		
-	console.log(fRandom);	
-	//	console.log(now);
-	
-	
-		
-	}	
+	}); // END OF $(function(){})
 
 </script>
 
-<div align="center">
+<div align="center" style="height: 600px; margin-top: 140px;">
 
-	<div align="center"><h2>출석</h2></div>
+	<div align="center" style="font-size: 18pt; font-weight: bold;">출석</div>
 	
 	<div align="center">
-		<form name="">
-			<input type="hidden" name="" value="" />
-			<button type="button" onclick="outputsign()" data-toggle="modal" data-target="#myModal" style="background-color: #00e600;">출석시작</button>
-			<button type="button" onclick="outputsign()" style="background-color: #bfbfbf;">출석현황</button>
-		</form>
+			<button type="button" style="background-color: #bfbfbf;" data-toggle="modal" data-target="#sign">출석시작</button>
 	</div>
+	
 	<div align="right" style="width: 60%; margin-top: 10px;">	
-<%-- 		<form name="">
-		<select>			
-			<c:forEach>
-				<option>1주차&nbsp;&nbsp;</option>
+		<form name="attendancedateFrm">
+		<select id="dateList" name="dateList">			
+			<c:forEach var="attendancevo" items="${requestScope.attendanceList}" varStatus="status">
+				<option>${attendancevo.attendancedate}</option>
 			</c:forEach>
 		</select> 
-		</form>	 --%>
+		</form>
 	</div>
 
-	<table class="studentList">
+	<table class="studentList" style="margin-top: 20px;">
 	
 	  <thead>
 	  <tr>
 	    <th scope="cols">No</th>
 	    <th scope="cols">학번</th>
-	    <th scope="cols">이름</th>
-	    <th scope="cols">출석시간</th>
+	    <th scope="cols">이름</th>  
+	    <th class="123" scope="cols">출석시간</th>
 	  </tr>
 	  </thead>
 	  
-	  <tbody>
-<%-- 		  <c:forEach>
-			  <tr>
-			    <td>status.count 값</th>
-			    <td>tbl_person 테이블의 perno</th>
-			    <td>tbl_person 테이블의 name</th>
-			    <td>tbl_inputatdc 테이블의 status</th>
-			  </tr>
-		  </c:forEach> --%>
-
+	  <tbody class="in">
+	  <tr>
+	  <td colspan="4">조회된 학생이 없습니다.</td>
+	  </tr>
 	  </tbody>
 	</table>
 	
-	
   <!-- Modal 출석  신호 시작  -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
+  <div class="modal fade" id="sign" role="dialog" style="margin-top: 150px;">
+    <div class="modal-dialog" style="width: 450px; height: 30px;" >
     
       <!-- Modal content-->
       <div class="modal-content">
-        <div class="modal-header" align="center" style="border:none; border:1px red solid;">
-        	<span>출석번호</span>
+        <div class="modal-header" align="center" style="border:none;">
+        	<span style="font-size: 20pt; ">출석번호</span>
         </div>
-        <div class="modal-body signoutput" align="center">
-          <span>234567</span>
+        <div class="modal-body" align="center" >
+          <iframe id="signoutput" name="signoutput" src="<%=ctxPath%>/lesson/attendancemodal.sam">
+		  </iframe>
         </div>
-        <div class="modal-footer" style="border:1px red solid; text-align: center;">
+        <div class="modal-footer" style="text-align: center; ">
           <button type="button" class="btn btn-default" data-dismiss="modal">확인</button>
         </div>
       </div>
@@ -152,6 +173,10 @@ button {
     </div>
   </div>
   <!-- Modal 출석  신호 끝  -->	
-		
+	
+  <form name="takemodalFrm">
+  	<input type="hidden" name="fk_subno" value="${requestScope.subno}" />
+  	<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
+  </form>	
 
 </div>

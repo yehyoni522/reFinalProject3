@@ -80,7 +80,7 @@ div#btn-board{
 			
 			var quizname = $(this).text();
 			var frm = document.quizinfoFrm;
-			alert(quizname);
+			// alert(quizname);
 			frm.quizname.value = quizname;
 	
 			frm.method = "post";
@@ -95,7 +95,7 @@ div#btn-board{
 </script>   
 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
 
-<div class="container">
+<div class="quizcontainer" style="margin-top: 150px;" >
 
 	<div class="headerCategoty">
 	<i class="fas fa-university "></i>

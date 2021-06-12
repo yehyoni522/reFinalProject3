@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -15,11 +17,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.finalproject3.common.MyUtil;
+import com.spring.finalproject3.seongkyung.model.AttendanceVO;
+import com.spring.finalproject3.seongkyung.model.InputatdcVO;
 import com.spring.finalproject3.seongkyung.model.PersonVO;
 import com.spring.finalproject3.seongkyung.model.QuestionVO;
 import com.spring.finalproject3.seongkyung.model.QuizVO;
 import com.spring.finalproject3.seongkyung.model.SubjectVO;
 import com.spring.finalproject3.seongkyung.service.InteradminMemberService;
+
 
 @Component
 @Controller
@@ -155,7 +160,7 @@ public class AdminMemberController {
 		
 		String perno = request.getParameter("perno");
 		
-		System.out.println("1 :" +perno);
+		// System.out.println("1 :" +perno);
 		
 		String gobackURL = request.getParameter("gobackURL");
 		
@@ -169,7 +174,7 @@ public class AdminMemberController {
 			
 			personvo = service.getStudentView(perno);
 			
-			System.out.println("2 :" +personvo);
+			// System.out.println("2 :" +personvo);
 			
 			mav.addObject("personList", personvo);
 			
@@ -419,61 +424,234 @@ public class AdminMemberController {
 	@RequestMapping(value="/lesson/attendance.sam")
 	public ModelAndView lesson_attendance(ModelAndView mav, HttpServletRequest request) {
 		
-		
-		mav.setViewName("lessonadmin/lessonattendance.tiles3");
-		
-		return mav;
-	}
-	
-	@RequestMapping(value="/lesson/attendanceadmin.sam")
-	public ModelAndView lesson_attendanceadmin(ModelAndView mav, HttpServletRequest request) {	
-		
-		List<PersonVO> studentList = null;
-		
 		Map<String, String> paraMap = new HashMap<String, String>();
 		
 		String subno = request.getParameter("subno");
 		subno="1000";	////////////////////*** 과목번호 임의로 넣음 ***////////////////////////////
 		paraMap.put("subno", subno);
-		
-		// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
-		studentList = service.getStudentList(paraMap);
-		
-		// 
+
 		
 		mav.addObject("subno", subno);
-		mav.addObject("studentList", studentList);
 		
-		mav.setViewName("lessonadmin/lessonatdcadmin.tiles3");
+		mav.setViewName("lessonadmin/lessonattendance.tiles4");
 		
 		return mav;
 	}
 	
+	
+	@ResponseBody
+	@RequestMapping(value="/lesson/attendancecheckList.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String attendancecheckList(HttpServletRequest request) {
+		
+	   String fk_subno = request.getParameter("fk_subno");
+	   String fk_perno = request.getParameter("fk_perno");	
+	   
+	   List<InputatdcVO> inputatdclist = null;
+	   
+	   Map<String, String> paraMap = new HashMap<String, String>();  
+	   
+	   fk_subno="1000";
+	   
+	   paraMap.put("fk_subno", fk_subno);
+	   paraMap.put("fk_perno", fk_perno);
+	   
+	   // System.out.println(fk_subno);
+	   // System.out.println(fk_perno);
+	   
+	   // 접속한 학생의 출석 상태를 보여준다.
+	   inputatdclist = service.getStudentCheckSign(paraMap);
+	   
+	   JSONArray jsonArr = new JSONArray();
+	   
+	   // System.out.println(" 11 ");
+	   
+	   if(inputatdclist != null) {
+		   
+		   // System.out.println(" 2 ");
+		   
+		   JSONObject jsonObj = new JSONObject();
+		   
+		   for(InputatdcVO ivo:inputatdclist) {			  
+			   
+			   // System.out.println("ivo.getInputweekno() : " + ivo.getInputweekno());
+			  //  System.out.println("ivo.getInputatdcdate() :" + ivo.getInputatdcdate());
+			   
+			   jsonObj.put("inputweekno", ivo.getInputweekno());
+			   jsonObj.put("inputatdcdate", ivo.getInputatdcdate());
+			   jsonObj.put("inputatdcstatus", ivo.getInputatdcstatus());
+			   
+			   jsonArr.put(jsonObj);
+			   		   
+		   }
+		   
+	   }
+   		
+		return jsonArr.toString();
+	}
+	
+	
+    // 출석시작을 눌러서 modal창이 띄어짐
+	@RequestMapping(value="/lesson/studentmodal.sam") 
+    public String lesson_studentmodal(HttpServletRequest request) {
+       
+	   String fk_subno = request.getParameter("fk_subno");
+	   String fk_perno = request.getParameter("fk_perno");	
+       
+	   // System.out.println("fk_subno @@@: " + fk_subno);
+	   // System.out.println("fk_perno @@@: " + fk_perno);
+	   
+       request.setAttribute("fk_subno", fk_subno);
+       request.setAttribute("fk_perno", fk_perno);
+       
+       return "tiles4/lessonadmin/studentmodal";
+       
+   }	
+	
+	@ResponseBody
+	@RequestMapping(value="/lesson/studentsign.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String studentsign(HttpServletRequest request) {
+		
+		String randomsign = request.getParameter("randomsign");
+		String fk_subno = request.getParameter("fk_subno");
+		String fk_perno = request.getParameter("fk_perno");	
+		
+		// System.out.println("randomsign : " + randomsign);
+		fk_subno = "1000"; 
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+		
+		paraMap.put("randomsign", randomsign);
+		paraMap.put("fk_subno", fk_subno);
+		paraMap.put("fk_perno", fk_perno);
+		
+		// 신호의 랜덤번호를 입력한 후 그 번호를 가지고 존재하는지 select 한 다음 출력신호 seq 를 가져와서 그 번호로 insert 한다.
+		int n = service.addstudentsign(paraMap);
+		
+		JSONObject jsonObj = new JSONObject();
+		
+		jsonObj.put("n", n);
+		
+		return jsonObj.toString();
+	}
+	
+	
+	@RequestMapping(value="/lesson/attendanceadmin.sam")
+	public ModelAndView lesson_attendanceadmin(ModelAndView mav, HttpServletRequest request) {	
+		
+		List<AttendanceVO> attendanceList = null;	
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+	
+		String subno = request.getParameter("subno");
+		subno="1000";	////////////////////*** 과목번호 임의로 넣음 ***////////////////////////////
+		paraMap.put("subno", subno);
+		
+		// select 에 넣을 출석신호를 보낸 날짜 List
+		attendanceList = service.getattendanceList(paraMap);
+		
+		mav.addObject("subno", subno);
+		mav.addObject("attendanceList", attendanceList);
+		
+		mav.setViewName("lessonadmin/lessonatdcadmin.tiles4");
+		
+		
+		return mav;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/lesson/studentsignList.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
+	public String studentsignList(HttpServletRequest request) {
+		
+		List<Map<String, String>> attendanceList = null;	
+		
+		String subno = request.getParameter("sunbo");
+		String attendancedate = request.getParameter("attendancedate");	
+		
+		subno = "1000"; 
+		
+		Map<String, String> paraMap = new HashMap<String, String>();
+		
+		// System.out.println("fk_subno !!!: " + fk_subno);
+		// System.out.println("fk_perno !!!: " + fk_perno);
+		
+		// System.out.println("attendancedate : " + attendancedate);
+		
+		paraMap.put("subno", subno);
+		
+		if( attendancedate != null && !"".equals(attendancedate)) {
+			paraMap.put("attendancedate", attendancedate);
+			
+		}		
+		
+		// select 태그의 변화에 따라 해당 날짜에 출석한 학생들의 리스트를 알려준다.	
+		attendanceList = service.studentsignList(paraMap);
+		
+		JSONArray jsonArr = new JSONArray();
+		
+		for(Map<String,String>map:attendanceList) {
+
+			JSONObject jsonObj = new JSONObject();
+			jsonObj.put("name",map.get("name"));
+			jsonObj.put("perno",map.get("perno"));
+			jsonObj.put("inputatdcdate",map.get("inputatdcdate"));
+			
+			jsonArr.put(jsonObj);
+		}//end of for(Map<String,String>map:deptnamePercentageList){}-----
+		
+		//System.out.println(jsonArr);
+		return jsonArr.toString();
+	}
+	
+	
+    // 출석시작을 눌러서 modal창이 띄어짐
+	@RequestMapping(value="/lesson/attendancemodal.sam") 
+    public String lesson_attendancemodal(HttpServletRequest request) {
+       
+	   String fk_subno = request.getParameter("fk_subno");
+	   String fk_perno = request.getParameter("fk_perno");	
+       
+	   // System.out.println("fk_subno @@@: " + fk_subno);
+	   // System.out.println("fk_perno @@@: " + fk_perno);
+	   
+       request.setAttribute("fk_subno", fk_subno);
+       request.setAttribute("fk_perno", fk_perno);
+       
+       return "tiles4/lessonadmin/attendancemodal";
+       
+   }
+	
 		
 	@ResponseBody
-	@RequestMapping(value="/lesson/attendancesign.sam", method= {RequestMethod.GET})
+	@RequestMapping(value="/lesson/attendancesign.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public String attendancesign(HttpServletRequest request) {
 		
-		String fk_subno = request.getParameter("fk_subno");
-		String fk_perno = request.getParameter("fk_perno");
-		String fRandom = request.getParameter("fRandom");
+		AttendanceVO attendancevo = null;
 		
+		String fk_subno = request.getParameter("fk_subno");
+		String fk_perno = request.getParameter("fk_perno");	
+		
+		// System.out.println(fRandom);
 		fk_subno = "1000"; 
+		
+		// System.out.println("fk_subno !!!: " + fk_subno);
+		// System.out.println("fk_perno !!!: " + fk_perno);
 		
 		Map<String, String> paraMap = new HashMap<String, String>();
 		
 		paraMap.put("fk_subno", fk_subno);
 		paraMap.put("fk_perno", fk_perno);
-		paraMap.put("fRandom", fRandom);
 		
-		// 출석신호 테이블 insert
-		int n = service.addattendancesign(paraMap);
+		// 출석신호 테이블 insert 후 집어넣은 랜덤값을 가져온다.
+		attendancevo = service.addattendancesign(paraMap);
 		
+		JSONObject jsonObj = new JSONObject();
 		
+		jsonObj.put("randomsign", attendancevo.getRandomsign());
 		
-		
-		return "";
+		return jsonObj.toString();
 	}
+	
 	
 	@RequestMapping(value="/lesson/quizlist.sam")
 	public ModelAndView lesson_quizlist(ModelAndView mav, HttpServletRequest request) {	
@@ -575,7 +753,7 @@ public class AdminMemberController {
     	mav.addObject("quizvoList", quizvoList);
 		
 		
-		mav.setViewName("lessonadmin/lessonquizlist.tiles3");
+		mav.setViewName("lessonadmin/lessonquizlist.tiles4");
 		
 		return mav;
 	}
@@ -590,7 +768,7 @@ public class AdminMemberController {
 		
 		String quizname = request.getParameter("quizname");
 		
-		System.out.println("확인용 quizname !! : " + quizname);
+		// System.out.println("확인용 quizname !! : " + quizname);
 		
 		// 받아온 시험명으로 과목명 검색하기
 		subjectvo = service.getSubname(quizname);
@@ -602,7 +780,7 @@ public class AdminMemberController {
 		mav.addObject("subjectvo", subjectvo);
 		mav.addObject("quizname", quizname);
 			
-		mav.setViewName("lessonadmin/lessonquizView.tiles3");
+		mav.setViewName("lessonadmin/lessonquizView.tiles4");
 		
 		return mav;
 	}
@@ -657,7 +835,7 @@ public class AdminMemberController {
 	public ModelAndView lesson_addquiz2(ModelAndView mav, HttpServletRequest request) {
 		
 		
-		mav.setViewName("lessonadmin/lessonaddquiz.tiles3");
+		mav.setViewName("lessonadmin/lessonaddquiz.tiles4");
 		
 		return mav;
 	}
