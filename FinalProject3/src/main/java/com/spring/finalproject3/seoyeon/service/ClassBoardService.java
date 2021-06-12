@@ -16,6 +16,7 @@ import com.spring.finalproject3.seoyeon.model.QnAVO;
 import com.spring.finalproject3.seoyeon.model.SubmitVO;
 import com.spring.finalproject3.seoyeon.model.assignmentBoardVO;
 import com.spring.finalproject3.seoyeon.model.materialVO;
+import com.spring.finalproject3.seoyeon.model.planVO;
 
 @Component
 @Service
@@ -313,6 +314,33 @@ public class ClassBoardService implements InterClassBoardService {
 		String org_perno = dao.getOrgPerno(qnano);
 		return org_perno;
 	}
+	
+	// 계획) 정보 추출해오기
+	@Override
+	public planVO getInfo(String subno) {
+		planVO InfoVO = dao.getInfo(subno);
+		return InfoVO;
+	}
 
+	// 계획) 정보 추출해오기
+	@Override
+	public List<planVO> getPlan(String subno) {
+		List<planVO> planVO = dao.getPlan(subno);
+		return planVO;
+	}
+
+	// 계획) 강의 계획서 등록하기 완료
+	@Override
+	public int planAdd(Map<String, String> paraMap) {
+		int n = dao.planAdd(paraMap);
+		return n;
+	}
+
+	// 계획) 강의 계획서 수정하기 완료
+	@Override
+	public int planEdit(Map<String, String> paraMap) {
+		int n = dao.planEdit(paraMap);
+		return n;
+	}
 
 }
