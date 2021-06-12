@@ -16,13 +16,13 @@ public class CommentVO {
     private String fk_comseq;
     private String co_depthno;
     
-    private String noopen; // 비공개선택여부( 0: 비공개아님, 1:비공개 / 게시글작성자만 볼수있는 댓글
+   // private String noopen; // 비공개선택여부( 0: 비공개아님, 1:비공개 / 게시글작성자만 볼수있는 댓글
     
 	public CommentVO() {}		
 	
 	
 	public CommentVO(String comseq, String fk_seq, String fk_perno, String content, String reregDate, String status,
-			String name, String identity, String co_groupno, String fk_comseq, String co_depthno, String noopen) {
+			String name, String identity, String co_groupno, String fk_comseq, String co_depthno) {
 		super();
 		this.comseq = comseq;
 		this.fk_seq = fk_seq;
@@ -35,17 +35,9 @@ public class CommentVO {
 		this.co_groupno = co_groupno;
 		this.fk_comseq = fk_comseq;
 		this.co_depthno = co_depthno;
-		this.noopen = noopen;
 	}
 
 
-	public String getNoopen() {
-		return noopen;
-	}
-
-	public void setNoopen(String noopen) {
-		this.noopen = noopen;
-	}
 
 	public String getCo_groupno() {
 		return co_groupno;

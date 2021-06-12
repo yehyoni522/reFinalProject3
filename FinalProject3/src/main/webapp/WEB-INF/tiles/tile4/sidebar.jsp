@@ -27,7 +27,7 @@ li.tiles4 {
 	<ul>
 		<c:if test="${sessionScope.subno != null}">
 			<li class="tiles4"><a href="<%=ctxPath%>/class/index.sam?fk_subno=${sessionScope.subno}">홈</a></li>
-			<li class="tiles4"><a href="<%=ctxPath%>/lesson/notice.sam?subno=${sessionScope.subno}">공지사항</a></li>
+			<li class="tiles4"><a href="<%=ctxPath%>/lesson/notice.sam?fk_subno=${sessionScope.subno}">공지사항</a></li>
 			<li class="tiles4"><a href="<%=ctxPath%>/class/planView.sam?subno=${sessionScope.subno}">수업계획서</a></li>
 			<li class="tiles4"><a href="<%=ctxPath%>/class/materialList.sam?subno=${sessionScope.subno}">수업자료</a></li>
 			<li class="tiles4"><a href="<%=ctxPath%>/class/assignmentBoard.sam?subno=${sessionScope.subno}">과제게시판</a></li>

@@ -180,8 +180,9 @@
 		goViewBoard(1);
 		$(document).on('click', 'tr#tr_MainBoard', function(){
 		var seq = $(this).children(".seq").text();
-	
-		location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+seq+"&goBackURL=${requestScope.goBackURL}";
+		var categoryno = $(this).children(".categoryno").val();
+		
+		location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+seq+"&categoryno="+categoryno+"&goBackURL=${requestScope.goBackURL}";
 		});// end of click
 		 
 	});// end of $(document).ready(function(){})--------------
@@ -203,6 +204,7 @@
 					$.each(json, function(index, item){
 						html += "<tr id='tr_MainBoard'>";
 						html += "<td class='seq'>"+item.seq+"</td>";
+						html += "<input type='hidden' class='categoryno' value='"+item.categoryno+"'/>"
 						
 						var categoryno = item.categoryno;
 						switch (categoryno) {
