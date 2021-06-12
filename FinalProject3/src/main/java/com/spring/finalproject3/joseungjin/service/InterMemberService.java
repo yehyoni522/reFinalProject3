@@ -58,6 +58,9 @@ public interface InterMemberService {
 	List<String> wordSearchShow(Map<String, String> paraMap);
 	//엑셀 가져오기
 	List<Map<String, String>> getExcelsubjectList();
+	
+	//하이차트 인기게시판
+	List<Map<String, String>> getbestBoard();
 
 
 

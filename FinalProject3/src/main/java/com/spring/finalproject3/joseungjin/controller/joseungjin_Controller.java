@@ -1059,4 +1059,28 @@ public class joseungjin_Controller {
 			}// end of public String downloadExcelFile(HttpServletRequest request, Model model)------------- 
 			
 			
+			
+			// >>> 차트그리기(Ajax) 부서명별  인원수 및 퍼센티지 가져오기 <<< //
+			@ResponseBody
+			@RequestMapping(value="/chart/bestBoard.sam", produces="text/plain;charset=UTF-8")
+			public String bestBoard(HttpServletRequest requset) {
+				
+				List<Map<String,String>> bestBoardList= service.getbestBoard();
+				
+				
+				JsonArray jsonArr = new JsonArray();
+				for(Map<String,String> map: bestBoardList) {
+					
+					JsonObject jsonObj = new JsonObject();
+					jsonObj.addProperty("seq",map.get("seq"));
+					jsonObj.addProperty("subject",map.get("subject"));
+					jsonObj.addProperty("good",map.get("good"));
+					
+					jsonArr.add(jsonObj);
+				}//end of for(Map<String,String>map:deptnamePercentageList){}-----
+			
+				return jsonArr.toString(); 
+			}
+			
+			
 }
