@@ -21,6 +21,9 @@ public interface InterMypageDAO {
 
 	// 회원정보수정하기
 	int updateInfo(Map<String, String> paraMap);
+
+	// 학생이 듣고있는 수업정보가지고오기
+	List<Map<String, String>> getscoreList(int perno);
 	
 
 }

@@ -24,6 +24,7 @@ import com.spring.finalproject3.common.MyUtil;
 import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
+import com.spring.finalproject3.hyeminJang.model.ScoreVO;
 import com.spring.finalproject3.hyeminJang.service.InterMessageService;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
@@ -67,6 +68,12 @@ public class HyeminJang_Controller {
 	   int majseq =  loginuser.getFk_majseq();
        String nameMaj = service.getNameMaj(majseq); //학과이름 알아오기
        mav.addObject("nameMaj", nameMaj); // 학과이름
+       
+       // 학생이 듣고있는 수업정보가지고오기
+      List< Map<String, String> > scorevolist = service.getscoreList(loginuser.getPerno());
+      mav.addObject("scorevolist",scorevolist);
+       
+       
 	   
 	   mav.setViewName("mypage/mypage.tiles2");
 	    

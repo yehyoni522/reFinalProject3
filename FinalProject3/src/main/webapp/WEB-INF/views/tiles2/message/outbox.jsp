@@ -176,7 +176,7 @@ tr#tr_1:hover{
 a:visited {
   background-color : black;
 }
-.target { display: inline-block; width: 700px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.target { display: inline-block; width: 550px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -337,7 +337,6 @@ a:visited {
 	<form name="readState">
 		<input type='hidden'  name="readState" value="0" />
 	</form>
-	<span>보낸편지함 전체 : <span style="color: #2ECC71; font-weight: bold;">${requestScope.totalCount}</span> 개</span>
 	<form name="searchFrm">
 		<select id="searchType" name="searchType">
 			<option value="subject">내용</option>
@@ -358,7 +357,8 @@ a:visited {
         <th><input type="checkbox" id = "check" name="checkall"/><label for="check"></label></th>
         <th>받은사람</th>
         <th>내용</th>
-        <th>날짜</th>
+        <th>보낸날짜</th>
+        <th>수신확인</th>
       </tr>
     </thead>
     
@@ -381,6 +381,13 @@ a:visited {
         <td  onclick="goView(${outboxvo.outboxSeq})">${outboxvo.outboxName}<span style="font-size: 12px;">(${outboxvo.fk_perno})</span></td>
         <td  onclick="goView(${outboxvo.outboxSeq})"><span class="subject target" >${outboxvo.subject}</span></td>
         <td  onclick="goView(${outboxvo.outboxSeq})">${outboxvo.senDate}</td>
+        <c:if test="${outboxvo.isRead==0}">
+        	<td  onclick="goView(${outboxvo.outboxSeq})">읽지않음</td>
+        </c:if>
+        <c:if test="${outboxvo.isRead==1}">
+        	<td  onclick="goView(${outboxvo.outboxSeq})" ><span style="font-size: 12px;">${outboxvo.readDate}</span><span style="color:navy; font-weight: bold;">&nbsp;읽음완료</span> </td>
+        </c:if>
+        
       </tr>
     </tbody>
      </c:forEach>

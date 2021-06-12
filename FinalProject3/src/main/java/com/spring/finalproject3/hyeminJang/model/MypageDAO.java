@@ -61,6 +61,12 @@ public class MypageDAO implements InterMypageDAO {
 		int n = sqlsession.update("mypage.updateInfo", paraMap);
 		return n;
 	}
+
+	@Override
+	public List< Map<String, String>> getscoreList(int perno) {
+		List< Map<String, String>> list = sqlsession.selectList("mypage.getscoreList",perno);
+		return list;
+	}
 	
 
 

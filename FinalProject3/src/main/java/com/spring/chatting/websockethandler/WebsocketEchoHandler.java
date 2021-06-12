@@ -10,7 +10,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
-
+ 
 // === # 177. (웹채팅관련8) === //
 public class WebsocketEchoHandler extends TextWebSocketHandler{
    

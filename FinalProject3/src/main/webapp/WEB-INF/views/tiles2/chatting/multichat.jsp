@@ -25,6 +25,10 @@
  // serverName : http://211.238.142.72:9090 
 %>
 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
 <%-- === #174. (웹채팅관련5) === --%>
 <title>채팅</title>
 
@@ -285,7 +289,10 @@
    });
    
 </script>
+    
 
+</head>
+<body>
 
 <div id="onlineList">
 	현재접속자명단<div id="connectingUserList" style="overFlow: auto; height: 100px; border: 1px solid #ccc;"></div>
@@ -314,7 +321,5 @@
 </div>
 
 
-
-
-
-    
+</body>
+</html>
