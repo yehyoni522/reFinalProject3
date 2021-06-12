@@ -308,6 +308,7 @@ public class BoardController {
 	@RequestMapping(value="/board/view.sam")
 	public ModelAndView view(HttpServletRequest request, ModelAndView mav) {
 		
+		
 		String seq = request.getParameter("seq");		
 		String categoryno = request.getParameter("categoryno");
 	    String searchType = request.getParameter("searchType");
