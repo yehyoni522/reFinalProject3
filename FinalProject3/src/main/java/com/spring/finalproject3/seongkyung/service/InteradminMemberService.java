@@ -3,6 +3,8 @@ package com.spring.finalproject3.seongkyung.service;
 import java.util.List;
 import java.util.Map;
 
+import com.spring.finalproject3.seongkyung.model.AttendanceVO;
+import com.spring.finalproject3.seongkyung.model.InputatdcVO;
 import com.spring.finalproject3.seongkyung.model.PersonVO;
 import com.spring.finalproject3.seongkyung.model.QuestionVO;
 import com.spring.finalproject3.seongkyung.model.QuizVO;
@@ -58,11 +60,20 @@ public interface InteradminMemberService {
 	// 시험명으로 일련번호 검색 => 시험명과 문제번호로 문제 일련번호 검색  => 학생 정답 테이블에 넣기 
 	int addStudentAnswer(Map<String, String> paraMap);
 	
-	// 과목번호로 해당 과목을 수강하는 학생들의 정보만 얻어온다.
-	List<PersonVO> getStudentList(Map<String, String> paraMap);
+	// 출석신호 테이블 insert 후 집어넣은 랜덤값을 가져온다.
+	AttendanceVO addattendancesign(Map<String, String> paraMap);
 	
-	// 출석신호 테이블 insert
-	int addattendancesign(Map<String, String> paraMap);
+	// select 에 넣을 출석신호를 보낸 날짜 List
+	List<AttendanceVO> getattendanceList(Map<String, String> paraMap);
+	
+	// select 태그의 변화에 따라 해당 날짜에 출석한 학생들의 리스트를 알려준다.
+	List<Map<String, String>> studentsignList(Map<String, String> paraMap);
+	
+	// 신호의 랜덤번호를 입력한 후 그 번호를 가지고 존재하는지 select 한 다음 출력신호 seq 를 가져와서 그 번호로 insert 한다.
+	int addstudentsign(Map<String, String> paraMap);
+	
+	// 접속한 학생의 출석 상태를 보여준다.
+	List<InputatdcVO> getStudentCheckSign(Map<String, String> paraMap);
 	
 	
 	

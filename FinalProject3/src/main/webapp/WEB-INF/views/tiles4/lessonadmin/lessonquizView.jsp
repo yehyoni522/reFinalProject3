@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+	<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -11,7 +11,7 @@ table.quiz {
   border-spacing: 1px;
   text-align: left;
   line-height: 1.5;
-  border-top: 1px solid #ccc;
+ 
   margin : 20px 10px;
 }
 table.quiz th {
@@ -19,19 +19,22 @@ table.quiz th {
   padding: 10px;
   font-weight: bold;
   vertical-align: top;
-  border-bottom: 1px solid #ccc;
+  border : 1px solid #ccc;
+  width: 20%;
 }
 
 table.quiz td {
   width: 450px;
   padding: 10px;
   vertical-align: top;
-  border-bottom: 1px solid #ccc;
+  border : 1px solid #ccc;
+ 
 }
 
-.nextline{
-  background-color: #e6e6e6;	
+.nextnextline {
+	border: none;
 }
+
 
 </style>
 
@@ -50,7 +53,7 @@ table.quiz td {
 
 </script>
 
-<div align="center">
+<div align="center" style="margin-top: 100px; text-align: center; width: 60%; margin-left: 450px;"> 
 	<%-- 시험명으로 검색해온 과목테이블의 과목명 --%>
 	<h4>${subjectvo.subname}</h4>
 	
@@ -84,7 +87,7 @@ table.quiz td {
 			    </td>
 			  </tr>
 		  </c:forEach>
-		  <tr><td><input type="hidden" name="quizname" value="${requestScope.quizname}"></td><td></td></tr>
+		  <tr><td style="border: none;"><input type="hidden" name="quizname" value="${requestScope.quizname}"></td></tr>
 		</table>	
 	</form>
 	
