@@ -31,12 +31,15 @@ public interface InterClassBoardDAO {
 
     // 과제 게시글1개 조회
 	assignmentBoardVO assignmentView(String assgnno);
+	
+	// 과제) 새로운 첨부파일 및 수정하기 완료
+	int assignmentEdit_withfile(assignmentBoardVO assignmentVO);
 
 	// ===1개글 수정하기 === //
 	int assignmentEdit(assignmentBoardVO assignmentVO);
 
 	// === 1개글 삭제하기 === //
-	int assignmentDelete(String assgnno);
+	int assignmentDelete(Map<String, String> paraMap);
 	
 	// 과제 제출 댓글쓰기
 	int addSubmit(SubmitVO submitvo);
@@ -111,7 +114,7 @@ public interface InterClassBoardDAO {
 	void materialAddReadCount(String mtrno);
 
 	// 자료) 새로운 첨부파일 및 수정하기 완료
-	int materialEdit_withfile(Map<String, String> paraMap);
+	int materialEdit_withfile(materialVO mtrvo);
 	
 	// 자료) 글 수정하기
 	int materialEdit(materialVO mtrvo);
@@ -136,6 +139,10 @@ public interface InterClassBoardDAO {
 
 	// 계획) 강의 계획서 수정하기 완료
 	int planEdit(Map<String, String> paraMap);
+
+	
+
+
 
 
 	

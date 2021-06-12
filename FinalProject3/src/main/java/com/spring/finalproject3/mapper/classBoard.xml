@@ -128,8 +128,15 @@
 		where assgnno = #{assgnno}
 	</update>
 	
+	<!-- 과제) 첨부파일과 글 수정하기 -->
+	<update id="assignmentEdit_withfile" parameterType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
+		update tbl_assgn set subject = #{subject}, deadline=#{deadline}, content = #{content}, fileName = #{fileName}, orgFilename = #{orgFilename}, fileSize = #{fileSize}
+		where assgnno = #{assgnno}
+	</update>
+	
+	
 	<!-- === 1개글 삭제하기 === -->
-	<delete id="assignmentDelete" parameterType="String">
+	<delete id="assignmentDelete" parameterType="HashMap">
 		delete from tbl_assgn 
 		where assgnno = #{assgnno}
 	</delete>	
@@ -399,8 +406,8 @@
 	</update>
 	
 	<!-- 자료) 첨부파일과 글 수정하기 -->
-	<update id="materialEdit_withfile" parameterType="HashMap">
-		update tbl_materialset set subject = #{subject}, content = #{content}, fileName = #{fileName}, orgFilename = #{orgFilename}, fileSize = #{fileSize}
+	<update id="materialEdit_withfile" parameterType="com.spring.finalproject3.seoyeon.model.materialVO">
+		update tbl_material set subject = #{subject}, content = #{content}, fileName = #{fileName}, orgFilename = #{orgFilename}, fileSize = #{fileSize}
 		where mtrno = #{mtrno}
 	</update>
 	

@@ -269,12 +269,13 @@ div#admincontent {
 
    //== 게시글 체크박스 함수 끝 == //
 
-	function goView(seq){
-		   
+	function goView(seq,categoryno){
+	
 		var frm = document.goViewFrm;
 		frm.seq.value=seq;
 		frm.searchType.value = "${requestScope.paraMap.searchType}";
 	    frm.searchWord.value = "${requestScope.paraMap.searchWord}"; 
+	    frm.categoryno.value = categoryno; 
 		frm.method="get";
 		frm.action="<%= ctxPath%>/board/view.sam";
 		frm.submit();
@@ -448,7 +449,7 @@ div#admincontent {
 			             	</c:if>
 		             </td>
 		             <td align="left">
-		             	<span class="subject" onclick="goView('${commentvo.fk_seq}')">${commentvo.subject}</span>
+		             	<span class="subject" onclick="goView('${commentvo.fk_seq}','${commentvo.categoryno}')">${commentvo.subject}</span>
 		             </td>
 		             <td>${commentvo.content}</td>       
 		            <td align="center">${commentvo.name}(${commentvo.fk_perno})</td>
@@ -470,7 +471,7 @@ div#admincontent {
 <form name="goViewFrm">
 	<input type="hidden" name="seq" />
 	<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
-	<input type="hidden" name="categoryno" value="${categoryno}">
+	<input type="hidden" name="categoryno"/>
 	<input type="hidden" name="searchType" />
     <input type="hidden" name="searchWord" />
 </form>

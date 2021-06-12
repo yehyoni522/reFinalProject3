@@ -28,12 +28,18 @@ public interface InterClassBoardService {
 
     // 과제 게시글1개 조회
 	assignmentBoardVO assignmentView(String assgnno);
+	
+	// 과제) 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
+	int assignmentEdit_delfile(Map<String, String> paraMap, assignmentBoardVO assignmentVO);
+	
+	// 과제) 새로운 첨부파일 등록 & 수정 update
+	int assignmentEdit_withfile(assignmentBoardVO assignmentVO);
 
 	// === 글수정 페이지 완료하기 === //
 	int assignmentEdit(assignmentBoardVO assignmentVO);
 
 	// === 1개글 삭제하기 === //
-	int assignmentDelete(String assgnno);
+	int assignmentDelete(Map<String, String> paraMap);
 
 	// === 과제 제출 댓글 작성하기 === //
 	int addSubmit(SubmitVO submitvo) throws Throwable;
@@ -96,10 +102,10 @@ public interface InterClassBoardService {
 	materialVO materialViewNoAddCount(Map<String, String> paraMap);
 
 	// 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
-	int materialEdit_delfile(Map<String, String> paraMap);
+	int materialEdit_delfile(Map<String, String> paraMap, materialVO mtrvo);
 
 	// 새로운 첨부파일 등록 & 수정 update
-	int materialEdit_withfile(Map<String, String> paraMap);
+	int materialEdit_withfile(materialVO mtrvo);
 	
 	// 자료) 글 수정하기
 	int materialEdit(materialVO mtrvo);
@@ -124,6 +130,7 @@ public interface InterClassBoardService {
 
 	// 계획) 강의 계획서 수정하기 완료
 	int planEdit(Map<String, String> paraMap);
+
 
 
 

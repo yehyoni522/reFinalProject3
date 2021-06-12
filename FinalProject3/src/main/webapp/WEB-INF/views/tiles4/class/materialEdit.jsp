@@ -62,8 +62,17 @@ div#btn-board{
 <script type="text/javascript">
 
 	$(document).ready(function(){
+	
+		$("[name=deleteFile]").change(function(){
+	        if($("[name=deleteFile]").is(":checked")){
+	        	$("[name=deleteFile]").val("O");
+	        	
+	        }else{
+	        	$("[name=deleteFile]").val("X");	        	
+	        }
+	    });
 		
-
+		
 		// 완료버튼
 		$("button#btnUpdate").click(function(){
 			// 글제목 유효성 검사
@@ -102,7 +111,7 @@ div#btn-board{
 	<hr>
 
 
-	<form name="editFrm"> 
+	<form name="editFrm" enctype="multipart/form-data"> 
  
 		<table id="table" style="width:100%; border-top: 1.5px #b3b3b3 solid; border-bottom: 1.5px #b3b3b3 solid;">
 			<tr>
@@ -119,15 +128,18 @@ div#btn-board{
 			   </td>
 			</tr>
 			<tr>
-	            <th>파일첨부</th>
+	            <th>파일첨부<br><span style="font-size: 9pt;">(파일개수는 1개만 가능)</span></th>
 	            <td style="padding-left:15px; text-align: left;">
 	            <c:if test="${requestScope.mtrvo.fileSize != null}">
 		            <a href="<%= ctxPath%>/class/materialDownload.sam?mtrno=${requestScope.mtrvo.mtrno}">
 						${requestScope.mtrvo.orgFilename}
 					</a>
-					<span style="font-size: 9pt;">(<fmt:formatNumber value="${requestScope.mtrvo.fileSize}" pattern="#,###" />bytes)</span>												
+					<span style="font-size: 9pt;">(<fmt:formatNumber value="${requestScope.mtrvo.fileSize}" pattern="#,###" />bytes)</span>	
+					<span style="font-size: 10pt; color:red;">&nbsp;삭제&nbsp;</span><input type="checkbox" name="deleteFile" value="X"/>
+					<input type="file" name="attach" />										
 				</c:if>
 				<c:if test="${requestScope.mtrvo.fileSize == null}">	
+					<input type="file" name="attach" />
 				</c:if>
 	            </td> 
 	          
