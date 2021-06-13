@@ -28,6 +28,7 @@
 
 <%-- === #174. (웹채팅관련5) === --%>
 <title>채팅</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 
 <style type="text/css">
 	#other{
@@ -41,11 +42,11 @@
 		font-size: 12px;
 	}
 	#message{
-		width:300px;
+		width:320px;
 		height:60px;
 		overflow: auto;
 		border: solid 1px #ccc;
-		margin: 0;
+		margin-left: 5px;
 	}
 
 	.chat-container{
@@ -59,15 +60,15 @@
 	
 	.chat{
 		font-size: 13px;
-		color:black;
+		color: #fff;
 		margin: 5px;
-		min-height: 20px;
+		height: 20px;
 		padding: 10px;
 		min-width: 50px;
 		text-align: left;
         height:auto;
         word-break : break-all;
-        background: #F3F3F3;
+        background: #86BB71;
         width:auto;
         display:inline-block;
         border-radius: 10px 10px 10px 10px;
@@ -77,13 +78,13 @@
 		font-size: 13px;
 		color:red;
 		margin: 5px;
-		min-height: 20px;
+		height: 20px;
 		padding: 10px;
 		min-width: 50px;
 		text-align: left;
         height:auto;
         word-break : break-all;
-        background: #F3F3F3;
+        background: #86BB71;
         width:auto;
         display:inline-block;
         border-radius: 10px 10px 10px 10px;
@@ -100,14 +101,15 @@
 
 	.my-chat{
 		text-align: right;
-		background: #ECF6FF;
+		background: #94C2ED;
 		border-radius: 10px 10px 10px 10px;
 		font-size: 13px;
-		color:black;
+		color: #fff;
 		margin: 5px;
-		min-height: 20px;
 		padding: 10px;
+		min-height: 20px;
 		min-width: 50px;
+		width:auto;
 		height:auto;
 		word-break : break-all;
 	}
@@ -120,16 +122,24 @@
 	
 	.chat-box{
 		text-align:left;
+		margin: 3px;
+
 	}
 	.my-chat-box{
 		text-align: right;
+		margin: 3px;
+		
 	}
 	#btnSendMessage{
-		padding: 12px 10px 12px 10px;
+		padding: 15px 10px 15px 10px;
+		margin-bottom: 3px;
 		cursor: pointer;
 	}
 	#date{
 		font-size: 10px;
+	}
+	.btn{
+		font-size: 13px;
 	}
 	
 	
@@ -312,7 +322,7 @@
 	현재접속자명단<div id="connectingUserList" style="overFlow: auto; height: 50px; border: 1px solid #ccc;"></div>
 	<button id="cBtn">닫기</button>
 </div>
-<button id="onlineListBtn">접속자명단</button> 
+<button id="onlineListBtn" class="btn btn-secondary" style="margin: 3px; font-size: 12px; padding:3px;">접속자명단</button> 
 
 <div id="chatMessage" class="chat-container" style="overFlow: auto; max-height: 500px;">
 <div id="chatStatus" class="notice"></div><br/> 
@@ -322,14 +332,14 @@
 </div> 
 <input type="hidden" id="to" placeholder="귓속말대상IP주소"/>
 <div id="obo" style="font-size: 14px;">
-	귓속말대상 : <span id="privateWho" style="font-weight: bold; color: red;"></span>
+	<span style="font-size: 13px;">귓속말대상 </span>: <span id="privateWho" style="font-weight: bold; color: red;"></span>
 	&nbsp;&nbsp;<button type="button" id="btnAllDialog">귀속말대화끊기</button>
 </div>
-<input type="text" id="message" size="50" placeholder="메시지 내용"/>
-<input type="button" id="btnSendMessage" value="보내기" />
+<input type="text" id="message" style="font-size: 14px;" placeholder="메시지 내용을 입력하세요"/>
+<input type="button" class="btn btn-info" id="btnSendMessage" value="보내기" />
 <br><br>
 <div align="center">
-	<input type="button" onClick="window.close()" value="채팅방나가기" />
+	<input type="button"  class="btn btn-secondary"onClick="window.close()" value="채팅방나가기" />
 </div>
 
 

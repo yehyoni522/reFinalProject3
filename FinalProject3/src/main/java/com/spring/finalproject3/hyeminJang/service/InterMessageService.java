@@ -6,9 +6,8 @@ import java.util.Map;
 
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
-import com.spring.finalproject3.hyeminJang.model.ScoreVO;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
-import com.spring.finalproject3.yehyeon.model.BookListVO;
+
 
 public interface InterMessageService {
 

@@ -53,7 +53,7 @@ a#msgNew{
 }
 .belongHead{
 	display: inline-block;
-	width: 600px;
+	width: 450px;
 	margin: 60px;
 	
 }
@@ -178,7 +178,7 @@ dfn:hover::before {top: 50px;}
 		location.href="<%= ctxPath%>/reading/index.sam";
 	}
 </script>
-
+<div class="container" style="width: 90%;">
 <div class="msgHead">
 	<span style="font-weight: bold; font-size: 30px; color:#3498DB;">${requestScope.name}<c:if test="${requestScope.identity == 0}">(학생)</c:if><c:if test="${requestScope.identity == 1}">(교수)</c:if>
 	</span><span style="font-weight: bold; font-size: 30px; ">님의 마이페이지 </span>
@@ -208,7 +208,7 @@ dfn:hover::before {top: 50px;}
 	
 		
 		<div class="admsubtitle" >
-			<span >나의회원정보</span><a style="margin-left: 350px; font-size: 15px; cursor: pointer;" onclick="goEdit()">회원정보수정 →</a>
+			<span >나의회원정보</span><a style="margin-left: 200px; font-size: 15px; cursor: pointer;" onclick="goEdit()">회원정보수정 →</a>
 		</div>
 
 	
@@ -219,7 +219,7 @@ dfn:hover::before {top: 50px;}
 		
 			<table class="type04">
 			 <tr>
-			    <td rowspan="5" style="padding-left:30px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:150px; height:150px;"></td>
+			    <td rowspan="5" style="width: 150px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:120px; height:120px;  margin-top:20px;"></td>
 			  </tr>
 			  <tr>
 			    <th scope="row">▶ 성명</th>
@@ -245,7 +245,7 @@ dfn:hover::before {top: 50px;}
 		
 			<table class="type04">
 			 <tr>
-			    <th rowspan="5" style="padding-left:30px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:160px; height:160px;"></th>
+			    <th rowspan="5"  style="width: 130px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:120px; height:120px;  margin-top:20px;"></th>
 			  </tr>
 			  <tr>
 			    <th scope="row">▶ 성명</th>
@@ -325,8 +325,8 @@ dfn:hover::before {top: 50px;}
 
 <div class="belongHead" style="width:88%;">
 	<div class="admsubtitle" >
-			<span >과목별성적조회</span>
-		</div>- 2021년도 봄학기
+			<span >과목별성적조회 - 2021년도 봄학기</span>
+		</div>
 	<div class="belongHead2" >
 		<table class="table table-hover" >
 		
@@ -335,10 +335,8 @@ dfn:hover::before {top: 50px;}
 	        <th>과목번호</th>
 	        <th style="width: 30%;">과목명</th>
 	        <th>담당교수</th>
-	        <th>총점</th>
 	        <th>과제점수</th>
 	        <th>쪽지시험점수</th>
-	        <th>출석점수</th>
 	      </tr>
 	    </thead>
     
@@ -348,10 +346,8 @@ dfn:hover::before {top: 50px;}
 	        <td>${scorelist.subno}</td>
 	        <td >${scorelist.subname}</td>
 	        <td>${scorelist.name}</td>
-	        <td></td>
-	        <td onclick="goCheck(${sessionScope.loginuser.perno})">${scorelist.exchagedScore}/40(실점수:${scorelist.totalscore})</td>
+	        <td ><a onclick="goCheck(${sessionScope.loginuser.perno})">${scorelist.exchagedScore}/40</a>(실점수:${scorelist.totalscore})</td>
 	        <td>${scorelist.exchagedScore}/40(실점수:${scorelist.totalscore})</td>
-	        <td>추후기재</td>
 	      </tr>
 	    </tbody>
 	 </c:forEach>  
@@ -401,3 +397,4 @@ dfn:hover::before {top: 50px;}
 </div>
 
 </c:if>
+</div>

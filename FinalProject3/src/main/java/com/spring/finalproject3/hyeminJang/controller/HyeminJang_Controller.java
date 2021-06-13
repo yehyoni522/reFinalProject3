@@ -19,12 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.spring.finalproject3.common.AES256;
 import com.spring.finalproject3.common.MyUtil;
 import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
-import com.spring.finalproject3.hyeminJang.model.ScoreVO;
+
 import com.spring.finalproject3.hyeminJang.service.InterMessageService;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
