@@ -123,8 +123,28 @@ public class joseungjin_Controller {
 		mav.setViewName("admin/memberRegister.tiles3");
 		return mav;
 	}
+	//====회원 아이디 실시간 조회====
 	
+	@ResponseBody
+	@RequestMapping(value="/admin/memberidCheck.sam", produces="text/plain;charset=UTF-8")
+	public String memberidCheck(ModelAndView mav,HttpServletRequest request) {
+		
+		int perno = Integer.parseInt(request.getParameter("perno"));
+		 int n =  service.memberidCheck(perno);
+						
+		JSONObject jsonObj = new JSONObject();
+		if(n==1) {
+				jsonObj.put("n",1);
+		}
+		else {
+			jsonObj.put("n",0);
+		}
 	
+		return jsonObj.toString(); 
+	
+	}
+	
+	//===관리자 회원 insert===//
 	@RequestMapping(value="/admin/memberRegisterend.sam")
 	public ModelAndView memberRegisterend(ModelAndView mav, HttpServletRequest request) {
 		String perno = request.getParameter("perno");
@@ -167,6 +187,11 @@ public class joseungjin_Controller {
 		mav.setViewName("msg");
 		return mav;
 	}
+	
+	
+	
+	
+	
 	//===== 관리자 등록 작업 끝 ======
 	
 // === #41. 로그인 처리하기 === // 
@@ -257,13 +282,14 @@ public class joseungjin_Controller {
 		PersonVO idFind = service.idFind(paraMap);
 		
 		if(idFind == null) { //존재하지 않는 경우
-			mav.addObject("check", 1);
-			mav.setViewName("member/idFind");
+			
+			 mav.addObject("message", "입력하신 정보가 존재하지 않습니다."); 
+			 mav.setViewName("msg");
+			
 	
 		}
 		
 		else { // 존재하는 경우
-			
 			mav.addObject("check", 0);
 			mav.addObject("perno",idFind.getPerno());
 			// session(세션)에 로그인 되어진 사용자 정보인 loginuser 을 키이름을 "loginuser" 으로 저장시켜두는 것이다.
@@ -338,8 +364,8 @@ public class joseungjin_Controller {
 					mav.setViewName("member/pwdFind");
 				}
 				else {
-					mav.addObject("check", 1);
-					mav.setViewName("member/pwdFind");
+					 mav.addObject("message", "입력하신 정보가 존재하지 않습니다."); 
+					 mav.setViewName("msg");
 				}
 	
 		
@@ -1072,13 +1098,14 @@ public class joseungjin_Controller {
 				for(Map<String,String> map: bestBoardList) {
 					
 					JsonObject jsonObj = new JsonObject();
+					jsonObj.addProperty("categoryno",map.get("categoryno"));
 					jsonObj.addProperty("seq",map.get("seq"));
 					jsonObj.addProperty("subject",map.get("subject"));
 					jsonObj.addProperty("good",map.get("good"));
 					
 					jsonArr.add(jsonObj);
 				}//end of for(Map<String,String>map:deptnamePercentageList){}-----
-			
+				//System.out.println(jsonArr);
 				return jsonArr.toString(); 
 			}
 			

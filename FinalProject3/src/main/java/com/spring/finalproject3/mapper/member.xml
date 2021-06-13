@@ -31,11 +31,19 @@
 		where perno =#{userid} and email=#{email}
 	</select>
 	
-		<!-- 관리자 회원 정보 등록 -->
+	<!-- 관리자 회원 정보 등록 -->
 	<select id="registerMember" parameterType="HashMap" resultType="int">
 		insert into tbl_person(perno, fk_majseq,name,gender,birthday,address,email,mobile,pwd,identity)
   		values(#{perno},#{fk_majseq},#{name},#{gender},#{birthday},#{address},#{email},#{mobile},'1234',#{identity})
 	</select>
+	
+	<!-- 관리자 회원 등록  아이디 중복확인-->
+	<select id="memberidCheck" parameterType="int" resultType="int">
+			select count(*)
+		from tbl_person
+		where perno =#{perno}
+	</select>
+	
 	
 	<!-- 비번 변경 -->
 	<update id="pwdUpdate" parameterType="HashMap">
@@ -168,12 +176,13 @@
 	</delete>	
 	
 	
-	
+	<!-- 관리자 수업 목록 -->
 	<select id ="adminsubject" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
 		select subno,name,fk_perno,subname,credit,semeter,day,time,content,majseq
 		from
 		(
-		    select row_number() over(order by semeter,majseq desc) as rno,subno,name,fk_perno,subname,credit,semeter,day,time,M.content,majseq
+		    select row_number() over(order by semeter,majseq desc) as rno,subno,name,fk_perno,
+		    subname,credit,semeter,day,time,M.content,majseq
 		    from
 		    (
 		        select S.subno,S.fk_perno,S.subname,S.credit,S.semeter,S.day,S.time,p.name,s.fk_majseq
@@ -264,6 +273,7 @@
 	
 	<!-- 하이차트 활용 -->
 	<resultMap type="HashMap" id="getbestBoardMap">
+       	<result property="categoryno" column="categoryno" javaType="String"/>
 		<result property="seq" column="seq" javaType="String"/>
 		<result  property="subject" column="subject" javaType="String" />
 		<result property="good" column="good" javaType="String"/>
@@ -271,13 +281,13 @@
 	
 	
 	<select id="getbestBoard" resultMap="getbestBoardMap">
-	select seq,subject,good
+    select seq,subject,good,categoryno
         from
         (
-        select row_number() over(order by good desc) as rno,seq,subject,good
+        select row_number() over(order by good desc) as rno,seq,subject,good,categoryno
         from tbl_board
         )
-        where rno between 1 and 10
+        where rno between 1 and 20
 	</select>
 	
 </mapper>
