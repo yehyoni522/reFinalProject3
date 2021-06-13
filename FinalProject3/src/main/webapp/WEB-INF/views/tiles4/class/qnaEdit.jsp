@@ -147,6 +147,7 @@ div#btn-board{
 	</div>
       
 	<input type="hidden" name="qnano" value="${requestScope.qnavo.qnano}"/>
+	<input type="hidden" name="fk_perno" value="${requestScope.qnavo.fk_perno}"/>
    </form>
 
 </div>

@@ -301,11 +301,140 @@ public class ClassBoardController {
 		}
 		
 		
-		// === 글수정 페이지 완료하기 === //
+		// === 과제) 글수정 페이지 완료하기 === //
 		@RequestMapping(value="/class/assignmentEditEnd.sam", method= {RequestMethod.POST})
 		public ModelAndView assignmentEditEnd(ModelAndView mav, assignmentBoardVO assignmentVO,MultipartHttpServletRequest mrequest) {
 		
-			int n = service.assignmentEdit(assignmentVO);
+			// 삭제해야 할 글번호 가져오기
+			String assgnno = mrequest.getParameter("assgnno");	
+			
+			HttpSession session = mrequest.getSession();
+			
+			// == 기존 글에 첨부파일 있는지 확인용 시작 ==
+			Map<String,String> paraMap = new HashMap<>();
+			paraMap.put("assgnno", assgnno);
+			
+			assignmentBoardVO oldassignmentVO = service.assignmentView(assgnno);
+			// 글조회수(readCount) 증가 없이 단순히 글1개만 조회 해주는 것이다.
+			// == 기존 글에 첨부파일 있는지 확인용 끝 ==
+			
+			// === 기존 파일 삭제 체크 했는지  ===
+			String deleteFile = mrequest.getParameter("deleteFile");						
+			
+			// === 새로운 첨부파일 있는지 조사 ===		
+			MultipartFile attach = assignmentVO.getAttach();
+			
+			int n=0;
+			
+			// === 새로운 첨부파일 있음 ===	
+			if( !attach.isEmpty() ) {
+			
+				// === 기존 첨부파일 있는지 조사 ===					
+				String fileName = oldassignmentVO.getFileName();
+			
+				
+				if( fileName!=null && !"".equals(fileName) ) {
+					// == 기존 첨부파일 있음 ==
+					
+					paraMap.put("fileName", fileName); // 삭제해야 할 파일명
+					
+					String root = session.getServletContext().getRealPath("/");
+			    	String path = root+"resources"+File.separator+"files";
+			    	  
+			    	paraMap.put("path", path);	
+			    	
+			    	// == 새로운 첨부파일 등록 ==
+			    	String newFileName = ""; // WAS(톰캣)의 디스크에 저장될 파일명 
+			        byte[] bytes = null;
+			        long fileSize = 0;
+			        
+			        try {
+						bytes = attach.getBytes();
+						
+						String originalFilename = attach.getOriginalFilename();
+			    	
+						newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
+						
+						assignmentVO.setFileName(newFileName);
+						
+						assignmentVO.setOrgFilename(originalFilename);
+						
+						fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
+						
+						assignmentVO.setFileSize(String.valueOf(fileSize));
+						
+					} catch (Exception e) {		
+						e.printStackTrace();
+					}
+						
+			    	// 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
+			    	n = service.assignmentEdit_delfile(paraMap, assignmentVO);
+				}
+				
+				else {
+					// == 기존 첨부파일 없음 ==
+										
+					// == 새로운 첨부파일 등록 ==
+					
+					String root = session.getServletContext().getRealPath("/");
+			         
+			        String path = root +"resources"+File.separator+"files";// path가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다. 
+			         
+			    	String newFileName = ""; // WAS(톰캣)의 디스크에 저장될 파일명 
+			        byte[] bytes = null;
+			        long fileSize = 0;
+			        
+			        try {
+						bytes = attach.getBytes();
+						
+						String originalFilename = attach.getOriginalFilename();
+			    	
+						newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
+						
+						assignmentVO.setFileName(newFileName);
+						
+						assignmentVO.setOrgFilename(originalFilename);
+						
+						fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
+						
+						assignmentVO.setFileSize(String.valueOf(fileSize));
+						
+					} catch (Exception e) {		
+						e.printStackTrace();
+					}
+			        
+					// 새로운 첨부파일 등록 & 수정 update
+					n = service.assignmentEdit_withfile(assignmentVO);					
+				}				
+			}
+			
+			// === 새로운 첨부파일 없음 ===
+			else {
+				
+				if("O".equals(deleteFile)) {					
+					// == 기존 첨부파일 삭제 후 update ==
+					String fileName = oldassignmentVO.getFileName();
+					
+					paraMap.put("fileName", fileName); // 삭제해야 할 파일명
+					
+					String root = session.getServletContext().getRealPath("/");
+			    	String path = root+"resources"+File.separator+"files";
+			    	  
+			    	paraMap.put("path", path);	
+			    	
+			    	assignmentVO.setFileName("");							
+			    	assignmentVO.setOrgFilename("");
+			    	assignmentVO.setFileSize(String.valueOf(""));
+				
+			    	n = service.assignmentEdit_delfile(paraMap, assignmentVO);
+					
+				}
+				
+				else {
+					// 글 내용물만 수정
+					n = service.assignmentEdit(assignmentVO);
+				}
+			}
 			
 			if(n==1) {
 				mav.addObject("message", "글수정 성공!!");		
@@ -316,6 +445,7 @@ public class ClassBoardController {
 			mav.setViewName("msg");
 			
 			return mav;
+		
 		}
 		
 		// === 글삭제 페이지 완료하기 === // 
@@ -323,17 +453,35 @@ public class ClassBoardController {
 		public ModelAndView assignmentDeleteEnd(HttpServletRequest request, ModelAndView mav) {
 		
 			// 삭제해야 할 글번호 가져오기
-			String assgnno = request.getParameter("assgnno");
+			String assgnno = request.getParameter("assgnno");		
+			
+			assignmentBoardVO assignmentVO = service.assignmentView(assgnno);
+			HttpSession session = request.getSession();
+			Map<String,String> paraMap = new HashMap<>();
+			
+			paraMap.put("assgnno", assgnno);
+			
+			// === #164. 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. === //
+			
+		    String fileName = assignmentVO.getFileName();
+		      
+		    if( fileName!=null && !"".equals(fileName) ) {
+		    	paraMap.put("fileName", fileName); // 삭제해야 할 파일명
+		    	System.out.println("기존첨부파일 "+fileName);  				    	
+		    	String root = session.getServletContext().getRealPath("/");
+		    	String path = root+"resources"+File.separator+"files";
+		    	  
+		    	paraMap.put("path", path);
+		     }
 
-			int n = service.assignmentDelete(assgnno); 
+		    int n = service.assignmentDelete(paraMap); 
 			
 			if(n==1) {
 				mav.addObject("message", "글삭제 성공!!");
 				mav.addObject("loc", request.getContextPath()+"/class/assignmentBoard.sam");
 			}
-			
+
 			mav.setViewName("msg");
-			
 			return mav;
 		}
 		
@@ -358,6 +506,7 @@ public class ClassBoardController {
 			return jsonObj.toString();  // 정상이라면  "{"n":1, "name":"서영학"}"  오류가 발생하면  "{"n":0, "name":"서영학"}"
 		}
 		
+		// 과제) 과제 제출 - 첨부파일 넣으면서 글쓰기
 		@ResponseBody
 		@RequestMapping(value="/class/addSubmit_withAttach.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 		public String addSubmit(SubmitVO submitvo, MultipartHttpServletRequest mrequest) {
@@ -1006,7 +1155,7 @@ public class ClassBoardController {
 				mav.addObject("message", "글수정 성공!!");		
 			}			
 			
-			mav.addObject("loc", request.getContextPath()+"/class/qnaView.sam?qnano="+qnavo.getQnano());
+			mav.addObject("loc", request.getContextPath()+"/class/qnaView.sam?qnano="+qnavo.getQnano()+"&fk_perno="+qnavo.getFk_perno());
 		
 			mav.setViewName("msg");
 			
@@ -1443,7 +1592,7 @@ public class ClassBoardController {
 			}
 			
 			
-			// == 과제 게시글 수정 페이지 요청 
+			// == 수업자료 게시글 수정 페이지 요청 
 			@RequestMapping(value="/class/materialEdit.sam")
 			public ModelAndView materialEdit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 				
@@ -1481,7 +1630,7 @@ public class ClassBoardController {
 			}
 			
 			
-			// === 글수정 페이지 완료하기 === //
+			// === 자료게시판) 글수정 페이지 완료하기 === //
 			@RequestMapping(value="/class/materialEditEnd.sam", method= {RequestMethod.POST})
 			public ModelAndView materialEditEnd(ModelAndView mav, materialVO mtrvo, MultipartHttpServletRequest mrequest) {
 				
@@ -1490,10 +1639,18 @@ public class ClassBoardController {
 				
 				HttpSession session = mrequest.getSession();
 				
+				// == 기존 글에 첨부파일 있는지 확인용 시작 ==
 				Map<String,String> paraMap = new HashMap<>();
 				paraMap.put("mtrno", mtrno);
 				paraMap.put("searchType", "");
 				paraMap.put("searchWord", "");
+				
+				materialVO oldmtrvo = service.materialViewNoAddCount(paraMap);
+				// 글조회수(readCount) 증가 없이 단순히 글1개만 조회 해주는 것이다.
+				// == 기존 글에 첨부파일 있는지 확인용 끝 ==
+				
+				// === 기존 파일 삭제 체크 했는지  ===
+				String deleteFile = mrequest.getParameter("deleteFile");				
 				
 				// === 새로운 첨부파일 있는지 조사 ===		
 				MultipartFile attach = mtrvo.getAttach();
@@ -1504,10 +1661,10 @@ public class ClassBoardController {
 				if( !attach.isEmpty() ) {
 					
 					// === 기존 첨부파일 있는지 조사 ===					
-					String fileName = mtrvo.getFileName();
-					
-					if( fileName!=null && !"".equals(fileName) ) {
-						// == 기존 첨부파일 있음 ==
+					String fileName = oldmtrvo.getFileName();
+																									
+					if( fileName!=null && !"".equals(fileName)) {
+						// == 기존 첨부파일 있음 ==																	
 						paraMap.put("fileName", fileName); // 삭제해야 할 파일명
 						
 						String root = session.getServletContext().getRealPath("/");
@@ -1515,22 +1672,96 @@ public class ClassBoardController {
 				    	  
 				    	paraMap.put("path", path);	
 				    	
+				    	// == 새로운 첨부파일 등록 ==
+				    	String newFileName = ""; // WAS(톰캣)의 디스크에 저장될 파일명 
+				        byte[] bytes = null;
+				        long fileSize = 0;
+				        
+				        try {
+							bytes = attach.getBytes();
+							
+							String originalFilename = attach.getOriginalFilename();
+				    	
+							newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
+							
+							mtrvo.setFileName(newFileName);
+							
+							mtrvo.setOrgFilename(originalFilename);
+							
+							fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
+							
+							mtrvo.setFileSize(String.valueOf(fileSize));
+														
+							
+						} catch (Exception e) {		
+							e.printStackTrace();
+						}
+							
 				    	// 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
-				    	n = service.materialEdit_delfile(paraMap);
-					}
+				    	n = service.materialEdit_delfile(paraMap, mtrvo);
+					}					
 					
-					else {
-						// == 기존 첨부파일 없음 ==
+					else { // == 기존 첨부파일 없음 ==		
 						
+						// == 새로운 첨부파일 등록 ==					
+						String root = session.getServletContext().getRealPath("/");
+				         
+				        String path = root +"resources"+File.separator+"files";// path가 첨부파일이 저장될 WAS(톰캣)의 폴더가 된다. 
+				         
+				    	String newFileName = ""; // WAS(톰캣)의 디스크에 저장될 파일명 
+				        byte[] bytes = null;
+				        long fileSize = 0;
+				        
+				        try {
+							bytes = attach.getBytes();
+							
+							String originalFilename = attach.getOriginalFilename();
+				    	
+							newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
+							
+							mtrvo.setFileName(newFileName);
+							
+							mtrvo.setOrgFilename(originalFilename);
+							
+							fileSize = attach.getSize(); // 첨부파일의 크기(단위는 byte임)
+							
+							mtrvo.setFileSize(String.valueOf(fileSize));
+							
+						} catch (Exception e) {		
+							e.printStackTrace();
+						}
+				        
 						// 새로운 첨부파일 등록 & 수정 update
-						n = service.materialEdit_withfile(paraMap);					
+						n = service.materialEdit_withfile(mtrvo);					
 					}				
 				}
 				
 				// === 새로운 첨부파일 없음 ===
 				else {
-					// 글 내용물만 수정
-					n = service.materialEdit(mtrvo);
+					
+					if("O".equals(deleteFile)) {					
+						// == 기존 첨부파일 삭제 후 update ==
+						String fileName = oldmtrvo.getFileName();
+						
+						paraMap.put("fileName", fileName); // 삭제해야 할 파일명
+						
+						String root = session.getServletContext().getRealPath("/");
+				    	String path = root+"resources"+File.separator+"files";
+				    	  
+				    	paraMap.put("path", path);	
+				    	
+						mtrvo.setFileName("");							
+						mtrvo.setOrgFilename("");
+						mtrvo.setFileSize(String.valueOf(""));
+					
+				    	n = service.materialEdit_delfile(paraMap, mtrvo);
+						
+					}
+					
+					else {
+						// 글 내용물만 수정						
+						n = service.materialEdit(mtrvo);
+					}
 				}
 				
 				if(n==1) {
@@ -1547,7 +1778,7 @@ public class ClassBoardController {
 			
 			// === #76. 글삭제 페이지 요청 === //
 			@RequestMapping(value="/class/materialDelete.sam")
-			public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+			public ModelAndView materialDeleteEnd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		   
 				// 삭제해야 할 글번호 가져오기
 				String mtrno = request.getParameter("mtrno");
@@ -1581,7 +1812,7 @@ public class ClassBoardController {
 				      
 				    if( fileName!=null && !"".equals(fileName) ) {
 				    	paraMap.put("fileName", fileName); // 삭제해야 할 파일명
-				    	  				    	
+				    	System.out.println("기존첨부파일 "+fileName);  				    	
 				    	String root = session.getServletContext().getRealPath("/");
 				    	String path = root+"resources"+File.separator+"files";
 				    	  

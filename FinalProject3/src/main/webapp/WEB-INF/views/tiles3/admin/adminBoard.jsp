@@ -279,12 +279,13 @@ div#admincontent {
 
    //== 게시글 체크박스 함수 끝 == //
 
-	function goView(seq){
-		   
+	function goView(seq,categoryno){
+	   
 		var frm = document.goViewFrm;
 		frm.seq.value=seq;
 		frm.searchType.value = "${requestScope.paraMap.searchType}";
 	    frm.searchWord.value = "${requestScope.paraMap.searchWord}"; 
+	    frm.categoryno.value = categoryno; 
 		frm.method="get";
 		frm.action="<%= ctxPath%>/board/view.sam";
 		frm.submit();
@@ -548,11 +549,11 @@ div#admincontent {
 						 <c:if test="${empty boardvo.fileName}">
 			                <c:if test="${boardvo.depthno == 0}">
 			                  	<c:if test="${boardvo.commentCount > 0}">
-			                         <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>       
+			                         <span class="subject" onclick="goView('${boardvo.seq}','${boardvo.categoryno}')">${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>       
 			                   	</c:if>
 			                      
 			                  	<c:if test="${boardvo.commentCount == 0}">
-			                         <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
+			                         <span class="subject" onclick="goView('${boardvo.seq}','${boardvo.categoryno}')">${boardvo.subject}</span>
 			                    </c:if>
 			              	</c:if> 
 		                 
@@ -560,11 +561,11 @@ div#admincontent {
 		               		<%-- 답변글인 경우 --%>
 		               		<c:if test="${boardvo.depthno > 0}">
 		                   		<c:if test="${boardvo.commentCount > 0}">
-		                       	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color:red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">ㄴ&nbsp;</span>${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>       
+		                       	<span class="subject" onclick="goView('${boardvo.seq}','${boardvo.categoryno}')"><span style="color:red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">ㄴ&nbsp;</span>${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>       
 		                    		</c:if>
 		                    
 		                    		<c:if test="${boardvo.commentCount == 0}">
-		                       	<span class="subject" onclick="goView('${boardvo.seq}')"><span style="color:red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">ㄴ&nbsp;</span>${boardvo.subject}</span>
+		                       	<span class="subject" onclick="goView('${boardvo.seq}','${boardvo.categoryno}')"><span style="color:red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">ㄴ&nbsp;</span>${boardvo.subject}</span>
 		                  		</c:if>
 		               		</c:if> 
 	               		</c:if>
@@ -573,14 +574,14 @@ div#admincontent {
                		
                		<%-- 첨부파일이 있는 경우 시작 --%>
                		<c:if test="${not empty boardvo.fileName}">
-						답변글이 아닌 원글인 경우
+						<!-- 답변글이 아닌 원글인 경우 -->
 		                <c:if test="${boardvo.depthno == 0}">
 		                  	<c:if test="${boardvo.commentCount > 0}">
-		                         <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>&nbsp;<img src="<%=ctxPath %>/resources/images/disk.gif"/>
+		                         <span class="subject" onclick="goView('${boardvo.seq}','${boardvo.categoryno}')">${boardvo.subject}&nbsp;<span class="comment">${boardvo.commentCount}</span></span>&nbsp;<img src="<%=ctxPath %>/resources/images/disk.gif"/>
 		                   	</c:if>
 		                      
 		                  	<c:if test="${boardvo.commentCount == 0}">
-		                         <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>&nbsp;<img src="<%=ctxPath %>/resources/images/disk.gif"/>
+		                         <span class="subject" onclick="goView('${boardvo.seq}','${boardvo.categoryno}')">${boardvo.subject}</span>&nbsp;<img src="<%=ctxPath %>/resources/images/disk.gif"/>
 		                    </c:if>
 		              	</c:if>
 	                 
@@ -631,7 +632,7 @@ div#admincontent {
 <form name="goViewFrm">
 	<input type="hidden" name="seq" />
 	<input type="hidden" name="gobackURL" value="${requestScope.gobackURL}" />
-	<input type="hidden" name="categoryno" value="${categoryno}">
+	<input type="hidden" name="categoryno" />
 	<input type="hidden" name="searchType" />
     <input type="hidden" name="searchWord" />
 </form>

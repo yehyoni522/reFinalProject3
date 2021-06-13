@@ -48,11 +48,17 @@ public class AdminBoardController {
 	       if(searchWord ==null||"".equals(searchWord)||searchWord.trim().isEmpty()) {
 	          searchWord="";
 	       }
+	       
+	       String categoryno = request.getParameter("categoryno");
+	       if(categoryno==null) {
+	    	   categoryno="1";
+	       }
+	       mav.addObject("categoryno",categoryno);
 	          
 	       Map<String, String> paraMap = new HashMap<String, String>();
 	       
 	       paraMap.put("searchType",searchType);
-	       paraMap.put("searchWord",searchWord);
+	       paraMap.put("searchWord",searchWord);	   
 	   
 	       // 게시판 선택
 	       String viewBoard = request.getParameter("viewBoard");
