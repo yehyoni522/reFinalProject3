@@ -35,7 +35,7 @@ th{
 tr{
 	border-top: solid 0.5px #bfbfbf;
 	border-bottom: solid 0.5px #bfbfbf;
-	height:40px;
+	height:50px;
 }
 
 div#btn-board{

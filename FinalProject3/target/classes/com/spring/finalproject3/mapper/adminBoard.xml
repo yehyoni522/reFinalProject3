@@ -73,28 +73,7 @@
 	</select>
 	
 	<!-- === 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
-	<select id="boardListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.AdminBoardVO">
-		<!-- select seq, categoryno, name, subject, good, readCount, commentCount, regDate
-		from
-		(
-			select row_number() over(order by seq desc) as rno,
-			        B.seq, B.categoryno, P.name, B.subject, 
-			        B.good, B.readCount, B.commentCount,
-			        to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
-			from tbl_board B join tbl_person P
-			    on B.fk_perno=P.perno
-		    where status = 1
-		    <if test='searchWord != "" '>
-		    and lower(${searchType}) like '%'||lower(#{searchWord})||'%'
-		    </if>
-		    <if test='viewBoard != "" '>
-        	and categoryno = ${viewBoard}
-        	</if>
-		)V
-		where rno between #{startRno} and #{endRno} -->
-		
-		
-		
+	<select id="boardListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.AdminBoardVO">		
 		select rno,seq,categoryno,name,subject,good,readCount,commentCount, regDate
 		        ,fk_perno, fileName, groupno, fk_seq, depthno, namecheck 
 		from

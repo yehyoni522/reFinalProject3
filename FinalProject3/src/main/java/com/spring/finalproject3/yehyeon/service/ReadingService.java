@@ -167,4 +167,12 @@ public class ReadingService implements InterReadingService {
 		return materialList;
 	}
 
+
+
+	@Override
+	public int goUpdateRcheck() {
+		int l = dao.goUpdateRcheck();
+		return l;
+	}
+
 }
