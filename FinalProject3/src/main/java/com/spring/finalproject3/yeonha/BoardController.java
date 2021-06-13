@@ -337,7 +337,7 @@ public class BoardController {
 			gobackURL = gobackURL.replaceAll(" ", "&");	
 		}
 		
-		System.out.println(gobackURL);
+		// System.out.println(gobackURL);
 		mav.addObject("gobackURL", gobackURL);
 		
 		try {
