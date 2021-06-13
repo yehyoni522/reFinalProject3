@@ -448,12 +448,12 @@
 							var events=[];
 						      $.each(json, function(index, item){
 								  events.push({
-									  id:item.schno,
-									  title:item.calsubject,
-									  start:item.startDate,
-									  end:item.endDate,
-									  color:item.color,
-									  description:item.memo
+									  id:item.schno,//스케줄 번호
+									  title:item.calsubject,//제목
+									  start:item.startDate,//시작일
+									  end:item.endDate,//종료일
+									  color:item.color,//색상
+									  description:item.memo//메모 
 									});
 			                 });// end of $.each(json1, function(index, item){}) ------------
 						      successCallback(events); 
@@ -543,33 +543,17 @@ function go_boardDisplay(){
 				var obj;
 				
 			
-				 obj ={ name:json[i].subject,
+				 obj ={	
+						 name:json[i].subject,
 						 weight:Number(json[i].good),
-						 seq:json[i].seq
+						 seq:json[i].seq,
+						 categoryno:json[i].categoryno
 					  };
 		
 				
 				resultArr.push(obj)//배열속에 객체를 넣기
 			}//end of for----------------------
-			//console.log(resultArr);
-			/* var text = resultArr;
-			var lines = text.split(/[,\. ]+/g),
-			  data = Highcharts.reduce(lines, function (arr, word) {
-			    var obj = Highcharts.find(arr, function (obj) {
-			      return obj.name === word;
-			    });
-			    if (obj) {
-			      obj.weight += 1;
-			    } else {
-			      obj = {
-			        name: word,
-			        weight: 1
-			      };
-			      arr.push(obj);
-			    }
-			    return arr;
-			  }, []);
-		 */
+			
 			Highcharts.chart('container', {
 			    chart: {
 			        renderTo: 'chart',
@@ -602,8 +586,8 @@ function go_boardDisplay(){
 				        cursor: 'pointer',
 				        point: {
 				             events: {
-				                 click: function(e) {
-				                    location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+e.point.seq;
+				                 click: function(e) {          
+				                    location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+e.point.seq+"&categoryno="+e.point.categoryno;
 				                }
 				            }
 				        }
@@ -712,7 +696,7 @@ function go_boardDisplay(){
 			     
 			        </tbody>
 			    </table>
-			    <div id="pageBar" style="margin-top: 30px;"></div>
+			    <div id="pageBar" style="margin-top: 30px; padding-right: 30px;"></div>
 			
 	    <figure class="highcharts-figure">
   <div id="container"></div>

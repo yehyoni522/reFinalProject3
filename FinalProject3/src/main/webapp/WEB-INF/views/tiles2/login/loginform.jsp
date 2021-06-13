@@ -210,7 +210,7 @@ input.findinput{
 		    <form name="loginFrm">
 			    <h3 style="text-align: center;"></h3>
 			    <div class="form-group">
-					<input type="text" id="loginUserid" class="form-control" placeholder="Username" name="userid" maxlength="20">
+					<input type="text" id="loginUserid" class="form-control" placeholder="학번/교번" name="userid" maxlength="20">
 					<br>
 			    	 <input type="password" id="loginPwd"  class="form-control" placeholder="●●●●" name="pwd" maxlength="20">
 			    	
