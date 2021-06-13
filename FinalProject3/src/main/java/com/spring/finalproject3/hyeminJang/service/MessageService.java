@@ -12,7 +12,7 @@ import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.InterMessageDAO;
 import com.spring.finalproject3.hyeminJang.model.InterMypageDAO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
-import com.spring.finalproject3.hyeminJang.model.ScoreVO;
+
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
 //=== #31. Service 선언 === 

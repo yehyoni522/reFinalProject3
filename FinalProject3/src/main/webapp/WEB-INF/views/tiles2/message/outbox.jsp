@@ -60,7 +60,7 @@ div#admincontent {
 .button {
 	
 	margin-top:40px;
-	margin-left: 120px;
+	margin-left: 110px;
     width:100px;
     background-color:#2ECC71;
     border: none;
@@ -176,7 +176,7 @@ tr#tr_1:hover{
 a:visited {
   background-color : black;
 }
-.target { display: inline-block; width: 550px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.target { display: inline-block; width: 450px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

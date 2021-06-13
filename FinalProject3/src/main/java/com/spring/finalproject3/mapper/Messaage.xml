@@ -118,7 +118,7 @@
 		from (
 			select row_number() over (order by outboxSeq desc) as rno, 
 			            outboxSeq, fk_perno, sender, subject, 
-			            to_char(senDate, 'yyyy-mm-dd PM HH:MI:SS') as senDate, to_char(S.readDate, 'yyyy-mm-dd PM HH:MI:SS') as readDate, outboxName, isRead
+			            to_char(senDate, 'yyyy-mm-dd PM HH:MI:SS') as senDate, to_char(S.readDate, 'yyyy-mm-dd') as readDate, outboxName, isRead
 			from tbl_outbox O join tbl_messageSender S
             on O.outboxSeq = S.fk_outboxSeq
 			where sender = to_number(#{userid})

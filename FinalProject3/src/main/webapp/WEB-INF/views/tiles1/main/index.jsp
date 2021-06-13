@@ -161,7 +161,7 @@
 	
 	img#popup{
 	position: fixed;
-  	top: 650px;
+  	top: 600px;
   	right: 60px;
   	cursor:pointer;
   	 width: 80px; 
@@ -522,9 +522,9 @@ function click_add(){
 }
 function go_pop(){
 	
-	javascript:void(window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=400, height=650, toolbar=no, menubar=no, scrollbars=yes, resizable=yes")); 
+	 window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=360, height=650, toolbar=no, menubar=no, scrollbars=yes, resizable=yes"); 
 	
-		<%-- location.href="<%= serverName%><%=ctxPath%>/chatting/multichat.sam"; --%>
+		 <%-- location.href="<%= serverName%><%=ctxPath%>/chatting/multichat.sam";  --%>
 	}
 
 function go_boardDisplay(){
