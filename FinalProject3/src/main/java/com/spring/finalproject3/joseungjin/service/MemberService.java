@@ -77,6 +77,13 @@ public class MemberService implements InterMemberService {
 		 int registerMember=dao.registerMember(paraMap);
 		return registerMember;
 	}
+	
+	//회원등록 아이디 중복확인
+	@Override
+	public int memberidCheck(int perno) {
+		 int n=dao.memberidCheck(perno);
+			return n;
+	}
 
 	@Override
 	public List<Main_index_BoardVO> MainboardView() {
@@ -174,6 +181,7 @@ public class MemberService implements InterMemberService {
 		List<Map<String, String>> bestBoardList=bdao.getbestBoard();
 		return bestBoardList;
 	}
+	
 
 
 

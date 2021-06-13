@@ -19,6 +19,8 @@ public interface InterPersonDAO {
 	int isUserExist2(Map<String, String> paraMap);
 	//관리자 회원 정보 등록
 	int registerMember(Map<String, String> paraMap);
+	//관리자 회원등록 아이디 중복확인
+	int memberidCheck(int perno);
 
 
 	
