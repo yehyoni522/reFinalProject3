@@ -610,8 +610,9 @@ a {
 					<form name="addWriteFrm" style="margin-top: 20px;">
 						<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />  
 						<h3>댓글작성</h3>
-						<input id="commentContent" type="text" name="content" class="long" /> 						
 						<input type="hidden" name="fk_seq" value="${requestScope.boardvo.seq}" /> 
+						<input hidden="hidden" />
+						<input id="commentContent" type="text" name="content" class="long" autocomplete=”off”/> 						
 						<img src="<%=ctxPath%>/resources/images/commentWrite.PNG" id= "comwriteimg" onclick="goAddWrite()">
 					</form>
 			    </c:if>		 			
@@ -622,13 +623,13 @@ a {
 	 	<c:if test="${requestScope.boardvo.previoussubject ne null}">
 	 		<div style="margin-bottom: 1%;">
 	 			<span style="font-weight:bold;">이전글제목&nbsp;&nbsp;</span>
-	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&categoryno=${categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
+	 			<span class="move" onclick="javascript:location.href='<%=ctxPath%>/board/view.sam?seq=${requestScope.boardvo.previousseq}&categoryno=${categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}'">${requestScope.boardvo.previoussubject}</span>
 	 		</div>
 	 	</c:if>
 	 	<c:if test="${requestScope.boardvo.nextsubject ne null}">	
 			<div style="margin-bottom: 1%;">
 				<span style="font-weight:bold;">다음글제목&nbsp;&nbsp;</span>
-				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&categoryno=${categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
+				<span class="move" onclick="javascript:location.href='<%=ctxPath%>/board/view.sam?seq=${requestScope.boardvo.nextseq}&categoryno=${categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}'">${requestScope.boardvo.nextsubject}</span>
 			</div>
 		</c:if>
 	</c:if>

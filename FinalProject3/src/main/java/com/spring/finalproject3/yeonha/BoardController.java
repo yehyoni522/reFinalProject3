@@ -312,8 +312,8 @@ public class BoardController {
 		String seq = request.getParameter("seq");		
 		String categoryno = request.getParameter("categoryno");
 	    String searchType = request.getParameter("searchType");
-	    String searchWord = request.getParameter("searchWord");
-	    
+	    String searchWord = request.getParameter("searchWord");	    
+	  
 	    if(searchType == null) {
 			searchType = "";	
 		}
