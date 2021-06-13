@@ -15,17 +15,6 @@
 	
 	<!-- === 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함한 것) === -->
 	<select id="assignListSearchWithPaging" parameterType="HashMap" resultType="com.spring.finalproject3.seoyeon.model.assignmentBoardVO">
-		<!-- select assgnno, subject, deadline, submitcount, fileName
-			from
-			(
-				select row_number() over(order by assgnno desc) as rno,
-	                    assgnno,subject, submitcount, A.fileName as fileName,
-				        to_char(deadline, 'yyyy-mm-dd hh24:mi:ss') as deadline
-				from tbl_assgn A left join tbl_submit S
-	            on assgnno = fk_assgnno
-	        where A. fk_subno=#{subno}
-			)V
-			where rno between #{startRno} and #{endRno} -->
 			
 		<if test="identity eq 0">
 			select assgnno,subject, deadline, status, score, fileName
@@ -168,9 +157,9 @@
 		from 
 		(
 		    select row_number() over(order by submitno desc) as rno,score,submitno, name, content, to_char(submitdate, 'yyyy-mm-dd hh24:mi:ss') as submitdate 
-		     , nvl(fileName,' ') AS fileName, fk_perno
-				     , nvl(orgFilename, ' ') AS orgFilename
-				     , nvl(to_char(fileSize), ' ') AS fileSize  
+		     	, nvl(fileName,' ') AS fileName, fk_perno
+				, nvl(orgFilename, ' ') AS orgFilename
+			    , nvl(to_char(fileSize), ' ') AS fileSize  
 		    from tbl_submit S join tbl_person p
 		    on fk_perno = perno
 		    where fk_assgnno = #{fk_assgnno}
@@ -432,7 +421,7 @@
 	</select>
 	
 
-	<!-- 계획) 내용물 추출해오기 -->
+	<!-- 계획) 과목 정보 추출해오기 -->
 	<select id="getInfo" parameterType="String" resultType="com.spring.finalproject3.seoyeon.model.planVO">
 		select V.subno,subname,credit,semeter as semester,day,time,subcol,submajor,name,mobile,email,col,major
 		from
@@ -458,7 +447,7 @@
 		where V.subno=#{subno}
 	</select>
 
-	<!-- 계획) 글계획주차 -->
+	<!-- 계획) 계획주차 추출해오기 -->
 	<select id="getPlan" parameterType="String" resultType="com.spring.finalproject3.seoyeon.model.planVO">
 		select planno,content,etc
 		from tbl_plan
@@ -471,7 +460,7 @@
 		insert into tbl_plan values(#{planno}, #{subno}, #{content}, #{etc})
 	</insert>
 	
-		<!-- 계획) 강의 계획서 수정하기 완료 -->
+	<!-- 계획) 강의 계획서 수정하기 완료 -->
 	<update id="planEdit" parameterType="HashMap">
 		update tbl_plan set content = #{content}, etc = #{etc}
 		where planno = #{planno} and fk_subno = #{subno}

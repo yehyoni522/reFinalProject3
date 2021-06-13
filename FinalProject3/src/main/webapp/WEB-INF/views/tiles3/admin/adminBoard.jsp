@@ -529,7 +529,7 @@ div#admincontent {
 	         	<td style="text-align: center;">
 	         		<input type="checkbox" name="checkOne" value="${boardvo.seq}" />
 			 	</td>
-	         	<td align="center">${boardvo.seq}&nbsp;${boardvo.categoryno}</td>
+	         	<td align="center">${boardvo.seq}</td>
 	             <td align="center">
 	             	<c:if test="${boardvo.categoryno==1}">
 	             		<a class="subject" style=" text-align:center; width: 280px;" href="/finalproject3/board/list.sam?categoryno=1">자유게시판</a>

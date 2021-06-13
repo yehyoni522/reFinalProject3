@@ -327,7 +327,7 @@ div#btn-board{
 				}
 				else {
 					html += "<tr>";
-					html += "<td colspan='5' class='comment'>제출된 과제가 없습니다</td>";
+					html += "<td colspan='100%' class='comment'>제출된 과제가 없습니다</td>";
 					html += "</tr>";
 				}
 				

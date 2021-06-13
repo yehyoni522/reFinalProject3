@@ -1155,7 +1155,7 @@ public class ClassBoardController {
 				mav.addObject("message", "글수정 성공!!");		
 			}			
 			
-			mav.addObject("loc", request.getContextPath()+"/class/qnaView.sam?qnano="+qnavo.getQnano());
+			mav.addObject("loc", request.getContextPath()+"/class/qnaView.sam?qnano="+qnavo.getQnano()+"&fk_perno="+qnavo.getFk_perno());
 		
 			mav.setViewName("msg");
 			
