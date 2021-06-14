@@ -164,7 +164,7 @@ dfn:hover::before {top: 50px;}
 		location.href="<%= ctxPath%>/reading/index.sam";
 	}
 	function updateUsecheck(){
-		var bool = confirm("날짜 : ${bookToday.bDate} 시간 : ${bookToday.tname} 열람실 입실처리를 완료하시겠습니까?");
+		var bool = confirm("날짜 : ${bookToday.bDate} 시간 : ${bookToday.tname} <<열람실 입실처리를 완료하시겠습니까?>>");
 		var bno = $("input#bno").val();
 		
 		if(bool){
@@ -174,8 +174,8 @@ dfn:hover::before {top: 50px;}
 			return;
 		}
 	}
-	function gocheck(perno){
-		location.href="<%= ctxPath%>/reading/index.sam";
+	function goCheck(subno){
+		location.href="<%= ctxPath%>/class/assignmentBoard.sam?subno="+subno;
 	}
 </script>
 <div class="container" style="width: 90%;">
@@ -346,8 +346,8 @@ dfn:hover::before {top: 50px;}
 	        <td>${scorelist.subno}</td>
 	        <td >${scorelist.subname}</td>
 	        <td>${scorelist.name}</td>
-	        <td ><a onclick="goCheck(${sessionScope.loginuser.perno})">${scorelist.exchagedScore}/40</a>(실점수:${scorelist.totalscore})</td>
-	        <td>${scorelist.exchagedScore}/40(실점수:${scorelist.totalscore})</td>
+	        <td ><dfn data-info="과제목록을 확인하시려면 클릭하세요!"><a style="cursor: pointer;" onclick="goCheck(${scorelist.subno})">${scorelist.exchagedScore}/40</a></dfn></td>
+	        <td>50/100</td>
 	      </tr>
 	    </tbody>
 	 </c:forEach>  
