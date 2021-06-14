@@ -95,7 +95,21 @@ public interface InteradminMemberDAO {
 	
 	// 만약 이미 출석이 되어있다면을 처리하기 위해 존재하는지 검색한다.
 	InputatdcVO getchecksign(Map<String, String> paraMap);
+	
+	// 흠.. subno가 검색이 안되므로 검색이 되는 subject 로 subno를 불러와 줍시다.
+	SubjectVO getAttendancesubno(String subject);
+	
+	// 정답을 비교하기 위해 정답테이블과 학생 정답테이블을 조인해서 담아온다
+	Map<String, String> getScoreset(Map<String, String> paraMap);
+	
+	// 정답을 비교해서 정답이면 해당 학생 정답테이블의 행에서 점수를 1 올려준다.
+	int updscore(Map<String, String> verseinfo);
+	
+	// 이미 시험을 쳤는지 검사한다.
+	StdtansVO getscorecheck(Map<String, String> paraMap);
 
+	
+	
 	
 	
 	

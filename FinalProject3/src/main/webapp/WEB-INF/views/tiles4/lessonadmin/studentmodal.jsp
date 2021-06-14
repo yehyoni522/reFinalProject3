@@ -48,7 +48,7 @@
 		$.ajax({
 			url:"<%=ctxPath%>/lesson/studentsign.sam",
 			type:"post",
-			data:{"fk_subno":"${requestScope.fk_subno}",
+			data:{"subject":"${sessionScope.subject}",
 				  "fk_perno":"${requestScope.fk_perno}",
 				  "randomsign":frm.randomsign.value},
 			dataType:"json",
@@ -58,17 +58,23 @@
 		   			alert("출석에 성공하였습니다.");
 		   			$("span.remove").remove();
 		   			
-		   			html = "이미 출석은 완료하셨습니다.";
+		   			html = "이미 출석을 완료하셨습니다.";
 		   			
 		   			$("span.signmodal").html(html);
+		   			return;
 		   		}
 		   		else if(json.n == 2){
-		   			alert("출석에 실패하였습니다. 번호를 확인해주세요.");
-		   			frm.randomsign.focus();
+		   			alert("이미 출석을 완료하셨습니다.");
+		   			
+					$("span.remove").remove();   			
+		   			html = "이미 출석을 완료하셨습니다.";		   			
+		   			$("span.signmodal").html(html);
+		   			
 		   			return;
 		   		}
 		   		else {
-		   			alert("이미 출석을 완료하셨습니다.");
+		   			alert("번호를 확인해주세요");
+		   			frm.randomsign.focus();
 		   			return;
 		   		}
 		   		
