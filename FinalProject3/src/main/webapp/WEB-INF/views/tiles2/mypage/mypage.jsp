@@ -13,9 +13,11 @@
 body{
    font-family: 'Noto Sans KR', sans-serif;
 }
+
 tr#score > th{
 	background-color: #ccc;
 	text-align: center;
+
 	
 }
 .scoretable{
@@ -73,7 +75,7 @@ table.type04 {
   font-size: 15px;
 }
 table.type04 th {
-  width: 160px;
+  width: 190px;
   padding: 10px;
   font-weight: bold;
   vertical-align: top;
@@ -245,7 +247,7 @@ dfn:hover::before {top: 50px;}
 		
 			<table class="type04">
 			 <tr>
-			    <th rowspan="5"  style="width: 130px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:120px; height:120px;  margin-top:20px;"></th>
+			    <th rowspan="5"  style="width: 115px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:115px; height:115px;  margin-top:20px;"></th>
 			  </tr>
 			  <tr>
 			    <th scope="row">▶ 성명</th>
