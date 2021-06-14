@@ -35,7 +35,7 @@
 	.lateness {
 		background-color: #ffc266;
 	}
-	.off {
+	.offd {
 		background-color: #ff6666;
 	}
 	
@@ -54,50 +54,78 @@
 
 <script>
 
+	var html = "";
+	
 	$(function(){
- 		
- 		// 접속한 회원의 출석 정보를 표에 넣는다.
+		
+		goStudentList();	
+		
+ 		var sign_frm = document.takemodalFrm;
+		
+ 		sign_frm.target = "signoutput";
+ 		sign_frm.action = "<%=ctxPath%>/lesson/studentmodal.sam";
+ 		sign_frm.method = "post";
+ 		sign_frm.submit();
+		
+		
+	}); // end of $(function(){})
+	
+	
+	function goStudentList(){
+		
+		// 접속한 회원의 출석 정보를 표에 넣는다.
  		$.ajax({
 			url:"<%=ctxPath%>/lesson/attendancecheckList.sam",
 			type:"post",
-			data:{"fk_subno":"${requestScope.fk_subno}",
+			data:{"subject":"${sessionScope.subject}",
 				  "fk_perno":"${sessionScope.loginuser.perno}"},
 			dataType:"json",
 		   	success:function(json) {
 		   		
-		   		html = "";
-		   		
-		   		// console.log("ㅇㅇ");
-		   		
+		   		// console.log("~~~~~~~~~~~~");
+		   		//console.log(JSON.stringify(json));
+		   		//console.log("~~~~~~~~~~~~");
+		   		<%-- [{"inputatdcdate":"2021-06-13 11:38:52","inputweekno":2,"inputatdcstatus":1}
+		   		     ,{"inputatdcdate":"2021-06-13 11:38:52","inputweekno":2,"inputatdcstatus":1}
+		   		     ,{"inputatdcdate":"2021-06-13 11:38:52","inputweekno":2,"inputatdcstatus":1}]
+		   		--%>     
+
 		   		$.each(json, function(index, item){
 		   			
-		   			// console.log("dd");
+		   			html = "";		   			 			
+	   			
 		   			
-		   			html += "<div class='weeks' align='left'>"+(index+1)+"주차</div>";
-		   			html += "<div class='date' align='right'>"+item.inputatdcdate+"</div>";
-					
+			   			
+		   			if(Number(item.inputatdcdate) == 9999){
+		   				html += "<div class='weeks' align='left'>"+item.inputweekno+"주차</div>";
+			   			html += "<div class='date' align='right'>결석</div>";		
+		   				$("td#weekno"+item.inputweekno+"").addClass('offd');
+		   			}
 		   			
-		   			$("td#weekno"+(index+1)).html(html);
+		   			else if(Number(item.inputatdcstatus) == 1){
+		   				html += "<div class='weeks' align='left'>"+item.inputweekno+"주차</div>";
+			   			html += "<div class='date' align='right'>"+item.inputatdcdate+"</div>";		
+		   				$("td#weekno"+item.inputweekno+"").addClass('lateness');
+		   			}
+		   			else if(Number(item.inputatdcstatus) == 2){
+		   				html += "<div class='weeks' align='left'>"+item.inputweekno+"주차</div>";
+			   			html += "<div class='date' align='right'>"+item.inputatdcdate+"</div>";		
+		   				$("td#weekno"+item.inputweekno+"").addClass('checkon');
+		   			}
 		   			
-		   			if(Number(item.inputatdcstatus) == 0){
-		   				$("td#weekno"+(index+1)).addClass('off');
-		   			}
-		   			if(Number(item.inputatdcstatus) == 1){
-		   				$("td#weekno"+(index+1)).addClass('lateness');
-		   			}
-		   			if(Number(item.inputatdcstatus) == 2){
-		   				$("td#weekno"+(index+1)).addClass('checkon');
-		   			}
+		   			$("td#weekno"+item.inputweekno+"").html(html);
 		   			
 		   		}); // end of $.each(json, function(index, item){});
+		   		
+		   		
 		   		
 		   	}, error: function(request, status, error){
 			      alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			}
 		   	
 		});	// end of $.ajax({}) 
-		
-	}); // end of $(function(){})
+				
+	} // end of function goStudentList(){}
 
 
 
@@ -185,7 +213,7 @@
 	</div>
 
   <form name="takemodalFrm">
-  	<input type="hidden" name="fk_subno" value="${requestScope.subno}" />
+  	<input type="hidden" name="subject" value="${sessionScope.subject}" />
   	<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
   </form>	
 

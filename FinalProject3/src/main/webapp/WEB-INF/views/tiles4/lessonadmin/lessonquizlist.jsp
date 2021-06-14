@@ -95,7 +95,7 @@ div#btn-board{
 </script>   
 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
 
-<div class="quizcontainer" style="margin-top: 150px;" >
+<div class="quizcontainer" style="margin-top: 150px; margin-left:450px; width: 60%; min-height: 600px;" >
 
 	<div class="headerCategoty">
 	<i class="fas fa-university "></i>
@@ -113,20 +113,19 @@ div#btn-board{
 				<th style="width: 40%;">시험명</th>
 				<th style="width: 15%;">과목명</th>
 				<th style="width: 15%;">교수</th>	
-				<th style="width: 10%;">시험현황</th>
+
 				<th style="width: 10%;">시험날짜</th>						
 			</tr>
 			
 			<c:forEach var="quizvo" items="${requestScope.quizvoList}" varStatus="status">		 
 				<tr class="list">
 					<td>${status.count}<input class="quizno" type="hidden" value="${quizvo.quizno}" name="quizno"/></td>
-					<td style="text-align:left;">
+					<td>
 						<span class="subject" >${quizvo.quizname}</span>
 						<input type="hidden" name="quizname" />
 					</td>
 					<td>${quizvo.subname}</td>							
 					<td>${quizvo.name}</td>
-					<td>작업중</td>
 					<td>${quizvo.quizday}</td>
 				</tr>
 			</c:forEach>

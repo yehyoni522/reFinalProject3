@@ -230,6 +230,7 @@
 			type:"post",
 			data:{"fk_dsno":dsno, "fk_perno":"${sessionScope.loginuser.perno}", "fk_tno":tno},
 			dataType:"json",
+			async: false,
 		   	success:function(json) {
 		   		if(json.l == 1) {
 		   			alert("예약이 완료되었습니다.");

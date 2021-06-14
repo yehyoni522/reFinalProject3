@@ -87,7 +87,10 @@ table.quiz td {
 			    </td>
 			  </tr>
 		  </c:forEach>
-		  <tr><td style="border: none;"><input type="hidden" name="quizname" value="${requestScope.quizname}"></td></tr>
+		  <tr><td style="border: none;">
+		  	<input type="hidden" name="quizname" value="${requestScope.quizname}">
+		  	<input type="hidden" name="perno" value="${sessionScope.loginuser.perno}">
+		  </td></tr>
 		</table>	
 	</form>
 	
