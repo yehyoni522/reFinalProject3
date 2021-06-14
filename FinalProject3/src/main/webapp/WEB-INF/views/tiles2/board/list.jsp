@@ -23,7 +23,7 @@
    	color: navy;
 	cursor: pointer;
 }
-#newhit{
+#newhit{ 
 	position: relative;
 	left: 91%;
 	margin-bottom: 5px;
