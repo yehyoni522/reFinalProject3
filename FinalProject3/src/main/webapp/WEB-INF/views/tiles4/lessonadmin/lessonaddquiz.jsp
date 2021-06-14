@@ -33,7 +33,7 @@ table.quiz td {
   background-color: #e6e6e6;	
 }
 
-button {
+button.leeson {
 	border-radius: 10%;
 	border: none;
 	color: white;
@@ -133,9 +133,9 @@ button {
 		
 		<div align="center" style="width: 50%; margin-bottom: 13px;">
 		<%-- 문제 추가 시 cnt 값이 1 올라가고  --%>
-		<button type="button" onclick="addquiz()" style=" background-color: #00e600;">문제 추가</button>
-		<button type="button" onclick="removequiz()" style=" background-color: #ff471a;">문제 삭제</button>
-		<button type="button" onclick="quizaddEnd()" style=" background-color: #bfbfbf;">작성 완료</button>
+		<button class="leeson" type="button" onclick="addquiz()" style=" background-color: #00e600;">문제 추가</button>
+		<button class="leeson" type="button" onclick="removequiz()" style=" background-color: #ff471a;">문제 삭제</button>
+		<button class="leeson" type="button" onclick="quizaddEnd()" style=" background-color: #bfbfbf;">작성 완료</button>
 	</div>	
 		
 	</form>

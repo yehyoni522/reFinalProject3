@@ -39,7 +39,7 @@
 		background-color: #ff6666;
 	}
 	
-	button {
+	button.leeson {
 	  border-radius: 5%;
 	  border: none;
 	  color: white;
@@ -135,7 +135,7 @@
 
 	<div align="center" style="font-size: 18pt; font-weight: bold;">출석</div>
 	
-	<div align="center"><button type="button" data-toggle="modal" data-target="#sign">출석하기</button></div>
+	<div align="center"><button class="leeson" type="button" data-toggle="modal" data-target="#sign">출석하기</button></div>
 	
 	<div align="right" style="margin-bottom: 15px; margin-right: 130px;">
 	<span class="colorbox">

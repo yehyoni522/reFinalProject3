@@ -76,7 +76,15 @@ div#btn-board{
 			$target.removeClass("subjectStyle");			
 		});
 		
-		$("span.subject").click(function(){		
+		<%-- $("span.subject").click(function(){		
+			
+			
+			$.ajax({
+			uri:"<%= ctxPath%>/lesson/quizcheck.sam";
+				
+			}); // end of $.ajax({});
+			
+			
 			
 			var quizname = $(this).text();
 			var frm = document.quizinfoFrm;
@@ -86,11 +94,22 @@ div#btn-board{
 			frm.method = "post";
 	   	    frm.action = "<%= ctxPath%>/lesson/quizView.sam";
 	   	    frm.submit();
-		});
+		}); --%>
 		
 	});// end of function goView(assgnno) {}-----------------------
 	   	
 	   
+	function quizView(quizno){
+		
+		var frm = document.quizinfoFrm;
+		// alert(quizname);
+		
+		frm.quizno.value = quizno;
+		frm.method = "post";
+   	    frm.action = "<%= ctxPath%>/lesson/quizView.sam";
+   	    frm.submit();
+	} ;
+	
 	
 </script>   
 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
@@ -105,24 +124,21 @@ div#btn-board{
 	<h1 class="headerName">시험</h1>
 	<br>
 	<h3 style="text-align: left; font-weight: bold;">| 쪽지시험</h3>
-	<br>
-	<form name="quizinfoFrm" >
+	<br>	
 		<table style="width:100%; border-top: 1.5px #b3b3b3 solid; border-bottom: 1.5px #b3b3b3 solid;">
 			<tr style="border-bottom: 1px #e6e6e6 solid;">
 				<th style="width: 10%;">No.</th>
 				<th style="width: 40%;">시험명</th>
 				<th style="width: 15%;">과목명</th>
 				<th style="width: 15%;">교수</th>	
-
-				<th style="width: 10%;">시험날짜</th>						
+				<th style="width: 10%;">마감일자</th>						
 			</tr>
 			
 			<c:forEach var="quizvo" items="${requestScope.quizvoList}" varStatus="status">		 
 				<tr class="list">
-					<td>${status.count}<input class="quizno" type="hidden" value="${quizvo.quizno}" name="quizno"/></td>
+					<td>${status.count}</td>
 					<td>
-						<span class="subject" >${quizvo.quizname}</span>
-						<input type="hidden" name="quizname" />
+						<span class="subject" onclick="quizView('${quizvo.quizno}')">${quizvo.quizname}</span>						
 					</td>
 					<td>${quizvo.subname}</td>							
 					<td>${quizvo.name}</td>
@@ -131,7 +147,12 @@ div#btn-board{
 			</c:forEach>
 			
 		</table>
+		
+	<form name="quizinfoFrm" >
+		<input type="hidden" name="quizno"/>
+	
 	</form>
+	
  	<c:if test="${sessionScope.loginuser.identity eq '1'}">
 		<div id="btn-board">
 			<input type="button" value="글쓰기" class="btn-board" onclick="location.href='<%=ctxPath%>/lesson/addquiz.sam'"/>

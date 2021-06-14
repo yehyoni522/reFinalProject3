@@ -702,6 +702,8 @@ public class AdminMemberController {
 		HttpSession session = request.getSession();
 		String subject = (String) session.getAttribute("subject");
 		
+		// String fk_quizno = service.getquizcheck(quizno);
+		
 		SubjectVO subjectvo = service.getAttendancesubno(subject);
 		   
 		subno = String.valueOf(subjectvo.getSubno());
@@ -714,7 +716,7 @@ public class AdminMemberController {
 		
 		//페이징처리
 		int totalCount = 0;         // 총 게시물 건수
-		int sizePerPage = 1;        // 한 페이지당 보여줄 게시물 건수
+		int sizePerPage = 5;        // 한 페이지당 보여줄 게시물 건수
 		int currentShowPageNo = 0;  // 현재 보여주는 페이지 번호로서, 초기치로는 1페이지로 설정함.
 	    int totalPage = 0;          // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
 	       
@@ -806,10 +808,20 @@ public class AdminMemberController {
 		
 		SubjectVO subjectvo = null;
 		
-		List<QuestionVO> questionList = null;
+		List<QuestionVO> questionList = null;	
 		
-		String quizname = request.getParameter("quizname");
+		String quizno = request.getParameter("quizno");
 		
+		// 시험명 알아오기
+		String quizname = service.getquizname(quizno);		
+		
+		// 학생이 퀴즈를 풀었는지 알아오기
+		String fk_quizno = service.getquizcheck(quizno);
+		
+		// System.out.println("fk_quizno : " + fk_quizno);
+
+		// String subno = "";
+		// System.out.println("확인용 quizno !! : " + quizno);
 		// System.out.println("확인용 quizname !! : " + quizname);
 		
 		// 받아온 시험명으로 과목명 검색하기
@@ -818,6 +830,7 @@ public class AdminMemberController {
 		// 받아온 시험명으로 문제리스트 검색
 		questionList = service.getQuestionList(quizname);
 		
+		mav.addObject("fk_quizno", fk_quizno);
 		mav.addObject("questionList", questionList);
 		mav.addObject("subjectvo", subjectvo);
 		mav.addObject("quizname", quizname);
@@ -856,7 +869,7 @@ public class AdminMemberController {
 		
 		paraMap.put("perno", perno);
 		
-		paraMap.put("quizname", quizname);
+		paraMap.put("quizname", quizname);// 학생이 퀴즈를 풀었는지 알아오기
 		
 		for(int i=0; i<cnt; i++) {
 			
@@ -874,20 +887,10 @@ public class AdminMemberController {
 			
 			// 이미 시험을 쳤는지 검사한다.
 			// StdtansVO stdtansvo = service.getscorecheck(paraMap);
-			
+				
 				// 시험명으로 일련번호 검색 => 시험명과 문제번호로 문제 일련번호 검색  => 학생 정답 테이블에 넣기 
 				int n = service.addStudentAnswer(paraMap);
-				
-				if(n != 1) {
-					
-					String message = "시험 정답 전송 실패";
-					String loc = "javascript:history.back()";
-					
-					mav.addObject("message", message);
-					mav.addObject("loc", loc);
-					mav.setViewName("msg");
-					
-			}			
+							
 		}		
 		mav.setViewName("redirect:/lesson/quizlist.sam");
 		
@@ -906,6 +909,9 @@ public class AdminMemberController {
 		   
 		subno = String.valueOf(subjectvo.getSubno());
 		
+		
+		
+		
 		mav.addObject("subno", subno);
 		mav.addObject("subject", subject);
 		
@@ -921,18 +927,32 @@ public class AdminMemberController {
 		QuizVO quizvo = null;
 		QuestionVO questionvo = null;
 		
+		String subno = "";
+		
 		Map<String, String> paraMap = new HashMap<String, String>();
+		
+		HttpSession session = request.getSession();
+		String subject = (String) session.getAttribute("subject");
+		
+		SubjectVO subjectvo = service.getAttendancesubno(subject);
+		   
+		subno = String.valueOf(subjectvo.getSubno());
+		
+		paraMap.put("subno", subno);
 		
 		int cnt = Integer.parseInt(request.getParameter("cnt"));	// 문제 추가를 클린한 횟수	
 		// String su 
 		
 		String quizname = request.getParameter("quizname");
 		
-		// System.out.println("cnt 확인중 : " + cnt);
-		// System.out.println("~~~~~~ quizname 확인중 : " + quizname);
+		System.out.println("cnt 확인중 : " + cnt);
+		System.out.println("subno: " + subno);
+		System.out.println("~~~~~~ quizname 확인중 : " + quizname);
+		
+		paraMap.put("quizname", quizname);
 		
 		// 시험과목 만들기
-		quizvo = service.addquiz(quizname); // 쪽지시험 테이블에 insert 하고 select 해서 일련번호 가져오기
+		quizvo = service.addquiz(paraMap); // 쪽지시험 테이블에 insert 하고 select 해서 일련번호 가져오기
 		
 		if(quizvo != null) {
 		
@@ -940,7 +960,7 @@ public class AdminMemberController {
 			
 			// System.out.println("~~~~~ 확인용 : quizvo.getQuizname()" + quizvo.getQuizname());
 			
-			// System.out.println("n : " + n);
+			System.out.println("n : 확인중 ㅋ");
 			// System.out.println("~~~~~ 확인용 :cnt : " + cnt);
 			
 			// System.out.println("~~~~~ 확인용 :quizno : " + quizvo.getQuizno());
@@ -996,6 +1016,4 @@ public class AdminMemberController {
 		return mav;
 	}
 
-	
-	
 }

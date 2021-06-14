@@ -40,23 +40,37 @@ table.quiz td {
 
 <script type="text/javascript">
 
+	$(function(){
+		console.log(${requestScope.check} + " ${requestScope.check} == 1 ");
+	}); 
+
 	function goSubmit(){
+		
+		if(${requestScope.fk_quizno} == 2){
 		
 		var frm = document.studentansFrm;
 		
+		alert("시험지 제출에 성공하였습니다..");
+		
 		frm.method = "post";
-		frm.action = "<%= ctxPath%>/lesson/quizViewEnd.sam";
+		frm.action = "<%= ctxPath%>/lesson/quizViewEnd.sam";		
 		frm.submit();
 		
+		}
+		else {
+			alert("이미 완료한 시험입니다.");
+			return;
+			
+		}
 		
 	} // end of function goSubmit(){}
 
 </script>
 
-<div align="center" style="margin-top: 100px; text-align: center; width: 60%; margin-left: 450px;"> 
+<div align="center" style="margin-top: 200px; text-align: center; width: 60%; margin-left: 450px; min-height: 500px;"> 
 	<%-- 시험명으로 검색해온 과목테이블의 과목명 --%>
-	<h4>${subjectvo.subname}</h4>
-	
+	<h3 style="margin-bottom: 20px;"> ${subjectvo.subname}</h3>
+	<h4 style="text-align: left; font-weight: bold; margin-left: 15px;">| 쪽지시험</h4>
 	<form name="studentansFrm">
 
 		<table class="quiz">
@@ -94,6 +108,11 @@ table.quiz td {
 		</table>	
 	</form>
 	
-	<div align="center"><button type="button" onclick="goSubmit()">제출하기</button></div>
+	<c:if test="${sessionScope.loginuser.identity eq '0'}">
+		<div align="center"><button type="button" onclick="goSubmit()">제출하기</button></div>
+	</c:if>
+	<c:if test="${sessionScope.loginuser.identity eq '1'}">
+		<div align="center"><button type="button" onclick="javascript:location.href='<%= ctxPath%>/lesson/quizlist.sam">뒤로가기</button></div>
+	</c:if>
 	
 </div> 

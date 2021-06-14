@@ -29,7 +29,7 @@ public interface InteradminMemberService {
 	List<Map<String, String>> getAdminProfessor(Map<String, String> paraMap);
 	
 	// 쪽지시험 테이블에 insert 하고 select 해서 일련번호 가져오기
-	QuizVO addquiz(String quizname);
+	QuizVO addquiz(Map<String, String> paraMap);
 	
 	// 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색
 	// QuizVO getquiz(String quizname);
@@ -81,6 +81,12 @@ public interface InteradminMemberService {
 	
 	// 이미 시험을 쳤는지 검사한다.
 	StdtansVO getscorecheck(Map<String, String> paraMap);
+	
+	// 시험명 알아오기
+	String getquizname(String quizno);
+	
+	// 학생이 퀴즈를 풀었는지 알아오기
+	String getquizcheck(String quizno);
 	
 	
 	

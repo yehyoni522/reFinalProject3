@@ -68,9 +68,9 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 	
 	// 쪽지시험 insert
 	@Override
-	public int addquiz(String quizname) {
+	public int addquiz(Map<String, String> paraMap) {
 		
-		int n = sqlsession.insert("adminmember.addquiz", quizname);
+		int n = sqlsession.insert("adminmember.addquiz", paraMap);
 		
 		return n;
 	}
@@ -78,9 +78,9 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 	
 	// 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색
 	@Override
-	public QuizVO getquiz(String quizname) {
+	public QuizVO getquiz(Map<String, String> paraMap) {
 		
-		QuizVO quizvo = sqlsession.selectOne("adminmember.getquiz", quizname);
+		QuizVO quizvo = sqlsession.selectOne("adminmember.getquiz", paraMap);
 		
 		return quizvo;
 	}
@@ -362,6 +362,26 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 		StdtansVO stdtansvo = sqlsession.selectOne("adminmember.getscorecheck", paraMap);
 		
 		return stdtansvo;
+	}
+
+	
+	// 시험명 알아오기
+	@Override
+	public String getquizname(String quizno) {
+		
+		String quizname = sqlsession.selectOne("adminmember.getquizname", quizno);
+		
+		return quizname;
+	}
+
+	
+	// 학생이 퀴즈를 풀었는지 알아오기
+	@Override
+	public String getquizcheck(String quizno) {
+		
+		String check = sqlsession.selectOne("adminmember.getquizcheck", quizno);
+		
+		return check;
 	}
 	
 	
