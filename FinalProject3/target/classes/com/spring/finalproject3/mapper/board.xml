@@ -63,16 +63,16 @@
 						   , to_char(regDate, 'yyyy-mm-dd') as regDate, categoryno, namecheck
 						   , groupno, fk_seq, depthno,fileName, orgFilename, fileSize	
 				    from tbl_board
-				    where status = 1 and categoryno = #{categoryno}
-				    <if test='searchWord != ""'>
-				    and lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
-				    </if>
+				    where status = 1 and categoryno = #{categoryno}				    
 				    start with fk_seq = 0
 		        	connect by prior seq = fk_seq  
 					order siblings by groupno desc, seq asc 
 				)B
 				join tbl_person P
-				on P.perno = B.fk_perno			
+				on P.perno = B.fk_perno
+				<if test='searchWord != ""'>
+				where lower(${searchType}) like '%'||lower(#{searchWord})||'%' 
+				</if>			
 				<if test='newhit eq "1"'>
                 
                 </if>

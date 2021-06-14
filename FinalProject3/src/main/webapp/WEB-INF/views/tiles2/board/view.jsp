@@ -110,7 +110,7 @@ a {
 	border: 1px solid #ccc;
 	padding: 2px;
 	position:relative;
-	left: 84%;
+	left: 82%;
 }
 .combtn2{
 	background-color: white;
@@ -451,7 +451,8 @@ a {
 	function comEditEnd(comseq){
 		
 		var comEditVal = $("textarea#comcontEdit").val().trim();
-        				
+       
+		
 		if(comEditVal == "") {
            alert("댓글내용을 입력하세요!!");
            return;
@@ -570,8 +571,13 @@ a {
 				${requestScope.boardvo.subject}
 			</div>
 			<hr class="styhr">
-			<div id="contentinfo">			
-				${requestScope.boardvo.name} &nbsp; ${requestScope.boardvo.regDate}
+			<div id="contentinfo">						
+				<c:if test="${boardvo.namecheck == 1}">
+		       		익명 &nbsp; ${requestScope.boardvo.regDate}
+		       </c:if>
+		       <c:if test="${boardvo.namecheck != 1}">
+		       		${requestScope.boardvo.name} &nbsp; ${requestScope.boardvo.regDate}
+		       </c:if>
 			</div>
 			<div id="fileDown"> 
 				<c:if test="${requestScope.boardvo.orgFilename != null}"> 
