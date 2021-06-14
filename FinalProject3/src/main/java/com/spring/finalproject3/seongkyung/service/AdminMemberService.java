@@ -15,6 +15,7 @@ import com.spring.finalproject3.seongkyung.model.InteradminMemberDAO;
 import com.spring.finalproject3.seongkyung.model.PersonVO;
 import com.spring.finalproject3.seongkyung.model.QuestionVO;
 import com.spring.finalproject3.seongkyung.model.QuizVO;
+import com.spring.finalproject3.seongkyung.model.StdtansVO;
 import com.spring.finalproject3.seongkyung.model.SubjectVO;
 
 @Component
@@ -92,42 +93,25 @@ public class AdminMemberService implements InteradminMemberService {
 	}
 
 	
-	/*
-	  // 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색
-	  
-	  @Override public QuizVO getquiz(String quizname) {
-	  
-	  QuizVO quizvo = dao.getquiz(quizname);
-	  
-	  return quizvo; }
-	 */
-
-	
 	// 쪽지시험_문제  필드 생성
 	@Override
 	public QuestionVO addquestion(Map<String, String> paraMap) {
 		
 		QuestionVO questionvo = null;
 		
-		int m = dao.addquestion(paraMap);
+		int m = 0;
+				
+		m =	dao.addquestion(paraMap);
 		
 		if(m==1) {
+			questionvo = dao.getquestion(paraMap);
+		}
+		else {
 			questionvo = dao.getquestion(paraMap);
 		}
 		
 		return questionvo;
 	}
-
-	
-	  /*
-	 // 쪽지시험_문제_문제번호로 문제일련번호 검색
-	 @Override public QuestionVO getquestion(String qzno) {
-	  
-	 QuestionVO questionvo = dao.getquestion(qzno);
-	  
-	 return questionvo; }
-	 */
-
 	
 	// 쪽지시험_정답 필드 생성
 	@Override
@@ -201,23 +185,63 @@ public class AdminMemberService implements InteradminMemberService {
 		// 시험명으로 일련번호 검색
 		quizvo = dao.getQuizNo(paraMap);
 		
+		// 일련번호가 존재한는 경우
 		if(quizvo != null) {
 			
 			paraMap.put("quizno", String.valueOf(quizvo.getQuizno()));
 			
 			// 시험명과 문제번호로 문제 일련번호 검색 
 			questionvo = dao.getQuestionNo(paraMap);	
-			
-		}
-		
-		if(questionvo != null) {
-			
-			paraMap.put("questionno", String.valueOf(questionvo.getQuestionno()));
-			
-			// 일련번호, 문제일련번호, 사람번호를 구했으면 그 값을 가지고 insert 
-			n = dao.addStudentAnswer(paraMap);
-			
-		}
+			// System.out.println("22");
+			if(questionvo != null) {
+				
+				paraMap.put("questionno", String.valueOf(questionvo.getQuestionno()));
+				
+				// 일련번호, 문제일련번호, 사람번호를 구했으면 그 값을 가지고 insert 
+				n = dao.addStudentAnswer(paraMap);
+				// System.out.println("33");
+				// 점수를 구하기 위해 새로운 맵에 값을 담아온다.
+				if(n==1) {
+					// 정답을 비교하기 위해 정답테이블과 학생 정답테이블을 조인해서 담아온다
+					Map<String,String> verseinfo = dao.getScoreset(paraMap);
+					// System.out.println("44");
+					if(verseinfo != null) {
+						// System.out.println("55");
+						if(Integer.parseInt(verseinfo.get("quizanswer")) == Integer.parseInt(verseinfo.get("stdtanswer"))) {
+							// System.out.println("66");
+							// 정답을 비교해서 정답이면 해당 학생 정답테이블의 행에서 점수를 1 올려준다.
+							int m = dao.updscore(verseinfo);
+							
+							if(m==1) {
+								
+								return n;
+							}
+						}
+						else {
+							return n;
+						}
+						
+					}
+					else {
+						n=2;
+						return n;
+					}
+					
+				}
+				else {
+					n=2;
+					return n;
+				}
+				
+			}
+			else {
+				
+				n = 2;
+				return n;
+				
+			}
+		// n == 0	
+		}		
 		
 		return n;
 	}
@@ -255,8 +279,8 @@ public class AdminMemberService implements InteradminMemberService {
 				
 				paraMap.put("attendancedate", attendancevo.getAttendancedate());
 				
-				System.out.println("atdcno : " + attendancevo.getAtdcno());
-				System.out.println("atdcno : " + weekno);
+				// System.out.println("atdcno : " + attendancevo.getAtdcno());
+				// System.out.println("atdcno : " + weekno);
 				
 				// 수강 테이블의 학생들의 리스트를 가지고 온다.
 				List<ClassVO> sudentList = dao.getStudentList(paraMap);
@@ -317,66 +341,51 @@ public class AdminMemberService implements InteradminMemberService {
 	@Override
 	public int addstudentsign(Map<String, String> paraMap) {
 		
-		// 신호의 랜덤번호와 비교하면서 해당 신호의 행을 읽어옴
+		// 신호의 랜덤번호와 비교하면서 해당 신호의 행 즉 랜덤번호가 적혀있는 행의 seq 를 읽어옴
 		AttendanceVO attendancevo = dao.getinputstudentsign(paraMap);
 		
 		int n = 0;
+			
+		// System.out.println("attendancevo.getAtdcno() : "+ attendancevo.getAtdcno());
 		
-		// 만약 이미 출석이 되어있다면을 처리하기 위해 존재하는지 검색한다.
-		InputatdcVO inputatdcvo = dao.getchecksign(paraMap);
-		
-
-		
-		// 출석신호가 존재하는 경우
+		// 출석신호가 존재하는 경우 
 		if(attendancevo != null) {
 			
-			// 출석신호가 존재하고 그 출석에 의해 학생의 행이 생성된 경우
+			// 출석신호가 생성되면서 입력신호테이블에 행이 생성되어 있는지 알아온다.
+			InputatdcVO inputatdcvo = dao.getchecksign(paraMap);
+			
+			// 입력신호테이블에 행이 있는 경우
 			if(inputatdcvo != null) {
 				
-				// 학생의 행이 존재하고 학생이 출석을 시도하는 경우
+				// 입력신호테이블에 행을 출석으로 하는 경우
 				if(inputatdcvo.getInputatdcstatus() == 0) {
 					
-					paraMap.put("atdcno", String.valueOf(attendancevo.getAtdcno()));
-					
-					// 신호를 입력  => 결석으로 된 행을 입력받은 시간을 넣어주면서 출석으로 바꾸어준다.
 					n = dao.addstudentsign(paraMap);
 					
-					// 출석이 정상적으로 되었고 지각인지 확인한다.
+					// 출력시간과 입력시간을 비교해서 5분을 초과했으면 지각으로 한다.	
 					if(n==1) {
-						
-						// 출력시간과 입력시간을 비교해서 5분을 초과했으면 지각으로 한다.			
 						String inputatdcdate = dao.gettimevs(paraMap);
 						
-						if( (Integer.parseInt(inputatdcdate) - Integer.parseInt(attendancevo.getAttendancedate())) > 10) {
+						if( (Long.parseLong(inputatdcdate) - Long.parseLong(attendancevo.getAttendancedate())) > 10) {
 							
 							// 지각 처리
-							n = dao.changesign(paraMap);
+							int m = dao.changesign(paraMap);
 							
-						}				
-						
-					}
-					
+							// 지각처리가 완료되면 바로 넘겨준다.
+							if(m==1) {							
+								return n;							
+							}										
+						}					
+					}												
 				}
-				// 학생의 행이 존재하고 학생이 이미 출석을 완료한 경우
+				// 이미 출석이 되어 있는 상태이므로 종료시켜준다.
 				else {
-					
-					n = 3;
+					n = 2;
 					return n;
-					
-				}
-				
-			}			
-			
-		}
-		// 출석신호가 존재하지 않는 경우 == 입력한 출석신호의 번호가 틀린 경우
-		else {
-			
-			n = 2;
-			return n;
-		}
-		
-		return n;
-		
+				}				
+			}		
+		} 	
+		return n;	
 	}
 
 	
@@ -386,7 +395,28 @@ public class AdminMemberService implements InteradminMemberService {
 		
 		List<InputatdcVO> inputatdclist = dao.getStudentCheckSign(paraMap);
 		
+		
 		return inputatdclist;
+	}
+
+	
+	// 흠.. subno가 검색이 안되므로 검색이 되는 subject 로 subno를 불러와 줍시다.
+	@Override
+	public SubjectVO getAttendancesubno(String subject) {
+		
+		SubjectVO subjectvo = dao.getAttendancesubno(subject);
+		
+		return subjectvo;
+	}
+
+	
+	// 이미 시험을 쳤는지 검사한다.
+	@Override
+	public StdtansVO getscorecheck(Map<String, String> paraMap) {
+		
+		StdtansVO stdtansvo = dao.getscorecheck(paraMap);
+		
+		return stdtansvo;
 	}
 	
 

@@ -16,7 +16,7 @@ table.studentList {
   text-align: center;
   line-height: 1.5;
   margin: 20px 10px;
-  width: 60%;
+  width: 85%;
   font-size: 12pt;
 }
 table.studentList th {
@@ -24,8 +24,8 @@ table.studentList th {
   padding: 10px;
   font-weight: bold;
   vertical-align: top;
-  color: #fff;
-  background: #a8a4a4;
+  color: #575b5b;
+  background-color: #f2f2f2;
   text-align: center;
 }
 table.studentList td {
@@ -33,7 +33,7 @@ table.studentList td {
   padding: 10px;
   vertical-align: top;
   border-bottom: 1px solid #ccc;
-  background: #eee;
+  background-color: #f2f3f3
 }
 button {
  border-radius: 5%;
@@ -44,6 +44,7 @@ button {
 	  font-size: 14pt;
 	  width: 150px;	
 	  background-color: #bfbfbf;
+	  height: 40px;
 }
 
 
@@ -116,17 +117,17 @@ button {
 
 </script>
 
-<div align="center" style="height: 600px; margin-top: 140px;">
+<div align="center" style="margin-top: 200px; margin-left:480px; min-height: 600px; width: 60%;">
 
-	<div align="center" style="font-size: 18pt; font-weight: bold;">출석</div>
+	<div align="center" style="font-size: 18pt; font-weight: bold;">출석!</div>
 	
 	<div align="center">
 			<button type="button" style="background-color: #bfbfbf;" data-toggle="modal" data-target="#sign">출석시작</button>
 	</div>
 	
-	<div align="right" style="width: 60%; margin-top: 10px;">	
-		<form name="attendancedateFrm">
-		<select id="dateList" name="dateList">			
+	<div align="right" style="width: 90%; margin-top: 10px;">	
+		<form name="attendancedateFrm" >
+		<select id="dateList" name="dateList" style="margin-right:25px; width:110px; size: 10pt; text-align: center; ">			
 			<c:forEach var="attendancevo" items="${requestScope.attendanceList}" varStatus="status">
 				<option>${attendancevo.attendancedate}</option>
 			</c:forEach>

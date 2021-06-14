@@ -8,6 +8,7 @@ import com.spring.finalproject3.seongkyung.model.InputatdcVO;
 import com.spring.finalproject3.seongkyung.model.PersonVO;
 import com.spring.finalproject3.seongkyung.model.QuestionVO;
 import com.spring.finalproject3.seongkyung.model.QuizVO;
+import com.spring.finalproject3.seongkyung.model.StdtansVO;
 import com.spring.finalproject3.seongkyung.model.SubjectVO;
 
 public interface InteradminMemberService {
@@ -74,6 +75,12 @@ public interface InteradminMemberService {
 	
 	// 접속한 학생의 출석 상태를 보여준다.
 	List<InputatdcVO> getStudentCheckSign(Map<String, String> paraMap);
+	
+	// 흠.. subno가 검색이 안되므로 검색이 되는 subject 로 subno를 불러와 줍시다.
+	SubjectVO getAttendancesubno(String subject);
+	
+	// 이미 시험을 쳤는지 검사한다.
+	StdtansVO getscorecheck(Map<String, String> paraMap);
 	
 	
 	

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.swing.JOptionPane;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,6 +24,7 @@ import com.spring.finalproject3.seongkyung.model.InputatdcVO;
 import com.spring.finalproject3.seongkyung.model.PersonVO;
 import com.spring.finalproject3.seongkyung.model.QuestionVO;
 import com.spring.finalproject3.seongkyung.model.QuizVO;
+import com.spring.finalproject3.seongkyung.model.StdtansVO;
 import com.spring.finalproject3.seongkyung.model.SubjectVO;
 import com.spring.finalproject3.seongkyung.service.InteradminMemberService;
 
@@ -426,12 +429,23 @@ public class AdminMemberController {
 		
 		Map<String, String> paraMap = new HashMap<String, String>();
 		
-		String subno = request.getParameter("subno");
-		subno="1000";	////////////////////*** 과목번호 임의로 넣음 ***////////////////////////////
+		String subno = "";		
+		
+		HttpSession session = request.getSession();
+		String subject = (String) session.getAttribute("subject");
+		
+		SubjectVO subjectvo = service.getAttendancesubno(subject);
+		   
+		subno = String.valueOf(subjectvo.getSubno());
+		
+		// System.out.println("subject!!! : " + subject);
+		// System.out.println("subno!!!! : " + subno);
+		
 		paraMap.put("subno", subno);
-
+		paraMap.put("subject", subject);
 		
 		mav.addObject("subno", subno);
+		mav.addObject("subject", subject);
 		
 		mav.setViewName("lessonadmin/lessonattendance.tiles4");
 		
@@ -443,22 +457,31 @@ public class AdminMemberController {
 	@RequestMapping(value="/lesson/attendancecheckList.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public String attendancecheckList(HttpServletRequest request) {
 		
-	   String fk_subno = request.getParameter("fk_subno");
+	   String fk_subno = "";
 	   String fk_perno = request.getParameter("fk_perno");	
+	   String subject = request.getParameter("subject");	
+	   
+	   // System.out.println("subject : " + subject);
+	   
+	   // 흠.. subno가 검색이 안되므로 검색이 되는 subject 로 subno를 불러와 줍시다.
+	   SubjectVO subjectvo = service.getAttendancesubno(subject);
+	   
+	   fk_subno = String.valueOf(subjectvo.getSubno());
+	   
 	   
 	   List<InputatdcVO> inputatdclist = null;
 	   
 	   Map<String, String> paraMap = new HashMap<String, String>();  
 	   
-	   fk_subno="1000";
-	   
 	   paraMap.put("fk_subno", fk_subno);
 	   paraMap.put("fk_perno", fk_perno);
 	   
-	   // System.out.println(fk_subno);
-	   // System.out.println(fk_perno);
+	   // System.out.println("subno : " + subno);
+	   // System.out.println("fk_perno : " + fk_perno);
 	   
-	   // 접속한 학생의 출석 상태를 보여준다.
+	   // 위의 subject 와 fk_perno 찍히는 거 확인.. subject 로 subno 검색해옴
+	   
+	   // 접속한 학생의 지금 까지의 출석 상태 를 보여준다.
 	   inputatdclist = service.getStudentCheckSign(paraMap);
 	   
 	   JSONArray jsonArr = new JSONArray();
@@ -467,18 +490,18 @@ public class AdminMemberController {
 	   
 	   if(inputatdclist != null) {
 		   
-		   // System.out.println(" 2 ");
-		   
-		   JSONObject jsonObj = new JSONObject();
+		   // System.out.println(" 2 ");  
 		   
 		   for(InputatdcVO ivo:inputatdclist) {			  
 			   
+			   JSONObject jsonObj = new JSONObject();
 			   // System.out.println("ivo.getInputweekno() : " + ivo.getInputweekno());
 			  //  System.out.println("ivo.getInputatdcdate() :" + ivo.getInputatdcdate());
 			   
-			   jsonObj.put("inputweekno", ivo.getInputweekno());
-			   jsonObj.put("inputatdcdate", ivo.getInputatdcdate());
-			   jsonObj.put("inputatdcstatus", ivo.getInputatdcstatus());
+				   jsonObj.put("inputweekno", ivo.getInputweekno());
+				   jsonObj.put("inputatdcdate", ivo.getInputatdcdate());
+				   jsonObj.put("inputatdcstatus", ivo.getInputatdcstatus());
+
 			   
 			   jsonArr.put(jsonObj);
 			   		   
@@ -494,13 +517,8 @@ public class AdminMemberController {
 	@RequestMapping(value="/lesson/studentmodal.sam") 
     public String lesson_studentmodal(HttpServletRequest request) {
        
-	   String fk_subno = request.getParameter("fk_subno");
 	   String fk_perno = request.getParameter("fk_perno");	
-       
-	   // System.out.println("fk_subno @@@: " + fk_subno);
-	   // System.out.println("fk_perno @@@: " + fk_perno);
-	   
-       request.setAttribute("fk_subno", fk_subno);
+
        request.setAttribute("fk_perno", fk_perno);
        
        return "tiles4/lessonadmin/studentmodal";
@@ -512,19 +530,31 @@ public class AdminMemberController {
 	public String studentsign(HttpServletRequest request) {
 		
 		String randomsign = request.getParameter("randomsign");
-		String fk_subno = request.getParameter("fk_subno");
-		String fk_perno = request.getParameter("fk_perno");	
+		String fk_subno = "";		
+		String subject = request.getParameter("subject");
+		String fk_perno = request.getParameter("fk_perno");			
 		
-		// System.out.println("randomsign : " + randomsign);
-		fk_subno = "1000"; 
+		// 흠.. subno가 검색이 안되므로 검색이 되는 subject 로 subno를 불러와 줍시다.
+	    SubjectVO subjectvo = service.getAttendancesubno(subject);
+	   
+	    fk_subno = String.valueOf(subjectvo.getSubno());
+		
+		System.out.println("randomsign!! : " + randomsign);
+		
+		System.out.println("fk_subno!! : " + fk_subno);
+		System.out.println("fk_perno!! : " + fk_perno);
 		
 		Map<String, String> paraMap = new HashMap<String, String>();
 		
 		paraMap.put("randomsign", randomsign);
+	//	paraMap.put("fk_subno", String.valueOf(fk_subno));
 		paraMap.put("fk_subno", fk_subno);
 		paraMap.put("fk_perno", fk_perno);
 		
 		// 신호의 랜덤번호를 입력한 후 그 번호를 가지고 존재하는지 select 한 다음 출력신호 seq 를 가져와서 그 번호로 insert 한다.
+		
+		System.out.println("");
+		
 		int n = service.addstudentsign(paraMap);
 		
 		JSONObject jsonObj = new JSONObject();
@@ -542,7 +572,7 @@ public class AdminMemberController {
 		
 		Map<String, String> paraMap = new HashMap<String, String>();
 	
-		String subno = request.getParameter("subno");
+		String subno = request.getParameter("fk_subno");
 		subno="1000";	////////////////////*** 과목번호 임의로 넣음 ***////////////////////////////
 		paraMap.put("subno", subno);
 		
@@ -628,11 +658,16 @@ public class AdminMemberController {
 		
 		AttendanceVO attendancevo = null;
 		
-		String fk_subno = request.getParameter("fk_subno");
 		String fk_perno = request.getParameter("fk_perno");	
 		
-		// System.out.println(fRandom);
-		fk_subno = "1000"; 
+		String fk_subno = "";		
+		
+		HttpSession session = request.getSession();
+		String subject = (String) session.getAttribute("subject");
+		
+		SubjectVO subjectvo = service.getAttendancesubno(subject);
+		   
+		fk_subno = String.valueOf(subjectvo.getSubno());
 		
 		// System.out.println("fk_subno !!!: " + fk_subno);
 		// System.out.println("fk_perno !!!: " + fk_perno);
@@ -661,15 +696,21 @@ public class AdminMemberController {
 		Map<String, String> paraMap = new HashMap<String, String>();		
 
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
+				
+		String subno = "";		
 		
-		// *** 근데 과목번호 어케 알아옴?? <==페이지 폼 내에서 전달...?
-		String subno = request.getParameter("subno");
-		subno="1000";////////////////////*** 과목번호 임의로 넣음 ***////////////////////////////
+		HttpSession session = request.getSession();
+		String subject = (String) session.getAttribute("subject");
+		
+		SubjectVO subjectvo = service.getAttendancesubno(subject);
+		   
+		subno = String.valueOf(subjectvo.getSubno());
+		
+		// System.out.println("subject!!! : " + subject);
+		// System.out.println("subno!!!! : " + subno);
+		
 		paraMap.put("subno", subno);
-		
-		// 어떤 과목인지 과목이름 알아오기 => 과목이름 맨위에 띄워주기 위해 / 리스트 where절 사용
-		// String subject = service.getsubjectname(subno);
-		// request.setAttribute("subject", subject);
+		paraMap.put("subject", subject);
 		
 		//페이징처리
 		int totalCount = 0;         // 총 게시물 건수
@@ -748,6 +789,7 @@ public class AdminMemberController {
 		
 		pageBar += "</ul>";
 		
+		mav.addObject("subno",subno);
 		mav.addObject("pageBar",pageBar);	    	
     	mav.addObject("totalCount",totalCount);
     	mav.addObject("quizvoList", quizvoList);
@@ -795,12 +837,23 @@ public class AdminMemberController {
 		
 		// System.out.println(quizname);
 		
+		String subno = "";
+		
 		// 가져온 시험명으로 문제의 총 갯수를 구한다.
 		int cnt = service.getQuizTotalCount(quizname);
 		
 		// 로그인 되어져 있는 유저 아이디로 사람번호를 구한다. ( 현재 로그인 기능 합치지 못해서 임의로 넣음 )
 		String perno = request.getParameter("perno");
-		perno="1004";	// ( 현재 로그인 기능 합치지 못해서 임의로 넣음 )
+		
+		HttpSession session = request.getSession();
+		String subject = (String) session.getAttribute("subject");
+		
+		SubjectVO subjectvo = service.getAttendancesubno(subject);
+		   
+		subno = String.valueOf(subjectvo.getSubno());
+		
+		paraMap.put("subno", subno);
+		
 		paraMap.put("perno", perno);
 		
 		paraMap.put("quizname", quizname);
@@ -819,26 +872,48 @@ public class AdminMemberController {
 			paraMap.put("qzno", qzno);
 			paraMap.put("stdtanswer", stdtanswer);
 			
-			// 시험명으로 일련번호 검색 => 시험명과 문제번호로 문제 일련번호 검색  => 학생 정답 테이블에 넣기 
-			int n = service.addStudentAnswer(paraMap);
+			// 이미 시험을 쳤는지 검사한다.
+			// StdtansVO stdtansvo = service.getscorecheck(paraMap);
 			
-			
+				// 시험명으로 일련번호 검색 => 시험명과 문제번호로 문제 일련번호 검색  => 학생 정답 테이블에 넣기 
+				int n = service.addStudentAnswer(paraMap);
+				
+				if(n != 1) {
 					
-		}			
-		
+					String message = "시험 정답 전송 실패";
+					String loc = "javascript:history.back()";
+					
+					mav.addObject("message", message);
+					mav.addObject("loc", loc);
+					mav.setViewName("msg");
+					
+			}			
+		}		
 		mav.setViewName("redirect:/lesson/quizlist.sam");
 		
 		return mav;
 	}
 	
 	@RequestMapping(value="/lesson/addquiz.sam")
-	public ModelAndView lesson_addquiz2(ModelAndView mav, HttpServletRequest request) {
+	public ModelAndView lesson_addquiz2(ModelAndView mav, HttpServletRequest request) {	
 		
+		String subno = "";
+		
+		HttpSession session = request.getSession();
+		String subject = (String) session.getAttribute("subject");
+		
+		SubjectVO subjectvo = service.getAttendancesubno(subject);
+		   
+		subno = String.valueOf(subjectvo.getSubno());
+		
+		mav.addObject("subno", subno);
+		mav.addObject("subject", subject);
 		
 		mav.setViewName("lessonadmin/lessonaddquiz.tiles4");
 		
 		return mav;
 	}
+	
 	
 	@RequestMapping(value="/lesson/quizaddEnd.sam", method= {RequestMethod.POST})
 	public ModelAndView lesson_quizaddEnd(ModelAndView mav, HttpServletRequest request) {
@@ -849,7 +924,7 @@ public class AdminMemberController {
 		Map<String, String> paraMap = new HashMap<String, String>();
 		
 		int cnt = Integer.parseInt(request.getParameter("cnt"));	// 문제 추가를 클린한 횟수	
-		cnt = cnt + 1;
+		// String su 
 		
 		String quizname = request.getParameter("quizname");
 		
@@ -877,6 +952,7 @@ public class AdminMemberController {
 			for(int i=0; i< cnt; i++) {
 			  
 			 String qzno = request.getParameter("qzno"+i); 
+			 
 			 String qzcontent =request.getParameter("qzcontent"+i);
 			 String answerfirst = request.getParameter("answerfirst"+i); 
 			 String answersecond = request.getParameter("answersecond"+i); 
@@ -887,7 +963,7 @@ public class AdminMemberController {
 			 
 			 //System.out.println("answerfirst : " + answerfirst + " answersecond : " + answersecond);
 			 //System.out.println("answerthird : " + answerthird + " answerfourth : " + answerfourth);
-			 //System.out.println("qzno : " + qzno + " qzcontent : " + qzcontent);
+			 System.out.println("~~~~~~~ 확인용 qzno : " + qzno + " qzcontent : " + qzcontent);
 			 //System.out.println("quizanswer : " + quizanswer);		 
 			 		 
 			 paraMap.put("fk_quizno", quizno);
@@ -908,13 +984,14 @@ public class AdminMemberController {
 					 
 				 int m = service.addquizans(paraMap); // 쪽지시험_정답 필드 생성
 				 
-			 }	 
+			 }
 			 
 			 } // end of for
 			 
 			 mav.setViewName("redirect:/lesson/quizlist.sam");
 
 		}	 
+		mav.setViewName("redirect:/lesson/quizlist.sam");
 		
 		return mav;
 	}

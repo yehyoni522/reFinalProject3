@@ -325,6 +325,46 @@ public class AdminMemberDAO implements InteradminMemberDAO{
 	}
 	
 	
+	// 흠.. subno가 검색이 안되므로 검색이 되는 subject 로 subno를 불러와 줍시다.
+	@Override
+	public SubjectVO getAttendancesubno(String subject) {
+		
+		SubjectVO subjectvo = sqlsession.selectOne("adminmember.getAttendancesubno", subject);
+		
+		return subjectvo;
+	}
+
+	
+	// 정답을 비교하기 위해 정답테이블과 학생 정답테이블을 조인해서 담아온다
+	@Override
+	public Map<String, String> getScoreset(Map<String, String> paraMap) {
+		
+		Map<String,String> verseinfo = sqlsession.selectOne("adminmember.getScoreset", paraMap);
+		
+		return verseinfo;
+	}
+
+	
+	// 정답을 비교해서 정답이면 해당 학생 정답테이블의 행에서 점수를 1 올려준다.
+	@Override
+	public int updscore(Map<String, String> verseinfo) {
+		
+		int m = sqlsession.update("adminmember.updscore", verseinfo);
+		
+		return m;
+	}
+
+	
+	// 이미 시험을 쳤는지 검사한다.
+	@Override
+	public StdtansVO getscorecheck(Map<String, String> paraMap) {
+		
+		StdtansVO stdtansvo = sqlsession.selectOne("adminmember.getscorecheck", paraMap);
+		
+		return stdtansvo;
+	}
+	
+	
 
 
 

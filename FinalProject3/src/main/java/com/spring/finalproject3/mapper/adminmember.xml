@@ -94,7 +94,7 @@
 	<!-- 쪽지시험_문제  필드 생성 -->
 	<insert id="addquestion" parameterType="HashMap">
 		insert into tbl_question(questionno, fk_quizno, qzno, qzcontent, answerfirst, answersecond, answerthird, answerfourth)
-		values(questionSeq.nextval, #{fk_quizno}, #{qzno}, #{qzcontent}, #{answerfirst}, #{answersecond}, #{answerthird}, #{answerfourth})
+		values(questionSeq.nextval, #{fk_quizno, jdbcType=VARCHAR}, #{qzno, jdbcType=VARCHAR}, #{qzcontent, jdbcType=VARCHAR}, #{answerfirst, jdbcType=VARCHAR}, #{answersecond, jdbcType=VARCHAR}, #{answerthird, jdbcType=VARCHAR}, #{answerfourth, jdbcType=VARCHAR})
 	</insert>
 	
 	<!-- 쪽지시험_문제_문제번호로 문제일련번호 검색  -->
@@ -235,7 +235,7 @@
 	
 	<!-- 신호의 랜덤번호와 비교하면서 해당 신호의 행을 읽어옴 -->
 	<select id="getinputstudentsign" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.AttendanceVO">
-		select atdcno, to_char(attendancedate, 'yyyymmddhh24mi') as attendancedate
+		select atdcno, to_number(to_char(attendancedate, 'yyyymmddhh24mi')) as attendancedate
 		from tbl_attendance
 		where fk_subno = #{fk_subno} and randomsign = #{randomsign} and to_char(attendancedate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd')
 	</select>
@@ -249,38 +249,71 @@
 	
 	<!-- 신호를 입력  => 결석으로 된 행을 입력받은 시간을 넣어주면서 출석으로 바꾸어준다. -->
 	<update id="addstudentsign" parameterType="HashMap"> 
-		update tbl_inputatdc set inputatdcstatus = 2, inputatdcdate = sysdate
-		where fk_atdcno = #{atdcno} and fk_perno = #{fk_perno}
+		update tbl_inputatdc set inputatdcstatus = 2 , inputatdcdate = sysdate
+		where fk_subno = #{fk_subno} and fk_perno = #{fk_perno} and fk_atdcno = (select atdcno from tbl_attendance where randomsign = #{randomsign})
 	</update>
 	
 	<!-- 입력한 시간의 값을 알아온다. -->
 	<select id="gettimevs" parameterType="HashMap" resultType="String">
-		select to_char(inputatdcdate, 'yyyymmddhh24mi') as inputatdcdate
+		select to_number(to_char(inputatdcdate, 'yyyymmddhh24mi')) as inputatdcdate
 		from tbl_inputatdc 
-		where to_char(inputatdcdate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd') and fk_subno = #{fk_subno} and fk_perno = #{fk_perno}
+		where fk_atdcno = (select atdcno from tbl_attendance where randomsign = #{randomsign}) and fk_subno = #{fk_subno} and fk_perno = #{fk_perno}
 	</select>
 	
 	<!-- 지각 처리 -->
 	<update id="changesign" parameterType="HashMap">
 		update tbl_inputatdc set inputatdcstatus = 1
-		where to_char(inputatdcdate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd') and fk_subno = #{fk_subno} and fk_perno = #{fk_perno}
+		where fk_atdcno = (select atdcno from tbl_attendance where randomsign = #{randomsign}) and fk_subno = #{fk_subno} and fk_perno = #{fk_perno}
 	</update>
    	
    	<!-- 접속한 학생의 출석 상태를 보여준다. -->
    	<select id="getStudentCheckSign" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.InputatdcVO">
-   		select inputatdcstatus, inputweekno, to_char(inputatdcdate, 'yyyy-mm-dd hh24:mi:ss') as inputatdcdate
+   		select inputatdcstatus, inputweekno, nvl(to_char(inputatdcdate, 'yyyy-mm-dd hh24:mi:ss'),9999) as inputatdcdate
 		from tbl_inputatdc
-		where fk_subno = #{fk_subno} and fk_perno = #{fk_perno} and inputatdcstatus != 0
+		where fk_subno = #{fk_subno} and fk_perno = #{fk_perno}
    	</select>	
    	
    	<!-- 만약 이미 출석이 되어있다면을 처리하기 위해 존재하는지 검색한다. -->
 	<select id="getchecksign" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.InputatdcVO">
-		select inputatdcstatus, inputweekno, to_char(inputatdcdate, 'yyyy-mm-dd hh24:mi:ss') as inputatdcdate
+		select inputatdcstatus, inputweekno, nvl(to_char(inputatdcdate, 'yyyy-mm-dd'),9999) as inputatdcdate
 		from tbl_inputatdc
-		where fk_subno = #{fk_subno} and fk_perno = #{fk_perno} and to_char(inputatdcdate, 'yyyy-mm-dd') = to_char(sysdate, 'yyyy-mm-dd')
+		where fk_subno = fk_subno and fk_perno = #{fk_perno} and fk_atdcno = (select atdcno from tbl_attendance where randomsign = #{randomsign})
+	</select>
+	
+	<!-- 흠.. subno가 검색이 안되므로 검색이 되는 subject 로 subno를 불러와 줍시다. -->
+	<select id="getAttendancesubno" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.SubjectVO">
+		  select subno
+          from tbl_subject
+          where subname = #{subject}
 	</select>
    	
+   	<resultMap type="HashMap" id="getScoreMap">
+		<result property="quizanswer" column="quizanswer" javaType="String" />
+		<result property="stdtanswer" column="stdtanswer" javaType="String" />
+		<result property="fk_quizno" column="fk_quizno" javaType="String" />
+		<result property="fk_questionno" column="fk_questionno" javaType="String" />
+	</resultMap>  
    	
+   	<!-- 정답을 비교하기 위해 정답테이블과 학생 정답테이블을 조인해서 담아온다 -->
+   	<select id="getScoreset" parameterType="HashMap" resultMap="getScoreMap">
+		  SELECT quizanswer, stdtanswer, Q.fk_quizno as fk_quizno, Q.fk_questionno as fk_questionno
+		  from tbl_quizans Q left join tbl_stdtans S
+		  on Q.fk_questionno = S.fk_questionno 
+		  where q.fk_quizno = #{quizno} and q.fk_questionno = #{questionno}
+		  order by quizansno
+   	</select>
+   	
+   	<!-- 정답을 비교해서 정답이면 해당 학생 정답테이블의 행에서 점수를 1 올려준다. -->
+   	<update id="updscore" parameterType="HashMap">
+   		update tbl_stdtans set quizscore = 1 
+   		where fk_quizno = #{fk_quizno} and fk_questionno = #{fk_questionno}
+   	</update>
     
+    <!-- 이미 시험을 쳤는지 검사한다. -->
+    <select id="getscorecheck" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.StdtansVO">
+    	select stdtanswerno
+		from tbl_stdtans
+		where fk_quizno = #{quizno} and fk_questionno = #{questionno}
+    </select>
 	
 </mapper>

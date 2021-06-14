@@ -39,6 +39,8 @@ button {
 	color: white;
 	font-weight: bold;
 	margin: 0 3px 0 3px;
+	width: 100px;
+	height: 35px;
 }
 
 </style>
@@ -109,16 +111,15 @@ button {
 
 </script>
 
-<div align="center" style="margin-top: 200px; min-height: 400px;">
+<div align="center" style="margin-top: 200px; margin-left:480px; min-height: 400px; width: 60%;">
 	
 	
-	<div style="font-weight: bold; font-size: 14pt;">쪽지시험 문제 작성</div>
-	<div style="font-weight: bold; font-size: 10pt; cursor: pointer; text-decoration: underline; text-align: right; margin-right: 200px;" onclick="location.href='<%=ctxPath%>/lesson/quizlist.sam'">작성 취소</div>
+	<div style="font-weight: bold; font-size: 18pt; margin-bottom: 30px;">쪽지시험 문제 작성</div>
 	
-	<form name="addquizFrm">
+	<form name="addquizFrm" style="border: solid 1px black;">
 		<input type='hidden' name='cnt' />
-		
-		<table class="quiz">
+		<input type="hidden" name='subject' value="${sessionScope.subject}" />
+		<table class="quiz" style="margin: 13px 0 13px 0;">
 		
 		  <tr>
 		    <th scope="row">시험명</th>
@@ -128,15 +129,18 @@ button {
 			</td>
 		  </tr>
 		  
-		</table>	
-	</form>
-	
-	<div align="center" style="width: 50%;">
+		</table>
+		
+		<div align="center" style="width: 50%; margin-bottom: 13px;">
 		<%-- 문제 추가 시 cnt 값이 1 올라가고  --%>
 		<button type="button" onclick="addquiz()" style=" background-color: #00e600;">문제 추가</button>
 		<button type="button" onclick="removequiz()" style=" background-color: #ff471a;">문제 삭제</button>
 		<button type="button" onclick="quizaddEnd()" style=" background-color: #bfbfbf;">작성 완료</button>
 	</div>	
+		
+	</form>
+	
+	
 	
 	
 </div> 
