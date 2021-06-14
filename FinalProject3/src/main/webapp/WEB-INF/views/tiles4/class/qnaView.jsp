@@ -263,7 +263,7 @@ div#btn-board{
 			<div id="btn-board">
 			<c:if test="${ (sessionScope.loginuser.perno eq requestScope.qnavo.fk_perno) and requestScope.qnavo.answer eq 0}">
 					<button type="button" class="btn-board" id="qnaEdit" onclick="javascript:location.href='<%= ctxPath%>/class/qnaEdit.sam?qnano=${requestScope.qnavo.qnano}'">수정</button>
-					<button type="button" class="btn-board" id="qnaDelete">삭제</button>
+					<!-- <button type="button" class="btn-board" id="qnaDelete">삭제</button> -->
 			</c:if>
 					<button type="button"class="btn-board" onclick="javascript:location.href='<%= ctxPath%>/class/qnaBoard.sam'">목록</button>		
 			</div>
@@ -276,6 +276,7 @@ div#btn-board{
     
 <c:if test="${requestScope.qnavo.depthno eq 0 && sessionScope.loginuser.identity eq 1}"> 
 	<h3 style="text-align: left; font-weight: bold;">| 답변</h3>
+	<span style="color:red; font-size: 10pt;">&nbsp;*답변 작성 후에는 수정은 가능하나 삭제가 불가합니다.</span>
 		<hr>
 		
 			<form name="answerFrm" method="post" enctype="multipart/form-data">
