@@ -103,6 +103,15 @@
 		)V
 		join tbl_person P
 		on V.fk_perno =P.perno
+		 ORDER BY (
+          CASE day
+          WHEN '월요일' THEN 1
+          WHEN '화요일' THEN 2
+          WHEN '수요일' THEN 3
+          WHEN '목요일' THEN 4
+          ELSE 5
+          END
+         ) 
 	</select>
 	
 		<!-- 교수 수강중인 과목 불러오기 -->
@@ -110,6 +119,15 @@
 		select subno,subname,day,time
 		from tbl_subject
 		where fk_perno=#{userid}
+		   ORDER BY (
+          CASE day
+          WHEN '월요일' THEN 1
+          WHEN '화요일' THEN 2
+          WHEN '수요일' THEN 3
+          WHEN '목요일' THEN 4
+          ELSE 5
+          END
+         ) 
 	
 	</select>
 	
