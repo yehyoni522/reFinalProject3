@@ -58,17 +58,18 @@
 		where perno =#{userid} and name=#{name} and email=#{email} 
 	</select>
 	
-	<!-- 인기게시판 불러오기 -->
+<!-- 	인기게시판 불러오기-->
 	<select id ="MainboardView" resultType="com.spring.finalproject3.joseungjin.model.Main_index_BoardVO">
-	        select seq,categoryno,name,subject,good,readCount,namecheck,commentCount,regDate
+	 select seq,categoryno,name,subject,good,readCount,namecheck,commentCount,regDate
         from
         (
-             select B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount,B.namecheck, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+             select row_number() over(order by good desc) as rno,B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount,B.namecheck, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
 		from tbl_board B join tbl_person P
 		on B.fk_perno=P.perno
-		where status=1 and good>=10
+		 
         )
-	</select>
+        where rno between 1 and 20
+	</select> 
 	
 	<!-- 총페이지수 알아오기-->
 	<select id ="getboardTotalPage" parameterType="HashMap" resultType="int">
@@ -79,15 +80,15 @@
 	
 	<!--게시판 페이징 처리 -->
 	<select id ="getboardistPaging" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.Main_index_BoardVO">
-		  select good,seq, categoryno,name,subject,readCount,commentCount,regDate,namecheck
-				from
-				(
-			      select row_number() over (order by  good desc) as rno,B.seq, B.categoryno, P.name AS name, B.subject, B.good, B.namecheck,B.readCount, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
-                    from tbl_board B join tbl_person P
-                    on B.fk_perno=P.perno
-				where good>=10 and status = 1  
-				)V
-			where rno between #{startRno} and #{endRno}
+	 select seq,categoryno,name,subject,good,readCount,namecheck,commentCount,regDate
+        from
+        (
+             select row_number() over(order by good desc) as rno,B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount,B.namecheck, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+		from tbl_board B join tbl_person P
+		on B.fk_perno=P.perno
+		 
+        )
+        where rno between #{startRno} and #{endRno}
 	</select>
 	
 	<!-- 수강중인 과목 불러오기 -->

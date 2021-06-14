@@ -361,7 +361,7 @@
 		<%-- 원글에 대한 댓글의 totalPage 수를 알아오려고 한다. --%> 
 		$.ajax({
 			url:"<%= ctxPath%>/getboardTotalPage.sam",
-			data:{"sizePerPage":"3"},
+			data:{"sizePerPage":"1"},
 			type:"get",
 			dataType:"json",
 			success:function(json) {
@@ -373,7 +373,7 @@
 					
 					var pageBarHTML = "<ul style='list-style: none;'>";
 					
-					var blockSize = 3;
+					var blockSize = 5;
 		
 					var loop = 1;
 				    

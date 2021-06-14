@@ -533,7 +533,7 @@ public class joseungjin_Controller {
 				if(currentShowPageNo == null) {
 					currentShowPageNo = "1";
 				}
-				int sizePerPage = 4;// 한 페이지당 5개의 댓글을 보여줄 것임.
+				int sizePerPage = 5;// 한 페이지당 5개의 댓글을 보여줄 것임.
 				int startRno = (( Integer.parseInt(currentShowPageNo) - 1 ) * sizePerPage) + 1;
 			      int endRno = startRno + sizePerPage - 1; 
 				
