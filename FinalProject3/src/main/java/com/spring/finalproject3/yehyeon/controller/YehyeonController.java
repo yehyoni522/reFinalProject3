@@ -145,6 +145,7 @@ public class YehyeonController {
 		
 		String dsno = request.getParameter("fk_dsno");
 		String perno = request.getParameter("fk_perno");
+		System.out.println("perno" + perno);
 		
 		int n = service.updateDscheck(dsno);
 		int m = 0;
@@ -323,7 +324,12 @@ public class YehyeonController {
 	@RequestMapping(value="/admin/goDeleteBook.sam", method= {RequestMethod.POST}, produces="text/plain;charset=UTF-8")
 	public String goDeleteBook() {
 		
-		int n = service.goDeleteBook();
+		int l = service.goUpdateRcheck();
+		int n = 0;
+		if(l > 0) {
+			n = service.goDeleteBook();
+		}
+		
 		
 		JSONObject jsonObj = new JSONObject();  // {}
 		jsonObj.put("n", n);  // {"n":1}
@@ -455,37 +461,13 @@ public class YehyeonController {
 		String subject = service.getSubjectname(subno);
 		session.setAttribute("subject", subject);
 		
-		List<Map<String,String>> noticeList = service.getNoticeList(subno);
-		
-		System.out.println("확인용 사이즈 : " + noticeList.size());
-		
-		for(int i = 0; i < noticeList.size(); i++) {
-			System.out.println("~~확인용 : " + noticeList.get(i).get("subject"));
-			System.out.println("~~확인용 : " + noticeList.get(i).get("regdate"));
-		}
-		
+		List<Map<String,String>> noticeList = service.getNoticeList(subno);		
 		mav.addObject("noticeList", noticeList);
 		
-		List<Map<String,String>> qnaList = service.getQnAList(subno);
-		
-		System.out.println("확인용 사이즈 : " + qnaList.size());
-		
-		for(int i = 0; i < qnaList.size(); i++) {
-			System.out.println("~~확인용 : " + qnaList.get(i).get("subject"));
-			System.out.println("~~확인용 : " + qnaList.get(i).get("regdate"));
-		}
-		
+		List<Map<String,String>> qnaList = service.getQnAList(subno);		
 		mav.addObject("qnaList", qnaList);
 		
 		List<Map<String,String>> materialList = service.getMaterialList(subno);
-		
-		System.out.println("확인용 사이즈 : " + materialList.size());
-		
-		for(int i = 0; i < materialList.size(); i++) {
-			System.out.println("~~확인용 : " + materialList.get(i).get("subject"));
-			System.out.println("~~확인용 : " + materialList.get(i).get("regdate"));
-		}
-		
 		mav.addObject("materialList", materialList);
 		
 		

@@ -74,6 +74,33 @@ public class ClassBoardService implements InterClassBoardService {
 		return assignmentVO;
 	}
 
+	// 과제) 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
+	@Override
+	public int assignmentEdit_delfile(Map<String, String> paraMap, assignmentBoardVO assignmentVO) {
+		// 첨부파일 삭제
+		String fileName = paraMap.get("fileName");
+		String path = paraMap.get("path");
+   
+		if(fileName!=null && "".equals(fileName)) {
+			try {
+				fileManager.doFileDelete(fileName, path);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+   
+		int n=dao.assignmentEdit_withfile(assignmentVO);
+   
+		return n;
+		}
+
+	// 과제) 새로운 첨부파일 등록 & 수정 update
+	@Override
+	public int assignmentEdit_withfile(assignmentBoardVO assignmentVO) {
+		int n=dao.assignmentEdit_withfile(assignmentVO);
+		return n;
+	}
+
 	// ===  1개글 수정하기 === //
 	@Override
 	public int assignmentEdit(assignmentBoardVO assignmentVO) {
@@ -83,8 +110,23 @@ public class ClassBoardService implements InterClassBoardService {
 
 	// === 1개글 삭제하기 === //
 	@Override
-	public int assignmentDelete(String assgnno) {
-		int n = dao.assignmentDelete(assgnno);
+	public int assignmentDelete(Map<String, String> paraMap) {
+		
+		int n = dao.assignmentDelete(paraMap);
+		
+		// === #165. 파일첨부가 된 글이라면 DB에서 글 삭제가 성공된 후 첨부파일을 삭제해주어야 한다. === //
+		   if(n==1) {
+			   String fileName = paraMap.get("fileName");
+			   String path = paraMap.get("path");
+			   
+			   if(fileName!=null && "".equals(fileName)) {
+				   try {
+					   fileManager.doFileDelete(fileName, path);
+				   } catch (Exception e) {
+					   e.printStackTrace();
+				   }
+			   }
+		   }
 		return n;
 	}
 
@@ -274,7 +316,7 @@ public class ClassBoardService implements InterClassBoardService {
 	
 	// 기존 첨부파일 삭제 후 새로운 첨부파일 등록 수정 update
 	@Override
-	public int materialEdit_delfile(Map<String, String> paraMap) {
+	public int materialEdit_delfile(Map<String, String> paraMap, materialVO mtrvo) {
 
 		// 첨부파일 삭제
 		String fileName = paraMap.get("fileName");
@@ -288,15 +330,15 @@ public class ClassBoardService implements InterClassBoardService {
 		   }
 	   }
 	   
-	   int n=dao.materialEdit_withfile(paraMap);
+	   int n=dao.materialEdit_withfile(mtrvo);
 	   
 	   return n;
 	}
 
 	// 새로운 첨부파일 등록 & 수정 update
 	@Override
-	public int materialEdit_withfile(Map<String, String> paraMap) {
-		int n=dao.materialEdit_withfile(paraMap);
+	public int materialEdit_withfile(materialVO mtrvo) {
+		int n=dao.materialEdit_withfile(mtrvo);
 		return n;
 	}
 
@@ -370,7 +412,6 @@ public class ClassBoardService implements InterClassBoardService {
 		int n = dao.planEdit(paraMap);
 		return n;
 	}
-
 
 
 }

@@ -59,7 +59,7 @@ div#admincontent {
 .button {
 	
 	margin-top:40px;
-	margin-left: 120px;
+	margin-left: 110px;
     width:100px;
     background-color:#2ECC71;
     border: none;

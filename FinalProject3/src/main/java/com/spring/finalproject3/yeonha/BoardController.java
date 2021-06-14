@@ -157,6 +157,7 @@ public class BoardController {
 		String searchWord = request.getParameter("searchWord");
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 		
+		
 		if(searchType == null || (!"subject".equals(searchType) && !"name".equals(searchType)) ) {
 			searchType = "";
 		}
@@ -312,8 +313,8 @@ public class BoardController {
 		String seq = request.getParameter("seq");		
 		String categoryno = request.getParameter("categoryno");
 	    String searchType = request.getParameter("searchType");
-	    String searchWord = request.getParameter("searchWord");
-	    
+	    String searchWord = request.getParameter("searchWord");	    
+	  
 	    if(searchType == null) {
 			searchType = "";	
 		}
@@ -337,6 +338,7 @@ public class BoardController {
 			gobackURL = gobackURL.replaceAll(" ", "&");	
 		}
 		
+		// System.out.println(gobackURL);
 		mav.addObject("gobackURL", gobackURL);
 		
 		try {
@@ -770,12 +772,14 @@ public class BoardController {
 	public void requiredLogin_download(HttpServletRequest request, HttpServletResponse response) {
 		
 		String seq = request.getParameter("seq");
+		String categoryno = request.getParameter("categoryno");
 		// 첨부파일이 있는 글번호
 		
 		Map<String,String> paraMap = new HashMap<>();
 		paraMap.put("seq", seq);
 		paraMap.put("searchType", "");
 		paraMap.put("searchWord", "");
+		paraMap.put("categoryno", categoryno);
 		
 		/*
 			첨부파일이 있는 글번호에서

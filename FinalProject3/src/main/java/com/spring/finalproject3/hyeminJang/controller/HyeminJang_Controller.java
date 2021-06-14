@@ -19,12 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.spring.finalproject3.common.AES256;
 import com.spring.finalproject3.common.MyUtil;
 import com.spring.finalproject3.common.Sha256;
 import com.spring.finalproject3.hyeminJang.model.InboxVO;
 import com.spring.finalproject3.hyeminJang.model.OutboxVO;
-import com.spring.finalproject3.hyeminJang.model.ScoreVO;
+
 import com.spring.finalproject3.hyeminJang.service.InterMessageService;
 import com.spring.finalproject3.joseungjin.model.PersonVO;
 
@@ -274,7 +273,7 @@ public class HyeminJang_Controller {
 	      while( !(loop > blockSize || pageNo > totalPage) ) {
 
 	         if(pageNo == currentShowPageNo) {
-	            pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
+	            pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; color:black; padding:2px 4px;'>"+pageNo+"</li>";
 	         }
 	         else {
 	            pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
@@ -659,7 +658,7 @@ public class HyeminJang_Controller {
   	      while( !(loop > blockSize || pageNo > totalPage) ) {
 
   	         if(pageNo == currentShowPageNo) {
-  	            pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
+  	            pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;  color:black; padding:2px 4px;'>"+pageNo+"</li>";
   	         }
   	         else {
   	            pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";

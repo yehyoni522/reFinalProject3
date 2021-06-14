@@ -202,5 +202,9 @@
 		) V
 		where rno between '1' and '5'
 	</select>
+	
+	<update id="goUpdateRcheck">
+	 	update tbl_person set rcheck = 0
+	</update>
 
 </mapper>

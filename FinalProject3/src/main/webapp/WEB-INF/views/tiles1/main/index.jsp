@@ -161,7 +161,7 @@
 	
 	img#popup{
 	position: fixed;
-  	top: 650px;
+  	top: 550px;
   	right: 60px;
   	cursor:pointer;
   	 width: 80px; 
@@ -361,7 +361,7 @@
 		<%-- 원글에 대한 댓글의 totalPage 수를 알아오려고 한다. --%> 
 		$.ajax({
 			url:"<%= ctxPath%>/getboardTotalPage.sam",
-			data:{"sizePerPage":"3"},
+			data:{"sizePerPage":"1"},
 			type:"get",
 			dataType:"json",
 			success:function(json) {
@@ -373,7 +373,7 @@
 					
 					var pageBarHTML = "<ul style='list-style: none;'>";
 					
-					var blockSize = 3;
+					var blockSize = 5;
 		
 					var loop = 1;
 				    
@@ -448,12 +448,12 @@
 							var events=[];
 						      $.each(json, function(index, item){
 								  events.push({
-									  id:item.schno,
-									  title:item.calsubject,
-									  start:item.startDate,
-									  end:item.endDate,
-									  color:item.color,
-									  description:item.memo
+									  id:item.schno,//스케줄 번호
+									  title:item.calsubject,//제목
+									  start:item.startDate,//시작일
+									  end:item.endDate,//종료일
+									  color:item.color,//색상
+									  description:item.memo//메모 
 									});
 			                 });// end of $.each(json1, function(index, item){}) ------------
 						      successCallback(events); 
@@ -522,9 +522,9 @@ function click_add(){
 }
 function go_pop(){
 	
-	javascript:void(window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=400, height=650, toolbar=no, menubar=no, scrollbars=yes, resizable=yes")); 
+	 window.open("<%= serverName%><%=ctxPath%>/chatting/multichat.sam","chat"," left=930px , top=80px,width=400, height=650, toolbar=no, menubar=no, scrollbars=yes, resizable=yes"); 
 	
-		<%-- location.href="<%= serverName%><%=ctxPath%>/chatting/multichat.sam"; --%>
+		 <%-- location.href="<%= serverName%><%=ctxPath%>/chatting/multichat.sam";  --%>
 	}
 
 function go_boardDisplay(){
@@ -543,33 +543,17 @@ function go_boardDisplay(){
 				var obj;
 				
 			
-				 obj ={ name:json[i].subject,
+				 obj ={	
+						 name:json[i].subject,
 						 weight:Number(json[i].good),
-						 seq:json[i].seq
+						 seq:json[i].seq,
+						 categoryno:json[i].categoryno
 					  };
 		
 				
 				resultArr.push(obj)//배열속에 객체를 넣기
 			}//end of for----------------------
-			//console.log(resultArr);
-			/* var text = resultArr;
-			var lines = text.split(/[,\. ]+/g),
-			  data = Highcharts.reduce(lines, function (arr, word) {
-			    var obj = Highcharts.find(arr, function (obj) {
-			      return obj.name === word;
-			    });
-			    if (obj) {
-			      obj.weight += 1;
-			    } else {
-			      obj = {
-			        name: word,
-			        weight: 1
-			      };
-			      arr.push(obj);
-			    }
-			    return arr;
-			  }, []);
-		 */
+			
 			Highcharts.chart('container', {
 			    chart: {
 			        renderTo: 'chart',
@@ -593,7 +577,7 @@ function go_boardDisplay(){
 			    name: '좋아요'
 			  }],
 			  title: {
-				  text: '<span style=" font-family: Noto Sans KR, sans-serif; font-size: 30px; font-weight:bold; margin-bottom: 10px;">게시판</span><br><br>'+
+				  text: '<span style=" font-family: Noto Sans KR, sans-serif; font-size: 30px; font-weight:bold; margin-bottom: 10px;">커뮤니티</span><br><br>'+
 				  		'<span style="font-size: 26px">실시간 인기글 </span>'
 			     
 			  },       
@@ -602,8 +586,8 @@ function go_boardDisplay(){
 				        cursor: 'pointer',
 				        point: {
 				             events: {
-				                 click: function(e) {
-				                    location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+e.point.seq;
+				                 click: function(e) {          
+				                    location.href ="<%= request.getContextPath()%>/board/view.sam?seq="+e.point.seq+"&categoryno="+e.point.categoryno;
 				                }
 				            }
 				        }
@@ -635,7 +619,7 @@ function go_boardDisplay(){
   <a href="<%=ctxPath%>/mypage/mypage.sam">마이페이지</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=4">공지사항</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=5">Q&A</a>
-  <a href="<%=ctxPath%>/board/list.sam?categoryno=1">게시판</a>
+  <a href="<%=ctxPath%>/board/list.sam?categoryno=1">커뮤니티</a>
   <a href="<%=ctxPath %>/reading/index.sam">열람실좌석예약</a>
   
 </div>
@@ -667,7 +651,7 @@ function go_boardDisplay(){
 			<div style="margin-top: 20px;">
 			<span style="font-size: 20pt; font-weight: bold; margin-left: 50px; margin-bottom: 30px;"><a id="subject" href="<%=ctxPath%>/class/index.sam?subno=${subjectvo.subno}">${subjectvo.subname}</a></span>
 			<br>
-			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}교수님</span>
+			<span style="font-size: 15pt; font-weight: bold; margin-left: 200px;">${subjectvo.day}&nbsp;${subjectvo.time}&nbsp; ${subjectvo.name}&nbsp;교수님</span>
 			</div>
 		</c:forEach>
 	</c:if>
@@ -693,7 +677,7 @@ function go_boardDisplay(){
 </label>
 		<div id= "mainhead">
 		
-				<h2 style="font-weight:bold;">게시판</h2>
+				<h2 style="font-weight:bold;">커뮤니티</h2>
 				<h3>실시간 인기글</h3>
 				<br><br>
 				</div>
@@ -712,7 +696,7 @@ function go_boardDisplay(){
 			     
 			        </tbody>
 			    </table>
-			    <div id="pageBar" style="margin-top: 30px;"></div>
+			    <div id="pageBar" style="margin-top: 30px; padding-right: 30px;"></div>
 			
 	    <figure class="highcharts-figure">
   <div id="container"></div>

@@ -61,7 +61,7 @@ div#admincontent {
 .button {
 	
 	margin-top:40px;
-	margin-left: 120px;
+	margin-left: 110px;
     width:100px;
     background-color:#2ECC71;
     border: none;
@@ -177,7 +177,7 @@ tr#tr_1:hover{
 a:visited {
   background-color : black;
 }
-.target { display: inline-block; width: 650px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.target { display: inline-block; width: 500px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 
 </style>
@@ -342,15 +342,29 @@ a:visited {
              return;
         }
         else{
-        	 var name = $("input[name=name]").val();
-        	 var fk_userid = $("input[name=fk_userid]").val();
-        	location.href="<%= ctxPath%>/message/write.sam?fk_userid="+fk_userid+"&name="+name;
-        	
+
+            var checkbox = $("input[name=check]:checked");
+            checkbox.each(function(i) {
+                
+                // checkbox.parent() : checkbox의 부모는 <td>이다.
+                // checkbox.parent().parent() : <td>의 부모이므로 <tr>이다.
+                var tr = checkbox.parent().parent().eq(i);
+                var td = tr.children();
+
+                        
+                // td.eq(0)은 체크박스 이므로  td.eq(1)의 값부터 가져온다.
+                var name = td.eq(3).children().val();
+                var perno = td.eq(4).children().val();
+                
+                location.href="<%= ctxPath%>/message/write.sam?fk_userid="+perno+"&name="+name;
+                        
+            });
+
         }
 		
 	}
 </script>
-
+<div class="container" style="width: 100%;">
 <div id="adminhome">
 
 <div id=adminside >
@@ -399,7 +413,7 @@ a:visited {
     <thead>
       <tr>
         <th><input type="checkbox" id = "check" name="checkall"/><label for="check"></label></th>
-        <th >보낸사람</th>
+        <th>보낸사람</th>
         <th>내용</th>
         <th>날짜</th>
         <th>읽음표시</th>
@@ -423,11 +437,12 @@ a:visited {
     <tbody>
       <tr  id="tr_1" style="color: #055AC1;">
         <td><input type="checkbox" name="check" value="${inboxvo.inboxSeq}"/></td>
-        <td onclick="goView(${inboxvo.inboxSeq}" >${inboxvo.inboxName}<span style="font-size: 12px;">(${inboxvo.fk_perno})</span>
-        </td>
+        <td onclick="goView(${inboxvo.inboxSeq}" >${inboxvo.inboxName}<span style="font-size: 12px;">(${inboxvo.fk_perno})</span></td>
         <td onclick="goView(${inboxvo.inboxSeq})"><span class="subject target" >${inboxvo.subject}</span></td>
-        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.reDate}</td>
-        <td onclick="goView(${inboxvo.inboxSeq})" style="color:red; font-weight: bold;">new</td>
+        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.reDate}
+        <input type="hidden" name="res_name" value="${inboxvo.inboxName}"></td>
+        <td onclick="goView(${inboxvo.inboxSeq})" style="color:red; font-weight: bold;">new
+        <input type="hidden" name="res_userid" value="${inboxvo.fk_perno}"></td>
       </tr>
     </tbody>
     </c:if>
@@ -439,10 +454,14 @@ a:visited {
     <tbody>
       <tr  id="tr_1" style="color: gray;">
         <td><input type="checkbox" name="check" value="${inboxvo.inboxSeq}"/></td>
-        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.inboxName}<span style="font-size: 12px;">(${inboxvo.fk_perno})</span></td>
-        <td onclick="goView(${inboxvo.inboxSeq})"><span class="subject target" >${inboxvo.subject}</span></td>
-        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.reDate}</td>
-        <td onclick="goView(${inboxvo.inboxSeq})">읽음</td>
+        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.inboxName}<span style="font-size: 12px;">(${inboxvo.fk_perno})</span>
+       </td>
+        <td onclick="goView(${inboxvo.inboxSeq})"><span class="subject target" >${inboxvo.subject}</span>
+        </td>
+        <td onclick="goView(${inboxvo.inboxSeq})">${inboxvo.reDate}
+         <input type="hidden" name="res_name" value="${inboxvo.inboxName}"></td>
+        <td onclick="goView(${inboxvo.inboxSeq})">읽음
+        <input type="hidden" name="res_userid" value="${inboxvo.fk_perno}"></td>
       </tr>
     </tbody>
     </c:if>
@@ -457,4 +476,4 @@ a:visited {
 </div>
 
 </div>
-
+</div>

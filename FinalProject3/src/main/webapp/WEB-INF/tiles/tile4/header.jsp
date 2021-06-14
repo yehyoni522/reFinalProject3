@@ -37,15 +37,13 @@
 		</div>
 		
 </div>
-
 <c:if test="${not empty sessionScope.loginuser}">
 	<nav class="navbar navbar-default">
 	  <ul class="nav navbar-nav" >
-	    <li><a style =" text-align:center; width: 280px;" href="<%=ctxPath%>/index.sam">HOME</a></li>
-	    <li><a style =" text-align:center; width: 280px;" href="#">수업목록</a></li>
-	    <li><a style =" text-align:center; width: 280px;" href="<%=ctxPath%>/board/list.sam?categoryno=1">게시판</a></li>
-	    <li><a style =" text-align:center; width: 280px;" href="<%=ctxPath%>/board/list.sam?categoryno=4">공지사항</a></li>
-	    <li><a style =" text-align:center; width: 280px;" href="<%=ctxPath%>/board/list.sam?categoryno=5">Q&A</a></li>
+	    <li><a style =" text-align:center; width: 350px;" href="<%=ctxPath%>/index.sam">HOME</a></li>
+	    <li><a style =" text-align:center; width: 350px;" href="<%=ctxPath%>/board/list.sam?categoryno=1">커뮤니티</a></li>
+	    <li><a style =" text-align:center; width: 350px;" href="<%=ctxPath%>/board/list.sam?categoryno=4">공지사항</a></li>
+	    <li><a style =" text-align:center; width: 350px;" href="<%=ctxPath%>/board/list.sam?categoryno=5">Q&A</a></li>
 	  </ul>
 	</nav>
 </c:if>

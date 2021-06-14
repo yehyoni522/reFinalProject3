@@ -210,12 +210,12 @@ div#btn-board{
 	
 	<div id="btn-board">
 	
-	<c:if test="${empty requestScope.PlanVO}">
-		<button type="button" class="btn-board" id="planEdit" onclick="javascript:location.href='<%= ctxPath%>/class/planAddEdit.sam?subno=${sessionScope.subno}'">등록</button>
-	</c:if>
-	<c:if test="${not empty requestScope.PlanVO}">
-		<button type="button" class="btn-board" id="planEdit" onclick="javascript:location.href='<%= ctxPath%>/class/planAddEdit.sam?subno=${sessionScope.subno}'">수정</button>
-	</c:if>	
+   <c:if test="${empty requestScope.PlanVO && sessionScope.loginuser.identity eq '1'}">
+      <button type="button" class="btn-board" id="planEdit" onclick="javascript:location.href='<%= ctxPath%>/class/planAddEdit.sam?subno=${sessionScope.subno}'">등록</button>
+   </c:if>
+   <c:if test="${not empty requestScope.PlanVO && sessionScope.loginuser.identity eq '1'}">
+      <button type="button" class="btn-board" id="planEdit" onclick="javascript:location.href='<%= ctxPath%>/class/planAddEdit.sam?subno=${sessionScope.subno}'">수정</button>
+   </c:if>   
 			
 
 	</div>

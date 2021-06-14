@@ -126,5 +126,11 @@ public class ReadingDAO implements InterReadingDAO {
 		return materialList;
 	}
 
+	@Override
+	public int goUpdateRcheck() {
+		int l = sqlsession.update("Reading.goUpdateRcheck");
+		return l;
+	}
+
 
 }

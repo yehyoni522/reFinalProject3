@@ -180,6 +180,7 @@ div#btn-board{
 			//	alert("첨부파일 있음");
 				goAddSubmit_withAttach();
 			}
+			location.reload();
 		}		
  		else{
 			alert("과제 제출을 취소하셨습니다.");
@@ -327,7 +328,7 @@ div#btn-board{
 				}
 				else {
 					html += "<tr>";
-					html += "<td colspan='5' class='comment'>제출된 과제가 없습니다</td>";
+					html += "<td colspan='100%' class='comment'>제출된 과제가 없습니다</td>";
 					html += "</tr>";
 				}
 				

@@ -27,7 +27,8 @@ public interface InterMemberService {
 	int isUserExist2(Map<String, String> paraMap);
 	//관리자 회원 등록 처리
 	int registerMember(Map<String, String> paraMap);
-	
+	//회원 아이디 중복확인
+	int memberidCheck(int perno);
 	
 	//메인 인기 게시글 가져오기
 	List<Main_index_BoardVO> MainboardView();
@@ -61,6 +62,7 @@ public interface InterMemberService {
 	
 	//하이차트 인기게시판
 	List<Map<String, String>> getbestBoard();
+
 
 
 

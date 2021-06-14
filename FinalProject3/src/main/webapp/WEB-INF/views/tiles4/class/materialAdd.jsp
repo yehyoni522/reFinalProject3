@@ -118,7 +118,7 @@ div#btn-board{
 			
 			<%-- === #150. 파일첨부 타입 추가하기 === --%>
 			<tr>
-            <th>파일첨부</th>
+            <th>파일첨부<br><span style="font-size: 9pt;">(파일개수는 1개만 가능)</span></th>
             <td style="padding-left:15px;">
                <input type="file" name="attach" />
             </td>

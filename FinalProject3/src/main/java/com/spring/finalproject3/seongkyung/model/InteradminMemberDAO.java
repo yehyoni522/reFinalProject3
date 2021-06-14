@@ -21,10 +21,10 @@ public interface InteradminMemberDAO {
 	List<Map<String, String>> getAdminProfessor(Map<String, String> paraMap);
 	
 	// 쪽지시험  insert
-	int addquiz(String quizname);
+	int addquiz(Map<String, String> paraMap);
 	
 	// 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색
-	QuizVO getquiz(String quizname);
+	QuizVO getquiz(Map<String, String> paraMap);
 	
 	// 쪽지시험_문제  insert 와 select
 	int addquestion(Map<String, String> paraMap);
@@ -107,6 +107,12 @@ public interface InteradminMemberDAO {
 	
 	// 이미 시험을 쳤는지 검사한다.
 	StdtansVO getscorecheck(Map<String, String> paraMap);
+	
+	// 시험명 알아오기
+	String getquizname(String quizno);
+	
+	// 학생이 퀴즈를 풀었는지 알아오기
+	String getquizcheck(String quizno);
 
 	
 	

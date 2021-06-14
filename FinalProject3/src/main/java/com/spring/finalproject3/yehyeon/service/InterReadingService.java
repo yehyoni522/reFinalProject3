@@ -45,4 +45,6 @@ public interface InterReadingService {
 
 	List<Map<String, String>> getMaterialList(String subno); // 과목별 수업자료 제목과 작성일자를 불러온다.
 
+	int goUpdateRcheck(); // 다시 예약 가능하도록 컬럼 값 1 -> 0 으로 변경한다.
+
 }

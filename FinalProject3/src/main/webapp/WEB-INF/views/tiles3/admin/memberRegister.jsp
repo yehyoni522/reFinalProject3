@@ -127,9 +127,9 @@ div#registerSuccessContainer button{
 </style>
 
 <script type="text/javascript">
+var idcheck=false;
 $(document).ready(function(){
 $("span.error").hide();
-
 
 
 $("input#email").blur(function(){
@@ -156,11 +156,39 @@ $("input#email").blur(function(){
 		}
 		
 	}); // 아이디가 email 인 것은 포커스를 잃어버렸을 경우(blur) 이벤트를 처리해주는 것이다.
-
+	$("input#perno").blur(function(){
+		
+			var regExp =/^[0-9]*$/;
+			// 숫자만입력
+		
+			var bool = regExp.test($(this).val());
+			
+			if(!bool) {
+				// 암호가 정규표현식에 위배된 경우
+				$("table#tblMemberRegister :input").prop("disabled",true);
+				$(this).prop("disabled",false);
+				$("#checkMessage").css('color', 'red'); 
+				$("#checkMessage").html("숫자만 입력가능합니다 ");
+				$(this).val("");
+			}
+			else {
+				// 암호가 정규표현식에 맞는 경우
+				$("table#tblMemberRegister :input").prop("disabled",false);
+				$(this).parent().find(".error").hide();
+				$("#checkMessage").css('color', 'black'); 
+			}
+			
+		}); // 아이디가 pwd 인 것은 포커스를 잃어버렸을 경우(blur) 이벤트를 처리해주는 것이다.	
+	
+	
 });
 
+
 function goRegister(){
-	
+		if(idcheck==false){
+			alert('회원번호를 확인해주세요')
+            return;
+		}
 
     	if($('#fk_majseq').val()==''){
     		 alert('학과를 선택 해주세요.')
@@ -206,6 +234,33 @@ function goRegister(){
 			frm.submit();
      
 }
+
+
+function idCheckFunction(){
+	var perno = $("#perno").val();
+	$.ajax({ 
+		type : 'POST', 
+		url :"<%= ctxPath%>/admin/memberidCheck.sam",
+		dataType:"json",
+		data : {perno : perno},
+		async: false,
+		success : function(json){
+			
+			if(json.n == 1){ 
+				$("#checkMessage").html("사용중인 회원번호입니다. 다른 회원번호를 입력해 주세요"); 
+				$("#checkMessage").css('color', 'red'); 
+				idcheck=false;
+			} 
+			else { 
+				$("#checkMessage").html("사용할 수 있는 아이디입니다.");
+				$("#checkMessage").css('color', 'black'); 
+				idcheck=true;
+			} 
+				
+
+			} 
+		}) }
+
 
 </script>
 <div id="adminhome">
@@ -256,8 +311,15 @@ function goRegister(){
       </tr>
       <tr>
          <td style="width: 20%; font-weight: bold;">회원번호&nbsp;</td>
-           <td><input type="text" name="perno" id="perno" class="requiredInfo" />
-           <input type ="radio" id="gender" name="gender" value ="1" />남 
+           <td><input type="text" name="perno" id="perno" onkeyup="idCheckFunction();" class="requiredInfo" />
+           <span id="checkMessage" style="font-weight:bold"></span>
+           </td>
+      </tr>
+       <tr>
+         <td style="width: 20%; font-weight: bold;">성별&nbsp;</td>
+           <td>
+          
+           <input type ="radio" id="gender" name="gender" value ="1" />남 &nbsp;
            <input type ="radio" id="gender" name="gender" value ="2" />여
            </td>
       </tr>
@@ -270,7 +332,7 @@ function goRegister(){
         <tr>
          <td style="width: 20%; font-weight: bold;">생년월일&nbsp;</td>
          <td style="width: 80%; text-align: left;">
-             <input type="text" name="birthday" id="birthday" class="requiredInfo"placeholder="1990-01-01" /> 
+             <input type="text" name="birthday" id="birthday" class="requiredInfo" placeholder="1990-01-01" /> 
          </td>
       </tr>
       <tr>

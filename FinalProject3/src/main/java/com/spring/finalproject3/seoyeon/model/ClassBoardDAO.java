@@ -78,6 +78,13 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		return assignmentVO;
 	}
 
+	// 과제) 첨부파일 있는 수정하기
+	@Override
+	public int assignmentEdit_withfile(assignmentBoardVO assignmentVO) {
+		int n = sqlsession.update("classBoard.assignmentEdit_withfile", assignmentVO);
+	    return n;
+	}
+	
 	// ===1개글 수정하기 === //
 	@Override
 	public int assignmentEdit(assignmentBoardVO assignmentVO) {
@@ -87,8 +94,8 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 
 	// === 1개글 삭제하기 === //
 	@Override
-	public int assignmentDelete(String assgnno) {
-		int n = sqlsession.delete("classBoard.assignmentDelete", assgnno);
+	public int assignmentDelete(Map<String, String> paraMap) {
+		int n = sqlsession.delete("classBoard.assignmentDelete", paraMap);
 		return n;
 	}
 
@@ -264,8 +271,8 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 	
 	// 자료) 새로운 첨부파일 및 수정하기 완료
 	@Override
-	public int materialEdit_withfile(Map<String, String> paraMap) {
-		int n = sqlsession.update("classBoard.materialEdit_withfile", paraMap);
+	public int materialEdit_withfile(materialVO mtrvo) {
+		int n = sqlsession.update("classBoard.materialEdit_withfile", mtrvo);
 	     return n;
 	}
 	
@@ -324,6 +331,7 @@ public class ClassBoardDAO implements InterClassBoardDAO {
 		int n=sqlsession.update("classBoard.planEdit",paraMap);
 		return n;
 	}
+
 
 
 

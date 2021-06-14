@@ -38,7 +38,7 @@ public class LessonBoard2Controller {
 	
 	// === #155. 파일업로드 및 다운로드를 해주는 FileManager 클래스 의존객체 주입하기(DI : Dependency Injection) ===  
 	@Autowired     // Type에 따라 알아서 Bean 을 주입해준다.
-	private FileManager fileManager;
+	private FileManager fileManager; 
 
 	
 	// 강의실 공지사항 글쓰기 폼
@@ -208,7 +208,7 @@ public class LessonBoard2Controller {
 		while( !(loop > blockSize || pageNo > totalPage) ) {
 		
 			if(pageNo == currentShowPageNo) {
-				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
+				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt; color:black; padding:2px 4px;'>"+pageNo+"</li>";
 			}
 			else {
 				pageBar += "<li style='display:inline-block; width:30px; font-size:12pt;'><a class='boarda' href='"+url+"?&currentShowPageNo="+pageNo+"'>"+pageNo+"</a></li>";
@@ -426,6 +426,7 @@ public class LessonBoard2Controller {
 	   
 		// System.out.println("삭제체크여부"+(request.getParameter("delfileName")));
 		
+		// 첨부파일 삭제체크여부
 		String delFileCheck = request.getParameter("delfileName");
 		
 		
@@ -434,7 +435,6 @@ public class LessonBoard2Controller {
 		// 게시글에 첨부파일이 있는지 확인하기(수정)
 		String filename = service.isFilename(lenotivo);
 		lenotivo.setFileName(filename);
-		// System.out.println("파일삭제 작업전 파일이름: "+boardvo.getFileName());
 		
 		if(delFileCheck != null && filename != null) {
 			// 게시글에 파일이 있는데 파일삭제에 체크가 되어있다면
@@ -443,7 +443,6 @@ public class LessonBoard2Controller {
 		}
 		filename = service.isFilename(lenotivo);
 		lenotivo.setFileName(filename);
-		// System.out.println("파일삭제 작업후 파일이름: "+boardvo.getFileName());
 		
 		if(!attach.isEmpty() && filename == null) {
 			// 게시글이 파일이 없고 파일첨부가 되었다면

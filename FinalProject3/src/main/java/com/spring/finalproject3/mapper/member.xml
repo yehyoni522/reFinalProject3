@@ -31,11 +31,19 @@
 		where perno =#{userid} and email=#{email}
 	</select>
 	
-		<!-- 관리자 회원 정보 등록 -->
+	<!-- 관리자 회원 정보 등록 -->
 	<select id="registerMember" parameterType="HashMap" resultType="int">
 		insert into tbl_person(perno, fk_majseq,name,gender,birthday,address,email,mobile,pwd,identity)
   		values(#{perno},#{fk_majseq},#{name},#{gender},#{birthday},#{address},#{email},#{mobile},'1234',#{identity})
 	</select>
+	
+	<!-- 관리자 회원 등록  아이디 중복확인-->
+	<select id="memberidCheck" parameterType="int" resultType="int">
+			select count(*)
+		from tbl_person
+		where perno =#{perno}
+	</select>
+	
 	
 	<!-- 비번 변경 -->
 	<update id="pwdUpdate" parameterType="HashMap">
@@ -50,17 +58,18 @@
 		where perno =#{userid} and name=#{name} and email=#{email} 
 	</select>
 	
-	<!-- 인기게시판 불러오기 -->
+<!-- 	인기게시판 불러오기-->
 	<select id ="MainboardView" resultType="com.spring.finalproject3.joseungjin.model.Main_index_BoardVO">
-	        select seq,categoryno,name,subject,good,readCount,namecheck,commentCount,regDate
+	 select seq,categoryno,name,subject,good,readCount,namecheck,commentCount,regDate
         from
         (
-             select B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount,B.namecheck, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+             select row_number() over(order by good desc) as rno,B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount,B.namecheck, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
 		from tbl_board B join tbl_person P
 		on B.fk_perno=P.perno
-		where status=1 and good>=10
+		 
         )
-	</select>
+        where rno between 1 and 20
+	</select> 
 	
 	<!-- 총페이지수 알아오기-->
 	<select id ="getboardTotalPage" parameterType="HashMap" resultType="int">
@@ -71,15 +80,15 @@
 	
 	<!--게시판 페이징 처리 -->
 	<select id ="getboardistPaging" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.Main_index_BoardVO">
-		  select good,seq, categoryno,name,subject,readCount,commentCount,regDate,namecheck
-				from
-				(
-			      select row_number() over (order by  good desc) as rno,B.seq, B.categoryno, P.name AS name, B.subject, B.good, B.namecheck,B.readCount, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
-                    from tbl_board B join tbl_person P
-                    on B.fk_perno=P.perno
-				where good>=10 and status = 1  
-				)V
-			where rno between #{startRno} and #{endRno}
+	 select seq,categoryno,name,subject,good,readCount,namecheck,commentCount,regDate
+        from
+        (
+             select row_number() over(order by good desc) as rno,B.seq, B.categoryno, P.name, B.subject, B.good, B.readCount,B.namecheck, B.commentCount,to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') as regDate
+		from tbl_board B join tbl_person P
+		on B.fk_perno=P.perno
+		 
+        )
+        where rno between #{startRno} and #{endRno}
 	</select>
 	
 	<!-- 수강중인 과목 불러오기 -->
@@ -94,6 +103,15 @@
 		)V
 		join tbl_person P
 		on V.fk_perno =P.perno
+		 ORDER BY (
+          CASE day
+          WHEN '월요일' THEN 1
+          WHEN '화요일' THEN 2
+          WHEN '수요일' THEN 3
+          WHEN '목요일' THEN 4
+          ELSE 5
+          END
+         ) 
 	</select>
 	
 		<!-- 교수 수강중인 과목 불러오기 -->
@@ -101,6 +119,15 @@
 		select subno,subname,day,time
 		from tbl_subject
 		where fk_perno=#{userid}
+		   ORDER BY (
+          CASE day
+          WHEN '월요일' THEN 1
+          WHEN '화요일' THEN 2
+          WHEN '수요일' THEN 3
+          WHEN '목요일' THEN 4
+          ELSE 5
+          END
+         ) 
 	
 	</select>
 	
@@ -168,12 +195,13 @@
 	</delete>	
 	
 	
-	
+	<!-- 관리자 수업 목록 -->
 	<select id ="adminsubject" parameterType="HashMap" resultType="com.spring.finalproject3.joseungjin.model.MainSubjectVO">
 		select subno,name,fk_perno,subname,credit,semeter,day,time,content,majseq
 		from
 		(
-		    select row_number() over(order by semeter,majseq desc) as rno,subno,name,fk_perno,subname,credit,semeter,day,time,M.content,majseq
+		    select row_number() over(order by semeter,majseq desc) as rno,subno,name,fk_perno,
+		    subname,credit,semeter,day,time,M.content,majseq
 		    from
 		    (
 		        select S.subno,S.fk_perno,S.subname,S.credit,S.semeter,S.day,S.time,p.name,s.fk_majseq
@@ -264,6 +292,7 @@
 	
 	<!-- 하이차트 활용 -->
 	<resultMap type="HashMap" id="getbestBoardMap">
+       	<result property="categoryno" column="categoryno" javaType="String"/>
 		<result property="seq" column="seq" javaType="String"/>
 		<result  property="subject" column="subject" javaType="String" />
 		<result property="good" column="good" javaType="String"/>
@@ -271,13 +300,13 @@
 	
 	
 	<select id="getbestBoard" resultMap="getbestBoardMap">
-	select seq,subject,good
+    select seq,subject,good,categoryno
         from
         (
-        select row_number() over(order by good desc) as rno,seq,subject,good
+        select row_number() over(order by good desc) as rno,seq,subject,good,categoryno
         from tbl_board
         )
-        where rno between 1 and 10
+        where rno between 1 and 20
 	</select>
 	
 </mapper>

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.spring.finalproject3.joseungjin.model.PersonVO;
-import com.spring.finalproject3.yehyeon.model.BookListVO;
+
 
 public interface InterMessageDAO {
 

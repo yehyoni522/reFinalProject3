@@ -25,7 +25,7 @@
 </head>
 <body>
 <div id="mycontainer">
-      <div id="myheader">
+      <div id="myheader" style="margin-bottom:20px;">
          <tiles:insertAttribute name="header" />
       </div>
       

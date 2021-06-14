@@ -224,7 +224,7 @@ div#btn-board{
 				<th>첨부파일</th>
 			   <td>
 	     	   		<c:if test="${requestScope.lenotivo.orgFilename != null}"> 
-					<a href="<%=ctxPath%>/lesson/download.sam?seq=${requestScope.lenotivo.seq}"> ${requestScope.lenotivo.orgFilename} 
+					<a href="<%=ctxPath%>/lesson/download.sam?seq=${requestScope.lenotivo.seq}&fk_subno=${lenotivo.fk_subno}"> ${requestScope.lenotivo.orgFilename} 
 			    	<span>(<fmt:formatNumber value="${requestScope.lenotivo.fileSize}" pattern="#,###"/>&nbsp;byte)</span></a>
 					</c:if>
 			   </td>
@@ -250,7 +250,7 @@ div#btn-board{
 			<button type="button" class="btn-board" id="noticeEdit" onclick="javascript:location.href='<%= ctxPath%>/lesson/noticeEdit.sam?seq=${requestScope.lenotivo.seq}'">수정</button>
 			<button type="button" class="btn-board" id="noticeDelete" >삭제</button>
 	</c:if>
-			<button type="button"class="btn-board" onclick="javascript:location.href='<%= ctxPath%>/lesson/notice.sam'">목록</button>		
+			<button type="button"class="btn-board" onclick="javascript:location.href='<%= ctxPath%>/lesson/notice.sam?fk_subno=${lenotivo.fk_subno}'">목록</button>		
 	</div>   
  
  	<form name="DelFrm">	
