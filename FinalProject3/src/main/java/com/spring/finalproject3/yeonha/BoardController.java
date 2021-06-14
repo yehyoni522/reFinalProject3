@@ -157,6 +157,7 @@ public class BoardController {
 		String searchWord = request.getParameter("searchWord");
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 		
+		
 		if(searchType == null || (!"subject".equals(searchType) && !"name".equals(searchType)) ) {
 			searchType = "";
 		}
