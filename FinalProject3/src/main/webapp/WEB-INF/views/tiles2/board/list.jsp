@@ -25,14 +25,14 @@
 }
 #newhit{
 	position: relative;
-	left: 93%;
+	left: 91%;
 	margin-bottom: 5px;
 }
 #btnadd{
 	background-color: white;
 	border: solid #ccc 1px;
 	position: relative;
-	left: 92%;
+	left: 90%;
 	top: -28px;		
 	height: 30px;
 }
