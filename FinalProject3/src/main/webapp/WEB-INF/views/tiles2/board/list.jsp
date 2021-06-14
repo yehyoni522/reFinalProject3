@@ -205,7 +205,7 @@
 		</form>
 	</c:if>
 
-	<table id="table" style="width: 1200px;">
+	<table id="table" style="width: 1100px;">
 		<tr>
 			<th style="width: 60px;  text-align: center;">번호</th>
 			<th style="width: 390px; text-align: center;">제목</th>

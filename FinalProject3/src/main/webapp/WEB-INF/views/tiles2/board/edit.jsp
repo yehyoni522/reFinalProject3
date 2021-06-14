@@ -129,12 +129,12 @@
 </script>
 
 <div style="padding-left: 10%; padding-right:10%;">
-	<h1>
+	
  		<c:if test="${requestScope.categoryno == 1}">자유게시판</c:if>
  		<c:if test="${requestScope.categoryno == 2}">중고거래</c:if>
  		<c:if test="${requestScope.categoryno == 2}">동아리&공모전 모집</c:if>
  		${categoryno}
-	</h1>
+	
 	<hr class="mainline" align="left" >
 	
 	<form name="editFrm" enctype="multipart/form-data"> 
