@@ -93,28 +93,45 @@
 	
 	
 	<select id="getscoreList"  parameterType="int" resultMap="scorelist">
-		select sum(score) as  totalscore,  sum(score)/100*40 as exchagedScore,  subno,  name, subname
+		select sum(score) as  totalscore,  sum(score)/100*40 as exchagedScore,  subno,  name, subname, noteScore
 		from tbl_person P join
 		(
-		    SELECT Q.score,  V.subno,  V.fk_perno, V.subname, Q.subject, v.day
+		    SELECT Q.score,  V.subno,  V.fk_perno, V.subname, Q.subject, v.day, V.noteScore
 		    FROM
 		    (
+		        SELECT E.subno,  E.fk_perno,  E.subname,  E.day, E.semeter, noteScore
+		        FROM
+		        (
 		        select  S.subno,  S.fk_perno,  S.subname,  S.day,  S.semeter
 		        from tbl_class C join tbl_subject S
 		        on C.fk_subno = S.subno
 		        where C.fk_perno = #{perno}
+		        ) E
+		        JOIN
+		        (
+		        select count(*)*10 as noteScore, fk_perno
+		        from tbl_stdtans
+		        where quizscore = 1 and fk_perno = (select fk_perno from tbl_class where fk_subno =
+		                (select  S.subno
+		                from tbl_class C join tbl_subject S
+		                on C.fk_subno = S.subno
+		                where C.fk_perno = #{perno} ) and fk_perno = #{perno})
+		        group by  fk_perno
+		        ) N
+		        ON E.fk_perno = N.fk_perno
+		        
 		    )V
 		    JOIN
 		    (
 		        select A.assgnno, A.fk_subno, A.subject, A.deadline, M.submitDate, M.status, M.score, M.fk_perno
 		        from tbl_submit M join tbl_assgn A
 		        on M.fk_assgnno = A.assgnno
-		        where M.fk_perno = #{perno}
+		        where M.fk_perno = #{perno} 
 		    )Q
 		    ON V.subno = Q.fk_subno
 		) W
 		on P.perno = W.fk_perno
-		group by subno,  name, subname
+		group by subno,  name, subname, noteScore
 	
 	</select>
 </mapper>

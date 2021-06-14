@@ -53,7 +53,7 @@
 		vertical-align: bottom;
 		border: 1px solid #ccc; 
 		margin:5px;
-		min-height: 470px;
+		min-height: 420px;
 		overflow: auto;
 		overflow-x:hidden;
 	}
