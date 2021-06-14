@@ -53,6 +53,7 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
+
 		
 		$("select#newhit").val(${requestScope.newhit});
 		
@@ -139,6 +140,7 @@
 	
 	
 	function goView(seq) {
+		
 		
 		var frm = document.goViewFrm;
 		frm.seq.value=seq;

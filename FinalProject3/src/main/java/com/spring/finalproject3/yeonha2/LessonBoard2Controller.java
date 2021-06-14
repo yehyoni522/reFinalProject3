@@ -426,6 +426,7 @@ public class LessonBoard2Controller {
 	   
 		// System.out.println("삭제체크여부"+(request.getParameter("delfileName")));
 		
+		// 첨부파일 삭제체크여부
 		String delFileCheck = request.getParameter("delfileName");
 		
 		
@@ -434,7 +435,6 @@ public class LessonBoard2Controller {
 		// 게시글에 첨부파일이 있는지 확인하기(수정)
 		String filename = service.isFilename(lenotivo);
 		lenotivo.setFileName(filename);
-		// System.out.println("파일삭제 작업전 파일이름: "+boardvo.getFileName());
 		
 		if(delFileCheck != null && filename != null) {
 			// 게시글에 파일이 있는데 파일삭제에 체크가 되어있다면
@@ -443,7 +443,6 @@ public class LessonBoard2Controller {
 		}
 		filename = service.isFilename(lenotivo);
 		lenotivo.setFileName(filename);
-		// System.out.println("파일삭제 작업후 파일이름: "+boardvo.getFileName());
 		
 		if(!attach.isEmpty() && filename == null) {
 			// 게시글이 파일이 없고 파일첨부가 되었다면

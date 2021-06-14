@@ -137,7 +137,7 @@
 	</h1>
 	<hr class="mainline" align="left" >
 	
-	<form name="editFrm"> 
+	<form name="editFrm" enctype="multipart/form-data"> 
  		<input type="hidden" name="categoryno" value="1" /> 
  		<input type="hidden" name="seq" value="${requestScope.boardvo.seq}" />                  
 		<input type="hidden" name="fk_perno" value="${sessionScope.loginuser.perno}" />
@@ -151,6 +151,12 @@
 		<div>
 			<input type="text" name="subject" id="subject" value="${requestScope.boardvo.subject}"/>       
 		</div>
+		
+		<input type="file" id="fileAddin" name="attach" value="<c:out value="${boardvo.fileName}"/>"/> 
+		<c:if test="${requestScope.boardvo.fileName != null}">
+			<label>삭제&nbsp;&nbsp;</label><input type="checkbox" name="delfileName" value="<c:out value="${requestScope.boardvo.fileName}"/>">   
+			&nbsp;&nbsp;<a href="<%=ctxPath%>/lesson/download.sam?seq=${requestScope.boardvo.seq}&categoryno=${boardvo.categoryno}"> ${requestScope.boardvo.orgFilename}</a>
+		</c:if>
 		
         <textarea rows="10" cols="100" name="content" id="content">${requestScope.boardvo.content}</textarea>       
            

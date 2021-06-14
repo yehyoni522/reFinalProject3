@@ -17,7 +17,7 @@
 }
 .putcomment{
 	border-bottom: 1px solid #ccc;
-	margin: 10px 0 10px 0;
+	/* margin: 10px 0 10px 0; */
 }
 
 .move {cursor: pointer;}
@@ -58,7 +58,7 @@ a {
 }
 #comname{
 	font-weight: bold;
-	margin: 5px 0 5px 0;
+	padding-top: 5px;
 }
 #comdate{
 	font-size: 8pt;
@@ -68,7 +68,7 @@ a {
 	margin-bottom: 10px;
 }
 #commentContent{
-	width: 80%;
+	width: 96%;
 	height: 34px;	
 }
 #comwriteimg{
@@ -196,11 +196,6 @@ a {
 						
 						var content = '"'+item.content+'"';						
 						
-						//console.log("댓글작성자사람번호"+item.fk_perno);
-						// console.log("로그인유저 perno: '${sessionScope.loginuser.perno}'");
-					//	console.log("게시글유저 perno: "+${boardvo.fk_perno});						
-	
-							
 						<!-- 답변 댓글이 아닌 원 댓글인 경우 -->
 						if(item.co_depthno == 0){
 							if(${sessionScope.loginuser.perno} == item.fk_perno){
@@ -219,8 +214,7 @@ a {
 							}
 							else{
 									html += "<div id='comname'>&nbsp;"+ item.name+"<span id='noSpan'>&nbsp;</span>";
-							}
-							
+							}							
 							
 							html += "<span id='commentfunc'>";
 							html += "<c:if test='${sessionScope.loginuser.perno ne null}'>";
@@ -364,7 +358,7 @@ a {
 					while( !(loop > blockSize || pageNo > totalPage) ) {
 					
 						if(pageNo == currentShowPageNo) {
-							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; border:solid 1px gray; color:red; padding:2px 4px;'>"+pageNo+"</li>";
+							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt; color:black; padding:2px 4px;'>"+pageNo+"</li>";
 						}
 						else {
 							pageBarHTML += "<li style='display:inline-block; width:30px; font-size:12pt;'><a href='javascript:goViewComment(\""+pageNo+"\")'>"+pageNo+"</a></li>";
@@ -581,7 +575,7 @@ a {
 			</div>
 			<div id="fileDown"> 
 				<c:if test="${requestScope.boardvo.orgFilename != null}"> 
-				<a href="<%=ctxPath%>/board/download.sam?seq=${requestScope.boardvo.seq}&categoryno=${boardvo.categoryno}"> ${requestScope.boardvo.orgFilename} 
+				<a href="<%=ctxPath%>/board/download.sam?seq=${requestScope.boardvo.seq}&categoryno=${categoryno}"> ${requestScope.boardvo.orgFilename} 
 			    <span>(<fmt:formatNumber value="${requestScope.boardvo.fileSize}" pattern="#,###"/>&nbsp;byte)</span></a>
 				</c:if>
 			</div>
@@ -628,13 +622,13 @@ a {
 	 	<c:if test="${requestScope.boardvo.previoussubject ne null}">
 	 		<div style="margin-bottom: 1%;">
 	 			<span style="font-weight:bold;">이전글제목&nbsp;&nbsp;</span>
-	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&categoryno=${boardvo.categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
+	 			<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.previousseq}&categoryno=${categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.previoussubject}</span>
 	 		</div>
 	 	</c:if>
 	 	<c:if test="${requestScope.boardvo.nextsubject ne null}">	
 			<div style="margin-bottom: 1%;">
 				<span style="font-weight:bold;">다음글제목&nbsp;&nbsp;</span>
-				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&categoryno=${boardvo.categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
+				<span class="move" onclick="javascript:location.href='/board/view.sam?seq=${requestScope.boardvo.nextseq}&categoryno=${categoryno}&searchType=${requestScope.searchType}&searchWord=${requestScope.searchWord}&gobackURL=${gobackURL2}'">${requestScope.boardvo.nextsubject}</span>
 			</div>
 		</c:if>
 	</c:if>
@@ -643,8 +637,7 @@ a {
 		<div style="padding: 50px 0; font-size: 16pt; color: red;">존재하지 않습니다</div>
 	</c:if>
 	
-	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/list.sam'">전체목록보기</button>
-	<button type="button" class="viewbtns" onclick="javascript:location.href='${requestScope.gobackURL}'">검색된결과목록보기</button>
+	<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/list.sam?categoryno=${categoryno}'">전체목록보기</button>
 	
 	<c:if test="${categoryno == 1}"> <!-- 자유게시판에서만 답글기능 사용  -->
 		<button type="button" class="viewbtns" onclick="javascript:location.href='<%= ctxPath%>/board/add.sam?categoryno=${boardvo.categoryno}&fk_seq=${requestScope.boardvo.seq}&groupno=${requestScope.boardvo.groupno}&depthno=${requestScope.boardvo.depthno}'">답글</button>
