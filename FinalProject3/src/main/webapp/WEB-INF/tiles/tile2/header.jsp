@@ -43,7 +43,7 @@ hr{
 </div>
 
 <c:if test="${not empty sessionScope.loginuser}">
-	<nav class="navbar navbar-default">
+	<nav class="navbar navbar-default" style="margin-bottom:1px;">
 	  <ul class="nav navbar-nav" >
 	    <li><a style =" text-align:center; width: 280px;" href="<%=ctxPath%>/index.sam">HOME</a></li>
 	    <li><a style =" text-align:center; width: 280px;" href="#">수업목록</a></li>
