@@ -182,6 +182,7 @@ div#add{
 	
 
 	$(document).ready(function(){
+			
 		
 		$("div#add").html("");
 		$("input[name=receiver_es]").val("");
@@ -200,10 +201,10 @@ div#add{
 		    var content = $(this).val();
 		    $('span#counter').html(content.length);    //글자수 실시간 카운팅
 
-		    if (content.length > 1000){
-		        alert("최대 1000자까지 입력 가능합니다.");
-		        $(this).val(content.substring(0, 1000));
-		        $('span#counter').html(1000);
+		    if (content.length > 200){
+		        alert("최대 200자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 200));
+		        $('span#counter').html(200);
 		    }
 		});
 		
@@ -348,7 +349,7 @@ div#add{
 				<div class="addBox" id="receiverID" style="font-size: 13px; font-weight: bold; color: #205890;">받는사람</div>
 	    		<div class="addBox" id="add"> </div>
 			<br>
-				<div class="addBox" id="receiverID" style="font-size: 13px; font-weight: bold; color: #205890;">내용 <span style="color:#aaa;">(<span id="counter">0</span> / 1000자)</span></div>
+				<div class="addBox" id="receiverID" style="font-size: 13px; font-weight: bold; color: #205890;">내용 <span style="color:#aaa;">(<span id="counter">0</span> / 200자)</span></div>
 				<textarea rows="15" cols="50" style="margin: 0px; width: 408px; height: 215px;" class="DOC_TEXT" name="DOC_TEXT"></textarea>
 			<br>
 			
