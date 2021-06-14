@@ -180,6 +180,7 @@ div#btn-board{
 			//	alert("첨부파일 있음");
 				goAddSubmit_withAttach();
 			}
+			location.reload();
 		}		
  		else{
 			alert("과제 제출을 취소하셨습니다.");

@@ -943,7 +943,7 @@ public class ClassBoardController {
 			
 			//페이징처리
 			int totalCount = 0;         // 총 게시물 건수
-			int sizePerPage = 5;        // 한 페이지당 보여줄 게시물 건수
+			int sizePerPage = 6;        // 한 페이지당 보여줄 게시물 건수
 			int currentShowPageNo = 0;  // 현재 보여주는 페이지 번호로서, 초기치로는 1페이지로 설정함.
 		    int totalPage = 0;          // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
 		    String str_currentShowPageNo = request.getParameter("currentShowPageNo");
