@@ -13,7 +13,7 @@
 }
 #table th, #table td {
 	padding: 5px;
- 	height: 50px; 
+ 	height: 40px; 
  	border-bottom: 1px solid #ccc;
 }
 #table th {background-color: #ccc;}
@@ -25,14 +25,14 @@
 }
 #newhit{
 	position: relative;
-	left: 91%;
+	left: 93%;
 	margin-bottom: 5px;
 }
 #btnadd{
 	background-color: white;
 	border: solid #ccc 1px;
 	position: relative;
-	left: 90%;
+	left: 92%;
 	top: -28px;		
 	height: 30px;
 }
@@ -174,7 +174,7 @@
 	
 
 <c:if test="${categoryno == 1 || categoryno == 2 || categoryno == 3}"> 	
-<hr>
+
 	<div id="boardmenu" style="padding-left: 25%;">
 		<ul>
 			<li style='display:inline-block; font-size: 20pt;'><a class="boarda" href="<%=ctxPath%>/board/list.sam?categoryno=1">자유게시판</a><span style="border-right: 2px black solid; margin: 0 80px 0 80px;"></span></li>
@@ -182,7 +182,7 @@
 			<li style='display:inline-block; font-size: 20pt;'><a class="boarda" href="<%=ctxPath%>/board/list.sam?categoryno=3">동아리&공모전 모집</a></li>	
 		</ul>	
 	</div>	
-<hr>
+
 </c:if>  
 
 
@@ -205,14 +205,14 @@
 		</form>
 	</c:if>
 
-	<table id="table" style="width: 1300px;">
+	<table id="table" style="width: 1200px;">
 		<tr>
-			<th style="width: 80px;  text-align: center;">번호</th>
-			<th style="width: 410px; text-align: center;">제목</th>
-			<th style="width: 80px; text-align: center;">추천</th>
-			<th style="width: 80px;  text-align: center;">작성자</th>
-			<th style="width: 150px; text-align: center;">작성일자</th>
-			<th style="width: 80px;  text-align: center;">조회수</th>
+			<th style="width: 60px;  text-align: center;">번호</th>
+			<th style="width: 390px; text-align: center;">제목</th>
+			<th style="width: 60px; text-align: center;">추천</th>
+			<th style="width: 60px;  text-align: center;">작성자</th>
+			<th style="width: 130px; text-align: center;">작성일자</th>
+			<th style="width: 60px;  text-align: center;">조회수</th>
 		</tr>
 		
 		<c:forEach var="boardvo" items="${requestScope.boardList}" varStatus="status"> 
