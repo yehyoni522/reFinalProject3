@@ -577,7 +577,7 @@ function go_boardDisplay(){
 			    name: '좋아요'
 			  }],
 			  title: {
-				  text: '<span style=" font-family: Noto Sans KR, sans-serif; font-size: 30px; font-weight:bold; margin-bottom: 10px;">게시판</span><br><br>'+
+				  text: '<span style=" font-family: Noto Sans KR, sans-serif; font-size: 30px; font-weight:bold; margin-bottom: 10px;">커뮤니티</span><br><br>'+
 				  		'<span style="font-size: 26px">실시간 인기글 </span>'
 			     
 			  },       
@@ -619,7 +619,7 @@ function go_boardDisplay(){
   <a href="<%=ctxPath%>/mypage/mypage.sam">마이페이지</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=4">공지사항</a>
   <a href="<%=ctxPath%>/board/list.sam?categoryno=5">Q&A</a>
-  <a href="<%=ctxPath%>/board/list.sam?categoryno=1">게시판</a>
+  <a href="<%=ctxPath%>/board/list.sam?categoryno=1">커뮤니티</a>
   <a href="<%=ctxPath %>/reading/index.sam">열람실좌석예약</a>
   
 </div>
@@ -677,7 +677,7 @@ function go_boardDisplay(){
 </label>
 		<div id= "mainhead">
 		
-				<h2 style="font-weight:bold;">게시판</h2>
+				<h2 style="font-weight:bold;">커뮤니티</h2>
 				<h3>실시간 인기글</h3>
 				<br><br>
 				</div>
