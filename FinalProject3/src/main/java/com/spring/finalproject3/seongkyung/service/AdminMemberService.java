@@ -79,14 +79,15 @@ public class AdminMemberService implements InteradminMemberService {
 
 	// 쪽지시험 필드 생성
 	@Override
-	public QuizVO addquiz(String quizname) {
+	public QuizVO addquiz(Map<String, String> paraMap) {
 		
 		QuizVO quizvo = null;
 		
-		int n = dao.addquiz(quizname);
-		
+		int n = dao.addquiz(paraMap);
+		// System.out.println("서비스 확인중!");
 		if(n==1) {
-		   quizvo = dao.getquiz(quizname);
+			// System.out.println("서비스 확인중2!");
+		   quizvo = dao.getquiz(paraMap);
 		}   
 		
 		return quizvo;
@@ -417,6 +418,34 @@ public class AdminMemberService implements InteradminMemberService {
 		StdtansVO stdtansvo = dao.getscorecheck(paraMap);
 		
 		return stdtansvo;
+	}
+
+	
+	// 시험명 알아오기
+	@Override
+	public String getquizname(String quizno) {
+		
+		String quizname = dao.getquizname(quizno);
+		
+		return quizname;
+	}
+
+	
+	// 학생이 퀴즈를 풀었는지 알아오기
+	@Override
+	public String getquizcheck(String quizno) {
+
+		String fk_quizno = dao.getquizcheck(quizno);
+		
+		if(fk_quizno != null) {
+			fk_quizno = "1";
+		}
+		else {
+			fk_quizno = "2";
+			return fk_quizno;
+		}
+		
+		return fk_quizno;
 	}
 	
 

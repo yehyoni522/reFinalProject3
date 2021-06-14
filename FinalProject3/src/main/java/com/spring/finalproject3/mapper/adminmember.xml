@@ -79,13 +79,13 @@
 	</select>
 	
 	<!-- 쪽지시험 필드 생성 -->
-	<insert id="addquiz" parameterType="String">
-		insert into tbl_quiz(quizno, quizname, fk_subno)
-		values(quizSeq.nextval, #{quizname}, 1000)
+	<insert id="addquiz" parameterType="HashMap">
+		insert into tbl_quiz(quizno, quizname, fk_subno,quizday)
+		values(quizSeq.nextval,#{quizname},#{subno},(sysdate+2))
 	</insert>
 	
 	<!-- 쪽지시험 테이블에서 시험명으로 쪽지시험 일련번호를 검색 -->
-	<select id="getquiz" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.QuizVO">
+	<select id="getquiz" parameterType="HashMap" resultType="com.spring.finalproject3.seongkyung.model.QuizVO">
 		select quizno, quizname, fk_subno, quizday
 		from tbl_quiz
 		where quizname = #{quizname}
@@ -153,7 +153,8 @@
 	<select id="getQuestionList" parameterType="String" resultType="com.spring.finalproject3.seongkyung.model.QuestionVO">
 		select qzno, qzcontent, answerfirst, answersecond, answerthird, answerfourth, questionno
 		from tbl_question
-		where fk_quizno = (select quizno from tbl_quiz where quizname = #{quizname})	
+		where fk_quizno = (select quizno from tbl_quiz where quizname = #{quizname})
+		order by qzno asc
 	</select>
 	
 	<!-- 가져온 시험명으로 문제의 총 갯수를 구한다. -->
@@ -201,6 +202,7 @@
 		select atdcno, to_char(attendancedate, 'yyyy-mm-dd') as attendancedate, randomsign, fk_subno, fk_perno
 		from tbl_attendance
 		where fk_subno = #{subno}
+		order by attendancedate desc
 	</select>
 	
 	<resultMap type="HashMap" id="studentsignListMap">
@@ -315,5 +317,19 @@
 		from tbl_stdtans
 		where fk_quizno = #{quizno} and fk_questionno = #{questionno}
     </select>
+	
+	<!-- 시험명 알아오기 -->
+	<select id="getquizname" parameterType="String" resultType="String">
+		select quizname
+		from tbl_quiz
+		where quizno = #{quizno}
+	</select>
+	
+	<!-- 학생이 퀴즈를 풀었는지 알아오기 -->
+	<select id="getquizcheck" parameterType="String" resultType="String">
+		select distinct(fk_quizno) as fk_quizno
+		from tbl_stdtans 
+		where fk_quizno = #{quizno}
+	</select>
 	
 </mapper>
