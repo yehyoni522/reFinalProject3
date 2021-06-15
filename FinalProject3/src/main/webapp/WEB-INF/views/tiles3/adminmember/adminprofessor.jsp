@@ -215,11 +215,6 @@ tr {
      		</form>  
 		</div>
 		
-		<div style="clear: both;">
-			<span style="font-weight: bold; font-size: 11pt;">교수진 총 인원 <span style="color: green; font-weight: bold; font-size: 11pt;">234</span></span>
-
-		</div>
-		
 		<div style="clear: both;"></div>
 			
 		<div class="admtitleoptions">	
