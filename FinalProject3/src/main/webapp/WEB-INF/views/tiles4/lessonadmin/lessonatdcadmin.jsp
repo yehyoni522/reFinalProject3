@@ -35,7 +35,7 @@ table.studentList td {
   border-bottom: 1px solid #ccc;
   background-color: #f2f3f3
 }
-button.lesson {
+button#lesson {
  border-radius: 5%;
 	  border: none;
 	  color: white;
@@ -119,10 +119,10 @@ button.lesson {
 
 <div align="center" style="margin-top: 200px; margin-left:480px; min-height: 600px; width: 60%;">
 
-	<div align="center" style="font-size: 18pt; font-weight: bold;">출석!</div>
+	<div align="center" style="font-size: 18pt; font-weight: bold;">출석</div>
 	
 	<div align="center">
-			<button class="leeson" type="button" style="background-color: #bfbfbf;" data-toggle="modal" data-target="#sign">출석시작</button>
+			<button id="lesson" type="button" style="background-color: #bfbfbf;" data-toggle="modal" data-target="#sign">출석시작</button>
 	</div>
 	
 	<div align="right" style="width: 90%; margin-top: 10px;">	
