@@ -1,29 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <% String ctxPath = request.getContextPath(); %>
-
 <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1">
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
 <title>마이페이지</title>
 <style type="text/css">
 body{
    font-family: 'Noto Sans KR', sans-serif;
 }
-
 tr#score > th{
 	background-color: #ccc;
 	text-align: center;
-
 	
 }
 .scoretable{
 	text-align: center;
 }
-
 .msgHead{
 	margin-left: 100px;
 	margin-right: 100px;
@@ -36,7 +30,6 @@ span#title{
 	margin-bottom: 30px;
 	font-weight: bold;
 }
-
 a#msgNew{
 	 border-radius: 50%;
 	 background-color: red;
@@ -54,7 +47,8 @@ a#msgNew{
 	 font-style: normal;
 }
 .belongHead{
-	width: 600px;
+	display: inline-block;
+	width: 450px;
 	margin: 60px;
 	
 }
@@ -64,7 +58,6 @@ a#msgNew{
 	height: 200px;
 	margin-top: 10px;
 }
-
 table.type04 {
   border-collapse: separate;
   border-spacing: 1px;
@@ -74,6 +67,7 @@ table.type04 {
   font-size: 15px;
 }
 table.type04 th {
+  width: 160px;
   width: 190px;
   padding: 10px;
   font-weight: bold;
@@ -84,9 +78,7 @@ table.type04 td {
   width: 250px;
   padding: 10px;
   vertical-align: top;
-
 }
-
 .image{
 	position:relative;
 	display: inline-block;
@@ -98,7 +90,6 @@ table.type04 td {
 	left: 10px;
 	color: #fff;
 }
-
 dfn::after {
   content: attr(data-info);
   display: inline;
@@ -131,7 +122,6 @@ dfn:hover::after,
 dfn:hover::before {opacity: 1;}
 dfn:hover::after {top: 60px;}
 dfn:hover::before {top: 50px;}
-
 .admsubtitle {
 	border-left:solid 5px black; 
  	clear: both;
@@ -142,7 +132,6 @@ dfn:hover::before {top: 50px;}
  
 }
 </style>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script type="text/javascript">
@@ -204,17 +193,14 @@ dfn:hover::before {top: 50px;}
 	
 </div>
 	<hr style="border: solid 1px #E5E5E5;">
-
 	<div class="belongHead" >
 	
 		
 		<div class="admsubtitle" >
 			<span >나의회원정보</span><a style="margin-left: 200px; font-size: 15px; cursor: pointer;" onclick="goEdit()">회원정보수정 →</a>
 		</div>
-
 	
 	<div class="belongHead2" >
-
 		
 		<c:if test="${requestScope.identity == 0}">
 		
@@ -243,9 +229,10 @@ dfn:hover::before {top: 50px;}
 		</c:if>
 		
 		<c:if test="${requestScope.identity == 1}">
-		
+
 			<table class="type04">
 			 <tr>
+			    <th rowspan="5"  style="width: 130px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:120px; height:120px;  margin-top:20px;"></th>
 			    <th rowspan="5"  style="width: 115px;"><img src="<%= ctxPath%>/resources/images/mypage/profile1.png" style="width:115px; height:115px;  margin-top:20px;"></th>
 			  </tr>
 			  <tr>
@@ -268,10 +255,7 @@ dfn:hover::before {top: 50px;}
 			
 		</c:if>
 	</div>
-
 </div>
-
-
 <div class="belongHead">
 	<div class="admsubtitle" >
 		<span>열람실예약내역</span><!-- <span><a style="margin-left: 310px; font-size: 15px; cursor: pointer;" onclick="goEdit()">열람실이용내역 →</a></span> -->
@@ -320,6 +304,75 @@ dfn:hover::before {top: 50px;}
 		</c:if>
 	</div>
 </div>
-
-
+<c:if test="${requestScope.identity == 0}">
+<div class="belongHead" style="width:88%;">
+	<div class="admsubtitle" >
+			<span >과목별 과제및 쪽지시험 성적조회</span>
+			 - 2021년도 봄학기
+		</div>
+	<div class="belongHead2" >
+		<table class="table table-hover" >
+		
+	      <thead class="scoretable">
+	      <tr id="score"> 
+	        <th>과목번호</th>
+	        <th style="width: 30%;">과목명</th>
+	        <th>담당교수</th>
+	        <th>과제점수</th>
+	        <th>쪽지시험점수</th>
+	      </tr>
+	    </thead>
+    
+    <c:forEach var="scorelist" items="${requestScope.scorevolist}">
+	    <tbody class="scoretable">
+	      <tr id="tr_1" style="color: #055AC1;">
+	        <td>${scorelist.subno}</td>
+	        <td >${scorelist.subname}</td>
+	        <td>${scorelist.name}</td>
+	        <td ><dfn data-info="과제목록을 확인하시려면 클릭하세요!"><a style="cursor: pointer;" onclick="goCheck(${scorelist.subno})">${scorelist.exchagedScore}/40</a></dfn></td>
+	        <td style="font-style: italic;">5/10</td>
+	      </tr>
+	    </tbody>
+	 </c:forEach>  
+	   
+	  </table>
+	
+	</div>
+</div>
+</c:if>
+<c:if test="${requestScope.identity == 1}">
+<div class="belongHead" style="width:88%;">
+	<div class="admsubtitle" >
+			<span >수업조회 - 2021년도 봄학기</span>
+		</div>
+	<div class="belongHead2" >
+		<table class="table table-hover" >
+		
+	      <thead class="scoretable">
+	      <tr id="score"> 
+	        <th>과목번호</th>
+	        <th style="width: 20%;">과목명</th>
+	        <th>개설학기</th>
+	        <th>수강인원</th>
+	        <th>현재진행차수</th>
+	        <th>최근진행과제/시험</th>
+	      </tr>
+	    </thead>
+    
+	    <tbody class="scoretable">
+	      <tr id="tr_1" style="color: #055AC1;">
+	        <td>1</td>
+	        <td >경영학원론</td>
+	        <td>2021년도 1학기</td>
+	        <td>10명</td>
+	        <td>15차수</td>
+	        <td>경영학이란 무엇인가 책읽고 보고서작성</td>
+	      </tr>
+	    </tbody>
+	    
+	  </table>
+	
+	</div>
+</div>
+</c:if>
 </div>
