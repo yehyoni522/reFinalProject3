@@ -54,8 +54,7 @@ a#msgNew{
 	 font-style: normal;
 }
 .belongHead{
-	display: inline-block;
-	width: 450px;
+	width: 600px;
 	margin: 60px;
 	
 }
@@ -323,80 +322,4 @@ dfn:hover::before {top: 50px;}
 </div>
 
 
-<c:if test="${requestScope.identity == 0}">
-
-<div class="belongHead" style="width:88%;">
-	<div class="admsubtitle" >
-			<span >과목별성적조회 - 2021년도 봄학기</span>
-		</div>
-	<div class="belongHead2" >
-		<table class="table table-hover" >
-		
-	      <thead class="scoretable">
-	      <tr id="score"> 
-	        <th>과목번호</th>
-	        <th style="width: 30%;">과목명</th>
-	        <th>담당교수</th>
-	        <th>과제점수</th>
-	        <th>쪽지시험점수</th>
-	      </tr>
-	    </thead>
-    
-    <c:forEach var="scorelist" items="${requestScope.scorevolist}">
-	    <tbody class="scoretable">
-	      <tr id="tr_1" style="color: #055AC1;">
-	        <td>${scorelist.subno}</td>
-	        <td >${scorelist.subname}</td>
-	        <td>${scorelist.name}</td>
-	        <td ><dfn data-info="과제목록을 확인하시려면 클릭하세요!"><a style="cursor: pointer;" onclick="goCheck(${scorelist.subno})">${scorelist.exchagedScore}/40</a></dfn></td>
-	        <td>50/100</td>
-	      </tr>
-	    </tbody>
-	 </c:forEach>  
-	   
-
-	  </table>
-	
-	</div>
-</div>
-
-</c:if>
-<c:if test="${requestScope.identity == 1}">
-
-<div class="belongHead" style="width:88%;">
-	<div class="admsubtitle" >
-			<span >수업조회 - 2021년도 봄학기</span>
-		</div>
-	<div class="belongHead2" >
-		<table class="table table-hover" >
-		
-	      <thead class="scoretable">
-	      <tr id="score"> 
-	        <th>과목번호</th>
-	        <th style="width: 20%;">과목명</th>
-	        <th>개설학기</th>
-	        <th>수강인원</th>
-	        <th>현재진행차수</th>
-	        <th>최근진행과제/시험</th>
-	      </tr>
-	    </thead>
-    
-	    <tbody class="scoretable">
-	      <tr id="tr_1" style="color: #055AC1;">
-	        <td>1</td>
-	        <td >경영학원론</td>
-	        <td>2021년도 1학기</td>
-	        <td>10명</td>
-	        <td>15차수</td>
-	        <td>경영학이란 무엇인가 책읽고 보고서작성</td>
-	      </tr>
-	    </tbody>
-	    
-
-	  </table>
-	
-	</div>
-</div>
-
-</c:if>
 </div>
